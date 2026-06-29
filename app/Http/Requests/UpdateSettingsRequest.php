@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateSettingsRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [
+            'keitaro_url' => ['nullable', 'url', 'max:255'],
+            'keitaro_api_key' => ['nullable', 'string', 'max:255'],
+            'keitaro_group' => ['nullable', 'string', 'max:20'],
+            'affiliate_tag' => ['nullable', 'string', 'max:50'],
+            'crm_api_key' => ['nullable', 'string', 'max:255'],
+            'tg_bot_token' => ['nullable', 'string', 'max:255'],
+            'tg_chat_id' => ['nullable', 'string', 'max:50'],
+            'deploy_panel_name' => ['nullable', 'string', 'max:80'],
+            'deploy_host' => ['nullable', 'string', 'max:255'],
+            'deploy_port' => ['nullable', 'integer', 'min:1', 'max:65535'],
+            'deploy_username' => ['nullable', 'string', 'max:80'],
+            'deploy_password' => ['nullable', 'string', 'max:255'],
+            'deploy_path_template' => ['nullable', 'string', 'max:255'],
+            'deploy_panel_url' => ['nullable', 'url', 'max:255'],
+            'test_domain' => ['nullable', 'string', 'max:120'],
+        ];
+    }
+}

@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class UserSetting extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'keitaro_url',
+        'keitaro_api_key',
+        'keitaro_group_id',
+        'affiliate_tag',
+        'crm_api_key',
+        'tg_bot_token',
+        'tg_chat_id',
+        'deploy_panel_name',
+        'deploy_host',
+        'deploy_port',
+        'deploy_username',
+        'deploy_password',
+        'deploy_path_template',
+        'deploy_panel_url',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'keitaro_api_key' => 'encrypted',
+            'crm_api_key' => 'encrypted',
+            'tg_bot_token' => 'encrypted',
+            'deploy_password' => 'encrypted',
+            'deploy_port' => 'integer',
+        ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toPanelArray(): array
+    {
+        return [
+            'keitaro_url' => $this->keitaro_url ?? 'https://clickmetrics38.com',
+            'keitaro_group' => $this->keitaro_group_id ?? '51',
+            'affiliate_tag' => $this->affiliate_tag ?? 'BRO',
+            'tg_chat_id' => $this->tg_chat_id ?? '',
+            'has_keitaro_api_key' => filled($this->keitaro_api_key),
+            'has_crm_api_key' => filled($this->crm_api_key),
+            'has_tg_bot_token' => filled($this->tg_bot_token),
+            'deploy_panel_name' => $this->deploy_panel_name ?? 'Hestia',
+            'deploy_host' => $this->deploy_host ?? '',
+            'deploy_port' => $this->deploy_port ?? 22,
+            'deploy_username' => $this->deploy_username ?? '',
+            'deploy_path_template' => $this->deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
+            'deploy_panel_url' => $this->deploy_panel_url ?? '',
+            'has_deploy_password' => filled($this->deploy_password),
+        ];
+    }
+}
