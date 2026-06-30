@@ -17,6 +17,7 @@ return [
         ['code' => 'ka', 'name' => 'ქართული'],
         ['code' => 'cs', 'name' => 'Čeština'],
         ['code' => 'sk', 'name' => 'Slovenčina'],
+        ['code' => 'hr', 'name' => 'Hrvatski'],
     ],
 
     // Підказки GEO — можна вибрати або вписати свій код (2 літери)
@@ -39,6 +40,7 @@ return [
         ['code' => 'RO', 'name' => 'Румунія', 'lang' => 'ro', 'phone' => 'ro'],
         ['code' => 'BG', 'name' => 'Болгарія', 'lang' => 'en', 'phone' => 'bg'],
         ['code' => 'GR', 'name' => 'Греція', 'lang' => 'en', 'phone' => 'gr'],
+        ['code' => 'HR', 'name' => 'Хорватія', 'lang' => 'hr', 'phone' => 'hr'],
         ['code' => 'TR', 'name' => 'Туреччина', 'lang' => 'tr', 'phone' => 'tr'],
         ['code' => 'DK', 'name' => 'Данія', 'lang' => 'da', 'phone' => 'dk'],
         ['code' => 'SE', 'name' => 'Швеція', 'lang' => 'en', 'phone' => 'se'],
