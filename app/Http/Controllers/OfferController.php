@@ -20,15 +20,22 @@ class OfferController extends Controller
 
         $deploy->resetStuckDeploys();
 
-        $offers = Offer::query()
-            ->where('user_id', $user->id)
-            ->orderByDesc('created_at')
+        $query = Offer::query()
+            ->with('user')
+            ->orderByDesc('created_at');
+
+        if (! $user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
+
+        $offers = $query
             ->get()
             ->map(fn (Offer $offer) => $offer->toPanelArray());
 
         return Inertia::render('Panel/Offers/Index', [
             'offers' => $offers,
             'canDeploy' => app(DeployService::class)->settingsReady($settings),
+            'showUserColumn' => $user->isAdmin(),
         ]);
     }
 

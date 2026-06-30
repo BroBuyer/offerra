@@ -47,6 +47,9 @@ class Offer extends Model
 
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
+            'user_name' => $this->user?->name,
+            'user_email' => $this->user?->email,
             'folder' => $this->folder,
             'brand' => $this->brand,
             'domain' => $this->domain,

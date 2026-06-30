@@ -16,8 +16,8 @@ function statusBadge(status) {
     }
 }
 
-export default function OffersIndex({ offers, canDeploy }) {
-    const { flash, errors } = usePage().props;
+export default function OffersIndex({ offers, canDeploy, showUserColumn = false }) {
+    const { flash, errors, auth } = usePage().props;
     const [geo, setGeo] = useState('');
     const [lang, setLang] = useState('');
     const [deployingId, setDeployingId] = useState(null);
@@ -49,6 +49,18 @@ export default function OffersIndex({ offers, canDeploy }) {
             preserveScroll: true,
             onFinish: () => setDeployingId(null),
         });
+    };
+
+    const canDeployOffer = (offer) => {
+        if (!canDeploy) {
+            return false;
+        }
+
+        if (!showUserColumn) {
+            return true;
+        }
+
+        return offer.user_id === auth?.user?.id;
     };
 
     return (
@@ -112,6 +124,7 @@ export default function OffersIndex({ offers, canDeploy }) {
                 <table>
                     <thead>
                         <tr>
+                            {showUserColumn && <th>Користувач</th>}
                             <th>Бренд</th>
                             <th>Домен</th>
                             <th>GEO</th>
@@ -129,6 +142,13 @@ export default function OffersIndex({ offers, canDeploy }) {
 
                             return (
                                 <tr key={offer.folder}>
+                                    {showUserColumn && (
+                                        <td>
+                                            <span className="offer-user" title={offer.user_email}>
+                                                {offer.user_name ?? offer.user_email ?? '—'}
+                                            </span>
+                                        </td>
+                                    )}
                                     <td>{offer.brand}</td>
                                     <td>
                                         <a
@@ -155,27 +175,31 @@ export default function OffersIndex({ offers, canDeploy }) {
                                         )}
                                     </td>
                                     <td>
-                                        <button
-                                            type="button"
-                                            className="btn btn-ghost btn-sm"
-                                            disabled={!canDeploy || (isDeploying && offer.status === 'deploying')}
-                                            onClick={() => deployOffer(offer)}
-                                        >
-                                            {isDeploying && offer.status !== 'failed'
-                                                ? '…'
-                                                : offer.status === 'deployed'
-                                                  ? '↻'
-                                                  : offer.status === 'failed'
-                                                    ? 'Повтор'
-                                                    : 'Деплой'}
-                                        </button>
+                                        {canDeployOffer(offer) ? (
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                disabled={isDeploying && offer.status === 'deploying'}
+                                                onClick={() => deployOffer(offer)}
+                                            >
+                                                {isDeploying && offer.status !== 'failed'
+                                                    ? '…'
+                                                    : offer.status === 'deployed'
+                                                      ? '↻'
+                                                      : offer.status === 'failed'
+                                                        ? 'Повтор'
+                                                        : 'Деплой'}
+                                            </button>
+                                        ) : (
+                                            <span className="field-hint">—</span>
+                                        )}
                                     </td>
                                 </tr>
                             );
                         })}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={9} className="field-hint">
+                                <td colSpan={showUserColumn ? 10 : 9} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>

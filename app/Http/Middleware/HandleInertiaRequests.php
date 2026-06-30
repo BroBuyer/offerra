@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
+                'user_credentials' => fn () => $request->session()->get('user_credentials'),
             ],
             'panel' => fn () => [
                 'affiliate_tag' => $request->user()?->settings?->affiliate_tag ?? 'BRO',

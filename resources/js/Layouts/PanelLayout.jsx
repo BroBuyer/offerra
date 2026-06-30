@@ -10,6 +10,10 @@ const navItems = [
     { href: '/settings', icon: '⚙️', label: 'Налаштування' },
 ];
 
+const adminNavItems = [
+    { href: '/users', icon: '👥', label: 'Користувачі' },
+];
+
 export default function PanelLayout({ title, children, wide = false, fullWidth = false }) {
     const { url, auth, panel } = usePage().props;
 
@@ -39,6 +43,16 @@ export default function PanelLayout({ title, children, wide = false, fullWidth =
                     </div>
                     <nav>
                         {navItems.map((item) => (
+                            <PanelNavLink
+                                key={item.href}
+                                href={item.href}
+                                active={isActive(item.href)}
+                                icon={item.icon}
+                            >
+                                {item.label}
+                            </PanelNavLink>
+                        ))}
+                        {user?.role === 'admin' && adminNavItems.map((item) => (
                             <PanelNavLink
                                 key={item.href}
                                 href={item.href}

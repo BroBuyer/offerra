@@ -140,6 +140,66 @@ a:hover { text-decoration: underline; }
   border-color: rgba(34, 197, 94, 0.28);
 }
 
+.offer-user {
+  font-size: 0.88rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.credentials-card {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.08), transparent);
+}
+
+.credentials-list {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.credentials-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.credentials-row dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.credentials-row dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.credentials-password {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.credentials-value {
+  display: inline-block;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.credentials-toggle {
+  position: static;
+  transform: none;
+  flex-shrink: 0;
+}
+
 .sidebar-logout {
   display: flex;
   align-items: center;

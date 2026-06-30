@@ -19,7 +19,9 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
             <header className="page-header">
                 <h2>Дашборд</h2>
                 <p className="dashboard-date">
-                    Дані з <code>offers/</code> · оновлено зараз
+                    {stats.total > 0
+                        ? 'Статистика ваших офферів'
+                        : 'Ще немає офферів — створіть перший'}
                 </p>
             </header>
 
@@ -39,17 +41,19 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                 <div className="kpi-card">
                     <div className="kpi-card-label">Згенеровано сьогодні</div>
                     <div className="kpi-card-value accent">{stats.generated_today}</div>
-                    <div className="kpi-card-sub up">з папок offers/</div>
+                    <div className="kpi-card-sub up">
+                        {stats.total > 0 ? 'ваші оффери' : '—'}
+                    </div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Задеплоєно</div>
                     <div className="kpi-card-value">{stats.deployed}</div>
-                    <div className="kpi-card-sub">лог деплою — скоро</div>
+                    <div className="kpi-card-sub">ваші задеплоєні</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Всього офферів</div>
                     <div className="kpi-card-value">{stats.total}</div>
-                    <div className="kpi-card-sub">без example/</div>
+                    <div className="kpi-card-sub">у вашому акаунті</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Очікують деплой</div>
@@ -62,7 +66,7 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                 <div className="kpi-card">
                     <div className="kpi-card-label">Keitaro підключено</div>
                     <div className="kpi-card-value">{stats.keitaro_linked}</div>
-                    <div className="kpi-card-sub">з config.php</div>
+                    <div className="kpi-card-sub">з ваших офферів</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Унікальних GEO</div>
@@ -142,7 +146,7 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                         {recentOffers.length === 0 && (
                             <li className="activity-item">
                                 <span className="activity-text field-hint">
-                                    Папок у offers/ не знайдено
+                                    Ще немає офферів
                                 </span>
                             </li>
                         )}
