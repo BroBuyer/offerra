@@ -11,7 +11,7 @@ class KeitaroClient
 {
     /**
      * @param  array<string, mixed>  $input
-     * @return array{id: int, token: string, alias: string, name: string}
+     * @return array{id: int, token: string, alias: string, name: string, reused: bool}
      */
     public function createCampaign(UserSetting $settings, array $input): array
     {
@@ -21,8 +21,15 @@ class KeitaroClient
             throw new RuntimeException('Збережіть Keitaro Admin API key у налаштуваннях.');
         }
 
-        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
         $name = $this->buildCampaignName($input, $settings->affiliate_tag);
+
+        $existing = $this->findCampaignByName($settings, $name);
+
+        if ($existing) {
+            return array_merge($existing, ['reused' => true]);
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
         $alias = $this->buildAlias($input);
 
         $payload = [
@@ -44,6 +51,14 @@ class KeitaroClient
             ->post("{$baseUrl}/admin_api/v1/campaigns", $payload);
 
         if ($response->failed()) {
+            if ($this->isDuplicateNameError($response->body())) {
+                $existing = $this->findCampaignByName($settings, $name);
+
+                if ($existing) {
+                    return array_merge($existing, ['reused' => true]);
+                }
+            }
+
             throw new RuntimeException(
                 'Keitaro: не вдалося створити кампанію — '.$this->formatError($response->body()),
             );
@@ -66,7 +81,81 @@ class KeitaroClient
             'token' => $token,
             'alias' => (string) ($data['alias'] ?? $alias),
             'name' => (string) ($data['name'] ?? $name),
+            'reused' => false,
         ];
+    }
+
+    /**
+     * @return array{id: int, token: string, alias: string, name: string}|null
+     */
+    public function findCampaignByName(UserSetting $settings, string $name): ?array
+    {
+        foreach ($this->listCampaigns($settings) as $campaign) {
+            if ($campaign['name'] !== $name) {
+                continue;
+            }
+
+            if ($campaign['token'] === '') {
+                $details = $this->getCampaign($settings, $campaign['id']);
+
+                if ($details) {
+                    return $details;
+                }
+            }
+
+            return $campaign;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{id: int, token: string, alias: string, name: string}|null
+     */
+    public function getCampaign(UserSetting $settings, int $campaignId): ?array
+    {
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey || $campaignId <= 0) {
+            return null;
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        $response = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Accept' => 'application/json',
+        ])
+            ->timeout(20)
+            ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+
+        if ($response->failed()) {
+            return null;
+        }
+
+        /** @var array<string, mixed> $row */
+        $row = $response->json() ?? [];
+        $id = (int) ($row['id'] ?? 0);
+
+        if ($id === 0) {
+            return null;
+        }
+
+        return [
+            'id' => $id,
+            'name' => (string) ($row['name'] ?? ''),
+            'alias' => (string) ($row['alias'] ?? ''),
+            'token' => (string) ($row['token'] ?? ''),
+        ];
+    }
+
+    private function isDuplicateNameError(string $body): bool
+    {
+        $normalized = strtolower($body);
+
+        return str_contains($normalized, 'already used')
+            || str_contains($normalized, 'already been taken')
+            || str_contains($normalized, 'has already');
     }
 
     private function createDefaultStream(string $baseUrl, string $apiKey, int $campaignId): void
@@ -85,11 +174,26 @@ class KeitaroClient
                 'state' => 'active',
             ]);
 
-        if ($response->failed()) {
-            throw new RuntimeException(
-                'Keitaro: кампанію створено, але flow не додано — '.$this->formatError($response->body()),
-            );
+        if ($response->successful()) {
+            return;
         }
+
+        if ($this->isDuplicateStreamError($response->body())) {
+            return;
+        }
+
+        throw new RuntimeException(
+            'Keitaro: кампанію створено, але flow не додано — '.$this->formatError($response->body()),
+        );
+    }
+
+    private function isDuplicateStreamError(string $body): bool
+    {
+        $normalized = strtolower($body);
+
+        return str_contains($normalized, 'already')
+            || str_contains($normalized, 'exists')
+            || str_contains($normalized, 'duplicate');
     }
 
     /**
@@ -132,8 +236,16 @@ class KeitaroClient
     {
         $decoded = json_decode($body, true);
 
-        if (is_array($decoded) && isset($decoded['message'])) {
-            return (string) $decoded['message'];
+        if (is_array($decoded)) {
+            if (isset($decoded['message'])) {
+                return (string) $decoded['message'];
+            }
+
+            foreach ($decoded as $field => $messages) {
+                if (is_array($messages) && isset($messages[0])) {
+                    return sprintf('%s: %s', $field, (string) $messages[0]);
+                }
+            }
         }
 
         return Str::limit(trim($body), 200);

@@ -71,7 +71,7 @@ class OfferController extends Controller
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
             ]);
-        } catch (\InvalidArgumentException|\RuntimeException $e) {
+        } catch (\Throwable $e) {
             return redirect()
                 ->route('offers.create')
                 ->withErrors(['generate' => $e->getMessage()]);
