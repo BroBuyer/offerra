@@ -1,35 +1,46 @@
+import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
 import { Link, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 
-const MASK = '••••••••••••••••';
-
-export default function SettingsIndex({ settings }) {
-    const [deployTest, setDeployTest] = useState(null);
-    const [testingDeploy, setTestingDeploy] = useState(false);
-
-    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm({
+function formFromSettings(settings) {
+    return {
         keitaro_url: settings.keitaro_url ?? '',
-        keitaro_api_key: settings.has_keitaro_api_key ? MASK : '',
+        keitaro_api_key: settings.keitaro_api_key ?? '',
         keitaro_group: settings.keitaro_group ?? '51',
         affiliate_tag: settings.affiliate_tag ?? 'BRO',
-        crm_api_key: settings.has_crm_api_key ? MASK : '',
-        tg_bot_token: settings.has_tg_bot_token ? MASK : '',
+        crm_api_key: settings.crm_api_key ?? '',
+        tg_bot_token: settings.tg_bot_token ?? '',
         tg_chat_id: settings.tg_chat_id ?? '',
         deploy_panel_name: settings.deploy_panel_name ?? 'Hestia',
         deploy_host: settings.deploy_host ?? '',
         deploy_port: settings.deploy_port ?? 22,
         deploy_username: settings.deploy_username ?? '',
-        deploy_password: settings.has_deploy_password ? MASK : '',
+        deploy_password: settings.deploy_password ?? '',
         deploy_path_template: settings.deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
         deploy_panel_url: settings.deploy_panel_url ?? '',
         test_domain: 'reserve-safegrove-ie.com',
-    });
+    };
+}
+
+export default function SettingsIndex({ settings }) {
+    const [deployTest, setDeployTest] = useState(null);
+    const [testingDeploy, setTestingDeploy] = useState(false);
+
+    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm(formFromSettings(settings));
+
+    const syncFromSettings = (nextSettings) => {
+        const next = formFromSettings(nextSettings);
+        Object.entries(next).forEach(([key, value]) => setData(key, value));
+    };
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route('settings.update'), { preserveScroll: true });
+        patch(route('settings.update'), {
+            preserveScroll: true,
+            onSuccess: (page) => syncFromSettings(page.props.settings),
+        });
     };
 
     const testDeploy = async () => {
@@ -75,8 +86,7 @@ export default function SettingsIndex({ settings }) {
                     </div>
                     <div className="field">
                         <label htmlFor="kt-api">Admin API key</label>
-                        <input
-                            type="password"
+                        <SecretInput
                             id="kt-api"
                             value={data.keitaro_api_key}
                             onChange={(e) => setData('keitaro_api_key', e.target.value)}
@@ -108,8 +118,7 @@ export default function SettingsIndex({ settings }) {
                         </div>
                         <div className="field">
                             <label htmlFor="crm-key">CRM API key</label>
-                            <input
-                                type="password"
+                            <SecretInput
                                 id="crm-key"
                                 value={data.crm_api_key}
                                 onChange={(e) => setData('crm_api_key', e.target.value)}
@@ -123,8 +132,7 @@ export default function SettingsIndex({ settings }) {
                     <h3>Telegram</h3>
                     <div className="field">
                         <label htmlFor="tg-token">Bot token</label>
-                        <input
-                            type="password"
+                        <SecretInput
                             id="tg-token"
                             value={data.tg_bot_token}
                             onChange={(e) => setData('tg_bot_token', e.target.value)}
@@ -203,8 +211,7 @@ export default function SettingsIndex({ settings }) {
                         </div>
                         <div className="field">
                             <label htmlFor="deploy-pass">Пароль SFTP</label>
-                            <input
-                                type="password"
+                            <SecretInput
                                 id="deploy-pass"
                                 value={data.deploy_password}
                                 onChange={(e) => setData('deploy_password', e.target.value)}

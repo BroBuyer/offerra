@@ -63,4 +63,17 @@ class UserSetting extends Model
             'has_deploy_password' => filled($this->deploy_password),
         ];
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toEditArray(): array
+    {
+        return array_merge($this->toPanelArray(), [
+            'keitaro_api_key' => $this->keitaro_api_key ?? '',
+            'crm_api_key' => $this->crm_api_key ?? '',
+            'tg_bot_token' => $this->tg_bot_token ?? '',
+            'deploy_password' => $this->deploy_password ?? '',
+        ]);
+    }
 }

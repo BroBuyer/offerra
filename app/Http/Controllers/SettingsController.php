@@ -19,8 +19,8 @@ class SettingsController extends Controller
 
         return Inertia::render('Panel/Settings/Index', [
             'settings' => $settings
-                ? $settings->toPanelArray()
-                : (new UserSetting)->toPanelArray(),
+                ? $settings->toEditArray()
+                : (new UserSetting)->toEditArray(),
         ]);
     }
 
@@ -61,7 +61,7 @@ class SettingsController extends Controller
 
         $password = $data['deploy_password'] ?? null;
 
-        if (($password === null || $password === '' || str_starts_with($password, '•')) && $settings) {
+        if (! filled(trim((string) $password)) && $settings) {
             $password = $settings->deploy_password;
         }
 
@@ -85,7 +85,7 @@ class SettingsController extends Controller
 
     private function mergeSecret(UserSetting $settings, string $field, ?string $value): void
     {
-        if ($value === null || $value === '' || str_starts_with($value, '•')) {
+        if ($value === null || trim($value) === '') {
             return;
         }
 

@@ -340,6 +340,39 @@ a:hover { text-decoration: underline; }
   margin-top: 0.35rem;
 }
 
+.secret-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field .secret-input input {
+  padding-right: 2.75rem;
+}
+
+.secret-input-toggle {
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.secret-input-toggle:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
 .field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
