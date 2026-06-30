@@ -38,6 +38,9 @@ class OfferGenerator
             throw new InvalidArgumentException("Шаблон «{$template}» ({$input['lang']}) не знайдено на диску.");
         }
 
+        $affiliateTag = $this->normalizeAffiliateTag($settings->affiliate_tag);
+        $input['affiliate_tag'] = $affiliateTag;
+
         $folder = $this->buildFolderName($input);
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder;
 
@@ -166,15 +169,24 @@ class OfferGenerator
     {
         $brandSlug = preg_replace('/\s+/', '-', trim($input['brand']));
         $date = now()->format('Y-m-d');
+        $affiliate = $this->normalizeAffiliateTag($input['affiliate_tag'] ?? null);
 
         return sprintf(
-            '%s_%s_BRO_%s_%s_%s',
+            '%s_%s_%s_%s_%s_%s',
             strtoupper($input['geo']),
             strtolower($input['lang']),
+            $affiliate,
             $brandSlug,
             strtolower($input['domain']),
             $date,
         );
+    }
+
+    private function normalizeAffiliateTag(?string $tag): string
+    {
+        $tag = strtoupper(trim((string) $tag));
+
+        return $tag !== '' ? $tag : 'BRO';
     }
 
     public function refreshConfig(Offer $offer): void

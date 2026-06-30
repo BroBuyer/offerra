@@ -58,7 +58,7 @@ class OfferScanner
     {
         $parts = explode('_', $folder);
 
-        if (count($parts) < 6 || $parts[2] !== 'BRO') {
+        if (count($parts) < 6 || ! preg_match('/^[A-Za-z0-9_-]+$/', $parts[2])) {
             return null;
         }
 

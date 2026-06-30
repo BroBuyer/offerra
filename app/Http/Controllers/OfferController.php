@@ -49,6 +49,7 @@ class OfferController extends Controller
         return Inertia::render('Panel/Offers/Create', [
             'settingsReady' => $ready,
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
+            'affiliateTag' => $settings?->affiliate_tag ?? 'BRO',
             'geoPresets' => config('offerra.geo_presets'),
             'templates' => $catalog->forWizard(),
             'fresh' => request()->boolean('fresh'),

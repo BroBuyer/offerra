@@ -22,7 +22,7 @@ class KeitaroClient
         }
 
         $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
-        $name = $this->buildCampaignName($input);
+        $name = $this->buildCampaignName($input, $settings->affiliate_tag);
         $alias = $this->buildAlias($input);
 
         $payload = [
@@ -95,17 +95,26 @@ class KeitaroClient
     /**
      * @param  array<string, mixed>  $input
      */
-    public function buildCampaignName(array $input): string
+    public function buildCampaignName(array $input, ?string $affiliateTag = null): string
     {
-        $date = now()->format('d.m');
+        $date = now()->format('d.m.Y');
+        $affiliate = $this->normalizeAffiliateTag($affiliateTag ?? $input['affiliate_tag'] ?? null);
 
         return sprintf(
-            'SEO %s BRO %s (%s) %s',
+            'SEO %s %s %s (%s) %s',
             strtoupper($input['geo']),
+            $affiliate,
             $input['brand'],
             $date,
             $input['domain'],
         );
+    }
+
+    private function normalizeAffiliateTag(?string $tag): string
+    {
+        $tag = strtoupper(trim((string) $tag));
+
+        return $tag !== '' ? $tag : 'BRO';
     }
 
     /**

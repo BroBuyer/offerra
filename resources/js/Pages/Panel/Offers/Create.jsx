@@ -43,6 +43,7 @@ function buildDefaults(templates) {
 export default function OffersCreate({
     settingsReady,
     hasKeitaroApiKey,
+    affiliateTag = 'BRO',
     geoPresets,
     templates,
     fresh = false,
@@ -118,8 +119,13 @@ export default function OffersCreate({
         if (!data.brand || !data.domain || !data.geo) return '…';
         const brandSlug = data.brand.trim().replace(/\s+/g, '-');
         const date = new Date().toISOString().slice(0, 10);
-        return `${data.geo}_${data.lang}_BRO_${brandSlug}_${data.domain}_${date}`;
-    }, [data]);
+        return `${data.geo}_${data.lang}_${affiliateTag}_${brandSlug}_${data.domain}_${date}`;
+    }, [data, affiliateTag]);
+
+    const keitaroNamePreview = useMemo(() => {
+        const date = new Date().toLocaleDateString('uk-UA');
+        return `SEO ${data.geo || '…'} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
+    }, [data.brand, data.domain, data.geo, affiliateTag]);
 
     const generate = () => {
         post(route('offers.store'), {
@@ -355,7 +361,7 @@ export default function OffersCreate({
                             </p>
                         )}
                         <p className="field-hint">
-                            Патерн: SEO {data.geo} BRO {data.brand || '…'} ({new Date().toLocaleDateString('uk-UA')}) {data.domain || '…'}
+                            Патерн: {keitaroNamePreview}
                         </p>
                     </div>
                 </section>
