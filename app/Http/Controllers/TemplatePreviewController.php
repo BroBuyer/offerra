@@ -80,7 +80,14 @@ class TemplatePreviewController extends Controller
         }
 
         $script = base_path('scripts/render-offer-php.php');
-        $requestUri = '/preview/'.$template.'/'.ltrim($webPath, '/');
+        $webPath = ltrim($webPath, '/');
+
+        if ($webPath === '' || $webPath === 'index.php') {
+            $requestUri = '/preview/'.$template.'/';
+        } else {
+            $requestUri = '/preview/'.$template.'/'.ltrim($webPath, '/');
+        }
+
         $httpHost = request()->getHttpHost();
 
         $result = Process::timeout(30)->run([
