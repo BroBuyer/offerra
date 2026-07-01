@@ -1,7 +1,7 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function statusBadge(status) {
     switch (status) {
@@ -26,73 +26,44 @@ function formatCreatedDate(isoDate) {
     return `${day}.${month}.${year}`;
 }
 
-function isDateInRange(isoDate, from, to) {
-    if (!isoDate) {
-        return false;
-    }
+function buildQueryParams(filters, overrides = {}) {
+    const merged = { ...filters, ...overrides };
+    const params = {};
 
-    if (from && isoDate < from) {
-        return false;
-    }
+    Object.entries(merged).forEach(([key, value]) => {
+        if (value === '' || value === null || value === undefined) {
+            return;
+        }
 
-    if (to && isoDate > to) {
-        return false;
-    }
+        if (key === 'page' && Number(value) <= 1) {
+            return;
+        }
 
-    return true;
-}
+        params[key] = value;
+    });
 
-function matchesCreatedFilter(offer, created, dateFilters, customFrom, customTo) {
-    if (!created) {
-        return true;
-    }
-
-    const { date } = offer;
-
-    if (!date) {
-        return false;
-    }
-
-    const { today, yesterday, weekStart, monthStart } = dateFilters;
-
-    switch (created) {
-        case 'today':
-            return date === today;
-        case 'yesterday':
-            return date === yesterday;
-        case 'week':
-            return weekStart && today ? date >= weekStart && date <= today : false;
-        case 'month':
-            return monthStart && today ? date >= monthStart && date <= today : false;
-        case 'custom':
-            return isDateInRange(date, customFrom || null, customTo || null);
-        default:
-            return true;
-    }
-}
-
-function countByCreatedPreset(offers, preset, dateFilters) {
-    return offers.filter((offer) => matchesCreatedFilter(offer, preset, dateFilters, '', '')).length;
+    return params;
 }
 
 export default function OffersIndex({
     offers,
+    filters = {},
+    filterOptions = {},
+    createdCounts = {},
+    perPageOptions = [10, 30, 50, 100],
     canDeploy,
     showUserColumn = false,
     users = [],
-    selectedUserId = null,
     dateFilters = {},
 }) {
     const { flash, errors, auth } = usePage().props;
-    const [geo, setGeo] = useState('');
-    const [lang, setLang] = useState('');
-    const [indexing, setIndexing] = useState('');
-    const [created, setCreated] = useState('');
-    const [createdFrom, setCreatedFrom] = useState('');
-    const [createdTo, setCreatedTo] = useState('');
-    const [userId, setUserId] = useState(selectedUserId ? String(selectedUserId) : '');
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+
+    const rows = offers?.data ?? [];
+    const meta = offers?.meta ?? {};
+    const geos = filterOptions.geos ?? [];
+    const langs = filterOptions.langs ?? [];
 
     useEffect(() => {
         if (flash?.success) {
@@ -100,45 +71,18 @@ export default function OffersIndex({
         }
     }, [flash?.success]);
 
-    const geos = useMemo(
-        () => [...new Set(offers.map((o) => o.geo))].sort(),
-        [offers],
-    );
-    const langs = useMemo(
-        () => [...new Set(offers.map((o) => o.lang))].sort(),
-        [offers],
-    );
+    const reloadOffers = (overrides = {}, { resetPage = true } = {}) => {
+        const next = { ...filters, ...overrides };
 
-    const createdCounts = useMemo(() => {
-        if (!dateFilters.today) {
-            return { today: 0, yesterday: 0, week: 0, month: 0 };
+        if (resetPage) {
+            next.page = 1;
         }
 
-        return {
-            today: countByCreatedPreset(offers, 'today', dateFilters),
-            yesterday: countByCreatedPreset(offers, 'yesterday', dateFilters),
-            week: countByCreatedPreset(offers, 'week', dateFilters),
-            month: countByCreatedPreset(offers, 'month', dateFilters),
-        };
-    }, [offers, dateFilters]);
-
-    const filtered = offers.filter((offer) => {
-        if (geo && offer.geo !== geo) return false;
-        if (lang && offer.lang !== lang) return false;
-        if (userId && String(offer.user_id) !== userId) return false;
-        if (indexing === 'yes' && !offer.submitted_for_indexing) return false;
-        if (indexing === 'no' && offer.submitted_for_indexing) return false;
-        if (!matchesCreatedFilter(offer, created, dateFilters, createdFrom, createdTo)) return false;
-        return true;
-    });
-
-    const changeUserFilter = (nextUserId) => {
-        setUserId(nextUserId);
-        router.get(
-            route('offers.index', nextUserId ? { user: nextUserId } : {}),
-            {},
-            { preserveState: true, replace: true },
-        );
+        router.get(route('offers.index'), buildQueryParams(next), {
+            preserveState: true,
+            replace: true,
+            preserveScroll: true,
+        });
     };
 
     const deployOffer = (offer) => {
@@ -177,6 +121,20 @@ export default function OffersIndex({
         );
     };
 
+    const hasActiveFilters = Boolean(
+        filters.geo
+        || filters.lang
+        || filters.indexing
+        || filters.created
+        || filters.user,
+    );
+
+    const total = meta.total ?? 0;
+    const rangeFrom = total === 0 ? 0 : (meta.from ?? 0);
+    const rangeTo = total === 0 ? 0 : (meta.to ?? 0);
+    const currentPage = meta.current_page ?? 1;
+    const lastPage = meta.last_page ?? 1;
+
     return (
         <PanelLayout title="Оффери" fullWidth>
             <div className="offers-page">
@@ -203,8 +161,8 @@ export default function OffersIndex({
             <div className="filter-bar">
                 <select
                     aria-label="GEO"
-                    value={geo}
-                    onChange={(e) => setGeo(e.target.value)}
+                    value={filters.geo ?? ''}
+                    onChange={(e) => reloadOffers({ geo: e.target.value })}
                 >
                     <option value="">Усі GEO</option>
                     {geos.map((g) => (
@@ -215,8 +173,8 @@ export default function OffersIndex({
                 </select>
                 <select
                     aria-label="Мова"
-                    value={lang}
-                    onChange={(e) => setLang(e.target.value)}
+                    value={filters.lang ?? ''}
+                    onChange={(e) => reloadOffers({ lang: e.target.value })}
                 >
                     <option value="">Усі мови</option>
                     {langs.map((l) => (
@@ -228,8 +186,8 @@ export default function OffersIndex({
                 {showUserColumn && users.length > 0 && (
                     <select
                         aria-label="Користувач"
-                        value={userId}
-                        onChange={(e) => changeUserFilter(e.target.value)}
+                        value={filters.user ?? ''}
+                        onChange={(e) => reloadOffers({ user: e.target.value })}
                     >
                         <option value="">Усі користувачі</option>
                         {users.map((user) => (
@@ -241,8 +199,8 @@ export default function OffersIndex({
                 )}
                 <select
                     aria-label="Індексація"
-                    value={indexing}
-                    onChange={(e) => setIndexing(e.target.value)}
+                    value={filters.indexing ?? ''}
+                    onChange={(e) => reloadOffers({ indexing: e.target.value })}
                 >
                     <option value="">Уся індексація</option>
                     <option value="no">Не подано</option>
@@ -250,26 +208,26 @@ export default function OffersIndex({
                 </select>
                 <select
                     aria-label="Дата створення"
-                    value={created}
-                    onChange={(e) => setCreated(e.target.value)}
+                    value={filters.created ?? ''}
+                    onChange={(e) => reloadOffers({ created: e.target.value })}
                 >
                     <option value="">Усі дати</option>
-                    <option value="today">Сьогодні ({createdCounts.today})</option>
-                    <option value="yesterday">Вчора ({createdCounts.yesterday})</option>
-                    <option value="week">Цей тиждень ({createdCounts.week})</option>
-                    <option value="month">Цей місяць ({createdCounts.month})</option>
+                    <option value="today">Сьогодні ({createdCounts.today ?? 0})</option>
+                    <option value="yesterday">Вчора ({createdCounts.yesterday ?? 0})</option>
+                    <option value="week">Цей тиждень ({createdCounts.week ?? 0})</option>
+                    <option value="month">Цей місяць ({createdCounts.month ?? 0})</option>
                     <option value="custom">Свій період…</option>
                 </select>
-                {created === 'custom' && (
+                {filters.created === 'custom' && (
                     <div className="filter-bar__date-range">
                         <label className="filter-bar__date-field">
                             <span className="sr-only">Від</span>
                             <input
                                 type="date"
                                 aria-label="Дата від"
-                                value={createdFrom}
-                                max={createdTo || dateFilters.today || undefined}
-                                onChange={(e) => setCreatedFrom(e.target.value)}
+                                value={filters.created_from ?? ''}
+                                max={filters.created_to || dateFilters.today || undefined}
+                                onChange={(e) => reloadOffers({ created_from: e.target.value })}
                             />
                         </label>
                         <span className="filter-bar__date-sep" aria-hidden="true">—</span>
@@ -278,17 +236,30 @@ export default function OffersIndex({
                             <input
                                 type="date"
                                 aria-label="Дата до"
-                                value={createdTo}
-                                min={createdFrom || undefined}
+                                value={filters.created_to ?? ''}
+                                min={filters.created_from || undefined}
                                 max={dateFilters.today || undefined}
-                                onChange={(e) => setCreatedTo(e.target.value)}
+                                onChange={(e) => reloadOffers({ created_to: e.target.value })}
                             />
                         </label>
                     </div>
                 )}
-                {(created || geo || lang || userId || indexing) && (
+                <select
+                    aria-label="На сторінці"
+                    value={String(filters.per_page ?? 30)}
+                    onChange={(e) => reloadOffers({ per_page: Number(e.target.value) })}
+                >
+                    {perPageOptions.map((size) => (
+                        <option key={size} value={size}>
+                            {size} / стор.
+                        </option>
+                    ))}
+                </select>
+                {(hasActiveFilters || total > 0) && (
                     <span className="filter-bar__count">
-                        Показано {filtered.length} з {offers.length}
+                        {total === 0
+                            ? 'Офферів не знайдено'
+                            : `Показано ${rangeFrom}–${rangeTo} з ${total}`}
                     </span>
                 )}
                 <Link
@@ -319,7 +290,7 @@ export default function OffersIndex({
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.map((offer) => {
+                        {rows.map((offer) => {
                             const isDeploying = offer.status === 'deploying' || deployingId === offer.id;
 
                             return (
@@ -414,7 +385,7 @@ export default function OffersIndex({
                                 </tr>
                             );
                         })}
-                        {filtered.length === 0 && (
+                        {rows.length === 0 && (
                             <tr>
                                 <td colSpan={showUserColumn ? 12 : 11} className="field-hint">
                                     Офферів не знайдено
@@ -424,6 +395,30 @@ export default function OffersIndex({
                     </tbody>
                 </table>
             </div>
+
+            {lastPage > 1 && (
+                <nav className="pagination-bar" aria-label="Сторінки офферів">
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={currentPage <= 1}
+                        onClick={() => reloadOffers({ page: currentPage - 1 }, { resetPage: false })}
+                    >
+                        ← Назад
+                    </button>
+                    <span className="pagination-bar__info">
+                        Сторінка {currentPage} з {lastPage}
+                    </span>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={currentPage >= lastPage}
+                        onClick={() => reloadOffers({ page: currentPage + 1 }, { resetPage: false })}
+                    >
+                        Далі →
+                    </button>
+                </nav>
+            )}
             </div>
         </PanelLayout>
     );

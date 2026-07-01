@@ -838,6 +838,20 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   white-space: nowrap;
 }
 
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-shrink: 0;
+}
+
+.pagination-bar__info {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

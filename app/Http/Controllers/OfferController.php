@@ -8,12 +8,16 @@ use App\Models\User;
 use App\Services\DeployService;
 use App\Services\OfferGenerator;
 use App\Services\TemplateCatalog;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class OfferController extends Controller
 {
+    private const PER_PAGE_OPTIONS = [10, 30, 50, 100];
+
     public function index(DeployService $deploy): Response
     {
         $user = auth()->user();
@@ -21,6 +25,72 @@ class OfferController extends Controller
 
         $deploy->resetStuckDeploys();
 
+        $today = now();
+        $filters = $this->indexFilters($user);
+        $baseQuery = $this->offerScopeQuery($user);
+
+        $query = clone $baseQuery;
+        $this->applyOfferFilters($query, $filters, $today);
+
+        $offers = $query
+            ->paginate($filters['per_page'], ['*'], 'page', $filters['page'])
+            ->withQueryString()
+            ->through(fn (Offer $offer) => array_merge($offer->toPanelArray(), [
+                'deploy_ready' => $deploy->settingsReady($offer->user?->settings),
+            ]));
+
+        return Inertia::render('Panel/Offers/Index', [
+            'offers' => $offers,
+            'filters' => $filters,
+            'filterOptions' => [
+                'geos' => (clone $baseQuery)->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
+                'langs' => (clone $baseQuery)->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+            ],
+            'createdCounts' => $this->createdCounts($baseQuery, $today),
+            'perPageOptions' => self::PER_PAGE_OPTIONS,
+            'canDeploy' => app(DeployService::class)->settingsReady($settings),
+            'showUserColumn' => $user->isAdmin(),
+            'users' => $user->isAdmin()
+                ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
+                : [],
+            'dateFilters' => [
+                'today' => $today->toDateString(),
+                'yesterday' => $today->copy()->subDay()->toDateString(),
+                'weekStart' => $today->copy()->startOfWeek()->toDateString(),
+                'monthStart' => $today->copy()->startOfMonth()->toDateString(),
+            ],
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function indexFilters(User $user): array
+    {
+        $perPage = request()->integer('per_page', 30);
+
+        return [
+            'geo' => strtoupper(request()->string('geo')->toString()),
+            'lang' => strtolower(request()->string('lang')->toString()),
+            'indexing' => request()->string('indexing')->toString(),
+            'created' => request()->string('created')->toString(),
+            'created_from' => request()->string('created_from')->toString(),
+            'created_to' => request()->string('created_to')->toString(),
+            'user' => $user->isAdmin() && request()->filled('user')
+                ? (string) request()->integer('user')
+                : '',
+            'per_page' => $this->resolvePerPage($perPage),
+            'page' => max(1, request()->integer('page', 1)),
+        ];
+    }
+
+    private function resolvePerPage(int $perPage): int
+    {
+        return in_array($perPage, self::PER_PAGE_OPTIONS, true) ? $perPage : 30;
+    }
+
+    private function offerScopeQuery(User $user): Builder
+    {
         $query = Offer::query()
             ->with('user')
             ->orderByDesc('created_at');
@@ -31,29 +101,66 @@ class OfferController extends Controller
             $query->where('user_id', request()->integer('user'));
         }
 
-        $offers = $query
-            ->get()
-            ->map(fn (Offer $offer) => array_merge($offer->toPanelArray(), [
-                'deploy_ready' => $deploy->settingsReady($offer->user?->settings),
-            ]));
+        return $query;
+    }
 
-        return Inertia::render('Panel/Offers/Index', [
-            'offers' => $offers,
-            'canDeploy' => app(DeployService::class)->settingsReady($settings),
-            'showUserColumn' => $user->isAdmin(),
-            'users' => $user->isAdmin()
-                ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
-                : [],
-            'selectedUserId' => $user->isAdmin() && request()->filled('user')
-                ? request()->integer('user')
-                : null,
-            'dateFilters' => [
-                'today' => ($today = now())->toDateString(),
-                'yesterday' => $today->copy()->subDay()->toDateString(),
-                'weekStart' => $today->copy()->startOfWeek()->toDateString(),
-                'monthStart' => $today->copy()->startOfMonth()->toDateString(),
-            ],
-        ]);
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+    private function applyOfferFilters(Builder $query, array $filters, Carbon $today): void
+    {
+        if ($filters['geo'] !== '') {
+            $query->where('geo', $filters['geo']);
+        }
+
+        if ($filters['lang'] !== '') {
+            $query->where('lang', $filters['lang']);
+        }
+
+        if ($filters['indexing'] === 'yes') {
+            $query->where('submitted_for_indexing', true);
+        } elseif ($filters['indexing'] === 'no') {
+            $query->where('submitted_for_indexing', false);
+        }
+
+        match ($filters['created']) {
+            'today' => $query->whereDate('created_at', $today),
+            'yesterday' => $query->whereDate('created_at', $today->copy()->subDay()),
+            'week' => $query->whereDate('created_at', '>=', $today->copy()->startOfWeek()),
+            'month' => $query->whereDate('created_at', '>=', $today->copy()->startOfMonth()),
+            'custom' => $this->applyCustomDateFilter(
+                $query,
+                (string) $filters['created_from'],
+                (string) $filters['created_to'],
+            ),
+            default => null,
+        };
+    }
+
+    private function applyCustomDateFilter(Builder $query, string $from, string $to): void
+    {
+        if ($from !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+            $query->whereDate('created_at', '<=', $to);
+        }
+    }
+
+    /**
+     * @return array{today: int, yesterday: int, week: int, month: int}
+     */
+    private function createdCounts(Builder $baseQuery, Carbon $today): array
+    {
+        $clone = fn (): Builder => clone $baseQuery;
+
+        return [
+            'today' => $clone()->whereDate('created_at', $today)->count(),
+            'yesterday' => $clone()->whereDate('created_at', $today->copy()->subDay())->count(),
+            'week' => $clone()->whereDate('created_at', '>=', $today->copy()->startOfWeek())->count(),
+            'month' => $clone()->whereDate('created_at', '>=', $today->copy()->startOfMonth())->count(),
+        ];
     }
 
     public function create(TemplateCatalog $catalog): Response
@@ -122,16 +229,16 @@ class OfferController extends Controller
             $deploy->deploy($offer->user, $offer);
         } catch (\InvalidArgumentException|\RuntimeException $e) {
             return redirect()
-                ->route('offers.index')
+                ->back()
                 ->withErrors(['deploy' => $e->getMessage()]);
         } catch (\Throwable $e) {
             return redirect()
-                ->route('offers.index')
+                ->back()
                 ->withErrors(['deploy' => 'Деплой не вдався: '.$e->getMessage()]);
         }
 
         return redirect()
-            ->route('offers.index')
+            ->back()
             ->with('success', "Задеплоєно: {$offer->domain} → {$offer->fresh()->deploy_panel_name}");
     }
 
