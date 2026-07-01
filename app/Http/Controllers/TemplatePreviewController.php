@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\TemplateCatalog;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Process;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Throwable;
 
 class TemplatePreviewController extends Controller
 {
@@ -79,76 +79,49 @@ class TemplatePreviewController extends Controller
             abort(404);
         }
 
+        $script = base_path('scripts/render-offer-php.php');
         $webPath = ltrim($webPath, '/');
-        $requestUri = ($webPath === '' || $webPath === 'index.php')
-            ? '/preview/'.$template.'/'
-            : '/preview/'.$template.'/'.ltrim($webPath, '/');
 
-        $previousCwd = getcwd() ?: '.';
-        $serverBackup = [
-            'HTTP_HOST' => $_SERVER['HTTP_HOST'] ?? null,
-            'REQUEST_URI' => $_SERVER['REQUEST_URI'] ?? null,
-            'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'] ?? null,
-            'HTTPS' => $_SERVER['HTTPS'] ?? null,
-        ];
-
-        if (! defined('OFFERRA_PREVIEW')) {
-            define('OFFERRA_PREVIEW', true);
+        if ($webPath === '' || $webPath === 'index.php') {
+            $requestUri = '/preview/'.$template.'/';
+        } else {
+            $requestUri = '/preview/'.$template.'/'.ltrim($webPath, '/');
         }
 
-        putenv('OFFERRA_PREVIEW=1');
-        $_ENV['OFFERRA_PREVIEW'] = '1';
+        $httpHost = request()->getHttpHost();
 
-        $sessionDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'offerra-preview-sessions';
-        if (! is_dir($sessionDir)) {
-            @mkdir($sessionDir, 0777, true);
+        $result = Process::timeout(30)->run([
+            $this->phpCliBinary(),
+            $script,
+            $absoluteFile,
+            $requestUri,
+            $httpHost,
+        ]);
+
+        if (! $result->successful()) {
+            abort(500, 'Помилка рендеру шаблону: '.trim($result->errorOutput() ?: $result->output()));
         }
 
-        if (is_dir($sessionDir) && is_writable($sessionDir)) {
-            ini_set('session.save_path', $sessionDir);
-        }
-
-        $previousErrorReporting = error_reporting(0);
-        $previousDisplayErrors = ini_get('display_errors');
-        ini_set('display_errors', '0');
-
-        $_SERVER['HTTP_HOST'] = request()->getHttpHost();
-        $_SERVER['REQUEST_URI'] = $requestUri;
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTPS'] = request()->secure() ? 'on' : 'off';
-
-        chdir(dirname($absoluteFile));
-
-        ob_start();
-
-        try {
-            require basename($absoluteFile);
-            $output = ob_get_clean();
-        } catch (Throwable $e) {
-            if (ob_get_level() > 0) {
-                ob_end_clean();
-            }
-
-            report($e);
-
-            abort(500, 'Помилка рендеру шаблону: '.$e->getMessage());
-        } finally {
-            chdir($previousCwd);
-            error_reporting($previousErrorReporting);
-            ini_set('display_errors', (string) $previousDisplayErrors);
-
-            foreach ($serverBackup as $key => $value) {
-                if ($value === null) {
-                    unset($_SERVER[$key]);
-                } else {
-                    $_SERVER[$key] = $value;
-                }
-            }
-        }
-
-        return response($output, 200, [
+        return response($result->output(), 200, [
             'Content-Type' => 'text/html; charset=UTF-8',
         ]);
+    }
+
+    private function phpCliBinary(): string
+    {
+        $binary = PHP_BINARY;
+
+        if ($binary !== '' && is_executable($binary) && ! str_contains(basename($binary), 'fpm')) {
+            return $binary;
+        }
+
+        foreach (['/usr/bin/php', '/usr/bin/php8.3', '/usr/bin/php8.2', '/usr/bin/php8.1'] as $candidate) {
+            if (is_executable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return 'php';
     }
 
     private function mimeType(string $extension): string
