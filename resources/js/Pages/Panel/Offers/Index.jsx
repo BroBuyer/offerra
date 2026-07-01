@@ -16,11 +16,18 @@ function statusBadge(status) {
     }
 }
 
-export default function OffersIndex({ offers, canDeploy, showUserColumn = false }) {
+export default function OffersIndex({
+    offers,
+    canDeploy,
+    showUserColumn = false,
+    users = [],
+    selectedUserId = null,
+}) {
     const { flash, errors, auth } = usePage().props;
     const [geo, setGeo] = useState('');
     const [lang, setLang] = useState('');
     const [indexing, setIndexing] = useState('');
+    const [userId, setUserId] = useState(selectedUserId ? String(selectedUserId) : '');
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
 
@@ -42,10 +49,20 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
     const filtered = offers.filter((offer) => {
         if (geo && offer.geo !== geo) return false;
         if (lang && offer.lang !== lang) return false;
+        if (userId && String(offer.user_id) !== userId) return false;
         if (indexing === 'yes' && !offer.submitted_for_indexing) return false;
         if (indexing === 'no' && offer.submitted_for_indexing) return false;
         return true;
     });
+
+    const changeUserFilter = (nextUserId) => {
+        setUserId(nextUserId);
+        router.get(
+            route('offers.index', nextUserId ? { user: nextUserId } : {}),
+            {},
+            { preserveState: true, replace: true },
+        );
+    };
 
     const deployOffer = (offer) => {
         setDeployingId(offer.id);
@@ -64,11 +81,11 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
     };
 
     const canDeployOffer = (offer) => {
-        if (!canDeploy) {
-            return false;
+        if (showUserColumn) {
+            return offer.deploy_ready;
         }
 
-        return canManageOffer(offer);
+        return canDeploy;
     };
 
     const toggleIndexing = (offer, checked) => {
@@ -131,6 +148,20 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
                         </option>
                     ))}
                 </select>
+                {showUserColumn && users.length > 0 && (
+                    <select
+                        aria-label="Користувач"
+                        value={userId}
+                        onChange={(e) => changeUserFilter(e.target.value)}
+                    >
+                        <option value="">Усі користувачі</option>
+                        {users.map((user) => (
+                            <option key={user.id} value={user.id}>
+                                {user.name ?? user.email}
+                            </option>
+                        ))}
+                    </select>
+                )}
                 <select
                     aria-label="Індексація"
                     value={indexing}

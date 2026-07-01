@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateSettingsRequest;
+use App\Models\User;
 use App\Models\UserSetting;
 use App\Services\DeployConnection;
 use App\Support\SecretValue;
@@ -15,18 +16,32 @@ class SettingsController extends Controller
 {
     public function index(): Response
     {
-        $settings = auth()->user()->settings;
+        $authUser = auth()->user();
+        $targetUser = $this->resolveSettingsUser($authUser);
+        $settings = $targetUser->settings;
 
         return Inertia::render('Panel/Settings/Index', [
             'settings' => $settings
                 ? $settings->toEditArray()
                 : (new UserSetting)->toEditArray(),
+            'settingsUser' => [
+                'id' => $targetUser->id,
+                'name' => $targetUser->name,
+                'email' => $targetUser->email,
+                'is_self' => $targetUser->id === $authUser->id,
+            ],
+            'users' => $authUser->isAdmin()
+                ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
+                : [],
         ]);
     }
 
     public function update(UpdateSettingsRequest $request): RedirectResponse
     {
-        $settings = $request->user()->settings()->firstOrCreate([]);
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+
+        $settings = $targetUser->settings()->firstOrCreate([]);
         $data = $request->validated();
 
         $settings->fill([
@@ -34,6 +49,7 @@ class SettingsController extends Controller
             'keitaro_group_id' => $data['keitaro_group'] ?? $settings->keitaro_group_id ?? '51',
             'affiliate_tag' => $data['affiliate_tag'] ?? $settings->affiliate_tag ?? 'BRO',
             'tg_chat_id' => $data['tg_chat_id'] ?? $settings->tg_chat_id,
+            'tg_group_chat_id' => $data['tg_group_chat_id'] ?? $settings->tg_group_chat_id,
             'deploy_panel_name' => $data['deploy_panel_name'] ?? $settings->deploy_panel_name ?? 'Hestia',
             'deploy_host' => $data['deploy_host'] ?? $settings->deploy_host,
             'deploy_port' => $data['deploy_port'] ?? $settings->deploy_port ?? 22,
@@ -49,14 +65,20 @@ class SettingsController extends Controller
 
         $settings->save();
 
-        return redirect()
-            ->route('settings.index')
-            ->with('success', 'Налаштування збережено');
+        $redirect = redirect()->route('settings.index');
+
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        return $redirect->with('success', 'Налаштування збережено');
     }
 
     public function testDeploy(UpdateSettingsRequest $request, DeployConnection $deploy): JsonResponse
     {
-        $settings = $request->user()->settings;
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+        $settings = $targetUser->settings;
         $data = $request->validated();
 
         $password = $data['deploy_password'] ?? null;
@@ -81,6 +103,19 @@ class SettingsController extends Controller
         ], $data['test_domain'] ?? 'reserve-safegrove-ie.com');
 
         return response()->json($result);
+    }
+
+    private function resolveSettingsUser(User $authUser, ?int $userId = null): User
+    {
+        if ($authUser->isAdmin()) {
+            $selectedId = $userId ?? request()->integer('user');
+
+            if ($selectedId > 0) {
+                return User::query()->findOrFail($selectedId);
+            }
+        }
+
+        return $authUser;
     }
 
     private function mergeSecret(UserSetting $settings, string $field, ?string $value): void

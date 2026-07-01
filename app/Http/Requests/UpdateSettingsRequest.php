@@ -2,13 +2,28 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSettingsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if (! $this->filled('user_id')) {
+            return true;
+        }
+
+        if (! $user->isAdmin()) {
+            return false;
+        }
+
+        return User::query()->whereKey($this->integer('user_id'))->exists();
     }
 
     /**
@@ -17,6 +32,7 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'keitaro_url' => ['nullable', 'url', 'max:255'],
             'keitaro_api_key' => ['nullable', 'string', 'max:255'],
             'keitaro_group' => ['nullable', 'string', 'max:20'],
@@ -24,6 +40,7 @@ class UpdateSettingsRequest extends FormRequest
             'crm_api_key' => ['nullable', 'string', 'max:255'],
             'tg_bot_token' => ['nullable', 'string', 'max:255'],
             'tg_chat_id' => ['nullable', 'string', 'max:50'],
+            'tg_group_chat_id' => ['nullable', 'string', 'max:50'],
             'deploy_panel_name' => ['nullable', 'string', 'max:80'],
             'deploy_host' => ['nullable', 'string', 'max:255'],
             'deploy_port' => ['nullable', 'integer', 'min:1', 'max:65535'],

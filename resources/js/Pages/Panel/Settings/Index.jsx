@@ -1,11 +1,12 @@
 import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 
-function formFromSettings(settings) {
+function formFromSettings(settings, userId = null) {
     return {
+        user_id: userId ?? '',
         keitaro_url: settings.keitaro_url ?? '',
         keitaro_api_key: settings.keitaro_api_key ?? '',
         keitaro_group: settings.keitaro_group ?? '51',
@@ -13,6 +14,7 @@ function formFromSettings(settings) {
         crm_api_key: settings.crm_api_key ?? '',
         tg_bot_token: settings.tg_bot_token ?? '',
         tg_chat_id: settings.tg_chat_id ?? '',
+        tg_group_chat_id: settings.tg_group_chat_id ?? '',
         deploy_panel_name: settings.deploy_panel_name ?? 'Hestia',
         deploy_host: settings.deploy_host ?? '',
         deploy_port: settings.deploy_port ?? 22,
@@ -24,15 +26,25 @@ function formFromSettings(settings) {
     };
 }
 
-export default function SettingsIndex({ settings }) {
+export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [deployTest, setDeployTest] = useState(null);
     const [testingDeploy, setTestingDeploy] = useState(false);
 
-    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm(formFromSettings(settings));
+    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm(
+        formFromSettings(settings, settingsUser.id),
+    );
 
     const syncFromSettings = (nextSettings) => {
-        const next = formFromSettings(nextSettings);
+        const next = formFromSettings(nextSettings, settingsUser.id);
         Object.entries(next).forEach(([key, value]) => setData(key, value));
+    };
+
+    const changeSettingsUser = (userId) => {
+        router.get(
+            route('settings.index', userId ? { user: userId } : {}),
+            {},
+            { preserveState: false },
+        );
     };
 
     const submit = (e) => {
@@ -64,8 +76,33 @@ export default function SettingsIndex({ settings }) {
         <PanelLayout title="Налаштування">
             <header className="page-header">
                 <h2>Налаштування профілю</h2>
-                <p>Загальні параметри для всіх офферів — один раз, далі підставляються автоматично</p>
+                <p>
+                    {settingsUser.is_self
+                        ? 'Загальні параметри для всіх ваших офферів — один раз, далі підставляються автоматично'
+                        : `Налаштування користувача ${settingsUser.name ?? settingsUser.email}`}
+                </p>
             </header>
+
+            {users.length > 0 && (
+                <div className="filter-bar" style={{ marginBottom: '1rem' }}>
+                    <select
+                        aria-label="Користувач"
+                        value={String(settingsUser.id)}
+                        onChange={(e) => changeSettingsUser(e.target.value)}
+                    >
+                        {users.map((user) => (
+                            <option key={user.id} value={user.id}>
+                                {user.name ?? user.email}
+                            </option>
+                        ))}
+                    </select>
+                    {!settingsUser.is_self && (
+                        <Link href={route('offers.index', { user: settingsUser.id })} className="btn btn-ghost">
+                            Оффери користувача
+                        </Link>
+                    )}
+                </div>
+            )}
 
             <form onSubmit={submit}>
                 <section className="card">
@@ -140,13 +177,27 @@ export default function SettingsIndex({ settings }) {
                         />
                     </div>
                     <div className="field">
-                        <label htmlFor="tg-chat">Chat ID</label>
+                        <label htmlFor="tg-chat">Chat ID (особистий)</label>
                         <input
                             type="text"
                             id="tg-chat"
                             value={data.tg_chat_id}
                             onChange={(e) => setData('tg_chat_id', e.target.value)}
+                            placeholder="123456789"
                         />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="tg-group-chat">Chat ID групи (опційно)</label>
+                        <input
+                            type="text"
+                            id="tg-group-chat"
+                            value={data.tg_group_chat_id}
+                            onChange={(e) => setData('tg_group_chat_id', e.target.value)}
+                            placeholder="-1001234567890"
+                        />
+                        <p className="field-hint">
+                            Додайте бота в групу — ліди дублюватимуться туди. Якщо порожньо, лише в особистий чат.
+                        </p>
                     </div>
                 </section>
 

@@ -59,7 +59,9 @@ class DeployService
             );
         }
 
-        $offer->loadMissing('user');
+        $offer->loadMissing('user.settings');
+
+        $this->generator->refreshConfig($offer);
 
         $localPath = $this->generator->ensureLocalFolder($offer);
 

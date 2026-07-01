@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOfferRequest;
 use App\Models\Offer;
+use App\Models\User;
 use App\Services\DeployService;
 use App\Services\OfferGenerator;
 use App\Services\TemplateCatalog;
@@ -26,16 +27,26 @@ class OfferController extends Controller
 
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
+        } elseif (request()->filled('user')) {
+            $query->where('user_id', request()->integer('user'));
         }
 
         $offers = $query
             ->get()
-            ->map(fn (Offer $offer) => $offer->toPanelArray());
+            ->map(fn (Offer $offer) => array_merge($offer->toPanelArray(), [
+                'deploy_ready' => $deploy->settingsReady($offer->user?->settings),
+            ]));
 
         return Inertia::render('Panel/Offers/Index', [
             'offers' => $offers,
             'canDeploy' => app(DeployService::class)->settingsReady($settings),
             'showUserColumn' => $user->isAdmin(),
+            'users' => $user->isAdmin()
+                ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
+                : [],
+            'selectedUserId' => $user->isAdmin() && request()->filled('user')
+                ? request()->integer('user')
+                : null,
         ]);
     }
 
@@ -93,12 +104,16 @@ class OfferController extends Controller
 
     public function deploy(Offer $offer, DeployService $deploy): RedirectResponse
     {
-        if ($offer->user_id !== auth()->id()) {
+        $authUser = auth()->user();
+
+        if ($offer->user_id !== $authUser->id && ! $authUser->isAdmin()) {
             abort(403);
         }
 
+        $offer->loadMissing('user');
+
         try {
-            $deploy->deploy(auth()->user(), $offer);
+            $deploy->deploy($offer->user, $offer);
         } catch (\InvalidArgumentException|\RuntimeException $e) {
             return redirect()
                 ->route('offers.index')

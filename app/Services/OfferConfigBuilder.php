@@ -25,6 +25,7 @@ class OfferConfigBuilder
         $phone = $this->quote(strtolower($offer['phone']));
         $tgToken = $this->quote(SecretValue::normalize($settings->tg_bot_token ?? ''));
         $tgChat = $this->quote($settings->tg_chat_id ?? '');
+        $tgGroupChat = $this->quote($settings->tg_group_chat_id ?? '');
         $keitaroUrl = $this->quote(rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/'));
         $keitaroToken = $this->quote($offer['keitaro_token'] ?? '');
         $keitaroComment = ! empty($offer['keitaro_campaign_id'])
@@ -62,6 +63,7 @@ define('CRM_AFF_SUB11', '');
 // ─── Telegram ───────────────────────────────────────────────────────────────
 define('TG_BOT_TOKEN', {$tgToken});
 define('TG_CHAT_ID', {$tgChat});
+define('TG_GROUP_CHAT_ID', {$tgGroupChat});
 
 // ─── Форма ──────────────────────────────────────────────────────────────────
 define('FORM_PHONE_COUNTRY', {$phone});

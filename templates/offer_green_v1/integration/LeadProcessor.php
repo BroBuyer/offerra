@@ -191,9 +191,45 @@ final class LeadProcessor
     public static function sendTelegram(string $text): bool
     {
         $botToken = (string) TG_BOT_TOKEN;
-        $chatId = (string) TG_CHAT_ID;
 
-        if ($botToken === '' || $chatId === '') {
+        if ($botToken === '') {
+            return false;
+        }
+
+        $sent = false;
+
+        foreach (self::telegramChatIds() as $chatId) {
+            if (self::sendTelegramToChat($botToken, $chatId, $text)) {
+                $sent = true;
+            }
+        }
+
+        return $sent;
+    }
+
+    /** @return list<string> */
+    private static function telegramChatIds(): array
+    {
+        $ids = [];
+
+        $personal = trim((string) TG_CHAT_ID);
+        if ($personal !== '') {
+            $ids[] = $personal;
+        }
+
+        if (defined('TG_GROUP_CHAT_ID')) {
+            $group = trim((string) TG_GROUP_CHAT_ID);
+            if ($group !== '' && ! in_array($group, $ids, true)) {
+                $ids[] = $group;
+            }
+        }
+
+        return $ids;
+    }
+
+    private static function sendTelegramToChat(string $botToken, string $chatId, string $text): bool
+    {
+        if ($chatId === '') {
             return false;
         }
 

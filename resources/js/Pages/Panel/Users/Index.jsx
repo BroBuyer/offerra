@@ -180,13 +180,21 @@ export default function UsersIndex({ users }) {
                                 </td>
                                 <td>
                                     {user.offers_count > 0 ? (
-                                        <Link href={route('offers.index')}>{user.offers_count}</Link>
+                                        <Link href={route('offers.index', { user: user.id })}>
+                                            {user.offers_count}
+                                        </Link>
                                     ) : (
                                         '0'
                                     )}
                                 </td>
                                 <td>{user.created_at ?? '—'}</td>
                                 <td>
+                                    <Link
+                                        href={route('settings.index', { user: user.id })}
+                                        className="btn btn-ghost btn-sm"
+                                    >
+                                        Налаштування
+                                    </Link>
                                     {user.role !== 'admin' && (
                                         <button
                                             type="button"
