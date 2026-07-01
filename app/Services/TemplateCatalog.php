@@ -54,7 +54,7 @@ class TemplateCatalog
                 'description' => $this->libraryDescription($id, $langs),
                 'languages' => $langs,
                 'pages' => 'index, product, offer, faq, contacts, sign, thanks',
-                'preview_url' => route('templates.preview', ['template' => $id]),
+                'preview_url' => route('templates.preview', ['template' => $id]).'/',
                 'active' => true,
             ];
         }

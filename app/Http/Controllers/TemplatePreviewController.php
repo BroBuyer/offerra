@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\TemplateCatalog;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Process;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -13,7 +14,7 @@ class TemplatePreviewController extends Controller
         private readonly TemplateCatalog $catalog,
     ) {}
 
-    public function show(string $template, ?string $path = null): Response|BinaryFileResponse
+    public function show(string $template, ?string $path = null): Response|BinaryFileResponse|RedirectResponse
     {
         if (! in_array($template, $this->catalog->ids(), true)) {
             abort(404);
@@ -27,6 +28,10 @@ class TemplatePreviewController extends Controller
         }
 
         $path = trim((string) $path, '/');
+
+        if ($path === '' && ! str_ends_with(request()->getPathInfo(), '/')) {
+            return redirect('/preview/'.$template.'/', 301);
+        }
 
         if ($path === '') {
             $path = 'index.php';

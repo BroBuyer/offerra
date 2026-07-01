@@ -134,8 +134,8 @@ function offer_preview_base(): ?string
     $uri = (string) ($_SERVER['REQUEST_URI'] ?? '');
     $path = parse_url($uri, PHP_URL_PATH) ?? $uri;
 
-    if (preg_match('#^(/preview/[^/]+/)#', $path, $matches)) {
-        return $matches[1];
+    if (preg_match('#^(/preview/[^/]+)(?:/|$)#', $path, $matches)) {
+        return rtrim($matches[1], '/').'/';
     }
 
     return null;
@@ -147,7 +147,7 @@ function page_url(string $path = ''): string
         $base = rtrim($previewBase, '/');
 
         if ($path === '' || $path === '/') {
-            return $base.'/index.php';
+            return $base.'/';
         }
 
         return $base.'/'.ltrim($path, '/');
@@ -160,7 +160,11 @@ function page_url(string $path = ''): string
 
 function asset(string $path): string
 {
-    return './' . ltrim($path, '/');
+    if (offer_is_preview() && ($previewBase = offer_preview_base())) {
+        return rtrim($previewBase, '/').'/'.ltrim($path, '/');
+    }
+
+    return './'.ltrim($path, '/');
 }
 
 function e(string $value): string
