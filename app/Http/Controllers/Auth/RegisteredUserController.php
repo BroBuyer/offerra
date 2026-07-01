@@ -21,6 +21,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
+        $this->ensureRegistrationEnabled();
+
         return Inertia::render('Auth/Register');
     }
 
@@ -31,6 +33,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->ensureRegistrationEnabled();
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
@@ -48,5 +52,12 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+
+    private function ensureRegistrationEnabled(): void
+    {
+        if (! config('offerra.allow_registration')) {
+            abort(404);
+        }
     }
 }

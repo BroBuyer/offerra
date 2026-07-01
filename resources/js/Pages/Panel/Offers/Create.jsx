@@ -146,7 +146,7 @@ export default function OffersCreate({
         <PanelLayout title="Створити оффер">
             <header className="page-header">
                 <h2>Створити оффер</h2>
-                <p>Копія шаблону з templates/ → offers/ + config.php + manifest.json</p>
+                <p>Копія шаблону з templates/ → тимчасово offers/ до деплою + config.php</p>
             </header>
 
             {!settingsReady && (

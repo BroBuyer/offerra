@@ -66,11 +66,7 @@ class DeployService
             );
         }
 
-        $localPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
-
-        if (! File::isDirectory($localPath)) {
-            throw new RuntimeException("Локальна папка не знайдена: {$offer->folder}");
-        }
+        $localPath = $this->generator->ensureLocalFolder($offer);
 
         $this->generator->migrateLegacyAssets($localPath);
 
@@ -118,8 +114,6 @@ class DeployService
 
             Log::info('Deploy upload finished', ['offer' => $offer->id, 'files' => $uploaded]);
 
-            $this->updateManifest($localPath, $offer, $settings, $remotePath);
-
             $offer->update([
                 'status' => 'deployed',
                 'deploy_panel_name' => $settings->deploy_panel_name ?? 'Hestia',
@@ -127,6 +121,10 @@ class DeployService
                 'deployed_at' => now(),
                 'deploy_error' => null,
             ]);
+
+            if (config('offerra.purge_local_after_deploy', true)) {
+                $this->purgeLocalFolder($localPath, $offer);
+            }
 
             return $offer->fresh();
         } catch (\Throwable $e) {
@@ -273,27 +271,18 @@ class DeployService
         return $removed;
     }
 
-    private function updateManifest(string $localPath, Offer $offer, UserSetting $settings, string $remotePath): void
+    private function purgeLocalFolder(string $localPath, Offer $offer): void
     {
-        $manifestPath = $localPath.'/manifest.json';
-        $manifest = [];
-
-        if (File::exists($manifestPath)) {
-            $decoded = json_decode(File::get($manifestPath), true);
-            $manifest = is_array($decoded) ? $decoded : [];
+        if (! File::isDirectory($localPath)) {
+            return;
         }
 
-        $manifest = array_merge($manifest, [
-            'status' => 'deployed',
-            'deploy_panel' => $settings->deploy_panel_name ?? 'Hestia',
-            'deploy_host' => $settings->deploy_host,
-            'remote_path' => $remotePath,
-            'deployed_at' => now()->toIso8601String(),
-        ]);
+        File::deleteDirectory($localPath);
 
-        File::put(
-            $manifestPath,
-            json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
-        );
+        Log::info('Deploy purged local offer folder', [
+            'offer' => $offer->id,
+            'folder' => $offer->folder,
+            'path' => $localPath,
+        ]);
     }
 }

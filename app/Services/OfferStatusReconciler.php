@@ -71,6 +71,11 @@ class OfferStatusReconciler
             $remotePath = $manifest['remote_path'] ?? $remotePath;
         }
 
+        if (! $onServer && $offer->status === 'deployed' && filled($offer->remote_path)) {
+            $onServer = true;
+            $remotePath = $offer->remote_path;
+        }
+
         if (! $onServer && $liveHttp) {
             $onServer = true;
         }
@@ -118,7 +123,10 @@ class OfferStatusReconciler
 
             if ($updates !== []) {
                 $offer->update($updates);
-                $this->updateManifest($offer->folder, $offer->fresh(), $settings, $remotePath, $onServer);
+
+                if (File::isDirectory(rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder)) {
+                    $this->updateManifest($offer->folder, $offer->fresh(), $settings, $remotePath, $onServer);
+                }
             }
         }
 

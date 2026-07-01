@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'allow_registration' => env('OFFERRA_ALLOW_REGISTRATION', false),
+    'purge_local_after_deploy' => env('OFFERRA_PURGE_LOCAL_AFTER_DEPLOY', true),
+
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),
     'offers_path' => base_path(env('OFFERS_PATH', 'offers')),
 
@@ -48,7 +51,7 @@ return [
         ['code' => 'FI', 'name' => 'Фінляндія', 'lang' => 'en', 'phone' => 'fi'],
         ['code' => 'ZA', 'name' => 'ПАР', 'lang' => 'en', 'phone' => 'za'],
         ['code' => 'AR', 'name' => 'Аргентина', 'lang' => 'es', 'phone' => 'ar'],
-        ['code' => 'BR', 'name' => 'Бразилія', 'lang' => 'es', 'phone' => 'br'],
+        ['code' => 'BR', 'name' => 'Бразилія', 'lang' => 'pt', 'phone' => 'br'],
         ['code' => 'MX', 'name' => 'Мексика', 'lang' => 'es', 'phone' => 'mx'],
         ['code' => 'CL', 'name' => 'Чилі', 'lang' => 'es', 'phone' => 'cl'],
         ['code' => 'CO', 'name' => 'Колумбія', 'lang' => 'es', 'phone' => 'co'],

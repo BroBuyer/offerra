@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Offer;
-use App\Models\UserSetting;
 use App\Services\KeitaroClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -16,22 +15,34 @@ class SyncKeitaroCampaigns extends Command
 
     public function handle(KeitaroClient $keitaro): int
     {
-        $settings = UserSetting::query()->first();
-
-        if (! $settings?->keitaro_api_key) {
-            $this->error('Keitaro API key не налаштовано');
-
-            return self::FAILURE;
-        }
-
-        $campaigns = $keitaro->listCampaigns($settings);
-        $this->info('Кампаній у Keitaro: '.count($campaigns));
-
         $dryRun = (bool) $this->option('dry-run');
         $rows = [];
         $updated = 0;
+        $campaignsByUser = [];
 
-        foreach (Offer::query()->orderBy('id')->get() as $offer) {
+        foreach (Offer::query()->with('user.settings')->orderBy('id')->get() as $offer) {
+            $settings = $offer->user?->settings;
+
+            if (! $settings?->keitaro_api_key) {
+                $rows[] = [
+                    $offer->id,
+                    $offer->domain,
+                    $offer->keitaro_campaign_id ?? '—',
+                    '—',
+                    '—',
+                    'немає Keitaro API key',
+                ];
+
+                continue;
+            }
+
+            $userId = $offer->user_id;
+
+            if (! isset($campaignsByUser[$userId])) {
+                $campaignsByUser[$userId] = $keitaro->listCampaigns($settings);
+            }
+
+            $campaigns = $campaignsByUser[$userId];
             $match = $this->findCampaign($campaigns, $offer->domain, $offer->brand);
             $current = $offer->keitaro_campaign_id;
             $foundId = $match['id'] ?? null;

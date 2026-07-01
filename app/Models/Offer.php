@@ -16,6 +16,8 @@ class Offer extends Model
         'geo',
         'lang',
         'phone',
+        'min_deposit',
+        'currency',
         'template',
         'status',
         'deploy_panel_name',

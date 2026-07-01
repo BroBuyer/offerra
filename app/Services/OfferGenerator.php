@@ -68,6 +68,8 @@ class OfferGenerator
                 'geo' => strtoupper($input['geo']),
                 'lang' => strtolower($input['lang']),
                 'phone' => strtolower($input['phone']),
+                'min_deposit' => (string) $input['min_deposit'],
+                'currency' => strtoupper((string) $input['currency']),
                 'template' => $template,
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
@@ -90,6 +92,8 @@ class OfferGenerator
                 'geo' => strtoupper($input['geo']),
                 'lang' => strtolower($input['lang']),
                 'phone' => strtolower($input['phone']),
+                'min_deposit' => (string) $input['min_deposit'],
+                'currency' => strtoupper((string) $input['currency']),
                 'template' => $template,
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
@@ -144,6 +148,8 @@ class OfferGenerator
                     'geo' => strtoupper($manifest['geo'] ?? ''),
                     'lang' => strtolower($manifest['lang'] ?? ''),
                     'phone' => strtolower($manifest['phone'] ?? ''),
+                    'min_deposit' => (string) ($manifest['min_deposit'] ?? '250'),
+                    'currency' => strtoupper((string) ($manifest['currency'] ?? 'EUR')),
                     'template' => $manifest['template'] ?? 'default',
                     'status' => $manifest['status'] ?? 'generated',
                     'keitaro_campaign_id' => $manifest['keitaro_campaign_id'] ?? null,
@@ -189,6 +195,86 @@ class OfferGenerator
         return $tag !== '' ? $tag : 'BRO';
     }
 
+    public function ensureLocalFolder(Offer $offer): string
+    {
+        $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
+
+        if (File::isDirectory($targetPath)) {
+            return $targetPath;
+        }
+
+        return $this->rebuildLocalFolder($offer);
+    }
+
+    public function rebuildLocalFolder(Offer $offer): string
+    {
+        $settings = $offer->user?->settings;
+
+        if (! $settings || ! $settings->crm_api_key || ! $settings->tg_bot_token) {
+            throw new InvalidArgumentException(
+                'Налаштування користувача не знайдено або не заповнені CRM/Telegram ключі.',
+            );
+        }
+
+        $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $offer->lang);
+        $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
+
+        if (File::isDirectory($targetPath)) {
+            File::deleteDirectory($targetPath);
+        }
+
+        File::copyDirectory($templatePath, $targetPath);
+
+        $keitaroToken = '';
+
+        if ($offer->keitaro_campaign_id) {
+            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
+            $keitaroToken = $campaign['token'] ?? '';
+        }
+
+        $input = [
+            'brand' => $offer->brand,
+            'domain' => $offer->domain,
+            'min_deposit' => $offer->min_deposit ?: '250',
+            'currency' => $offer->currency ?: 'EUR',
+            'geo' => $offer->geo,
+            'lang' => $offer->lang,
+            'phone' => $offer->phone ?: $offer->lang,
+            'keitaro_token' => $keitaroToken,
+            'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+        ];
+
+        File::put($targetPath.'/includes/config.php', $this->configBuilder->build($input, $settings));
+
+        $manifest = [
+            'brand' => $offer->brand,
+            'domain' => $offer->domain,
+            'geo' => strtoupper($offer->geo),
+            'lang' => strtolower($offer->lang),
+            'phone' => strtolower($offer->phone ?? $offer->lang),
+            'min_deposit' => $offer->min_deposit ?: '250',
+            'currency' => strtoupper($offer->currency ?: 'EUR'),
+            'template' => $offer->template,
+            'status' => $offer->status,
+            'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+            'keitaro_alias' => $offer->keitaro_alias,
+            'owner_id' => $offer->user_id,
+            'folder' => $offer->folder,
+            'deploy_panel' => $offer->deploy_panel_name,
+            'remote_path' => $offer->remote_path,
+            'deployed_at' => $offer->deployed_at?->toIso8601String(),
+        ];
+
+        File::put(
+            $targetPath.'/manifest.json',
+            json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
+        );
+
+        $this->migrateLegacyAssets($targetPath);
+
+        return $targetPath;
+    }
+
     public function refreshConfig(Offer $offer): void
     {
         $settings = $offer->user?->settings;
@@ -197,28 +283,32 @@ class OfferGenerator
             throw new InvalidArgumentException('Налаштування користувача не знайдено.');
         }
 
-        $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
+        $targetPath = $this->ensureLocalFolder($offer);
         $configPath = $targetPath.'/includes/config.php';
 
-        if (! File::isDirectory($targetPath) || ! File::exists($configPath)) {
-            throw new RuntimeException("Папка оффера не знайдена: {$offer->folder}");
+        $keitaroToken = '';
+
+        if ($offer->keitaro_campaign_id) {
+            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
+            $keitaroToken = $campaign['token'] ?? '';
         }
 
-        $keitaroToken = '';
-        $config = File::get($configPath);
+        if ($keitaroToken === '' && File::exists($configPath)) {
+            $config = File::get($configPath);
 
-        if (preg_match("/define\('KEITARO_CAMPAIGN_TOKEN',\s*'([^']*)'\)/", $config, $matches)) {
-            $keitaroToken = $matches[1];
+            if (preg_match("/define\('KEITARO_CAMPAIGN_TOKEN',\s*'([^']*)'\)/", $config, $matches)) {
+                $keitaroToken = $matches[1];
+            }
         }
 
         $input = [
             'brand' => $offer->brand,
             'domain' => $offer->domain,
-            'min_deposit' => $this->readConfigConstant($config, 'MIN_DEPOSIT') ?: '250',
-            'currency' => $this->readConfigConstant($config, 'CURRENCY') ?: 'EUR',
+            'min_deposit' => $offer->min_deposit ?: '250',
+            'currency' => $offer->currency ?: 'EUR',
             'geo' => $offer->geo,
             'lang' => $offer->lang,
-            'phone' => $offer->phone,
+            'phone' => $offer->phone ?: $offer->lang,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
         ];
