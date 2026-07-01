@@ -123,6 +123,8 @@ class DeployService
                 throw new RuntimeException('index.php не знайдено на сервері після деплою.');
             }
 
+            $this->verifyRequiredRemoteFiles($filesystem, $localPath, $remotePath);
+
             try {
                 $this->connection->chmodPublicRecursive($config, $remotePath, self::DEPLOY_TIMEOUT);
             } catch (\Throwable $chmodError) {
@@ -221,6 +223,30 @@ class DeployService
         }
 
         return $count;
+    }
+
+    private function verifyRequiredRemoteFiles(Filesystem $filesystem, string $localPath, string $remotePath): void
+    {
+        $missing = [];
+
+        foreach ($this->generator->requiredRelativePaths() as $relativePath) {
+            $localFile = $localPath.DIRECTORY_SEPARATOR.$relativePath;
+            $remoteFile = rtrim($remotePath, '/').'/'.$relativePath;
+
+            if (! File::isFile($localFile)) {
+                throw new RuntimeException("Локально відсутній обов'язковий файл: {$relativePath}");
+            }
+
+            if (! $filesystem->fileExists($remoteFile)) {
+                $missing[] = $relativePath;
+            }
+        }
+
+        if ($missing !== []) {
+            throw new RuntimeException(
+                'Після деплою на сервері бракує файлів: '.implode(', ', $missing),
+            );
+        }
     }
 
     private function ensureRemoteDirectory(Filesystem $filesystem, string $remoteDir): void

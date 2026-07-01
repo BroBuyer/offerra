@@ -199,11 +199,47 @@ class OfferGenerator
     {
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
 
-        if (File::isDirectory($targetPath)) {
+        if (File::isDirectory($targetPath) && $this->folderIsComplete($targetPath)) {
             return $targetPath;
         }
 
         return $this->rebuildLocalFolder($offer);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function requiredRelativePaths(): array
+    {
+        return [
+            'index.php',
+            'contacts.php',
+            'product.php',
+            'offer.php',
+            'faq.php',
+            'sign.php',
+            'privacy.php',
+            'conditions.php',
+            'includes/footer.php',
+            'includes/head.php',
+            'includes/form.php',
+            'includes/config.php',
+            'integration/validation.js',
+            'integration/send.php',
+            'integration/default-integration.css',
+            'static/css/main.css',
+        ];
+    }
+
+    private function folderIsComplete(string $targetPath): bool
+    {
+        foreach ($this->requiredRelativePaths() as $relativePath) {
+            if (! File::isFile($targetPath.DIRECTORY_SEPARATOR.$relativePath)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function rebuildLocalFolder(Offer $offer): string
