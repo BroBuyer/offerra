@@ -123,6 +123,20 @@ function buildActiveFilterChips(filters, users) {
     return chips;
 }
 
+function resolveOffersPagination(offers, filters = {}) {
+    const pagination = offers?.meta ?? offers ?? {};
+
+    return {
+        rows: offers?.data ?? [],
+        total: Number(pagination.total ?? 0),
+        from: Number(pagination.from ?? 0),
+        to: Number(pagination.to ?? 0),
+        currentPage: Number(pagination.current_page ?? 1),
+        lastPage: Number(pagination.last_page ?? 1),
+        perPage: Number(pagination.per_page ?? filters.per_page ?? 30),
+    };
+}
+
 export default function OffersIndex({
     offers,
     filters = {},
@@ -138,8 +152,9 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
 
-    const rows = offers?.data ?? [];
-    const meta = offers?.meta ?? {};
+    const pagination = resolveOffersPagination(offers, filters);
+    const rows = pagination.rows;
+    const { total, from: rangeFrom, to: rangeTo, currentPage, lastPage, perPage } = pagination;
     const geos = filterOptions.geos ?? [];
     const langs = filterOptions.langs ?? [];
 
@@ -221,12 +236,6 @@ export default function OffersIndex({
     );
 
     const hasActiveFilters = activeFilterChips.length > 0;
-
-    const total = meta.total ?? 0;
-    const rangeFrom = total === 0 ? 0 : (meta.from ?? 0);
-    const rangeTo = total === 0 ? 0 : (meta.to ?? 0);
-    const currentPage = meta.current_page ?? 1;
-    const lastPage = meta.last_page ?? 1;
 
     return (
         <PanelLayout title="Оффери" fullWidth>
@@ -379,7 +388,7 @@ export default function OffersIndex({
                     <span className="filter-bar__count">
                         {total === 0
                             ? 'Офферів не знайдено'
-                            : `Показано ${rangeFrom}–${rangeTo} з ${total}`}
+                            : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
                     </span>
                 )}
                 <Link
@@ -394,6 +403,7 @@ export default function OffersIndex({
                 <table>
                     <thead>
                         <tr>
+                            <th className="col-num" title={`Всього: ${total}`}>#</th>
                             {showUserColumn && <th>Користувач</th>}
                             <th>Бренд</th>
                             <th>Домен</th>
@@ -409,11 +419,13 @@ export default function OffersIndex({
                         </tr>
                     </thead>
                     <tbody>
-                        {rows.map((offer) => {
+                        {rows.map((offer, index) => {
                             const isDeploying = offer.status === 'deploying' || deployingId === offer.id;
+                            const rowNumber = (currentPage - 1) * perPage + index + 1;
 
                             return (
                                 <tr key={offer.folder}>
+                                    <td className="col-num">{rowNumber}</td>
                                     {showUserColumn && (
                                         <td>
                                             <span className="offer-user" title={offer.user_email}>
@@ -506,7 +518,7 @@ export default function OffersIndex({
                         })}
                         {rows.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 12 : 11} className="field-hint">
+                                <td colSpan={showUserColumn ? 13 : 12} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>

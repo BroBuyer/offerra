@@ -899,6 +899,19 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   margin-left: auto;
 }
 
+.col-num {
+  width: 2.5rem;
+  text-align: right;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+th.col-num,
+td.col-num {
+  padding-right: 0.5rem;
+}
+
 .pagination-bar {
   display: flex;
   align-items: center;
