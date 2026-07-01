@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Visibility;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -20,12 +19,6 @@ class DeployService
 
     /** @var array<string, true> */
     private array $knownRemoteDirs = [];
-
-    /** @var array<string, string> */
-    private const UPLOAD_CONFIG = [
-        'visibility' => Visibility::PUBLIC,
-        'directory_visibility' => Visibility::PUBLIC,
-    ];
 
     /** @var list<string> */
     private const SKIP_FILES = [
@@ -217,7 +210,6 @@ class DeployService
             $filesystem->write(
                 $remote,
                 (string) file_get_contents($file->getPathname()),
-                self::UPLOAD_CONFIG,
             );
             $count++;
         }
@@ -262,7 +254,7 @@ class DeployService
 
         if (! $filesystem->directoryExists($remoteDir)) {
             try {
-                $filesystem->createDirectory($remoteDir, self::UPLOAD_CONFIG);
+                $filesystem->createDirectory($remoteDir);
             } catch (\Throwable $e) {
                 if (! $filesystem->directoryExists($remoteDir)) {
                     throw $e;

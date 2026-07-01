@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/config.php';
 
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;

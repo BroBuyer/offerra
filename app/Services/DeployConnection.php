@@ -7,7 +7,6 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\PhpseclibV3\SftpAdapter;
 use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
-use League\Flysystem\Visibility;
 use RuntimeException;
 
 class DeployConnection
@@ -172,10 +171,7 @@ class DeployConnection
             ]),
         );
 
-        return new Filesystem($adapter, [
-            'visibility' => Visibility::PUBLIC,
-            'directory_visibility' => Visibility::PUBLIC,
-        ]);
+        return new Filesystem($adapter);
     }
 
     /**

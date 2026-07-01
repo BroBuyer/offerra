@@ -224,6 +224,8 @@ class OfferGenerator
             'includes/head.php',
             'includes/form.php',
             'includes/config.php',
+            'includes/helpers.php',
+            'includes/schema.php',
             'integration/validation.js',
             'integration/send.php',
             'integration/default-integration.css',
