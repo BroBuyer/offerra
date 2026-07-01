@@ -66,19 +66,9 @@ class TemplateCatalog
      */
     public function languagesFor(string $templateId): array
     {
-        $codes = array_keys($this->templateLanguageSources($templateId));
-
-        foreach (config('offerra.languages', []) as $language) {
-            $code = strtolower((string) ($language['code'] ?? ''));
-
-            if ($code !== '' && ! in_array($code, $codes, true)) {
-                $codes[] = $code;
-            }
-        }
-
         $languages = [];
 
-        foreach ($codes as $code) {
+        foreach (array_keys($this->templateLanguageSources($templateId)) as $code) {
             $languages[] = [
                 'code' => $code,
                 'name' => $this->languageLabel($code),
