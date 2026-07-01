@@ -47,6 +47,10 @@ class OfferController extends Controller
             'selectedUserId' => $user->isAdmin() && request()->filled('user')
                 ? request()->integer('user')
                 : null,
+            'dateFilters' => [
+                'today' => now()->toDateString(),
+                'yesterday' => now()->subDay()->toDateString(),
+            ],
         ]);
     }
 

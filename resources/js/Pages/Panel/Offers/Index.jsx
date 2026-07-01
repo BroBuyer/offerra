@@ -16,17 +16,29 @@ function statusBadge(status) {
     }
 }
 
+function formatCreatedDate(isoDate) {
+    if (!isoDate) {
+        return '—';
+    }
+
+    const [year, month, day] = isoDate.split('-');
+
+    return `${day}.${month}.${year}`;
+}
+
 export default function OffersIndex({
     offers,
     canDeploy,
     showUserColumn = false,
     users = [],
     selectedUserId = null,
+    dateFilters = {},
 }) {
     const { flash, errors, auth } = usePage().props;
     const [geo, setGeo] = useState('');
     const [lang, setLang] = useState('');
     const [indexing, setIndexing] = useState('');
+    const [created, setCreated] = useState('');
     const [userId, setUserId] = useState(selectedUserId ? String(selectedUserId) : '');
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
@@ -46,12 +58,28 @@ export default function OffersIndex({
         [offers],
     );
 
+    const createdCounts = useMemo(() => {
+        const today = dateFilters.today;
+        const yesterday = dateFilters.yesterday;
+
+        if (!today || !yesterday) {
+            return { today: 0, yesterday: 0 };
+        }
+
+        return {
+            today: offers.filter((offer) => offer.date === today).length,
+            yesterday: offers.filter((offer) => offer.date === yesterday).length,
+        };
+    }, [offers, dateFilters]);
+
     const filtered = offers.filter((offer) => {
         if (geo && offer.geo !== geo) return false;
         if (lang && offer.lang !== lang) return false;
         if (userId && String(offer.user_id) !== userId) return false;
         if (indexing === 'yes' && !offer.submitted_for_indexing) return false;
         if (indexing === 'no' && offer.submitted_for_indexing) return false;
+        if (created === 'today' && offer.date !== dateFilters.today) return false;
+        if (created === 'yesterday' && offer.date !== dateFilters.yesterday) return false;
         return true;
     });
 
@@ -171,6 +199,19 @@ export default function OffersIndex({
                     <option value="no">Не подано</option>
                     <option value="yes">Подано</option>
                 </select>
+                <select
+                    aria-label="Дата створення"
+                    value={created}
+                    onChange={(e) => setCreated(e.target.value)}
+                >
+                    <option value="">Усі дати</option>
+                    <option value="today">
+                        Сьогодні ({createdCounts.today})
+                    </option>
+                    <option value="yesterday">
+                        Вчора ({createdCounts.yesterday})
+                    </option>
+                </select>
                 <Link
                     href={route('offers.create', { fresh: 1 })}
                     className="btn btn-primary"
@@ -192,6 +233,7 @@ export default function OffersIndex({
                             <th>Шаблон</th>
                             <th>Панель</th>
                             <th>Keitaro</th>
+                            <th>Створено</th>
                             <th>Статус</th>
                             <th>Індексація</th>
                             <th />
@@ -226,6 +268,9 @@ export default function OffersIndex({
                                     <td>{offer.deploy_panel ?? '—'}</td>
                                     <td>
                                         {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
+                                    </td>
+                                    <td title={offer.date ?? undefined}>
+                                        {formatCreatedDate(offer.date)}
                                     </td>
                                     <td>
                                         {statusBadge(offer.status)}
@@ -292,7 +337,7 @@ export default function OffersIndex({
                         })}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 11 : 10} className="field-hint">
+                                <td colSpan={showUserColumn ? 12 : 11} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>
