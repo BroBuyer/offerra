@@ -26,6 +26,55 @@ function formatCreatedDate(isoDate) {
     return `${day}.${month}.${year}`;
 }
 
+function isDateInRange(isoDate, from, to) {
+    if (!isoDate) {
+        return false;
+    }
+
+    if (from && isoDate < from) {
+        return false;
+    }
+
+    if (to && isoDate > to) {
+        return false;
+    }
+
+    return true;
+}
+
+function matchesCreatedFilter(offer, created, dateFilters, customFrom, customTo) {
+    if (!created) {
+        return true;
+    }
+
+    const { date } = offer;
+
+    if (!date) {
+        return false;
+    }
+
+    const { today, yesterday, weekStart, monthStart } = dateFilters;
+
+    switch (created) {
+        case 'today':
+            return date === today;
+        case 'yesterday':
+            return date === yesterday;
+        case 'week':
+            return weekStart && today ? date >= weekStart && date <= today : false;
+        case 'month':
+            return monthStart && today ? date >= monthStart && date <= today : false;
+        case 'custom':
+            return isDateInRange(date, customFrom || null, customTo || null);
+        default:
+            return true;
+    }
+}
+
+function countByCreatedPreset(offers, preset, dateFilters) {
+    return offers.filter((offer) => matchesCreatedFilter(offer, preset, dateFilters, '', '')).length;
+}
+
 export default function OffersIndex({
     offers,
     canDeploy,
@@ -39,6 +88,8 @@ export default function OffersIndex({
     const [lang, setLang] = useState('');
     const [indexing, setIndexing] = useState('');
     const [created, setCreated] = useState('');
+    const [createdFrom, setCreatedFrom] = useState('');
+    const [createdTo, setCreatedTo] = useState('');
     const [userId, setUserId] = useState(selectedUserId ? String(selectedUserId) : '');
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
@@ -59,16 +110,15 @@ export default function OffersIndex({
     );
 
     const createdCounts = useMemo(() => {
-        const today = dateFilters.today;
-        const yesterday = dateFilters.yesterday;
-
-        if (!today || !yesterday) {
-            return { today: 0, yesterday: 0 };
+        if (!dateFilters.today) {
+            return { today: 0, yesterday: 0, week: 0, month: 0 };
         }
 
         return {
-            today: offers.filter((offer) => offer.date === today).length,
-            yesterday: offers.filter((offer) => offer.date === yesterday).length,
+            today: countByCreatedPreset(offers, 'today', dateFilters),
+            yesterday: countByCreatedPreset(offers, 'yesterday', dateFilters),
+            week: countByCreatedPreset(offers, 'week', dateFilters),
+            month: countByCreatedPreset(offers, 'month', dateFilters),
         };
     }, [offers, dateFilters]);
 
@@ -78,8 +128,7 @@ export default function OffersIndex({
         if (userId && String(offer.user_id) !== userId) return false;
         if (indexing === 'yes' && !offer.submitted_for_indexing) return false;
         if (indexing === 'no' && offer.submitted_for_indexing) return false;
-        if (created === 'today' && offer.date !== dateFilters.today) return false;
-        if (created === 'yesterday' && offer.date !== dateFilters.yesterday) return false;
+        if (!matchesCreatedFilter(offer, created, dateFilters, createdFrom, createdTo)) return false;
         return true;
     });
 
@@ -205,13 +254,43 @@ export default function OffersIndex({
                     onChange={(e) => setCreated(e.target.value)}
                 >
                     <option value="">Усі дати</option>
-                    <option value="today">
-                        Сьогодні ({createdCounts.today})
-                    </option>
-                    <option value="yesterday">
-                        Вчора ({createdCounts.yesterday})
-                    </option>
+                    <option value="today">Сьогодні ({createdCounts.today})</option>
+                    <option value="yesterday">Вчора ({createdCounts.yesterday})</option>
+                    <option value="week">Цей тиждень ({createdCounts.week})</option>
+                    <option value="month">Цей місяць ({createdCounts.month})</option>
+                    <option value="custom">Свій період…</option>
                 </select>
+                {created === 'custom' && (
+                    <div className="filter-bar__date-range">
+                        <label className="filter-bar__date-field">
+                            <span className="sr-only">Від</span>
+                            <input
+                                type="date"
+                                aria-label="Дата від"
+                                value={createdFrom}
+                                max={createdTo || dateFilters.today || undefined}
+                                onChange={(e) => setCreatedFrom(e.target.value)}
+                            />
+                        </label>
+                        <span className="filter-bar__date-sep" aria-hidden="true">—</span>
+                        <label className="filter-bar__date-field">
+                            <span className="sr-only">До</span>
+                            <input
+                                type="date"
+                                aria-label="Дата до"
+                                value={createdTo}
+                                min={createdFrom || undefined}
+                                max={dateFilters.today || undefined}
+                                onChange={(e) => setCreatedTo(e.target.value)}
+                            />
+                        </label>
+                    </div>
+                )}
+                {(created || geo || lang || userId || indexing) && (
+                    <span className="filter-bar__count">
+                        Показано {filtered.length} з {offers.length}
+                    </span>
+                )}
                 <Link
                     href={route('offers.create', { fresh: 1 })}
                     className="btn btn-primary"

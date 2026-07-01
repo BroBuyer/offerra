@@ -48,8 +48,10 @@ class OfferController extends Controller
                 ? request()->integer('user')
                 : null,
             'dateFilters' => [
-                'today' => now()->toDateString(),
-                'yesterday' => now()->subDay()->toDateString(),
+                'today' => ($today = now())->toDateString(),
+                'yesterday' => $today->copy()->subDay()->toDateString(),
+                'weekStart' => $today->copy()->startOfWeek()->toDateString(),
+                'monthStart' => $today->copy()->startOfMonth()->toDateString(),
             ],
         ]);
     }
