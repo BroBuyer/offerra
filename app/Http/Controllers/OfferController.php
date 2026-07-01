@@ -43,8 +43,8 @@ class OfferController extends Controller
             'offers' => $offers,
             'filters' => $filters,
             'filterOptions' => [
-                'geos' => (clone $baseQuery)->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
-                'langs' => (clone $baseQuery)->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+                'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
+                'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
             ],
             'createdCounts' => $this->createdCounts($baseQuery, $today),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
