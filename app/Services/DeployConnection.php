@@ -205,9 +205,45 @@ class DeployConnection
         );
 
         $connection = $provider->provideConnection();
+        $remotePath = rtrim($remotePath, '/');
 
-        if (! $connection->chmod(0755, $remotePath, true)) {
-            throw new RuntimeException("Не вдалося встановити права на {$remotePath}");
+        $this->chmodTree($connection, $remotePath);
+    }
+
+    private function chmodTree(\phpseclib3\Net\SFTP $connection, string $path): void
+    {
+        $entries = $connection->nlist($path);
+
+        if ($entries === false) {
+            throw new RuntimeException("Не вдалося прочитати каталог: {$path}");
+        }
+
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+
+            $full = $path.'/'.$entry;
+            $stat = $connection->stat($full);
+            $mode = $stat['type'] ?? 0;
+
+            if ($mode === 2) {
+                if (! $connection->chmod(0755, $full)) {
+                    throw new RuntimeException("Не вдалося встановити права на каталог {$full}");
+                }
+
+                $this->chmodTree($connection, $full);
+
+                continue;
+            }
+
+            if (! $connection->chmod(0644, $full)) {
+                throw new RuntimeException("Не вдалося встановити права на файл {$full}");
+            }
+        }
+
+        if (! $connection->chmod(0755, $path)) {
+            throw new RuntimeException("Не вдалося встановити права на {$path}");
         }
     }
 }

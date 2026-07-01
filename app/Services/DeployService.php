@@ -70,6 +70,10 @@ class DeployService
 
         $localPath = $this->generator->ensureLocalFolder($offer);
 
+        if (! File::isFile($localPath.'/index.php')) {
+            throw new RuntimeException("Локальний index.php не знайдено: {$offer->folder}");
+        }
+
         $this->generator->migrateLegacyAssets($localPath);
 
         $offer->update([
@@ -95,6 +99,10 @@ class DeployService
 
             Log::info('Deploy started', ['offer' => $offer->id, 'domain' => $offer->domain, 'remote' => $remotePath]);
 
+            if (! File::isDirectory($localPath) || ! File::isFile($localPath.'/index.php')) {
+                $localPath = $this->generator->ensureLocalFolder($offer->fresh());
+            }
+
             $removed = $this->cleanRemoteDirectory($filesystem, $remotePath);
 
             if ($removed > 0) {
@@ -103,11 +111,17 @@ class DeployService
 
             $this->knownRemoteDirs = [$remotePath => true];
 
-            if (! File::isDirectory($localPath)) {
-                $localPath = $this->generator->ensureLocalFolder($offer->fresh());
+            $uploaded = $this->uploadDirectory($filesystem, $localPath, $remotePath);
+
+            if ($uploaded === 0) {
+                throw new RuntimeException('На сервер не завантажено жодного файлу.');
             }
 
-            $uploaded = $this->uploadDirectory($filesystem, $localPath, $remotePath);
+            $remoteIndex = rtrim($remotePath, '/').'/index.php';
+
+            if (! $filesystem->fileExists($remoteIndex)) {
+                throw new RuntimeException('index.php не знайдено на сервері після деплою.');
+            }
 
             try {
                 $this->connection->chmodPublicRecursive($config, $remotePath, self::DEPLOY_TIMEOUT);
