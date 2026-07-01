@@ -265,17 +265,23 @@ export default function OffersIndex({
                                         {canDeployOffer(offer) ? (
                                             <button
                                                 type="button"
-                                                className="btn btn-ghost btn-sm"
-                                                disabled={isDeploying && offer.status === 'deploying'}
+                                                className={`btn btn-ghost btn-sm btn-deploy${isDeploying ? ' is-loading' : ''}`}
+                                                disabled={isDeploying}
+                                                aria-busy={isDeploying}
                                                 onClick={() => deployOffer(offer)}
                                             >
-                                                {isDeploying && offer.status !== 'failed'
-                                                    ? '…'
-                                                    : offer.status === 'deployed'
-                                                      ? '↻'
-                                                      : offer.status === 'failed'
-                                                        ? 'Повтор'
-                                                        : 'Деплой'}
+                                                {isDeploying ? (
+                                                    <>
+                                                        <span className="btn-spinner" aria-hidden="true" />
+                                                        <span>Деплой…</span>
+                                                    </>
+                                                ) : offer.status === 'deployed' ? (
+                                                    '↻'
+                                                ) : offer.status === 'failed' ? (
+                                                    'Повтор'
+                                                ) : (
+                                                    'Деплой'
+                                                )}
                                             </button>
                                         ) : (
                                             <span className="field-hint">—</span>
