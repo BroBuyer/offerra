@@ -23,7 +23,6 @@ class OfferServiceProvider extends ServiceProvider
         $this->app->singleton(TemplateCatalog::class, function () {
             return new TemplateCatalog(
                 config('offerra.templates_path'),
-                config('offerra.offers_path'),
             );
         });
 

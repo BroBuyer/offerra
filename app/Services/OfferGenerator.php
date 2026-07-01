@@ -354,6 +354,7 @@ class OfferGenerator
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
         ];
 
+        File::ensureDirectoryExists(dirname($configPath));
         File::put($configPath, $this->configBuilder->build($input, $settings));
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);

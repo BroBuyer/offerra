@@ -9,7 +9,6 @@ class TemplateCatalog
 {
     public function __construct(
         private readonly string $templatesPath,
-        private readonly string $offersPath,
     ) {}
 
     /**
@@ -67,10 +66,19 @@ class TemplateCatalog
      */
     public function languagesFor(string $templateId): array
     {
-        $sources = $this->languageSources($templateId);
+        $codes = array_keys($this->templateLanguageSources($templateId));
+
+        foreach (config('offerra.languages', []) as $language) {
+            $code = strtolower((string) ($language['code'] ?? ''));
+
+            if ($code !== '' && ! in_array($code, $codes, true)) {
+                $codes[] = $code;
+            }
+        }
+
         $languages = [];
 
-        foreach (array_keys($sources) as $code) {
+        foreach ($codes as $code) {
             $languages[] = [
                 'code' => $code,
                 'name' => $this->languageLabel($code),
@@ -93,10 +101,16 @@ class TemplateCatalog
     public function resolveSourcePath(string $templateId, string $lang): string
     {
         $lang = strtolower($lang);
-        $sources = $this->languageSources($templateId);
+        $sources = $this->templateLanguageSources($templateId);
 
         if (isset($sources[$lang]) && File::isDirectory($sources[$lang])) {
             return $sources[$lang];
+        }
+
+        $templatePath = $this->templatePath($templateId);
+
+        if ($templatePath && File::isFile($templatePath.DIRECTORY_SEPARATOR.'index.php')) {
+            return $templatePath;
         }
 
         throw new InvalidArgumentException(
@@ -136,9 +150,9 @@ class TemplateCatalog
     }
 
     /**
-     * @return array<string, string> lang code => folder path
+     * @return array<string, string> lang code => folder path (templates only)
      */
-    private function languageSources(string $templateId): array
+    private function templateLanguageSources(string $templateId): array
     {
         $sources = [];
         $templatePath = $this->templatePath($templateId);
@@ -163,62 +177,7 @@ class TemplateCatalog
             }
         }
 
-        foreach ($this->scanOfferReferences($templateId) as $code => $folderPath) {
-            $sources[$code] = $folderPath;
-        }
-
         return $sources;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function scanOfferReferences(string $templateId): array
-    {
-        if (! File::isDirectory($this->offersPath)) {
-            return [];
-        }
-
-        $candidates = [];
-        $legacyTemplateId = $this->discoverTemplateIds()[0] ?? null;
-
-        foreach (File::directories($this->offersPath) as $directory) {
-            $folder = basename($directory);
-
-            if (in_array($folder, ['example', 'langs'], true)) {
-                continue;
-            }
-
-            $manifest = $this->readManifest($directory);
-            $manifestTemplate = $manifest['template'] ?? null;
-
-            if ($manifestTemplate && $manifestTemplate !== $templateId) {
-                continue;
-            }
-
-            if (! $manifestTemplate && $legacyTemplateId !== $templateId) {
-                continue;
-            }
-
-            $parsed = $this->parseFolderName($folder);
-            $lang = $parsed['lang'] ?? $this->readSiteLang($directory);
-
-            if (! $lang) {
-                continue;
-            }
-
-            $lang = strtolower($lang);
-            $date = $parsed['date'] ?? '0000-00-00';
-
-            if (! isset($candidates[$lang]) || $date > $candidates[$lang]['date']) {
-                $candidates[$lang] = [
-                    'date' => $date,
-                    'path' => $directory,
-                ];
-            }
-        }
-
-        return array_map(fn (array $item) => $item['path'], $candidates);
     }
 
     private function templatePath(string $templateId): ?string
@@ -226,45 +185,6 @@ class TemplateCatalog
         $path = rtrim($this->templatesPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$templateId;
 
         return File::isDirectory($path) ? $path : null;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function readManifest(string $directory): array
-    {
-        $path = $directory.'/manifest.json';
-
-        if (! File::exists($path)) {
-            return [];
-        }
-
-        $data = json_decode(File::get($path), true);
-
-        return is_array($data) ? $data : [];
-    }
-
-    /**
-     * @return array{lang?: string, date?: string}|null
-     */
-    private function parseFolderName(string $folder): ?array
-    {
-        $parts = explode('_', $folder);
-
-        if (count($parts) < 6 || ! preg_match('/^[A-Za-z0-9_-]+$/', $parts[2])) {
-            return null;
-        }
-
-        $date = array_pop($parts);
-
-        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-            return null;
-        }
-
-        return [
-            'lang' => strtolower($parts[1]),
-            'date' => $date,
-        ];
     }
 
     private function readSiteLang(string $directory): ?string
