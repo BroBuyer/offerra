@@ -1,7 +1,7 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 function statusBadge(status) {
     switch (status) {
@@ -45,6 +45,84 @@ function buildQueryParams(filters, overrides = {}) {
     return params;
 }
 
+function buildActiveFilterChips(filters, users) {
+    const chips = [];
+
+    if (filters.geo) {
+        chips.push({
+            id: 'geo',
+            label: `GEO: ${filters.geo}`,
+            clear: { geo: '' },
+        });
+    }
+
+    if (filters.lang) {
+        chips.push({
+            id: 'lang',
+            label: `Мова: ${filters.lang}`,
+            clear: { lang: '' },
+        });
+    }
+
+    if (filters.user) {
+        const user = users.find((item) => String(item.id) === String(filters.user));
+        chips.push({
+            id: 'user',
+            label: `Користувач: ${user?.name ?? user?.email ?? filters.user}`,
+            clear: { user: '' },
+        });
+    }
+
+    if (filters.indexing === 'yes') {
+        chips.push({
+            id: 'indexing',
+            label: 'Індексація: подано',
+            clear: { indexing: '' },
+        });
+    } else if (filters.indexing === 'no') {
+        chips.push({
+            id: 'indexing',
+            label: 'Індексація: не подано',
+            clear: { indexing: '' },
+        });
+    }
+
+    if (filters.created) {
+        let dateLabel = 'Дата: ';
+
+        switch (filters.created) {
+            case 'today':
+                dateLabel += 'сьогодні';
+                break;
+            case 'yesterday':
+                dateLabel += 'вчора';
+                break;
+            case 'week':
+                dateLabel += 'цей тиждень';
+                break;
+            case 'month':
+                dateLabel += 'цей місяць';
+                break;
+            case 'custom':
+                dateLabel += [
+                    filters.created_from ? formatCreatedDate(filters.created_from) : '…',
+                    filters.created_to ? formatCreatedDate(filters.created_to) : '…',
+                ].join(' – ');
+                break;
+            default:
+                dateLabel += filters.created;
+        }
+
+        chips.push({
+            id: 'created',
+            label: dateLabel,
+            clear: { created: '', created_from: '', created_to: '' },
+        });
+    }
+
+    return chips;
+}
+
 export default function OffersIndex({
     offers,
     filters = {},
@@ -79,10 +157,26 @@ export default function OffersIndex({
         }
 
         router.get(route('offers.index'), buildQueryParams(next), {
-            preserveState: true,
+            preserveState: false,
             replace: true,
             preserveScroll: true,
         });
+    };
+
+    const clearAllFilters = () => {
+        reloadOffers({
+            geo: '',
+            lang: '',
+            indexing: '',
+            created: '',
+            created_from: '',
+            created_to: '',
+            user: '',
+        });
+    };
+
+    const clearFilter = (overrides) => {
+        reloadOffers(overrides);
     };
 
     const deployOffer = (offer) => {
@@ -121,13 +215,12 @@ export default function OffersIndex({
         );
     };
 
-    const hasActiveFilters = Boolean(
-        filters.geo
-        || filters.lang
-        || filters.indexing
-        || filters.created
-        || filters.user,
+    const activeFilterChips = useMemo(
+        () => buildActiveFilterChips(filters, users),
+        [filters, users],
     );
+
+    const hasActiveFilters = activeFilterChips.length > 0;
 
     const total = meta.total ?? 0;
     const rangeFrom = total === 0 ? 0 : (meta.from ?? 0);
@@ -155,6 +248,33 @@ export default function OffersIndex({
                         Для деплою збережіть SFTP-налаштування в{' '}
                         <Link href={route('settings.index')}>налаштуваннях</Link>.
                     </p>
+                </div>
+            )}
+
+            {hasActiveFilters && (
+                <div className="active-filters" aria-label="Активні фільтри">
+                    <span className="active-filters__label">Обрані фільтри:</span>
+                    <div className="active-filters__chips">
+                        {activeFilterChips.map((chip) => (
+                            <button
+                                key={chip.id}
+                                type="button"
+                                className="filter-chip"
+                                onClick={() => clearFilter(chip.clear)}
+                                title="Прибрати фільтр"
+                            >
+                                <span>{chip.label}</span>
+                                <span className="filter-chip__remove" aria-hidden="true">×</span>
+                            </button>
+                        ))}
+                    </div>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm active-filters__reset"
+                        onClick={clearAllFilters}
+                    >
+                        Скинути все
+                    </button>
                 </div>
             )}
 
@@ -264,8 +384,7 @@ export default function OffersIndex({
                 )}
                 <Link
                     href={route('offers.create', { fresh: 1 })}
-                    className="btn btn-primary"
-                    style={{ marginLeft: 'auto' }}
+                    className="btn btn-primary filter-bar__create"
                 >
                     + Новий оффер
                 </Link>
