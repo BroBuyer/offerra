@@ -45,6 +45,7 @@ export default function OffersCreate({
     hasKeitaroApiKey,
     affiliateTag = 'BRO',
     geoPresets,
+    currencies = [],
     templates,
     fresh = false,
     initialTemplate = null,
@@ -226,8 +227,10 @@ export default function OffersCreate({
                                     value={data.currency}
                                     onChange={(e) => update('currency', e.target.value)}
                                 >
-                                    {['EUR', 'USD', 'GEL', 'PLN', 'CHF', 'GBP'].map((c) => (
-                                        <option key={c} value={c}>{c}</option>
+                                    {currencies.map(({ code, name }) => (
+                                        <option key={code} value={code}>
+                                            {code} — {name}
+                                        </option>
                                     ))}
                                 </select>
                             </div>

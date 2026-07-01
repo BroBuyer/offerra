@@ -30,12 +30,13 @@ class StoreOfferRequest extends FormRequest
     {
         $template = (string) $this->input('template');
         $catalog = app(TemplateCatalog::class);
+        $currencyCodes = array_column(config('offerra.currencies', []), 'code');
 
         return [
             'brand' => ['required', 'string', 'max:120'],
             'domain' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i'],
             'min_deposit' => ['required', 'string', 'max:20'],
-            'currency' => ['required', 'string', 'size:3'],
+            'currency' => ['required', 'string', 'size:3', Rule::in($currencyCodes)],
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
             'phone' => ['required', 'string', 'max:8', 'alpha:ascii'],
@@ -52,6 +53,7 @@ class StoreOfferRequest extends FormRequest
         return [
             'domain.regex' => 'Домен без https://, наприклад example.com',
             'lang.in' => 'Оберіть мову, доступну для обраного шаблону',
+            'currency.in' => 'Оберіть валюту зі списку',
             'geo.size' => 'GEO — 2 літери, наприклад IE, IT, ZA',
         ];
     }

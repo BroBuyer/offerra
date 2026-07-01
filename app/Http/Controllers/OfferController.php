@@ -51,6 +51,7 @@ class OfferController extends Controller
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'affiliateTag' => $settings?->affiliate_tag ?? 'BRO',
             'geoPresets' => config('offerra.geo_presets'),
+            'currencies' => config('offerra.currencies'),
             'templates' => $catalog->forWizard(),
             'fresh' => request()->boolean('fresh'),
             'initialTemplate' => request()->string('template')->toString() ?: null,
