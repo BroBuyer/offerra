@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
+    Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
     Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
     Route::get('/preview/{template}/{path?}', [TemplatePreviewController::class, 'show'])
         ->where('path', '.*')

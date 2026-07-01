@@ -20,7 +20,9 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
     const { flash, errors, auth } = usePage().props;
     const [geo, setGeo] = useState('');
     const [lang, setLang] = useState('');
+    const [indexing, setIndexing] = useState('');
     const [deployingId, setDeployingId] = useState(null);
+    const [indexingId, setIndexingId] = useState(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -40,6 +42,8 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
     const filtered = offers.filter((offer) => {
         if (geo && offer.geo !== geo) return false;
         if (lang && offer.lang !== lang) return false;
+        if (indexing === 'yes' && !offer.submitted_for_indexing) return false;
+        if (indexing === 'no' && offer.submitted_for_indexing) return false;
         return true;
     });
 
@@ -51,16 +55,32 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
         });
     };
 
+    const canManageOffer = (offer) => {
+        if (showUserColumn) {
+            return true;
+        }
+
+        return offer.user_id === auth?.user?.id;
+    };
+
     const canDeployOffer = (offer) => {
         if (!canDeploy) {
             return false;
         }
 
-        if (!showUserColumn) {
-            return true;
-        }
+        return canManageOffer(offer);
+    };
 
-        return offer.user_id === auth?.user?.id;
+    const toggleIndexing = (offer, checked) => {
+        setIndexingId(offer.id);
+        router.patch(
+            route('offers.indexing', offer.id),
+            { submitted_for_indexing: checked },
+            {
+                preserveScroll: true,
+                onFinish: () => setIndexingId(null),
+            },
+        );
     };
 
     return (
@@ -111,6 +131,15 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
                         </option>
                     ))}
                 </select>
+                <select
+                    aria-label="Індексація"
+                    value={indexing}
+                    onChange={(e) => setIndexing(e.target.value)}
+                >
+                    <option value="">Уся індексація</option>
+                    <option value="no">Не подано</option>
+                    <option value="yes">Подано</option>
+                </select>
                 <Link
                     href={route('offers.create', { fresh: 1 })}
                     className="btn btn-primary"
@@ -133,6 +162,7 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
                             <th>Панель</th>
                             <th>Keitaro</th>
                             <th>Статус</th>
+                            <th>Індексація</th>
                             <th />
                         </tr>
                     </thead>
@@ -175,6 +205,32 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
                                         )}
                                     </td>
                                     <td>
+                                        {canManageOffer(offer) ? (
+                                            <label
+                                                className="indexing-check"
+                                                title={
+                                                    offer.submitted_for_indexing && offer.indexed_at
+                                                        ? `Подано: ${offer.indexed_at}`
+                                                        : 'Подано на індексацію (GSC / IndexNow)'
+                                                }
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={Boolean(offer.submitted_for_indexing)}
+                                                    disabled={indexingId === offer.id}
+                                                    onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                                />
+                                                <span className="indexing-check__label">
+                                                    {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                                </span>
+                                            </label>
+                                        ) : (
+                                            <span className="field-hint">
+                                                {offer.submitted_for_indexing ? 'Так' : '—'}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td>
                                         {canDeployOffer(offer) ? (
                                             <button
                                                 type="button"
@@ -199,7 +255,7 @@ export default function OffersIndex({ offers, canDeploy, showUserColumn = false 
                         })}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 10 : 9} className="field-hint">
+                                <td colSpan={showUserColumn ? 11 : 10} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>

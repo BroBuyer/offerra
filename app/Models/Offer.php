@@ -24,6 +24,8 @@ class Offer extends Model
         'remote_path',
         'deployed_at',
         'deploy_error',
+        'submitted_for_indexing',
+        'indexed_at',
         'keitaro_campaign_id',
         'keitaro_alias',
     ];
@@ -32,6 +34,8 @@ class Offer extends Model
     {
         return [
             'deployed_at' => 'datetime',
+            'submitted_for_indexing' => 'boolean',
+            'indexed_at' => 'datetime',
         ];
     }
 
@@ -63,6 +67,8 @@ class Offer extends Model
             'deploy_panel' => $this->deploy_panel_name,
             'deployed_at' => $this->deployed_at?->format('Y-m-d H:i'),
             'deploy_error' => $this->deploy_error,
+            'submitted_for_indexing' => $this->submitted_for_indexing,
+            'indexed_at' => $this->indexed_at?->format('Y-m-d H:i'),
             'date' => $this->created_at?->format('Y-m-d'),
         ];
     }

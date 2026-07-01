@@ -113,4 +113,22 @@ class OfferController extends Controller
             ->route('offers.index')
             ->with('success', "Задеплоєно: {$offer->domain} → {$offer->fresh()->deploy_panel_name}");
     }
+
+    public function updateIndexing(Offer $offer): RedirectResponse
+    {
+        $user = auth()->user();
+
+        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $submitted = request()->boolean('submitted_for_indexing');
+
+        $offer->update([
+            'submitted_for_indexing' => $submitted,
+            'indexed_at' => $submitted ? now() : null,
+        ]);
+
+        return redirect()->back();
+    }
 }
