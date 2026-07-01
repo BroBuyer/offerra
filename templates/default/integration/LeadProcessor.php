@@ -252,7 +252,13 @@ final class LeadProcessor
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return $result !== false && $httpCode >= 200 && $httpCode < 300;
+        if ($result === false || $httpCode < 200 || $httpCode >= 300) {
+            return false;
+        }
+
+        $decoded = json_decode((string) $result, true);
+
+        return is_array($decoded) && ($decoded['ok'] ?? false);
     }
 
     private static function escapeTelegramHtml(string $text): string

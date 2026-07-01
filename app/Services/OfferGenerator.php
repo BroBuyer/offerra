@@ -15,6 +15,7 @@ class OfferGenerator
         private readonly KeitaroClient $keitaroClient,
         private readonly TemplateCatalog $templateCatalog,
         private readonly string $offersPath,
+        private readonly string $templatesPath,
     ) {}
 
     /**
@@ -58,6 +59,7 @@ class OfferGenerator
 
         try {
             File::copyDirectory($templatePath, $targetPath);
+            $this->syncSharedIntegrationFiles($targetPath, $template);
 
             $config = $this->configBuilder->build($input, $settings);
             File::put($targetPath.'/includes/config.php', $config);
@@ -262,6 +264,7 @@ class OfferGenerator
         }
 
         File::copyDirectory($templatePath, $targetPath);
+        $this->syncSharedIntegrationFiles($targetPath, $offer->template);
 
         $keitaroToken = '';
 
@@ -352,7 +355,30 @@ class OfferGenerator
         ];
 
         File::put($configPath, $this->configBuilder->build($input, $settings));
+        $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);
+    }
+
+    /**
+     * LeadProcessor / send.php — єдине джерело в templates/{id}/integration/.
+     * Мовні копії та старі offers/ можуть мати застарілий код без TG group тощо.
+     */
+    public function syncSharedIntegrationFiles(string $targetPath, string $templateId = 'default'): void
+    {
+        $source = rtrim($this->templatesPath, DIRECTORY_SEPARATOR)
+            .DIRECTORY_SEPARATOR.$templateId
+            .DIRECTORY_SEPARATOR.'integration';
+
+        if (! File::isDirectory($source)) {
+            return;
+        }
+
+        $destination = $targetPath.DIRECTORY_SEPARATOR.'integration';
+        File::ensureDirectoryExists($destination);
+
+        foreach (File::files($source) as $file) {
+            File::copy($file->getPathname(), $destination.DIRECTORY_SEPARATOR.$file->getFilename());
+        }
     }
 
     /** Старі оффери з папкою assets/ — один раз перед деплоєм. */

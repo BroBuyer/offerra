@@ -45,6 +45,7 @@ class OfferServiceProvider extends ServiceProvider
                 $app->make(KeitaroClient::class),
                 $app->make(TemplateCatalog::class),
                 config('offerra.offers_path'),
+                config('offerra.templates_path'),
             );
         });
 
