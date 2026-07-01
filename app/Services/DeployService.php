@@ -66,6 +66,8 @@ class DeployService
             );
         }
 
+        $offer->loadMissing('user');
+
         $localPath = $this->generator->ensureLocalFolder($offer);
 
         $this->generator->migrateLegacyAssets($localPath);
@@ -101,6 +103,10 @@ class DeployService
 
             $this->knownRemoteDirs = [$remotePath => true];
 
+            if (! File::isDirectory($localPath)) {
+                $localPath = $this->generator->ensureLocalFolder($offer->fresh());
+            }
+
             $uploaded = $this->uploadDirectory($filesystem, $localPath, $remotePath);
 
             try {
@@ -128,10 +134,15 @@ class DeployService
 
             return $offer->fresh();
         } catch (\Throwable $e) {
-            $offer->update([
-                'status' => 'failed',
+            $updates = [
                 'deploy_error' => $e->getMessage(),
-            ]);
+            ];
+
+            if (! $offer->deployed_at) {
+                $updates['status'] = 'failed';
+            }
+
+            $offer->update($updates);
 
             throw $e;
         }
@@ -161,6 +172,10 @@ class DeployService
 
     private function uploadDirectory(Filesystem $filesystem, string $localPath, string $remotePath): int
     {
+        if (! File::isDirectory($localPath)) {
+            throw new RuntimeException("Локальна папка оффера не знайдена: {$localPath}");
+        }
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($localPath, RecursiveDirectoryIterator::SKIP_DOTS),
         );
