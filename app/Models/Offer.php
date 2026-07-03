@@ -26,6 +26,8 @@ class Offer extends Model
         'deploy_error',
         'submitted_for_indexing',
         'indexed_at',
+        'crm_include_domain',
+        'crm_ip_countries',
         'keitaro_campaign_id',
         'keitaro_alias',
     ];
@@ -36,6 +38,7 @@ class Offer extends Model
             'deployed_at' => 'datetime',
             'submitted_for_indexing' => 'boolean',
             'indexed_at' => 'datetime',
+            'crm_include_domain' => 'boolean',
         ];
     }
 
@@ -69,6 +72,8 @@ class Offer extends Model
             'deploy_error' => $this->deploy_error,
             'submitted_for_indexing' => $this->submitted_for_indexing,
             'indexed_at' => $this->indexed_at?->format('Y-m-d H:i'),
+            'crm_include_domain' => (bool) $this->crm_include_domain,
+            'crm_ip_countries' => $this->crm_ip_countries ?? '',
             'date' => $this->created_at?->format('Y-m-d'),
         ];
     }

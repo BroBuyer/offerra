@@ -283,6 +283,8 @@ class OfferGenerator
             'phone' => $offer->phone ?: $offer->lang,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+            'crm_include_domain' => $offer->crm_include_domain,
+            'crm_ip_countries' => $offer->crm_ip_countries,
         ];
 
         File::put($targetPath.'/includes/config.php', $this->configBuilder->build($input, $settings));
@@ -352,6 +354,8 @@ class OfferGenerator
             'phone' => $offer->phone ?: $offer->lang,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+            'crm_include_domain' => $offer->crm_include_domain,
+            'crm_ip_countries' => $offer->crm_ip_countries,
         ];
 
         File::ensureDirectoryExists(dirname($configPath));

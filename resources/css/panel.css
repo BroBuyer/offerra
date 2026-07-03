@@ -773,6 +773,55 @@ tr:last-child td { border-bottom: none; }
   color: var(--accent);
 }
 
+.crm-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 7.5rem;
+}
+
+.crm-settings.is-saving {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.crm-settings__check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.crm-settings__check input {
+  margin: 0;
+}
+
+.crm-settings__ip {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.crm-settings__ip-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.crm-settings__ip input {
+  width: 4.5rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  text-transform: uppercase;
+}
+
 tr:hover td { background: rgba(255,255,255,0.02); }
 
 /* Mock toast */

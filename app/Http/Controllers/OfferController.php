@@ -259,4 +259,45 @@ class OfferController extends Controller
 
         return redirect()->back();
     }
+
+    public function updateCrmSettings(
+        Offer $offer,
+        OfferGenerator $generator,
+        DeployService $deploy,
+    ): RedirectResponse {
+        $user = auth()->user();
+
+        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = request()->validate([
+            'crm_include_domain' => ['boolean'],
+            'crm_ip_countries' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $countries = strtoupper(preg_replace('/[^A-Z,]/', '', strtoupper((string) ($validated['crm_ip_countries'] ?? ''))) ?? '');
+
+        $offer->update([
+            'crm_include_domain' => request()->boolean('crm_include_domain'),
+            'crm_ip_countries' => $countries !== '' ? $countries : null,
+        ]);
+
+        $offer->refresh();
+        $generator->refreshConfig($offer);
+
+        if ($offer->status === 'deployed') {
+            try {
+                $deploy->deploy($offer->user, $offer);
+            } catch (\Throwable $e) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['deploy' => 'CRM збережено, але деплой не вдався: '.$e->getMessage()]);
+            }
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "CRM налаштування оновлено для {$offer->domain}");
+    }
 }

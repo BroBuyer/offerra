@@ -151,6 +151,7 @@ export default function OffersIndex({
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+    const [crmSavingId, setCrmSavingId] = useState(null);
 
     const pagination = resolveOffersPagination(offers, filters);
     const rows = pagination.rows;
@@ -228,6 +229,17 @@ export default function OffersIndex({
                 onFinish: () => setIndexingId(null),
             },
         );
+    };
+
+    const updateCrmSettings = (offer, patch) => {
+        setCrmSavingId(offer.id);
+        router.patch(route('offers.crm-settings', offer.id), {
+            crm_include_domain: patch.crm_include_domain ?? offer.crm_include_domain,
+            crm_ip_countries: patch.crm_ip_countries ?? offer.crm_ip_countries ?? '',
+        }, {
+            preserveScroll: true,
+            onFinish: () => setCrmSavingId(null),
+        });
     };
 
     const activeFilterChips = useMemo(
@@ -415,6 +427,7 @@ export default function OffersIndex({
                             <th>Створено</th>
                             <th>Статус</th>
                             <th>Індексація</th>
+                            <th>CRM</th>
                             <th />
                         </tr>
                     </thead>
@@ -488,6 +501,48 @@ export default function OffersIndex({
                                         )}
                                     </td>
                                     <td>
+                                        {canManageOffer(offer) ? (
+                                            <div
+                                                className={`crm-settings${crmSavingId === offer.id ? ' is-saving' : ''}`}
+                                                title="Налаштування відправки в CRM"
+                                            >
+                                                <label className="crm-settings__check">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={Boolean(offer.crm_include_domain)}
+                                                        disabled={crmSavingId === offer.id}
+                                                        onChange={(e) => updateCrmSettings(offer, {
+                                                            crm_include_domain: e.target.checked,
+                                                        })}
+                                                    />
+                                                    <span>Домен в CRM</span>
+                                                </label>
+                                                <label className="crm-settings__ip">
+                                                    <span className="crm-settings__ip-label">IP:</span>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="FR"
+                                                        defaultValue={offer.crm_ip_countries ?? ''}
+                                                        key={`${offer.id}-${offer.crm_ip_countries ?? ''}`}
+                                                        disabled={crmSavingId === offer.id}
+                                                        onBlur={(e) => {
+                                                            const normalized = e.target.value
+                                                                .toUpperCase()
+                                                                .replace(/[^A-Z,]/g, '');
+                                                            if (normalized !== (offer.crm_ip_countries ?? '')) {
+                                                                updateCrmSettings(offer, {
+                                                                    crm_ip_countries: normalized,
+                                                                });
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        ) : (
+                                            <span className="field-hint">—</span>
+                                        )}
+                                    </td>
+                                    <td>
                                         {canDeployOffer(offer) ? (
                                             <button
                                                 type="button"
@@ -518,7 +573,7 @@ export default function OffersIndex({
                         })}
                         {rows.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 13 : 12} className="field-hint">
+                                <td colSpan={showUserColumn ? 14 : 13} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>
