@@ -79,17 +79,23 @@ class DeployService
 
         try {
             $config = $this->configFromSettings($settings);
-            $remotePath = $this->connection->resolveRemotePath(
+            $filesystem = $this->connection->connect($config, self::DEPLOY_TIMEOUT);
+            $remotePath = $this->connection->resolveExistingRemotePath(
+                $filesystem,
                 $config['path_template'],
                 $config['username'],
                 $offer->domain,
             );
 
-            $filesystem = $this->connection->connect($config, self::DEPLOY_TIMEOUT);
+            if ($remotePath === null) {
+                $tried = implode(', ', $this->connection->resolveRemotePathCandidates(
+                    $config['path_template'],
+                    $config['username'],
+                    $offer->domain,
+                ));
 
-            if (! $filesystem->directoryExists($remotePath)) {
                 throw new RuntimeException(
-                    "Папка на сервері не знайдена: {$remotePath}. Створіть домен у Hestia.",
+                    "Папка на сервері не знайдена. Перевірені шляхи: {$tried}. Створіть домен у Hestia.",
                 );
             }
 

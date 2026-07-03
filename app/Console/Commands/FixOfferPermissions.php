@@ -37,11 +37,19 @@ class FixOfferPermissions extends Command
             'password' => (string) $settings->deploy_password,
         ];
 
-        $remotePath = $offer->remote_path ?: $connection->resolveRemotePath(
+        $filesystem = $connection->connect($config, 60);
+        $remotePath = $offer->remote_path ?: $connection->resolveExistingRemotePath(
+            $filesystem,
             $settings->deploy_path_template,
             $config['username'],
             $offer->domain,
         );
+
+        if ($remotePath === null) {
+            $this->error('Папка на сервері не знайдена');
+
+            return self::FAILURE;
+        }
 
         $this->info("chmod 755 -R {$remotePath}");
 

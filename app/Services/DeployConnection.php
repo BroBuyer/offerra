@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\DomainName;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PhpseclibV3\SftpAdapter;
@@ -33,20 +34,27 @@ class DeployConnection
 
         $port = (int) ($config['port'] ?? 22);
         $domain = $domain ? strtolower(trim($domain)) : 'reserve-safegrove-ie.com';
-        $remotePath = $this->resolveRemotePath(
-            $config['path_template'] ?? null,
-            $username,
-            $domain,
-        );
 
         try {
             $filesystem = $this->connect($config);
+            $remotePath = $this->resolveExistingRemotePath(
+                $filesystem,
+                $config['path_template'] ?? null,
+                $username,
+                $domain,
+            );
 
-            if (! $filesystem->directoryExists($remotePath)) {
+            if ($remotePath === null) {
+                $tried = $this->resolveRemotePathCandidates(
+                    $config['path_template'] ?? null,
+                    $username,
+                    $domain,
+                );
+
                 return [
                     'ok' => false,
-                    'message' => "З'єднання є, але папка не знайдена: {$remotePath}. Перевірте домен у Hestia.",
-                    'path' => $remotePath,
+                    'message' => "З'єднання є, але папка не знайдена. Перевірені шляхи: ".implode(', ', $tried).'. Перевірте домен у Hestia.',
+                    'path' => $tried[0] ?? '',
                 ];
             }
 
@@ -86,6 +94,37 @@ class DeployConnection
         );
     }
 
+    /** @return list<string> */
+    public function resolveRemotePathCandidates(?string $template, string $username, string $domain): array
+    {
+        $paths = [];
+
+        foreach (DomainName::pathVariants($domain) as $variant) {
+            $path = $this->resolveRemotePath($template, $username, $variant);
+
+            if (! in_array($path, $paths, true)) {
+                $paths[] = $path;
+            }
+        }
+
+        return $paths;
+    }
+
+    public function resolveExistingRemotePath(
+        Filesystem $filesystem,
+        ?string $template,
+        string $username,
+        string $domain,
+    ): ?string {
+        foreach ($this->resolveRemotePathCandidates($template, $username, $domain) as $path) {
+            if ($filesystem->directoryExists($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+
     public function connect(array $config, int $timeout = 15): Filesystem
     {
         $host = trim($config['host'] ?? '');
@@ -117,14 +156,29 @@ class DeployConnection
      */
     public function probeRemote(array $config, string $domain): array
     {
-        $remotePath = $this->resolveRemotePath(
-            $config['path_template'] ?? null,
-            trim($config['username'] ?? ''),
-            $domain,
-        );
-
         try {
             $filesystem = $this->connect($config, 60);
+            $remotePath = $this->resolveExistingRemotePath(
+                $filesystem,
+                $config['path_template'] ?? null,
+                trim($config['username'] ?? ''),
+                $domain,
+            );
+
+            if ($remotePath === null) {
+                $tried = $this->resolveRemotePathCandidates(
+                    $config['path_template'] ?? null,
+                    trim($config['username'] ?? ''),
+                    $domain,
+                );
+
+                return [
+                    'deployed' => false,
+                    'path' => $tried[0] ?? '',
+                    'marker' => null,
+                ];
+            }
+
             $markers = ['index.php', 'static/css/main.css', 'assets/css/main.css'];
 
             foreach ($markers as $marker) {
@@ -144,9 +198,15 @@ class DeployConnection
                 'marker' => null,
             ];
         } catch (\Throwable) {
+            $fallback = $this->resolveRemotePath(
+                $config['path_template'] ?? null,
+                trim($config['username'] ?? ''),
+                $domain,
+            );
+
             return [
                 'deployed' => false,
-                'path' => $remotePath,
+                'path' => $fallback,
                 'marker' => null,
             ];
         }

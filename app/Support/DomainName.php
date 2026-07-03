@@ -29,4 +29,49 @@ class DomainName
 
         return strtolower($ascii);
     }
+
+    public static function toUnicode(string $domain): string
+    {
+        $domain = trim($domain);
+
+        if ($domain === '') {
+            return '';
+        }
+
+        $unicode = Idn::idn_to_utf8(
+            $domain,
+            Idn::IDNA_DEFAULT,
+            Idn::INTL_IDNA_VARIANT_UTS46,
+        );
+
+        if ($unicode === false) {
+            return strtolower($domain);
+        }
+
+        return strtolower($unicode);
+    }
+
+    /** @return list<string> */
+    public static function pathVariants(string $domain): array
+    {
+        $domain = trim($domain);
+
+        if ($domain === '') {
+            return [];
+        }
+
+        $ascii = self::normalize($domain);
+        $unicode = self::toUnicode($ascii !== '' ? $ascii : $domain);
+        $variants = [];
+
+        foreach ([$domain, $ascii, $unicode] as $candidate) {
+            $candidate = strtolower(trim($candidate));
+
+            if ($candidate !== '' && ! in_array($candidate, $variants, true)) {
+                $variants[] = $candidate;
+            }
+        }
+
+        return $variants;
+    }
 }
