@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Services\TemplateCatalog;
+use App\Support\DomainName;
 use App\Support\MarketOptions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -19,6 +20,12 @@ class StoreOfferRequest extends FormRequest
         if ($this->has('geo')) {
             $this->merge([
                 'geo' => MarketOptions::normalizeGeo((string) $this->input('geo')),
+            ]);
+        }
+
+        if ($this->has('domain')) {
+            $this->merge([
+                'domain' => DomainName::normalize((string) $this->input('domain')),
             ]);
         }
     }
@@ -51,7 +58,7 @@ class StoreOfferRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'domain.regex' => 'Домен без https://, наприклад example.com',
+            'domain.regex' => 'Домен без https://, наприклад example.com (IDN з ń, ö тощо — теж можна)',
             'lang.in' => 'Оберіть мову, доступну для обраного шаблону',
             'currency.in' => 'Оберіть валюту зі списку',
             'geo.size' => 'GEO — 2 літери, наприклад IE, IT, ZA',

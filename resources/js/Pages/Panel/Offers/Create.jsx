@@ -207,7 +207,7 @@ export default function OffersCreate({
                                 type="text"
                                 value={data.domain}
                                 onChange={(e) => update('domain', e.target.value)}
-                                placeholder="example.com"
+                                placeholder="example.com або strumieńwartoryn.com"
                             />
                         </div>
                         <div className="field-row">
