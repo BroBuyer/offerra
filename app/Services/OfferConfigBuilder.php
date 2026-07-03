@@ -31,10 +31,6 @@ class OfferConfigBuilder
         $keitaroComment = ! empty($offer['keitaro_campaign_id'])
             ? " // кампанія #{$offer['keitaro_campaign_id']}"
             : '';
-        $crmIncludeDomain = ! empty($offer['crm_include_domain']);
-        $crmIncludeDomainConst = $crmIncludeDomain ? 'true' : 'false';
-        $crmIpCountries = $this->quote(strtoupper(preg_replace('/[^A-Z,]/', '', strtoupper((string) ($offer['crm_ip_countries'] ?? ''))) ?? ''));
-        $crmAffSub = $crmIncludeDomain ? $domain : "''";
 
         return <<<PHP
 <?php
@@ -52,10 +48,7 @@ define('CRM_AFFILIATE_ID', {$affiliate});
 define('CRM_FUNNEL', {$funnel});
 define('CRM_COUNTRY', {$country});
 
-define('CRM_INCLUDE_DOMAIN', {$crmIncludeDomainConst});
-define('CRM_IP_COUNTRIES', {$crmIpCountries});
-
-define('CRM_AFF_SUB', {$crmAffSub});
+define('CRM_AFF_SUB', '');
 define('CRM_AFF_SUB2', '');
 define('CRM_AFF_SUB3', '');
 define('CRM_AFF_SUB4', '');

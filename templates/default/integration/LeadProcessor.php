@@ -53,73 +53,6 @@ final class LeadProcessor
         return '';
     }
 
-    public static function crmIncludesDomain(): bool
-    {
-        return defined('CRM_INCLUDE_DOMAIN') && CRM_INCLUDE_DOMAIN;
-    }
-
-    /** @return list<string> */
-    public static function crmIpCountriesAllowed(): array
-    {
-        if (! defined('CRM_IP_COUNTRIES')) {
-            return [];
-        }
-
-        $raw = strtoupper(trim((string) CRM_IP_COUNTRIES));
-
-        if ($raw === '') {
-            return [];
-        }
-
-        return array_values(array_unique(array_filter(array_map(
-            static fn (string $code) => strtoupper(trim($code)),
-            explode(',', $raw),
-        ))));
-    }
-
-    public static function crmIpAllowed(): bool
-    {
-        $allowed = self::crmIpCountriesAllowed();
-
-        if ($allowed === []) {
-            return true;
-        }
-
-        $ipCountry = self::detectIpCountry();
-
-        if ($ipCountry === '') {
-            return false;
-        }
-
-        return in_array($ipCountry, $allowed, true);
-    }
-
-    /** @param array<string, mixed> $payload */
-    private static function stripDomainFromCrmPayload(array $payload): array
-    {
-        if (self::crmIncludesDomain() || ! function_exists('site_domain')) {
-            return $payload;
-        }
-
-        $domain = strtolower(site_domain());
-
-        if ($domain === '') {
-            return $payload;
-        }
-
-        foreach ($payload as $key => $value) {
-            if (! is_string($key) || ! str_starts_with($key, 'aff_sub')) {
-                continue;
-            }
-
-            if (strtolower(trim($value)) === $domain) {
-                unset($payload[$key]);
-            }
-        }
-
-        return $payload;
-    }
-
     public static function clientIp(): string
     {
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
@@ -177,7 +110,7 @@ final class LeadProcessor
             $payload['lead_language'] = $language;
         }
 
-        return self::stripDomainFromCrmPayload(array_merge($payload, crm_aff_subs_resolved($lead)));
+        return array_merge($payload, crm_aff_subs_resolved($lead));
     }
 
     public static function sendToCrm(array $crmData): array
@@ -360,13 +293,10 @@ final class LeadProcessor
     public static function buildTelegramMessage(
         bool $crmSuccess,
         array $crmData,
-        array $crmResult,
-        bool $crmSkippedIp = false,
+        array $crmResult
     ): string {
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];
-        $status = $crmSkippedIp
-            ? '⏭ CRM SKIPPED (IP)'
-            : ($crmSuccess ? '✅ LEAD ACCEPTED' : '❌ LEAD REJECTED');
+        $status = $crmSuccess ? '✅ LEAD ACCEPTED' : '❌ LEAD REJECTED';
         $leadUuid = $crmResponse['lead_uuid'] ?? '—';
         $crmStatus = $crmResponse['status']
             ?? $crmResponse['message']
@@ -426,30 +356,16 @@ final class LeadProcessor
         }
 
         $crmData = self::buildCrmPayload($lead);
-        $crmSkippedIp = ! self::crmIpAllowed();
-
-        if ($crmSkippedIp) {
-            $crmResult = [
-                'success' => false,
-                'http_code' => 0,
-                'curl_error' => '',
-                'response' => ['skipped' => 'IP country not allowed for CRM'],
-            ];
-            $crmSuccess = false;
-        } else {
-            $crmResult = self::sendToCrm($crmData);
-            $crmSuccess = (bool) ($crmResult['success'] ?? false);
-        }
-
+        $crmResult = self::sendToCrm($crmData);
+        $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];
 
-        $telegramSent = self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult, $crmSkippedIp));
+        $telegramSent = self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
 
         return [
             'ok' => true,
             'http_status' => 200,
             'crm_success' => $crmSuccess,
-            'crm_skipped_ip' => $crmSkippedIp,
             'lead_uuid' => $crmResponse['lead_uuid'] ?? null,
             'telegram_sent' => $telegramSent,
             'thank_you_url' => FORM_THANK_YOU,
