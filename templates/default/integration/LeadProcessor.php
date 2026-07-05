@@ -53,6 +53,24 @@ final class LeadProcessor
         return '';
     }
 
+    /** Чи збігається країна IP з GEO оффера (CRM_COUNTRY). */
+    public static function ipCountryMatchesOffer(): bool
+    {
+        $offerCountry = self::crmCountryCode();
+
+        if ($offerCountry === '') {
+            return true;
+        }
+
+        $ipCountry = self::detectIpCountry();
+
+        if ($ipCountry === '') {
+            return false;
+        }
+
+        return $ipCountry === $offerCountry;
+    }
+
     public static function clientIp(): string
     {
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
@@ -352,6 +370,22 @@ final class LeadProcessor
                 'ok' => false,
                 'error' => 'Missing required fields',
                 'http_status' => 422,
+            ];
+        }
+
+        $language = strtolower(trim((string) ($lead['language'] ?? SITE_LANG)));
+
+        if (! self::ipCountryMatchesOffer()) {
+            return [
+                'ok' => true,
+                'http_status' => 200,
+                'crm_success' => false,
+                'crm_skipped_geo' => true,
+                'lead_uuid' => null,
+                'telegram_sent' => false,
+                'thank_you_url' => FORM_THANK_YOU,
+                'lead_language' => $language,
+                'fullphone' => $phone,
             ];
         }
 
