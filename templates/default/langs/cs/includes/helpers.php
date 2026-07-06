@@ -52,7 +52,7 @@ function crm_aff_subs_resolved(array $lead = []): array
 {
     $subs = [];
 
-    for ($i = 1; $i <= 11; $i++) {
+    for ($i = 1; $i <= 12; $i++) {
         $key = 'aff_sub' . ($i === 1 ? '' : (string) $i);
         $value = !empty($lead[$key]) ? trim((string) $lead[$key]) : crm_aff_sub_value($i);
 

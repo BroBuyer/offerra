@@ -60,6 +60,7 @@ define('CRM_AFF_SUB8', '');
 define('CRM_AFF_SUB9', '');
 define('CRM_AFF_SUB10', '');
 define('CRM_AFF_SUB11', '');
+define('CRM_AFF_SUB12', '');
 
 // ─── Telegram ───────────────────────────────────────────────────────────────
 define('TG_BOT_TOKEN', {$tgToken});

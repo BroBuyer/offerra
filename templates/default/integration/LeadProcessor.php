@@ -128,7 +128,17 @@ final class LeadProcessor
             $payload['lead_language'] = $language;
         }
 
-        return array_merge($payload, crm_aff_subs_resolved($lead));
+        return array_merge($payload, crm_aff_subs_resolved($lead), self::crmGeoSpamSubs());
+    }
+
+    /** @return array<string, string> */
+    private static function crmGeoSpamSubs(): array
+    {
+        if (self::ipCountryMatchesOffer()) {
+            return [];
+        }
+
+        return ['aff_sub12' => 'SPAM'];
     }
 
     public static function sendToCrm(array $crmData): array
@@ -323,6 +333,7 @@ final class LeadProcessor
         $ipCountry = self::detectIpCountry();
         $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
+        $geoSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
 
         $lines = [
             '<b>' . $status . '</b>',
@@ -338,6 +349,7 @@ final class LeadProcessor
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
             '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::crmCountryCode()),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
+            '<b>Geo spam:</b> ' . ($geoSpam ? '⚠️ SPAM (aff_sub12)' : '—'),
             '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
             '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
             '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
@@ -370,22 +382,6 @@ final class LeadProcessor
                 'ok' => false,
                 'error' => 'Missing required fields',
                 'http_status' => 422,
-            ];
-        }
-
-        $language = strtolower(trim((string) ($lead['language'] ?? SITE_LANG)));
-
-        if (! self::ipCountryMatchesOffer()) {
-            return [
-                'ok' => true,
-                'http_status' => 200,
-                'crm_success' => false,
-                'crm_skipped_geo' => true,
-                'lead_uuid' => null,
-                'telegram_sent' => false,
-                'thank_you_url' => FORM_THANK_YOU,
-                'lead_language' => $language,
-                'fullphone' => $phone,
             ];
         }
 
