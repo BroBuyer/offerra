@@ -152,6 +152,7 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
     const [verificationId, setVerificationId] = useState(null);
+    const [copiedDomainId, setCopiedDomainId] = useState(null);
     const verificationInputRef = useRef(null);
     const pendingVerificationOfferId = useRef(null);
 
@@ -269,6 +270,28 @@ export default function OffersIndex({
             preserveScroll: true,
             onFinish: () => setVerificationId(null),
         });
+    };
+
+    const copyDomainUrl = async (offer) => {
+        const url = `https://${offer.domain}`;
+
+        try {
+            await navigator.clipboard.writeText(url);
+        } catch {
+            const textarea = document.createElement('textarea');
+            textarea.value = url;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        setCopiedDomainId(offer.id);
+        window.setTimeout(() => {
+            setCopiedDomainId((current) => (current === offer.id ? null : current));
+        }, 2000);
     };
 
     const activeFilterChips = useMemo(
@@ -489,13 +512,41 @@ export default function OffersIndex({
                                     )}
                                     <td>{offer.brand}</td>
                                     <td>
-                                        <a
-                                            href={`https://${offer.domain}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            {offer.domain}
-                                        </a>
+                                        <div className="domain-cell">
+                                            <a
+                                                href={`https://${offer.domain}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                {offer.domain}
+                                            </a>
+                                            <button
+                                                type="button"
+                                                className={`domain-copy${copiedDomainId === offer.id ? ' is-copied' : ''}`}
+                                                onClick={() => copyDomainUrl(offer)}
+                                                title={`Копіювати https://${offer.domain}`}
+                                                aria-label={`Копіювати https://${offer.domain}`}
+                                            >
+                                                {copiedDomainId === offer.id ? (
+                                                    <span aria-hidden="true">✓</span>
+                                                ) : (
+                                                    <svg
+                                                        aria-hidden="true"
+                                                        viewBox="0 0 24 24"
+                                                        width="14"
+                                                        height="14"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        </div>
                                     </td>
                                     <td>{offer.geo}</td>
                                     <td>{offer.lang}</td>

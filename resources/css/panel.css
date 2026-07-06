@@ -773,6 +773,45 @@ tr:last-child td { border-bottom: none; }
   color: var(--accent);
 }
 
+.domain-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 14rem;
+}
+
+.domain-cell a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.domain-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.domain-copy:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.domain-copy.is-copied {
+  color: #4ade80;
+  border-color: #4ade80;
+}
+
 .indexing-cell {
   display: flex;
   flex-direction: column;
