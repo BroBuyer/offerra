@@ -18,6 +18,27 @@ class OfferVerificationFileService
         return (bool) preg_match('/^google[a-z0-9]+\.html$/i', $filename);
     }
 
+    /** Нормалізує ім'я файлу (прибирає (1), (2) від браузера тощо). */
+    public function normalizeFilename(string $filename): ?string
+    {
+        $filename = strtolower(basename($filename));
+        $filename = preg_replace('/ \(\d+\)(?=\.html$)/', '', $filename) ?? $filename;
+
+        if ($this->isValidFilename($filename)) {
+            return $filename;
+        }
+
+        if (preg_match('/(google[a-z0-9]+\.html)/i', $filename, $matches)) {
+            $candidate = strtolower($matches[1]);
+
+            if ($this->isValidFilename($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
     public function storageDirectory(Offer $offer): string
     {
         return storage_path('app/offer-verification/'.$offer->id);
@@ -36,9 +57,9 @@ class OfferVerificationFileService
 
     public function store(Offer $offer, UploadedFile $file): string
     {
-        $originalName = strtolower(basename($file->getClientOriginalName()));
+        $canonicalName = $this->normalizeFilename($file->getClientOriginalName());
 
-        if (! $this->isValidFilename($originalName)) {
+        if ($canonicalName === null) {
             throw new InvalidArgumentException(
                 'Очікується файл Google Search Console: googleXXXXXXXX.html',
             );
@@ -58,14 +79,14 @@ class OfferVerificationFileService
 
         $directory = $this->storageDirectory($offer);
         File::ensureDirectoryExists($directory);
-        File::put($directory.DIRECTORY_SEPARATOR.$originalName, $contents);
+        File::put($directory.DIRECTORY_SEPARATOR.$canonicalName, $contents);
 
-        $offer->update(['verification_filename' => $originalName]);
+        $offer->update(['verification_filename' => $canonicalName]);
         $offer->refresh();
 
         $this->syncToOfferFolder($offer);
 
-        return $originalName;
+        return $canonicalName;
     }
 
     public function delete(Offer $offer): void
@@ -141,7 +162,7 @@ class OfferVerificationFileService
         foreach (File::files($offerRoot) as $file) {
             $name = $file->getFilename();
 
-            if ($this->isValidFilename($name) && $name !== $keepFilename) {
+            if ($this->normalizeFilename($name) !== null && $name !== $keepFilename) {
                 File::delete($file->getPathname());
             }
         }
