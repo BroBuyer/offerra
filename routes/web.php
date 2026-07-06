@@ -18,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
+    Route::post('/offers/{offer}/verification', [OfferController::class, 'storeVerification'])->name('offers.verification.store');
+    Route::delete('/offers/{offer}/verification', [OfferController::class, 'destroyVerification'])->name('offers.verification.destroy');
     Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
     Route::get('/preview/{template}/{path?}', [TemplatePreviewController::class, 'show'])
         ->where('path', '.*')

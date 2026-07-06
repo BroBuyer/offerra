@@ -1,7 +1,7 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 function statusBadge(status) {
     switch (status) {
@@ -151,6 +151,9 @@ export default function OffersIndex({
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+    const [verificationId, setVerificationId] = useState(null);
+    const verificationInputRef = useRef(null);
+    const pendingVerificationOfferId = useRef(null);
 
     const pagination = resolveOffersPagination(offers, filters);
     const rows = pagination.rows;
@@ -230,6 +233,44 @@ export default function OffersIndex({
         );
     };
 
+    const pickVerificationFile = (offer) => {
+        pendingVerificationOfferId.current = offer.id;
+        verificationInputRef.current?.click();
+    };
+
+    const uploadVerificationFile = (event) => {
+        const file = event.target.files?.[0];
+        const offerId = pendingVerificationOfferId.current;
+        event.target.value = '';
+
+        if (!file || !offerId) {
+            return;
+        }
+
+        setVerificationId(offerId);
+
+        const formData = new FormData();
+        formData.append('verification_file', file);
+
+        router.post(route('offers.verification.store', offerId), formData, {
+            preserveScroll: true,
+            forceFormData: true,
+            onFinish: () => setVerificationId(null),
+        });
+    };
+
+    const removeVerificationFile = (offer) => {
+        if (!window.confirm('Видалити файл верифікації Google?')) {
+            return;
+        }
+
+        setVerificationId(offer.id);
+        router.delete(route('offers.verification.destroy', offer.id), {
+            preserveScroll: true,
+            onFinish: () => setVerificationId(null),
+        });
+    };
+
     const activeFilterChips = useMemo(
         () => buildActiveFilterChips(filters, users),
         [filters, users],
@@ -248,6 +289,12 @@ export default function OffersIndex({
             {errors?.deploy && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.deploy}</p>
+                </div>
+            )}
+
+            {errors?.verification && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.verification}</p>
                 </div>
             )}
 
@@ -400,6 +447,13 @@ export default function OffersIndex({
             </div>
 
             <div className="table-wrap">
+                <input
+                    ref={verificationInputRef}
+                    type="file"
+                    accept=".html,text/html"
+                    className="sr-only"
+                    onChange={uploadVerificationFile}
+                />
                 <table>
                     <thead>
                         <tr>
@@ -462,30 +516,68 @@ export default function OffersIndex({
                                         )}
                                     </td>
                                     <td>
-                                        {canManageOffer(offer) ? (
-                                            <label
-                                                className="indexing-check"
-                                                title={
-                                                    offer.submitted_for_indexing && offer.indexed_at
-                                                        ? `Подано: ${offer.indexed_at}`
-                                                        : 'Подано на індексацію (GSC / IndexNow)'
-                                                }
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    checked={Boolean(offer.submitted_for_indexing)}
-                                                    disabled={indexingId === offer.id}
-                                                    onChange={(e) => toggleIndexing(offer, e.target.checked)}
-                                                />
-                                                <span className="indexing-check__label">
-                                                    {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                        <div className="indexing-cell">
+                                            {canManageOffer(offer) ? (
+                                                <>
+                                                    <label
+                                                        className="indexing-check"
+                                                        title={
+                                                            offer.submitted_for_indexing && offer.indexed_at
+                                                                ? `Подано: ${offer.indexed_at}`
+                                                                : 'Подано на індексацію (GSC / IndexNow)'
+                                                        }
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={Boolean(offer.submitted_for_indexing)}
+                                                            disabled={indexingId === offer.id}
+                                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                                        />
+                                                        <span className="indexing-check__label">
+                                                            {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                                        </span>
+                                                    </label>
+                                                    <div className="verification-file">
+                                                        {offer.verification_filename ? (
+                                                            <>
+                                                                <a
+                                                                    href={offer.verification_url}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="verification-file__link"
+                                                                    title="Відкрити файл верифікації"
+                                                                >
+                                                                    {offer.verification_filename}
+                                                                </a>
+                                                                <button
+                                                                    type="button"
+                                                                    className="verification-file__remove"
+                                                                    disabled={verificationId === offer.id}
+                                                                    onClick={() => removeVerificationFile(offer)}
+                                                                    title="Видалити файл"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-ghost btn-sm verification-file__upload"
+                                                                disabled={verificationId === offer.id}
+                                                                onClick={() => pickVerificationFile(offer)}
+                                                                title="Завантажити google….html з Search Console"
+                                                            >
+                                                                GSC файл
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <span className="field-hint">
+                                                    {offer.submitted_for_indexing ? 'Так' : '—'}
                                                 </span>
-                                            </label>
-                                        ) : (
-                                            <span className="field-hint">
-                                                {offer.submitted_for_indexing ? 'Так' : '—'}
-                                            </span>
-                                        )}
+                                            )}
+                                        </div>
                                     </td>
                                     <td>
                                         {canDeployOffer(offer) ? (

@@ -9,6 +9,7 @@ use App\Services\OfferConfigBuilder;
 use App\Services\OfferGenerator;
 use App\Services\OfferScanner;
 use App\Services\OfferStatusReconciler;
+use App\Services\OfferVerificationFileService;
 use App\Services\TemplateCatalog;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +31,10 @@ class OfferServiceProvider extends ServiceProvider
         $this->app->singleton(OfferConfigBuilder::class);
         $this->app->singleton(DeployConnection::class);
 
+        $this->app->singleton(OfferVerificationFileService::class, function () {
+            return new OfferVerificationFileService(config('offerra.offers_path'));
+        });
+
         $this->app->singleton(DeployService::class, function ($app) {
             return new DeployService(
                 $app->make(DeployConnection::class),
@@ -43,6 +48,7 @@ class OfferServiceProvider extends ServiceProvider
                 $app->make(OfferConfigBuilder::class),
                 $app->make(KeitaroClient::class),
                 $app->make(TemplateCatalog::class),
+                $app->make(OfferVerificationFileService::class),
                 config('offerra.offers_path'),
                 config('offerra.templates_path'),
             );

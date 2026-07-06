@@ -14,6 +14,7 @@ class OfferGenerator
         private readonly OfferConfigBuilder $configBuilder,
         private readonly KeitaroClient $keitaroClient,
         private readonly TemplateCatalog $templateCatalog,
+        private readonly OfferVerificationFileService $verificationFiles,
         private readonly string $offersPath,
         private readonly string $templatesPath,
     ) {}
@@ -313,6 +314,8 @@ class OfferGenerator
 
         $this->migrateLegacyAssets($targetPath);
 
+        $this->verificationFiles->syncToOfferFolder($offer);
+
         return $targetPath;
     }
 
@@ -358,6 +361,7 @@ class OfferGenerator
         File::put($configPath, $this->configBuilder->build($input, $settings));
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);
+        $this->verificationFiles->syncToOfferFolder($offer);
     }
 
     /**

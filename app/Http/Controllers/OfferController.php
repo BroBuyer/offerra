@@ -7,9 +7,11 @@ use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
 use App\Services\OfferGenerator;
+use App\Services\OfferVerificationFileService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -258,5 +260,53 @@ class OfferController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function storeVerification(
+        Offer $offer,
+        Request $request,
+        OfferVerificationFileService $verification,
+    ): RedirectResponse {
+        $this->authorizeOfferManagement($offer);
+
+        $request->validate([
+            'verification_file' => ['required', 'file', 'max:64'],
+        ]);
+
+        try {
+            $filename = $verification->store($offer, $request->file('verification_file'));
+        } catch (\InvalidArgumentException $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['verification' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Файл верифікації збережено: {$filename}. Натисніть «Деплой».");
+    }
+
+    public function destroyVerification(
+        Offer $offer,
+        OfferVerificationFileService $verification,
+    ): RedirectResponse {
+        $this->authorizeOfferManagement($offer);
+
+        if (filled($offer->verification_filename)) {
+            $verification->delete($offer);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Файл верифікації видалено.');
+    }
+
+    private function authorizeOfferManagement(Offer $offer): void
+    {
+        $user = auth()->user();
+
+        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
     }
 }
