@@ -385,12 +385,15 @@ final class LeadProcessor
             ];
         }
 
+        $geoSpam = ! self::ipCountryMatchesOffer();
         $crmData = self::buildCrmPayload($lead);
         $crmResult = self::sendToCrm($crmData);
         $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];
 
-        $telegramSent = self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
+        $telegramSent = $geoSpam
+            ? false
+            : self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
 
         return [
             'ok' => true,
