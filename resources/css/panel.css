@@ -593,17 +593,108 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--accent);
 }
 
-.phone-geo-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.5rem 0 0.85rem;
+.phone-geo-select {
+  position: relative;
 }
 
-.chip-btn {
+.phone-geo-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
   cursor: pointer;
-  border: 1px solid transparent;
-  font: inherit;
+  text-align: left;
+}
+
+.phone-geo-select.is-open .phone-geo-select__trigger,
+.phone-geo-select__trigger:hover {
+  border-color: var(--accent);
+}
+
+.phone-geo-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phone-geo-select__badge {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.phone-geo-select.is-open .phone-geo-select__badge {
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+.phone-geo-select__panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.phone-geo-select__search {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.phone-geo-select__search:focus {
+  outline: none;
+}
+
+.phone-geo-select__list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0.35rem 0;
+}
+
+.phone-geo-select__option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.phone-geo-select__option:hover {
+  background: var(--surface-2);
+}
+
+.phone-geo-select__empty {
+  padding: 0.75rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 /* Phone override */

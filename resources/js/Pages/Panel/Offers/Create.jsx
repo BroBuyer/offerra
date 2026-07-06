@@ -33,6 +33,107 @@ function uniquePhonePresets(geoPresets) {
     });
 }
 
+function phoneOptionCode(item) {
+    return (item.phone ?? item.code.toLowerCase()).toLowerCase();
+}
+
+function PhoneGeoSelect({ options, selected, onToggle }) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState('');
+    const rootRef = useRef(null);
+
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) {
+            return options;
+        }
+
+        return options.filter((item) => {
+            const code = phoneOptionCode(item);
+
+            return code.includes(q)
+                || item.code.toLowerCase().includes(q)
+                || item.name.toLowerCase().includes(q);
+        });
+    }, [options, query]);
+
+    useEffect(() => {
+        if (!open) {
+            return undefined;
+        }
+
+        const onDoc = (event) => {
+            if (rootRef.current && !rootRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+
+        const onKey = (event) => {
+            if (event.key === 'Escape') {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', onDoc);
+        document.addEventListener('keydown', onKey);
+
+        return () => {
+            document.removeEventListener('mousedown', onDoc);
+            document.removeEventListener('keydown', onKey);
+        };
+    }, [open]);
+
+    const summary = selected.length
+        ? selected.map((code) => code.toUpperCase()).join(', ')
+        : 'Оберіть країни…';
+
+    return (
+        <div className={`phone-geo-select${open ? ' is-open' : ''}`} ref={rootRef}>
+            <button
+                type="button"
+                className="phone-geo-select__trigger"
+                onClick={() => setOpen((value) => !value)}
+                aria-expanded={open}
+            >
+                <span className="phone-geo-select__value">{summary}</span>
+                <span className="phone-geo-select__badge">{selected.length}</span>
+            </button>
+            {open && (
+                <div className="phone-geo-select__panel">
+                    <input
+                        type="search"
+                        className="phone-geo-select__search"
+                        placeholder="Пошук країни…"
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        autoFocus
+                    />
+                    <div className="phone-geo-select__list">
+                        {filtered.map((item) => {
+                            const code = phoneOptionCode(item);
+                            const active = selected.includes(code);
+
+                            return (
+                                <label key={code} className="phone-geo-select__option">
+                                    <input
+                                        type="checkbox"
+                                        checked={active}
+                                        onChange={() => onToggle(code)}
+                                    />
+                                    <span>{code.toUpperCase()} — {item.name}</span>
+                                </label>
+                            );
+                        })}
+                        {filtered.length === 0 && (
+                            <p className="phone-geo-select__empty">Нічого не знайдено</p>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 function templateLabel(templates, templateId) {
     return templates.find((item) => item.id === templateId)?.name ?? templateId;
 }
@@ -377,42 +478,32 @@ export default function OffersCreate({
                                 )}
                             </div>
                         </div>
-                        <div className="field">
-                            <label>Phone GEO (форма)</label>
-                            <p className="field-hint">
-                                Оберіть країни для телефону. За IP відвідувача (Cloudflare) обирається відповідний код,
-                                якщо він у списку — інакше дефолтний.
-                            </p>
-                            <div className="phone-geo-chips">
-                                {phoneOptions.map((item) => {
-                                    const code = (item.phone ?? item.code.toLowerCase()).toLowerCase();
-                                    const active = selectedPhones.includes(code);
-
-                                    return (
-                                        <button
-                                            key={code}
-                                            type="button"
-                                            className={`chip chip-btn ${active ? 'is-on' : ''}`}
-                                            onClick={() => togglePhoneCountry(code)}
-                                        >
-                                            {code.toUpperCase()} — {item.name}
-                                        </button>
-                                    );
-                                })}
+                        <div className="field-row">
+                            <div className="field">
+                                <label>Phone GEO (форма)</label>
+                                <PhoneGeoSelect
+                                    options={phoneOptions}
+                                    selected={selectedPhones}
+                                    onToggle={togglePhoneCountry}
+                                />
+                                <p className="field-hint">
+                                    За IP (Cloudflare) підставляється код зі списку, інакше — дефолтний.
+                                </p>
                             </div>
-                            <label htmlFor="phone">Дефолтний phone</label>
-                            <select
-                                id="phone"
-                                value={data.phone}
-                                onChange={(e) => update('phone', e.target.value.toLowerCase())}
-                            >
-                                {selectedPhones.map((code) => (
-                                    <option key={code} value={code}>
-                                        {code.toUpperCase()}
-                                    </option>
-                                ))}
-                            </select>
-                            <p className="field-hint">CRM phone залишається окремим полем у GEO; тут — коди для intl-tel-input.</p>
+                            <div className="field">
+                                <label htmlFor="phone">Дефолтний phone</label>
+                                <select
+                                    id="phone"
+                                    value={data.phone}
+                                    onChange={(e) => update('phone', e.target.value.toLowerCase())}
+                                >
+                                    {selectedPhones.map((code) => (
+                                        <option key={code} value={code}>
+                                            {code.toUpperCase()}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </section>
