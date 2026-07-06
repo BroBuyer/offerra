@@ -16,7 +16,21 @@ function resolveMarket(geo, geoPresets, availableLanguages) {
     const suggested = preset?.lang && langCodes.includes(preset.lang) ? preset.lang : availableLanguages[0]?.code;
     const phone = preset?.phone ?? code.toLowerCase();
 
-    return { geo: code, lang: suggested ?? '', phone };
+    return { geo: code, lang: suggested ?? '', phone, phone_countries: [phone] };
+}
+
+function uniquePhonePresets(geoPresets) {
+    const seen = new Set();
+
+    return geoPresets.filter((item) => {
+        const code = (item.phone ?? item.code.toLowerCase()).toLowerCase();
+        if (seen.has(code)) {
+            return false;
+        }
+        seen.add(code);
+
+        return true;
+    });
 }
 
 function templateLabel(templates, templateId) {
@@ -36,6 +50,7 @@ function buildDefaults(templates) {
         geo: 'TR',
         lang: defaultLanguages[0]?.code ?? 'en',
         phone: 'tr',
+        phone_countries: ['tr'],
         create_keitaro: true,
     };
 }
@@ -109,7 +124,40 @@ export default function OffersCreate({
 
     const updateGeo = (raw) => {
         const resolved = resolveMarket(raw, geoPresets, availableLanguages);
-        setData((prev) => ({ ...prev, ...resolved }));
+        setData((prev) => {
+            const countries = new Set(prev.phone_countries?.length ? prev.phone_countries : [prev.phone]);
+            if (resolved.phone) {
+                countries.add(resolved.phone);
+            }
+            const list = [...countries];
+
+            return { ...prev, ...resolved, phone_countries: list, phone: resolved.phone };
+        });
+    };
+
+    const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
+    const selectedPhones = data.phone_countries?.length ? data.phone_countries : (data.phone ? [data.phone] : []);
+
+    const togglePhoneCountry = (code) => {
+        const normalized = code.toLowerCase();
+        setData((prev) => {
+            const current = prev.phone_countries?.length ? prev.phone_countries : [prev.phone].filter(Boolean);
+            const set = new Set(current);
+
+            if (set.has(normalized)) {
+                if (set.size <= 1) {
+                    return prev;
+                }
+                set.delete(normalized);
+            } else {
+                set.add(normalized);
+            }
+
+            const list = [...set];
+            const phone = list.includes(prev.phone) ? prev.phone : list[0];
+
+            return { ...prev, phone_countries: list, phone };
+        });
     };
 
     const update = (field, value) => {
@@ -141,7 +189,7 @@ export default function OffersCreate({
 
     const canProceedStep0 = data.brand.trim() && data.domain.trim();
     const canProceedStep1 = Boolean(data.template) && templates.length > 0;
-    const canProceedStep2 = data.geo.length === 2 && data.lang && data.phone && availableLanguages.length > 0;
+    const canProceedStep2 = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
 
     return (
         <PanelLayout title="Створити оффер">
@@ -330,15 +378,41 @@ export default function OffersCreate({
                             </div>
                         </div>
                         <div className="field">
-                            <label htmlFor="phone">Phone (CRM)</label>
-                            <input
+                            <label>Phone GEO (форма)</label>
+                            <p className="field-hint">
+                                Оберіть країни для телефону. За IP відвідувача (Cloudflare) обирається відповідний код,
+                                якщо він у списку — інакше дефолтний.
+                            </p>
+                            <div className="phone-geo-chips">
+                                {phoneOptions.map((item) => {
+                                    const code = (item.phone ?? item.code.toLowerCase()).toLowerCase();
+                                    const active = selectedPhones.includes(code);
+
+                                    return (
+                                        <button
+                                            key={code}
+                                            type="button"
+                                            className={`chip chip-btn ${active ? 'is-on' : ''}`}
+                                            onClick={() => togglePhoneCountry(code)}
+                                        >
+                                            {code.toUpperCase()} — {item.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <label htmlFor="phone">Дефолтний phone</label>
+                            <select
                                 id="phone"
-                                type="text"
                                 value={data.phone}
                                 onChange={(e) => update('phone', e.target.value.toLowerCase())}
-                                placeholder="ie, gb, tr…"
-                            />
-                            <p className="field-hint">Авто з GEO, можна перевизначити (GE → ge, IE → ie)</p>
+                            >
+                                {selectedPhones.map((code) => (
+                                    <option key={code} value={code}>
+                                        {code.toUpperCase()}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="field-hint">CRM phone залишається окремим полем у GEO; тут — коди для intl-tel-input.</p>
                         </div>
                     </div>
                 </section>
@@ -379,7 +453,7 @@ export default function OffersCreate({
                             <div className="summary-row"><span>Домен</span><span>{data.domain || '—'}</span></div>
                             <div className="summary-row"><span>Шаблон</span><span>{templateLabel(templates, data.template)}</span></div>
                             <div className="summary-row"><span>GEO / мова</span><span>{data.geo} / {data.lang}</span></div>
-                            <div className="summary-row"><span>Phone</span><span>{data.phone}</span></div>
+                            <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
                         </dl>
                     </div>

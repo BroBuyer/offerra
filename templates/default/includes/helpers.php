@@ -71,6 +71,46 @@ function form_allowed_countries(): array
     return array_values(array_unique($raw));
 }
 
+function form_ip_country(): string
+{
+    $cf = strtoupper(trim((string) ($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
+
+    if ($cf !== '' && $cf !== 'XX' && preg_match('/^[A-Z]{2}$/', $cf)) {
+        return strtolower($cf);
+    }
+
+    return '';
+}
+
+function form_phone_code_from_ip(string $ipCountry): string
+{
+    $code = strtolower(trim($ipCountry));
+
+    return $code === 'uk' ? 'gb' : $code;
+}
+
+function form_visitor_phone_country(): string
+{
+    $allowed = form_allowed_countries();
+    $default = strtolower(trim((string) FORM_PHONE_COUNTRY));
+
+    if ($allowed === []) {
+        return $default !== '' ? $default : 'gb';
+    }
+
+    $ipCode = form_phone_code_from_ip(form_ip_country());
+
+    if ($ipCode !== '' && in_array($ipCode, $allowed, true)) {
+        return $ipCode;
+    }
+
+    if ($default !== '' && in_array($default, $allowed, true)) {
+        return $default;
+    }
+
+    return $allowed[0];
+}
+
 function platform_image_path(): string
 {
     static $resolved;

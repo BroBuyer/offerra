@@ -28,6 +28,31 @@ class StoreOfferRequest extends FormRequest
                 'domain' => DomainName::normalize((string) $this->input('domain')),
             ]);
         }
+
+        $phone = strtolower(trim((string) $this->input('phone', '')));
+        $countries = collect($this->input('phone_countries', []))
+            ->map(static fn ($code) => strtolower(trim((string) $code)))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($phone !== '' && ! in_array($phone, $countries, true)) {
+            array_unshift($countries, $phone);
+        }
+
+        if ($countries === [] && $phone !== '') {
+            $countries = [$phone];
+        }
+
+        if ($phone === '' && $countries !== []) {
+            $phone = $countries[0];
+        }
+
+        $this->merge([
+            'phone' => $phone,
+            'phone_countries' => $countries,
+        ]);
     }
 
     /**
@@ -47,6 +72,8 @@ class StoreOfferRequest extends FormRequest
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
             'phone' => ['required', 'string', 'max:8', 'alpha:ascii'],
+            'phone_countries' => ['required', 'array', 'min:1'],
+            'phone_countries.*' => ['string', 'max:8', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'create_keitaro' => ['boolean'],
         ];

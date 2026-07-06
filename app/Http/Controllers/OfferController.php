@@ -195,6 +195,7 @@ class OfferController extends Controller
                 'geo' => strtoupper($request->string('geo')->toString()),
                 'lang' => strtolower($request->string('lang')->toString()),
                 'phone' => strtolower($request->string('phone')->toString()),
+                'phone_countries' => $request->input('phone_countries', []),
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
             ]);

@@ -3,7 +3,7 @@ require_once __DIR__ . '/config.php';
 
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
-$phone_country = strtolower(FORM_PHONE_COUNTRY);
+$phone_country = form_visitor_phone_country();
 $allowed_countries = form_allowed_countries();
 $lead_cookie = site_slug() . '_lead';
 ?>

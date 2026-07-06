@@ -22,7 +22,8 @@ class OfferConfigBuilder
         $affiliate = $this->quote($settings->affiliate_tag ?? 'BRO');
         $funnel = $this->quote($offer['brand']);
         $country = $this->quote(strtoupper($offer['geo']));
-        $phone = $this->quote(strtolower($offer['phone']));
+        $phone = $this->quote(strtolower((string) $offer['phone']));
+        $allowedPhones = $this->quote($this->phoneCountriesCsv($offer));
         $tgToken = $this->quote(SecretValue::normalize($settings->tg_bot_token ?? ''));
         $tgChat = $this->quote($settings->tg_chat_id ?? '');
         $tgGroupChat = $this->quote($settings->tg_group_chat_id ?? '');
@@ -67,7 +68,7 @@ define('TG_GROUP_CHAT_ID', {$tgGroupChat});
 
 // ─── Форма ──────────────────────────────────────────────────────────────────
 define('FORM_PHONE_COUNTRY', {$phone});
-define('FORM_ALLOWED_COUNTRIES', {$phone});
+define('FORM_ALLOWED_COUNTRIES', {$allowedPhones});
 define('FORM_THANK_YOU', 'Thanks.php');
 define('FORM_LEAD_COOKIE_DAYS', 30);
 
@@ -88,5 +89,32 @@ PHP;
     private function quote(string $value): string
     {
         return "'".str_replace(["\\", "'"], ["\\\\", "\\'"], $value)."'";
+    }
+
+    /**
+     * @param  array<string, mixed>  $offer
+     */
+    public function phoneCountriesCsv(array $offer): string
+    {
+        $default = strtolower(trim((string) ($offer['phone'] ?? '')));
+        $raw = $offer['phone_countries'] ?? '';
+
+        if (is_array($raw)) {
+            $list = array_map(static fn ($code) => strtolower(trim((string) $code)), $raw);
+        } else {
+            $list = array_map('trim', explode(',', strtolower((string) $raw)));
+        }
+
+        $list = array_values(array_unique(array_filter($list)));
+
+        if ($default !== '' && ! in_array($default, $list, true)) {
+            array_unshift($list, $default);
+        }
+
+        if ($list === []) {
+            return $default !== '' ? $default : 'gb';
+        }
+
+        return implode(',', $list);
     }
 }
