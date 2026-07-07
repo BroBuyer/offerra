@@ -40,7 +40,7 @@ $og_image = page_url($og_image_path ?? og_image_path());
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= asset('static/css/main.css') ?>">
-  <link rel="stylesheet" href="<?= asset('integration/default-integration.css') ?>">
+  <link rel="stylesheet" href="<?= asset_version('integration/default-integration.css') ?>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/css/intlTelInput.css">
 
   <?php render_schema($active_page === 'home' ? 'home' : 'page', $schema_extra ?? []); ?>

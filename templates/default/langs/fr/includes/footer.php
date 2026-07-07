@@ -38,7 +38,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/intlTelInput.min.js"></script>
-<script src="<?= asset('integration/validation.js') ?>"></script>
+<script src="<?= asset_version('integration/validation.js') ?>"></script>
 <script src="<?= asset('static/js/main.js') ?>"></script>
 </body>
 </html>

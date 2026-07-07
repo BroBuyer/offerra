@@ -207,6 +207,18 @@ function asset(string $path): string
     return './'.ltrim($path, '/');
 }
 
+function asset_version(string $path): string
+{
+    $url = asset($path);
+    $local = dirname(__DIR__).DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, ltrim($path, '/'));
+
+    if (is_file($local)) {
+        return $url.'?v='.filemtime($local);
+    }
+
+    return $url;
+}
+
 function e(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
