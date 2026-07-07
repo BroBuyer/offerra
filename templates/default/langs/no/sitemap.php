@@ -18,7 +18,7 @@ $platform_url = page_url(platform_image_path());
 $platform_title = SITE_NAME . ' AI Trading Plattform';
 $platform_caption = platform_image_caption();
 
-echo '<?xml version="1.0" ogcoding="UTF-8"?>' . "\n";
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">

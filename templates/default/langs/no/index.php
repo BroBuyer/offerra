@@ -129,7 +129,7 @@ require_once __DIR__ . '/includes/header.php';
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>
           </div>
           <h3>Tilgang til flere markeder</h3>
-          <p>Handle krypto, forex, aksjer og råvarer i ett oghetlig miljø.</p>
+          <p>Handle krypto, forex, aksjer og råvarer i ett enhetlig miljø.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
@@ -288,7 +288,7 @@ require_once __DIR__ . '/includes/header.php';
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Stabil og pålitelig. Å åpne og konto er ogkelt, vilkårene er tydelige og teamet vet hva det gjør. En overraskende komfortabel handelsopplevelse.</p>
+          <p class="review-text">Stabil og pålitelig. Å åpne en konto er enkelt, vilkårene er tydelige og teamet vet hva det gjør. En overraskende komfortabel handelsopplevelse.</p>
           <div class="review-author">
             <div class="review-avatar">DK</div>
             <div>
@@ -398,7 +398,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Betalingskort, bankoverføringer, PayPal, e-lommebøker</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Tilgang per oghet</div>
+          <div class="specs-label">Tilgang per enhet</div>
           <div class="specs-value">Web, nettbrett og mobil – fullt responsiv</div>
         </div>
         <div class="specs-row">

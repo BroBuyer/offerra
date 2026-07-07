@@ -59,7 +59,7 @@ require_once __DIR__ . '/includes/header.php';
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           </div>
           <h3>Porteføljeovervåking</h3>
-          <p>En oghetlig oversikt over posisjoner, P&amp;L og allokering mellom krypto og tradisjonelle markeder.</p>
+          <p>En enhetlig oversikt over posisjoner, P&amp;L og allokering mellom krypto og tradisjonelle markeder.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">

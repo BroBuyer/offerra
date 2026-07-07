@@ -119,7 +119,7 @@ final class LeadProcessor
             return [
                 'success' => false,
                 'http_code' => 0,
-                'curl_error' => 'PHP curl extension is not ogabled',
+                'curl_error' => 'PHP curl extension is not enabled',
                 'response' => ['error' => 'Enable extension=curl in php.ini and restart the server'],
             ];
         }
@@ -273,7 +273,7 @@ final class LeadProcessor
 
         $json = json_encode($log, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
-            $json = '{"error":"Failed to ogcode CRM response"}';
+            $json = '{"error":"Failed to encode CRM response"}';
         }
 
         $maxLen = 2800;

@@ -5,7 +5,7 @@
  * @noinspection PhpMissingStrictTypesDeclarationInspection
  * @noinspection PhpMissingReturnTypeInspection
  * @noinspection PhpStrFunctionsInspection
- * @noinspection PhpErsetCanBeReplacedWithCoalesceInspection
+ * @noinspection PhpIssetCanBeReplacedWithCoalesceInspection
  */
 
 /**
@@ -271,7 +271,7 @@ class KClient
         $this->params[self::FORCE_REDIRECT_OFFER] = 1;
     }
 
-    public function ogableStaticServing()
+    public function enableStaticServing()
     {
         $this->params[self::SELF_STATIC_SERVING] = 1;
     }

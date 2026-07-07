@@ -161,7 +161,7 @@ function keitaro_bootstrap(): void
 
     if (!extension_loaded('curl')) {
         if (defined('KEITARO_DEBUG') && KEITARO_DEBUG) {
-            error_log('[Keitaro] PHP extension curl is not ogabled');
+            error_log('[Keitaro] PHP extension curl is not enabled');
         }
 
         return;
