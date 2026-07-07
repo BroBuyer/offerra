@@ -1009,6 +1009,23 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   font-size: 0.85rem;
 }
 
+.filter-bar__search {
+  min-width: 10rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.filter-bar__search:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
 .filter-bar__date-range {
   display: flex;
   align-items: center;

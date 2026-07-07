@@ -75,6 +75,7 @@ class OfferController extends Controller
         $perPage = request()->integer('per_page', 30);
 
         return [
+            'brand' => trim(request()->string('brand')->toString()),
             'geo' => strtoupper(request()->string('geo')->toString()),
             'lang' => strtolower(request()->string('lang')->toString()),
             'indexing' => request()->string('indexing')->toString(),
@@ -114,6 +115,10 @@ class OfferController extends Controller
      */
     private function applyOfferFilters(Builder $query, array $filters, Carbon $today): void
     {
+        if ($filters['brand'] !== '') {
+            $query->where('brand', 'like', '%'.$filters['brand'].'%');
+        }
+
         if ($filters['geo'] !== '') {
             $query->where('geo', $filters['geo']);
         }

@@ -68,6 +68,14 @@ function buildQueryParams(filters, overrides = {}) {
 function buildActiveFilterChips(filters, users) {
     const chips = [];
 
+    if (filters.brand) {
+        chips.push({
+            id: 'brand',
+            label: `Бренд: ${filters.brand}`,
+            clear: { brand: '' },
+        });
+    }
+
     if (filters.geo) {
         chips.push({
             id: 'geo',
@@ -176,6 +184,7 @@ export default function OffersIndex({
     const [verificationId, setVerificationId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
+    const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const verificationInputRef = useRef(null);
     const pendingVerificationOfferId = useRef(null);
 
@@ -190,6 +199,10 @@ export default function OffersIndex({
             clearWizardState();
         }
     }, [flash?.success]);
+
+    useEffect(() => {
+        setBrandQuery(filters.brand ?? '');
+    }, [filters.brand]);
 
     const reloadOffers = (overrides = {}, { resetPage = true } = {}) => {
         const next = { ...filters, ...overrides };
@@ -207,6 +220,7 @@ export default function OffersIndex({
 
     const clearAllFilters = () => {
         reloadOffers({
+            brand: '',
             geo: '',
             lang: '',
             indexing: '',
@@ -220,6 +234,18 @@ export default function OffersIndex({
     const clearFilter = (overrides) => {
         reloadOffers(overrides);
     };
+
+    useEffect(() => {
+        if (brandQuery === (filters.brand ?? '')) {
+            return undefined;
+        }
+
+        const timeout = window.setTimeout(() => {
+            reloadOffers({ brand: brandQuery });
+        }, 350);
+
+        return () => window.clearTimeout(timeout);
+    }, [brandQuery, filters.brand]);
 
     const deployOffer = (offer) => {
         setDeployingId(offer.id);
@@ -387,6 +413,14 @@ export default function OffersIndex({
             )}
 
             <div className="filter-bar">
+                <input
+                    type="search"
+                    className="filter-bar__search"
+                    placeholder="Бренд…"
+                    value={brandQuery}
+                    onChange={(event) => setBrandQuery(event.target.value)}
+                    aria-label="Пошук за брендом"
+                />
                 <select
                     aria-label="GEO"
                     value={filters.geo ?? ''}
