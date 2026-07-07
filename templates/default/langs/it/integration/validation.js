@@ -144,8 +144,7 @@ function setupFormValidation(form) {
 
   const iti = window.intlTelInput(phone, {
     utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js',
-    separateDialCode: !singleCountry,
-    showFlags: true,
+    separateDialCode: true,
     initialCountry: singleCountry ? onlyCountries[0] : phoneCountry,
     onlyCountries: onlyCountries.length ? onlyCountries : undefined,
     allowDropdown: !singleCountry,
@@ -155,6 +154,14 @@ function setupFormValidation(form) {
     const wrap = phone.closest('.iti');
     wrap?.classList.add('iti--single-country');
     wrap?.querySelector('.iti__selected-country')?.setAttribute('aria-disabled', 'true');
+    wrap?.querySelector('.iti__selected-country')?.addEventListener(
+      'mousedown',
+      (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      },
+      true,
+    );
   }
 
   phone.addEventListener('input', () => {

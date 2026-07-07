@@ -13,6 +13,10 @@
   pointer-events: none;
 }
 
+.iti--single-country .iti__dropdown-content {
+  display: none !important;
+}
+
 .leadform { position: relative; }
 
 .form-preloader {
