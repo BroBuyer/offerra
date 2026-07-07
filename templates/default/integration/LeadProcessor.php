@@ -53,22 +53,41 @@ final class LeadProcessor
         return '';
     }
 
-    /** Чи збігається країна IP з GEO оффера (CRM_COUNTRY). */
+    /** Чи збігається країна IP з GEO оффера або дозволеними phone GEO. */
     public static function ipCountryMatchesOffer(): bool
     {
-        $offerCountry = self::crmCountryCode();
-
-        if ($offerCountry === '') {
-            return true;
-        }
-
         $ipCountry = self::detectIpCountry();
 
         if ($ipCountry === '') {
             return false;
         }
 
-        return $ipCountry === $offerCountry;
+        $offerCountry = self::crmCountryCode();
+
+        if ($offerCountry !== '' && $ipCountry === $offerCountry) {
+            return true;
+        }
+
+        if (! function_exists('form_allowed_countries')) {
+            return false;
+        }
+
+        $allowed = form_allowed_countries();
+
+        if ($allowed === []) {
+            return $offerCountry === '';
+        }
+
+        $ipPhoneCode = self::ipToPhoneCountryCode($ipCountry);
+
+        return $ipPhoneCode !== '' && in_array($ipPhoneCode, $allowed, true);
+    }
+
+    private static function ipToPhoneCountryCode(string $ipCountry): string
+    {
+        $code = strtolower(trim($ipCountry));
+
+        return $code === 'uk' ? 'gb' : $code;
     }
 
     public static function clientIp(): string
