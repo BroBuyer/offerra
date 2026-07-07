@@ -19,7 +19,7 @@ function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
-        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO',
+        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'no' => 'nb-NO',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK',
     ];
     $lang = strtolower(SITE_LANG);
@@ -154,12 +154,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' plateforme de trading sur mobile — graphique BTC/USDT og direct, carnet d\'ordres et interface d\'achat/vente';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — trading mobile avec graphiques de cryptomonnaies og temps réel';
 }
 
 function offer_is_preview(): bool
