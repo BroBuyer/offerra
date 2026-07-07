@@ -6,6 +6,14 @@
   cursor: default;
 }
 
+.iti--single-country .iti__arrow {
+  display: none;
+}
+
+.iti--single-country .iti__country-container {
+  pointer-events: none;
+}
+
 .leadform { position: relative; }
 
 .form-preloader {

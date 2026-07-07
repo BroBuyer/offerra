@@ -4,6 +4,32 @@ export function phoneOptionCode(item) {
     return (item.phone ?? item.code.toLowerCase()).toLowerCase();
 }
 
+/** Завжди масив ISO2-кодів — Set() на рядку ламає «no» → n,o. */
+export function normalizePhoneCountries(value, fallbackPhone = '') {
+    if (Array.isArray(value)) {
+        return value
+            .map((code) => String(code).toLowerCase().trim())
+            .filter((code) => /^[a-z]{2}$/.test(code));
+    }
+
+    if (typeof value === 'string') {
+        const trimmed = value.trim().toLowerCase();
+        if (!trimmed) {
+            return fallbackPhone && /^[a-z]{2}$/.test(fallbackPhone) ? [fallbackPhone] : [];
+        }
+        if (trimmed.includes(',')) {
+            return trimmed
+                .split(',')
+                .map((code) => code.trim())
+                .filter((code) => /^[a-z]{2}$/.test(code));
+        }
+
+        return /^[a-z]{2}$/.test(trimmed) ? [trimmed] : [];
+    }
+
+    return fallbackPhone && /^[a-z]{2}$/.test(fallbackPhone) ? [fallbackPhone] : [];
+}
+
 export function uniquePhonePresets(geoPresets) {
     const seen = new Set();
 

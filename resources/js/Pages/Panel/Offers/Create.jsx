@@ -1,5 +1,5 @@
 import PanelLayout from '@/Layouts/PanelLayout';
-import PhoneGeoSelect, { uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -112,10 +112,10 @@ export default function OffersCreate({
     const updateGeo = (raw) => {
         const resolved = resolveMarket(raw, geoPresets, availableLanguages);
         setData((prev) => {
-            const countries = new Set(prev.phone_countries?.length ? prev.phone_countries : [prev.phone]);
-            if (resolved.phone) {
-                countries.add(resolved.phone);
-            }
+            const countries = new Set([
+                ...normalizePhoneCountries(prev.phone_countries, prev.phone),
+                ...(resolved.phone ? [resolved.phone] : []),
+            ]);
             const list = [...countries];
 
             return { ...prev, ...resolved, phone_countries: list, phone: resolved.phone };
@@ -123,12 +123,12 @@ export default function OffersCreate({
     };
 
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
-    const selectedPhones = data.phone_countries?.length ? data.phone_countries : (data.phone ? [data.phone] : []);
+    const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
 
     const togglePhoneCountry = (code) => {
         const normalized = code.toLowerCase();
         setData((prev) => {
-            const current = prev.phone_countries?.length ? prev.phone_countries : [prev.phone].filter(Boolean);
+            const current = normalizePhoneCountries(prev.phone_countries, prev.phone);
             const set = new Set(current);
 
             if (set.has(normalized)) {

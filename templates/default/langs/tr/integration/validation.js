@@ -134,6 +134,9 @@ function setupFormValidation(form) {
   try {
     onlyCountries = JSON.parse(form.querySelector('input[name="only_countries"]')?.value || '[]');
   } catch (_) {}
+  onlyCountries = onlyCountries.filter(
+    (code) => typeof code === 'string' && /^[a-z]{2}$/i.test(code.trim()),
+  );
 
   if (!phone || !window.intlTelInput) return;
 
@@ -141,14 +144,17 @@ function setupFormValidation(form) {
 
   const iti = window.intlTelInput(phone, {
     utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js',
-    separateDialCode: true,
+    separateDialCode: !singleCountry,
+    showFlags: true,
     initialCountry: singleCountry ? onlyCountries[0] : phoneCountry,
     onlyCountries: onlyCountries.length ? onlyCountries : undefined,
     allowDropdown: !singleCountry,
   });
 
   if (singleCountry) {
-    phone.closest('.iti')?.classList.add('iti--single-country');
+    const wrap = phone.closest('.iti');
+    wrap?.classList.add('iti--single-country');
+    wrap?.querySelector('.iti__selected-country')?.setAttribute('aria-disabled', 'true');
   }
 
   phone.addEventListener('input', () => {

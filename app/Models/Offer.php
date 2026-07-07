@@ -60,7 +60,7 @@ class Offer extends Model
         return array_values(array_unique(array_filter(array_map(
             static fn (string $code) => strtolower(trim($code)),
             explode(',', strtolower((string) $raw)),
-        ))));
+        ), static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))));
     }
 
     /**

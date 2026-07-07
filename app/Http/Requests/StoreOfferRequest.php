@@ -30,9 +30,13 @@ class StoreOfferRequest extends FormRequest
         }
 
         $phone = strtolower(trim((string) $this->input('phone', '')));
-        $countries = collect($this->input('phone_countries', []))
+        $rawCountries = $this->input('phone_countries', []);
+        if (is_string($rawCountries)) {
+            $rawCountries = explode(',', strtolower($rawCountries));
+        }
+        $countries = collect(is_array($rawCountries) ? $rawCountries : [])
             ->map(static fn ($code) => strtolower(trim((string) $code)))
-            ->filter()
+            ->filter(static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))
             ->unique()
             ->values()
             ->all();
@@ -71,9 +75,9 @@ class StoreOfferRequest extends FormRequest
             'currency' => ['required', 'string', 'size:3', Rule::in($currencyCodes)],
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
-            'phone' => ['required', 'string', 'max:8', 'alpha:ascii'],
+            'phone' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'phone_countries' => ['required', 'array', 'min:1'],
-            'phone_countries.*' => ['string', 'max:8', 'alpha:ascii'],
+            'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'create_keitaro' => ['boolean'],
         ];

@@ -1,4 +1,4 @@
-import PhoneGeoSelect, { uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
 
@@ -8,9 +8,7 @@ export default function OfferEditModal({
     hasKeitaroApiKey,
     onClose,
 }) {
-    const phoneCountries = offer.phone_countries?.length
-        ? offer.phone_countries
-        : (offer.phone ? [offer.phone] : []);
+    const phoneCountries = normalizePhoneCountries(offer.phone_countries, offer.phone);
 
     const { errors: pageErrors } = usePage().props;
     const { data, setData, patch, processing, errors, reset, clearErrors } = useForm({
@@ -32,14 +30,12 @@ export default function OfferEditModal({
     }, [onClose, processing]);
 
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
-    const selectedPhones = data.phone_countries?.length
-        ? data.phone_countries
-        : (data.phone ? [data.phone] : []);
+    const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
 
     const togglePhoneCountry = (code) => {
         const normalized = code.toLowerCase();
         setData((prev) => {
-            const current = prev.phone_countries?.length ? prev.phone_countries : [prev.phone].filter(Boolean);
+            const current = normalizePhoneCountries(prev.phone_countries, prev.phone);
             const set = new Set(current);
 
             if (set.has(normalized)) {

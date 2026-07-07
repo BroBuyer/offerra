@@ -67,8 +67,12 @@ function crm_aff_subs_resolved(array $lead = []): array
 function form_allowed_countries(): array
 {
     $raw = array_filter(array_map('trim', explode(',', strtolower(FORM_ALLOWED_COUNTRIES))));
+    $iso2 = array_values(array_filter(
+        $raw,
+        static fn (string $code): bool => strlen($code) === 2 && ctype_alpha($code),
+    ));
 
-    return array_values(array_unique($raw));
+    return array_values(array_unique($iso2));
 }
 
 function form_ip_country(): string

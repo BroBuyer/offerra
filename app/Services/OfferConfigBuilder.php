@@ -106,7 +106,7 @@ PHP;
             $list = array_map('trim', explode(',', strtolower((string) $raw)));
         }
 
-        $list = array_values(array_unique(array_filter($list)));
+        $list = array_values(array_unique(array_filter($list, static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))));
 
         if ($default !== '' && ! in_array($default, $list, true)) {
             array_unshift($list, $default);
