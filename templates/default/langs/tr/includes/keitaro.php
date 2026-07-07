@@ -176,23 +176,54 @@ function keitaro_bootstrap(): void
         session_start();
     }
 
-    require_once $kclientPath;
-
-    if (!class_exists('KClient') && !class_exists('KClickClient')) {
-        return;
-    }
-
-    $client = keitaro_create_client();
-    if ($client === null) {
-        return;
-    }
-
-    $sessionFlag = site_slug() . '_keitaro_tracked';
+    // KClient може писати в output навіть коли execute(print=false),
+    // тому глушимо будь-який output, щоб не ламати шапку/верстку.
+    $obLevel = ob_get_level();
+    ob_start();
 
     try {
-        if (!empty($_SESSION[$sessionFlag])) {
-            if (method_exists($client, 'restoreFromSession')) {
-                $client->restoreFromSession();
+        require_once $kclientPath;
+
+        if (!class_exists('KClient') && !class_exists('KClickClient')) {
+            return;
+        }
+
+        $client = keitaro_create_client();
+        if ($client === null) {
+            return;
+        }
+
+        $sessionFlag = site_slug() . '_keitaro_tracked';
+
+        try {
+            if (!empty($_SESSION[$sessionFlag])) {
+                if (method_exists($client, 'restoreFromSession')) {
+                    $client->restoreFromSession();
+                }
+
+                $subid = keitaro_client_subid($client);
+                if ($subid !== '') {
+                    keitaro_store_subid($subid);
+                }
+
+                return;
+            }
+
+            if (method_exists($client, 'sendAllParams')) {
+                $client->sendAllParams();
+            }
+
+            if (method_exists($client, 'sendUtmLabels')) {
+                $client->sendUtmLabels();
+            }
+
+            if (method_exists($client, 'currentPageAsReferrer')) {
+                $client->currentPageAsReferrer();
+            }
+
+            // false, false — тільки трекінг, без виводу тіла/заголовків від Keitaro у HTML
+            if (method_exists($client, 'execute')) {
+                $client->execute(false, false);
             }
 
             $subid = keitaro_client_subid($client);
@@ -200,35 +231,15 @@ function keitaro_bootstrap(): void
                 keitaro_store_subid($subid);
             }
 
-            return;
+            $_SESSION[$sessionFlag] = true;
+        } catch (Throwable $e) {
+            if (defined('KEITARO_DEBUG') && KEITARO_DEBUG) {
+                error_log('[Keitaro] ' . $e->getMessage());
+            }
         }
-
-        if (method_exists($client, 'sendAllParams')) {
-            $client->sendAllParams();
-        }
-
-        if (method_exists($client, 'sendUtmLabels')) {
-            $client->sendUtmLabels();
-        }
-
-        if (method_exists($client, 'currentPageAsReferrer')) {
-            $client->currentPageAsReferrer();
-        }
-
-        // false, false — тільки трекінг, без виводу тіла/заголовків від Keitaro у HTML
-        if (method_exists($client, 'execute')) {
-            $client->execute(false, false);
-        }
-
-        $subid = keitaro_client_subid($client);
-        if ($subid !== '') {
-            keitaro_store_subid($subid);
-        }
-
-        $_SESSION[$sessionFlag] = true;
-    } catch (Throwable $e) {
-        if (defined('KEITARO_DEBUG') && KEITARO_DEBUG) {
-            error_log('[Keitaro] ' . $e->getMessage());
+    } finally {
+        while (ob_get_level() > $obLevel) {
+            ob_end_clean();
         }
     }
 }
