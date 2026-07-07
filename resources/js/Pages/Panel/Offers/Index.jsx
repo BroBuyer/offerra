@@ -509,7 +509,7 @@ export default function OffersIndex({
                             <th>Панель</th>
                             <th>Keitaro</th>
                             <th>Створено</th>
-                            <th>Останній деплой</th>
+                            <th className="col-deployed">Останній деплой</th>
                             <th>Статус</th>
                             <th>Індексація</th>
                             <th />
@@ -578,7 +578,7 @@ export default function OffersIndex({
                                     <td title={offer.date ?? undefined}>
                                         {formatCreatedDate(offer.date)}
                                     </td>
-                                    <td title={offer.deployed_at ?? undefined}>
+                                    <td className="col-deployed" title={offer.deployed_at ?? undefined}>
                                         {formatDeployedAt(offer.deployed_at)}
                                     </td>
                                     <td>

@@ -35,19 +35,27 @@ class DeployService
 
     public function resetStuckDeploys(int $minutes = 3): int
     {
-        return Offer::query()
+        $stuck = Offer::query()
             ->where('status', 'deploying')
             ->where('updated_at', '<', now()->subMinutes($minutes))
-            ->update([
-                'status' => 'failed',
+            ->get();
+
+        foreach ($stuck as $offer) {
+            $offer->update([
+                'status' => $offer->deployed_at ? 'deployed' : 'failed',
                 'deploy_error' => 'Деплой перервано (таймаут або збій з\'єднання). Спробуйте ще раз.',
             ]);
+        }
+
+        return $stuck->count();
     }
 
     public function deploy(User $user, Offer $offer): Offer
     {
         @set_time_limit(0);
         ignore_user_abort(true);
+
+        $this->resetStuckDeploys();
 
         $this->knownRemoteDirs = [];
 
@@ -152,15 +160,10 @@ class DeployService
 
             return $offer->fresh();
         } catch (\Throwable $e) {
-            $updates = [
+            $offer->update([
+                'status' => $offer->deployed_at ? 'deployed' : 'failed',
                 'deploy_error' => $e->getMessage(),
-            ];
-
-            if (! $offer->deployed_at) {
-                $updates['status'] = 'failed';
-            }
-
-            $offer->update($updates);
+            ]);
 
             throw $e;
         }

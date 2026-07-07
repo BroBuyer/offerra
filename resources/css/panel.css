@@ -1111,6 +1111,14 @@ td.col-num {
   padding-right: 0.5rem;
 }
 
+.col-deployed {
+  width: 8.5rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .pagination-bar {
   display: flex;
   align-items: center;
