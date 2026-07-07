@@ -137,12 +137,19 @@ function setupFormValidation(form) {
 
   if (!phone || !window.intlTelInput) return;
 
+  const singleCountry = onlyCountries.length === 1;
+
   const iti = window.intlTelInput(phone, {
     utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js',
     separateDialCode: true,
-    initialCountry: phoneCountry,
+    initialCountry: singleCountry ? onlyCountries[0] : phoneCountry,
     onlyCountries: onlyCountries.length ? onlyCountries : undefined,
+    allowDropdown: !singleCountry,
   });
+
+  if (singleCountry) {
+    phone.closest('.iti')?.classList.add('iti--single-country');
+  }
 
   phone.addEventListener('input', () => {
     clearFieldError(phone);

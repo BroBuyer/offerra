@@ -1,5 +1,11 @@
 .iti.iti--allow-dropdown { width: 100%; }
 
+.iti--single-country .iti__selected-country,
+.iti--single-country .iti__selected-country-primary {
+  pointer-events: none;
+  cursor: default;
+}
+
 .leadform { position: relative; }
 
 .form-preloader {
