@@ -368,6 +368,76 @@ class OfferGenerator
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
+        $this->syncManifestFromOffer($offer, $targetPath);
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     */
+    public function updateSettings(Offer $offer, array $input): Offer
+    {
+        $offer->loadMissing('user.settings');
+        $settings = $offer->user?->settings;
+
+        if (! $settings) {
+            throw new InvalidArgumentException('Налаштування користувача не знайдено.');
+        }
+
+        $phone = strtolower((string) $input['phone']);
+        $phoneCountriesCsv = $this->configBuilder->phoneCountriesCsv([
+            'phone' => $phone,
+            'phone_countries' => $input['phone_countries'] ?? [],
+        ]);
+
+        $updates = [
+            'phone' => $phone,
+            'phone_countries' => $phoneCountriesCsv,
+        ];
+
+        if (! empty($input['create_keitaro']) && ! $offer->keitaro_campaign_id) {
+            $keitaro = $this->keitaroClient->createCampaign($settings, [
+                'brand' => $offer->brand,
+                'domain' => $offer->domain,
+                'geo' => $offer->geo,
+                'lang' => $offer->lang,
+                'affiliate_tag' => $settings->affiliate_tag,
+            ]);
+
+            $updates['keitaro_campaign_id'] = $keitaro['id'];
+            $updates['keitaro_alias'] = $keitaro['alias'];
+        }
+
+        $offer->update($updates);
+        $offer->refresh();
+
+        $this->refreshConfig($offer);
+
+        return $offer->fresh();
+    }
+
+    private function syncManifestFromOffer(Offer $offer, string $targetPath): void
+    {
+        $manifestPath = $targetPath.'/manifest.json';
+
+        if (! File::exists($manifestPath)) {
+            return;
+        }
+
+        $manifest = json_decode(File::get($manifestPath), true);
+
+        if (! is_array($manifest)) {
+            return;
+        }
+
+        $manifest['phone'] = strtolower($offer->phone ?? '');
+        $manifest['phone_countries'] = $offer->phone_countries ?? strtolower($offer->phone ?? '');
+        $manifest['keitaro_campaign_id'] = $offer->keitaro_campaign_id;
+        $manifest['keitaro_alias'] = $offer->keitaro_alias;
+
+        File::put(
+            $manifestPath,
+            json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
+        );
     }
 
     /**

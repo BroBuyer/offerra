@@ -47,6 +47,23 @@ class Offer extends Model
     }
 
     /**
+     * @return list<string>
+     */
+    public function phoneCountriesList(): array
+    {
+        $raw = $this->phone_countries ?: $this->phone;
+
+        if (! $raw) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            static fn (string $code) => strtolower(trim($code)),
+            explode(',', strtolower((string) $raw)),
+        ))));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toPanelArray(): array
@@ -63,8 +80,11 @@ class Offer extends Model
             'domain' => $this->domain,
             'geo' => $this->geo,
             'lang' => $this->lang,
+            'phone' => strtolower((string) ($this->phone ?? '')),
+            'phone_countries' => $this->phoneCountriesList(),
             'template' => $templateLabel,
             'keitaro_id' => $this->keitaro_campaign_id ? (string) $this->keitaro_campaign_id : null,
+            'can_create_keitaro' => ! $this->keitaro_campaign_id,
             'status' => $this->status,
             'deploy_panel' => $this->deploy_panel_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),

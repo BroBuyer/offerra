@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOfferRequest;
+use App\Http\Requests\UpdateOfferRequest;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
@@ -51,6 +52,8 @@ class OfferController extends Controller
             'createdCounts' => $this->createdCounts($baseQuery, $today),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'canDeploy' => app(DeployService::class)->settingsReady($settings),
+            'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
+            'geoPresets' => config('offerra.geo_presets'),
             'showUserColumn' => $user->isAdmin(),
             'users' => $user->isAdmin()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
@@ -243,6 +246,34 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with('success', "Задеплоєно: {$offer->domain} → {$offer->fresh()->deploy_panel_name}");
+    }
+
+    public function update(
+        UpdateOfferRequest $request,
+        Offer $offer,
+        OfferGenerator $generator,
+    ): RedirectResponse {
+        try {
+            $offer = $generator->updateSettings($offer, [
+                'phone' => $request->string('phone')->toString(),
+                'phone_countries' => $request->input('phone_countries', []),
+                'create_keitaro' => $request->boolean('create_keitaro'),
+            ]);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['edit' => $e->getMessage()]);
+        }
+
+        $message = 'Оффер оновлено. Натисніть «Деплой», щоб застосувати на сервері.';
+
+        if ($request->boolean('create_keitaro') && $offer->keitaro_campaign_id) {
+            $message .= " Keitaro #{$offer->keitaro_campaign_id}.";
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', $message);
     }
 
     public function updateIndexing(Offer $offer): RedirectResponse

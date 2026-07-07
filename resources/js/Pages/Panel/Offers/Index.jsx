@@ -1,4 +1,5 @@
 import PanelLayout from '@/Layouts/PanelLayout';
+import OfferEditModal from '@/Components/OfferEditModal';
 import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -163,6 +164,8 @@ export default function OffersIndex({
     createdCounts = {},
     perPageOptions = [10, 30, 50, 100],
     canDeploy,
+    hasKeitaroApiKey = false,
+    geoPresets = [],
     showUserColumn = false,
     users = [],
     dateFilters = {},
@@ -172,6 +175,7 @@ export default function OffersIndex({
     const [indexingId, setIndexingId] = useState(null);
     const [verificationId, setVerificationId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
+    const [editingOffer, setEditingOffer] = useState(null);
     const verificationInputRef = useRef(null);
     const pendingVerificationOfferId = useRef(null);
 
@@ -327,6 +331,12 @@ export default function OffersIndex({
                 <h2>Оффери</h2>
                 <p>Каталог згенерованих лендів — деплой на Hestia через SFTP</p>
             </header>
+
+            {errors?.edit && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.edit}</p>
+                </div>
+            )}
 
             {errors?.deploy && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
@@ -654,30 +664,42 @@ export default function OffersIndex({
                                         </div>
                                     </td>
                                     <td>
-                                        {canDeployOffer(offer) ? (
-                                            <button
-                                                type="button"
-                                                className={`btn btn-ghost btn-sm btn-deploy${isDeploying ? ' is-loading' : ''}`}
-                                                disabled={isDeploying}
-                                                aria-busy={isDeploying}
-                                                onClick={() => deployOffer(offer)}
-                                            >
-                                                {isDeploying ? (
-                                                    <>
-                                                        <span className="btn-spinner" aria-hidden="true" />
-                                                        <span>Деплой…</span>
-                                                    </>
-                                                ) : offer.status === 'deployed' ? (
-                                                    '↻'
-                                                ) : offer.status === 'failed' ? (
-                                                    'Повтор'
-                                                ) : (
-                                                    'Деплой'
-                                                )}
-                                            </button>
-                                        ) : (
-                                            <span className="field-hint">—</span>
-                                        )}
+                                        <div className="offer-actions">
+                                            {canManageOffer(offer) && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    onClick={() => setEditingOffer(offer)}
+                                                    title="Редагувати phone GEO / Keitaro"
+                                                >
+                                                    ✎
+                                                </button>
+                                            )}
+                                            {canDeployOffer(offer) ? (
+                                                <button
+                                                    type="button"
+                                                    className={`btn btn-ghost btn-sm btn-deploy${isDeploying ? ' is-loading' : ''}`}
+                                                    disabled={isDeploying}
+                                                    aria-busy={isDeploying}
+                                                    onClick={() => deployOffer(offer)}
+                                                >
+                                                    {isDeploying ? (
+                                                        <>
+                                                            <span className="btn-spinner" aria-hidden="true" />
+                                                            <span>Деплой…</span>
+                                                        </>
+                                                    ) : offer.status === 'deployed' ? (
+                                                        '↻'
+                                                    ) : offer.status === 'failed' ? (
+                                                        'Повтор'
+                                                    ) : (
+                                                        'Деплой'
+                                                    )}
+                                                </button>
+                                            ) : (
+                                                <span className="field-hint">—</span>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             );
@@ -717,6 +739,15 @@ export default function OffersIndex({
                 </nav>
             )}
             </div>
+
+            {editingOffer && (
+                <OfferEditModal
+                    offer={editingOffer}
+                    geoPresets={geoPresets}
+                    hasKeitaroApiKey={hasKeitaroApiKey}
+                    onClose={() => setEditingOffer(null)}
+                />
+            )}
         </PanelLayout>
     );
 }
