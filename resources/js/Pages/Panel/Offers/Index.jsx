@@ -26,6 +26,25 @@ function formatCreatedDate(isoDate) {
     return `${day}.${month}.${year}`;
 }
 
+function formatDeployedAt(value) {
+    if (!value) {
+        return '—';
+    }
+
+    // backend returns "YYYY-MM-DD HH:mm"
+    const [date, time] = String(value).split(' ');
+    if (!date) {
+        return String(value);
+    }
+
+    const [year, month, day] = date.split('-');
+    if (!year || !month || !day) {
+        return String(value);
+    }
+
+    return `${day}.${month}.${year}${time ? ` ${time}` : ''}`;
+}
+
 function buildQueryParams(filters, overrides = {}) {
     const merged = { ...filters, ...overrides };
     const params = {};
@@ -490,6 +509,7 @@ export default function OffersIndex({
                             <th>Панель</th>
                             <th>Keitaro</th>
                             <th>Створено</th>
+                            <th>Останній деплой</th>
                             <th>Статус</th>
                             <th>Індексація</th>
                             <th />
@@ -557,6 +577,9 @@ export default function OffersIndex({
                                     </td>
                                     <td title={offer.date ?? undefined}>
                                         {formatCreatedDate(offer.date)}
+                                    </td>
+                                    <td title={offer.deployed_at ?? undefined}>
+                                        {formatDeployedAt(offer.deployed_at)}
                                     </td>
                                     <td>
                                         {statusBadge(offer.status)}
@@ -661,7 +684,7 @@ export default function OffersIndex({
                         })}
                         {rows.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 13 : 12} className="field-hint">
+                                <td colSpan={showUserColumn ? 14 : 13} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>
