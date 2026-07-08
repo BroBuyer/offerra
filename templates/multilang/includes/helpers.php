@@ -31,6 +31,20 @@ function lang_flag_code(string $lang): string
     return $map[strtolower($lang)] ?? strtolower($lang);
 }
 
+function lang_flag_emoji(string $lang): string
+{
+    $code = strtoupper(lang_flag_code($lang));
+
+    if (! preg_match('/^[A-Z]{2}$/', $code)) {
+        return '';
+    }
+
+    $first = 0x1F1E6 + ord($code[0]) - ord('A');
+    $second = 0x1F1E6 + ord($code[1]) - ord('A');
+
+    return mb_chr($first).mb_chr($second);
+}
+
 function lang_display_name(string $lang): string
 {
     $names = [

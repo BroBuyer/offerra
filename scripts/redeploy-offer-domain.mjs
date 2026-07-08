@@ -25,6 +25,8 @@ if (! \\$o) { echo 'NOT_FOUND'; exit(1); }
 echo 'offer_id='.\\$o->id.' folder='.\\$o->folder.' template='.\\$o->template.PHP_EOL;
 \\$local = rtrim(config('offerra.offers_path'), '/').'/'.\\$o->folder;
 if (is_dir(\\$local)) { Illuminate\\\\Support\\\\Facades\\\\File::deleteDirectory(\\$local); echo 'purged_local=1'.PHP_EOL; }
+app(\\\\App\\\\Services\\\\OfferGenerator::class)->rebuildLocalFolder(\\$o);
+echo 'rebuilt_local=1'.PHP_EOL;
 \\$o = app(\\\\App\\\\Services\\\\DeployService::class)->deploy(\\$o->user, \\$o);
 echo 'status='.\\$o->status.PHP_EOL;
 if (\\$o->deploy_error) echo 'error='.\\$o->deploy_error.PHP_EOL;

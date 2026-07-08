@@ -1,4 +1,100 @@
 <?php require_once __DIR__ . '/config.php'; ?>
+<style>
+  .lang-switcher { position: relative; }
+  .lang-switcher__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    padding: 0.35rem 0.7rem 0.35rem 0.55rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .lang-switcher__trigger:hover,
+  .lang-switcher__trigger[aria-expanded="true"] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  .lang-switcher__emoji {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .lang-switcher__code { letter-spacing: 0.04em; }
+  .lang-switcher__chevron { color: var(--text-muted); flex-shrink: 0; }
+  .lang-switcher__trigger[aria-expanded="true"] .lang-switcher__chevron { transform: rotate(180deg); }
+  .lang-switcher__menu {
+    position: absolute;
+    top: calc(100% + 0.45rem);
+    right: 0;
+    z-index: 120;
+    min-width: 13rem;
+    max-height: min(24rem, 70vh);
+    overflow: auto;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  }
+  .lang-switcher__menu[hidden] { display: none !important; }
+  .lang-switcher__option,
+  .lang-switcher__mobile-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .lang-switcher__option:hover,
+  .lang-switcher__mobile-option:hover { background: var(--accent-light); }
+  .lang-switcher__option.is-active,
+  .lang-switcher__mobile-option.is-active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .lang-switcher__label { flex: 1; }
+  .lang-switcher--mobile { margin: 0.5rem 0 0.25rem; }
+  .lang-switcher__mobile-title {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .lang-switcher__mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lang-switcher__mobile-option {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: 0.8125rem;
+  }
+</style>
 <header class="site-header" data-header>
   <div class="container header-inner">
     <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> home">
@@ -33,15 +129,7 @@
           aria-expanded="false"
           aria-label="Language"
         >
-          <img
-            class="lang-switcher__flag"
-            src="https://flagcdn.com/24x18/<?= e(lang_flag_code($current)) ?>.png"
-            width="24"
-            height="18"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          >
+          <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($current) ?></span>
           <span class="lang-switcher__code"><?= strtoupper(e($current)) ?></span>
           <svg class="lang-switcher__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
             <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -57,15 +145,7 @@
                 data-lang="<?= e($code) ?>"
                 aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
               >
-                <img
-                  class="lang-switcher__flag"
-                  src="https://flagcdn.com/24x18/<?= e(lang_flag_code($code)) ?>.png"
-                  width="24"
-                  height="18"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                >
+                <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($code) ?></span>
                 <span class="lang-switcher__label"><?= e(lang_display_name($code)) ?></span>
                 <span class="lang-switcher__code"><?= strtoupper(e($code)) ?></span>
               </button>
@@ -101,15 +181,7 @@
               data-lang="<?= e($code) ?>"
               aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
             >
-              <img
-                class="lang-switcher__flag"
-                src="https://flagcdn.com/24x18/<?= e(lang_flag_code($code)) ?>.png"
-                width="24"
-                height="18"
-                alt=""
-                loading="lazy"
-                decoding="async"
-              >
+              <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($code) ?></span>
               <span><?= e(lang_display_name($code)) ?></span>
             </button>
           </li>
@@ -156,15 +228,15 @@
 
           trigger.addEventListener('click', (event) => {
             event.stopPropagation();
-            const open = menu.hidden;
+            const willOpen = menu.hidden;
             document.querySelectorAll('.lang-switcher__menu').forEach((item) => {
-              if (item !== menu) item.hidden = true;
+              item.hidden = true;
             });
             document.querySelectorAll('.lang-switcher__trigger').forEach((item) => {
-              if (item !== trigger) item.setAttribute('aria-expanded', 'false');
+              item.setAttribute('aria-expanded', 'false');
             });
-            menu.hidden = !open;
-            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            menu.hidden = !willOpen;
+            trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
           });
 
           document.addEventListener('click', (event) => {

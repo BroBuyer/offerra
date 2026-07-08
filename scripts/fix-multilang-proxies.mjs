@@ -14,5 +14,16 @@ for (const lang of langs) {
         path.join(dir, 'header.php'),
         `<?php\n\nrequire_once __DIR__ . '/../../../includes/header.php';\n`,
     );
+    const headPath = path.join(dir, 'head.php');
+    if (fs.existsSync(headPath)) {
+        const head = fs.readFileSync(headPath, 'utf8');
+        const updated = head.replace(
+            /href="<\?= asset\('static\/css\/main\.css'\) \?>"/g,
+            'href="<?= asset_version(\'static/css/main.css\') ?>"',
+        );
+        if (updated !== head) {
+            fs.writeFileSync(headPath, updated);
+        }
+    }
     console.log('fixed', lang);
 }
