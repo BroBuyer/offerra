@@ -91,7 +91,23 @@ export default function PhoneGeoSelect({ options, selected, onToggle }) {
     }, [open]);
 
     const summary = selected.length
-        ? selected.map((code) => code.toUpperCase()).join(', ')
+        ? (() => {
+            const count = selected.length;
+            const optionsCount = Array.isArray(options) ? options.length : 0;
+            const upper = selected.map((code) => code.toUpperCase());
+
+            // Для multilang ми вибираємо “всі” — не виводимо тисячі кодів у рядок,
+            // інакше зсувається верстка.
+            if (optionsCount > 0 && count >= optionsCount) {
+                return `Усі (${count})`;
+            }
+
+            if (count <= 3) {
+                return upper.join(', ');
+            }
+
+            return `${upper.slice(0, 3).join(', ')} +${count - 3}`;
+        })()
         : 'Оберіть країни…';
 
     return (
