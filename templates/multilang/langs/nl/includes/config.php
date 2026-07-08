@@ -1,0 +1,1 @@
+﻿<?php\ndefine('ACTIVE_LANG', '{nl}');\nrequire_once __DIR__ . '/../../../includes/config.php';\n

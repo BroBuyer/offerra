@@ -1,5 +1,5 @@
 import PanelLayout from '@/Layouts/PanelLayout';
-import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -98,9 +98,11 @@ export default function OffersCreate({
     const updateTemplate = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const lang = langs.some((item) => item.code === data.lang)
-            ? data.lang
-            : langs[0]?.code ?? '';
+        const lang = templateId === 'multilang'
+            ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
+            : (langs.some((item) => item.code === data.lang)
+                ? data.lang
+                : langs[0]?.code ?? '');
 
         setData((prev) => ({
             ...prev,
@@ -108,6 +110,24 @@ export default function OffersCreate({
             lang,
         }));
     };
+
+    const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
+
+    useEffect(() => {
+        // Multilang: SITE_LANG фіксуємо в en, але phone_countries дозволяємо всі (dropdown на клієнті).
+        if (selectedTemplate?.id !== 'multilang') return;
+
+        const allPhoneCodes = phoneOptions.map((item) => phoneOptionCode(item));
+        if (allPhoneCodes.length === 0) return;
+
+        setData((prev) => ({
+            ...prev,
+            lang: 'en',
+            phone_countries: allPhoneCodes,
+            // Дефолтний phone — беремо з поточного GEO-ресолву, або перший доступний.
+            phone: prev.phone && allPhoneCodes.includes(prev.phone) ? prev.phone : allPhoneCodes[0],
+        }));
+    }, [selectedTemplate?.id, phoneOptions]);
 
     const updateGeo = (raw) => {
         const resolved = resolveMarket(raw, geoPresets, availableLanguages);
@@ -118,11 +138,16 @@ export default function OffersCreate({
             ]);
             const list = [...countries];
 
-            return { ...prev, ...resolved, phone_countries: list, phone: resolved.phone };
+            return {
+                ...prev,
+                geo: resolved.geo,
+                phone_countries: list,
+                phone: resolved.phone,
+                // Multilang: мова на ленді керується URL (`/fr/...`), а не вибором тут.
+                lang: selectedTemplate?.id === 'multilang' ? 'en' : resolved.lang,
+            };
         });
     };
-
-    const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
     const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
 
     const togglePhoneCountry = (code) => {
@@ -349,7 +374,7 @@ export default function OffersCreate({
                                     id="lang"
                                     value={data.lang}
                                     onChange={(e) => update('lang', e.target.value)}
-                                    disabled={availableLanguages.length === 0}
+                                    disabled={selectedTemplate?.id === 'multilang' || availableLanguages.length === 0}
                                 >
                                     {availableLanguages.map((item) => (
                                         <option key={item.code} value={item.code}>
