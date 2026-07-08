@@ -6,6 +6,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 const steps = ['Основне', 'Шаблон', 'GEO & мова', 'Keitaro', 'Підсумок'];
 
+/** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
+const MULTILANG_GEO = 'ML';
+
+function isMultilangTemplate(templateId) {
+    return templateId === 'multilang';
+}
+
 function normalizeGeo(value) {
     return value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 }
@@ -78,6 +85,9 @@ export default function OffersCreate({
                 setData((prev) => ({
                     ...prev,
                     template: initialTemplate,
+                    ...(isMultilangTemplate(initialTemplate)
+                        ? { geo: MULTILANG_GEO, lang: 'en' }
+                        : {}),
                 }));
             }
         }
@@ -108,6 +118,7 @@ export default function OffersCreate({
             ...prev,
             template: templateId,
             lang,
+            ...(isMultilangTemplate(templateId) ? { geo: MULTILANG_GEO } : {}),
         }));
     };
 
@@ -122,14 +133,19 @@ export default function OffersCreate({
 
         setData((prev) => ({
             ...prev,
+            geo: MULTILANG_GEO,
             lang: 'en',
             phone_countries: allPhoneCodes,
             // Дефолтний phone — беремо з поточного GEO-ресолву, або перший доступний.
             phone: prev.phone && allPhoneCodes.includes(prev.phone) ? prev.phone : allPhoneCodes[0],
         }));
-    }, [selectedTemplate?.id, phoneOptions]);
+    }, [selectedTemplate?.id, phoneOptions, setData]);
 
     const updateGeo = (raw) => {
+        if (isMultilangTemplate(selectedTemplate?.id)) {
+            return;
+        }
+
         const resolved = resolveMarket(raw, geoPresets, availableLanguages);
         setData((prev) => {
             const countries = new Set([
@@ -144,7 +160,7 @@ export default function OffersCreate({
                 phone_countries: list,
                 phone: resolved.phone,
                 // Multilang: мова на ленді керується URL (`/fr/...`), а не вибором тут.
-                lang: selectedTemplate?.id === 'multilang' ? 'en' : resolved.lang,
+                lang: isMultilangTemplate(selectedTemplate?.id) ? 'en' : resolved.lang,
             };
         });
     };
@@ -341,32 +357,47 @@ export default function OffersCreate({
                         <h3>Ринок і мова</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
                             Шаблон: <strong>{templateLabel(templates, data.template)}</strong>.
-                            GEO — зі списку або вручну. Мова — тільки з перекладів цього шаблону.
+                            {isMultilangTemplate(data.template) ? (
+                                <> Multilang: у CRM країна з IP ліда; мови — через URL (<code>/fr/</code>, …), корінь — EN.</>
+                            ) : (
+                                <> GEO — зі списку або вручну. Мова — тільки з перекладів цього шаблону.</>
+                            )}
                         </p>
                         <div className="field-row">
                             <div className="field">
-                                <label htmlFor="geo">GEO (CRM country)</label>
+                                <label htmlFor="geo">
+                                    {isMultilangTemplate(data.template) ? 'GEO (мітка)' : 'GEO (CRM country)'}
+                                </label>
                                 <input
                                     id="geo"
                                     type="text"
-                                    list="geo-presets"
-                                    value={data.geo}
+                                    list={isMultilangTemplate(data.template) ? undefined : 'geo-presets'}
+                                    value={isMultilangTemplate(data.template) ? MULTILANG_GEO : data.geo}
                                     onChange={(e) => updateGeo(e.target.value)}
                                     onBlur={(e) => updateGeo(e.target.value)}
-                                    placeholder="IE, IT, ZA…"
+                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, ZA…'}
                                     maxLength={2}
                                     autoComplete="off"
+                                    readOnly={isMultilangTemplate(data.template)}
+                                    disabled={isMultilangTemplate(data.template)}
                                     style={{ textTransform: 'uppercase' }}
                                 />
-                                <datalist id="geo-presets">
-                                    {geoPresets.map((item) => (
-                                        <option
-                                            key={item.code}
-                                            value={item.code}
-                                            label={`${item.code} — ${item.name}`}
-                                        />
-                                    ))}
-                                </datalist>
+                                {isMultilangTemplate(data.template) ? (
+                                    <p className="field-hint">
+                                        <strong>Multi</strong> ({MULTILANG_GEO}) — лише для імені папки та Keitaro.
+                                        У CRM <code>country_code</code> піде з IP відвідувача.
+                                    </p>
+                                ) : (
+                                    <datalist id="geo-presets">
+                                        {geoPresets.map((item) => (
+                                            <option
+                                                key={item.code}
+                                                value={item.code}
+                                                label={`${item.code} — ${item.name}`}
+                                            />
+                                        ))}
+                                    </datalist>
+                                )}
                             </div>
                             <div className="field">
                                 <label htmlFor="lang">Мова ленду</label>
@@ -374,7 +405,7 @@ export default function OffersCreate({
                                     id="lang"
                                     value={data.lang}
                                     onChange={(e) => update('lang', e.target.value)}
-                                    disabled={selectedTemplate?.id === 'multilang' || availableLanguages.length === 0}
+                                    disabled={isMultilangTemplate(selectedTemplate?.id) || availableLanguages.length === 0}
                                 >
                                     {availableLanguages.map((item) => (
                                         <option key={item.code} value={item.code}>
@@ -454,7 +485,14 @@ export default function OffersCreate({
                             <div className="summary-row"><span>Бренд</span><span>{data.brand || '—'}</span></div>
                             <div className="summary-row"><span>Домен</span><span>{data.domain || '—'}</span></div>
                             <div className="summary-row"><span>Шаблон</span><span>{templateLabel(templates, data.template)}</span></div>
-                            <div className="summary-row"><span>GEO / мова</span><span>{data.geo} / {data.lang}</span></div>
+                            <div className="summary-row">
+                                <span>GEO / мова</span>
+                                <span>
+                                    {isMultilangTemplate(data.template)
+                                        ? `Multi (${MULTILANG_GEO}) / en + ${Math.max(0, availableLanguages.length - 1)} мов`
+                                        : `${data.geo} / ${data.lang}`}
+                                </span>
+                            </div>
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
                         </dl>
