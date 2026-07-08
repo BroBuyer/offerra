@@ -205,7 +205,20 @@ class OfferGenerator
     {
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
 
+        $needsRebuild = false;
+
         if (File::isDirectory($targetPath) && $this->folderIsComplete($targetPath)) {
+            // For multilang we rely on language switcher assets under `static/img/flags/*`.
+            // If the folder was generated previously from `langs/<code>` (without root `static/`),
+            // those files may be missing while the generic required files are still present.
+            if ($offer->template === 'multilang' && ! File::isFile($targetPath.DIRECTORY_SEPARATOR.'static'.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.'flags'.DIRECTORY_SEPARATOR.'gb.png')) {
+                $needsRebuild = true;
+            }
+        } else {
+            $needsRebuild = true;
+        }
+
+        if (! $needsRebuild) {
             return $targetPath;
         }
 
@@ -260,7 +273,8 @@ class OfferGenerator
             );
         }
 
-        $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $offer->lang);
+        $templateLangForSource = $offer->template === 'multilang' ? 'en' : $offer->lang;
+        $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $templateLangForSource);
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
 
         if (File::isDirectory($targetPath)) {
