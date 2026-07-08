@@ -109,7 +109,11 @@ class OfferVerificationFileService
             .DIRECTORY_SEPARATOR.$offer->folder;
 
         if (! File::isDirectory($offerRoot)) {
-            return;
+            try {
+                $offerRoot = app(OfferGenerator::class)->ensureLocalFolder($offer);
+            } catch (\Throwable) {
+                return;
+            }
         }
 
         $filename = (string) $offer->verification_filename;

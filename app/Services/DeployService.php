@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -57,6 +59,25 @@ class DeployService
 
         $this->resetStuckDeploys();
 
+        $lock = Cache::lock('offer-deploy-'.$offer->id, self::DEPLOY_TIMEOUT + 60);
+
+        try {
+            $lock->block(5);
+        } catch (LockTimeoutException) {
+            throw new RuntimeException(
+                'Деплой цього оффера вже виконується. Зачекайте кілька хвилин і спробуйте знову.',
+            );
+        }
+
+        try {
+            return $this->runDeploy($user, $offer);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function runDeploy(User $user, Offer $offer): Offer
+    {
         $this->knownRemoteDirs = [];
 
         $settings = $user->settings;
@@ -121,7 +142,7 @@ class DeployService
 
             $this->knownRemoteDirs = [$remotePath => true];
 
-            $uploaded = $this->uploadDirectory($filesystem, $localPath, $remotePath);
+            $uploaded = $this->uploadDirectory($filesystem, $localPath, $remotePath, $offer);
 
             if ($uploaded === 0) {
                 throw new RuntimeException('На сервер не завантажено жодного файлу.');
@@ -191,8 +212,12 @@ class DeployService
         ];
     }
 
-    private function uploadDirectory(Filesystem $filesystem, string $localPath, string $remotePath): int
+    private function uploadDirectory(Filesystem $filesystem, string $localPath, string $remotePath, Offer $offer): int
     {
+        if (! File::isDirectory($localPath) || ! File::isFile($localPath.'/index.php')) {
+            $localPath = $this->generator->ensureLocalFolder($offer->fresh());
+        }
+
         if (! File::isDirectory($localPath)) {
             throw new RuntimeException("Локальна папка оффера не знайдена: {$localPath}");
         }
