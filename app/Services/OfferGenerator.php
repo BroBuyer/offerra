@@ -34,7 +34,8 @@ class OfferGenerator
         }
 
         $template = $input['template'];
-        $templatePath = $this->templateCatalog->resolveSourcePath($template, (string) $input['lang']);
+        $templateLangForSource = $template === 'multilang' ? 'en' : (string) $input['lang'];
+        $templatePath = $this->templateCatalog->resolveSourcePath($template, $templateLangForSource);
 
         if (! File::isDirectory($templatePath)) {
             throw new InvalidArgumentException("Шаблон «{$template}» ({$input['lang']}) не знайдено на диску.");

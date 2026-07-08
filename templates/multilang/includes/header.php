@@ -4,79 +4,86 @@
   .lang-switcher__trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    min-height: 40px;
-    padding: 0.35rem 0.7rem 0.35rem 0.55rem;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface);
-    color: var(--text);
+    gap: 0.5rem;
+    min-height: 38px;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid #d8dee6;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1f2c;
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 600;
     line-height: 1;
     cursor: pointer;
     white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   }
   .lang-switcher__trigger:hover,
   .lang-switcher__trigger[aria-expanded="true"] {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
+    border-color: #b8c4d4;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   }
   .lang-switcher__flag {
     display: block;
-    width: 24px;
-    height: 18px;
-    border-radius: 3px;
+    width: 22px;
+    height: 16px;
+    border-radius: 2px;
     object-fit: cover;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
   }
-  .lang-switcher__code { letter-spacing: 0.04em; }
-  .lang-switcher__chevron { color: var(--text-muted); flex-shrink: 0; }
-  .lang-switcher__trigger[aria-expanded="true"] .lang-switcher__chevron { transform: rotate(180deg); }
+  .lang-switcher__code {
+    letter-spacing: 0.06em;
+    font-size: 0.8125rem;
+  }
+  .lang-switcher__chevron {
+    color: #64748b;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .lang-switcher__trigger[aria-expanded="true"] .lang-switcher__chevron {
+    transform: rotate(180deg);
+  }
   .lang-switcher__menu {
     position: absolute;
-    top: calc(100% + 0.45rem);
+    top: calc(100% + 0.35rem);
     right: 0;
     z-index: 120;
-    min-width: 13rem;
-    max-height: min(24rem, 70vh);
-    overflow: auto;
+    min-width: 5.75rem;
+    max-height: min(18rem, 60vh);
+    overflow-y: auto;
+    overflow-x: hidden;
     margin: 0;
-    padding: 0.35rem;
+    padding: 0.35rem 0;
     list-style: none;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface);
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+    border: 1px solid #d8dee6;
+    border-radius: 8px;
+    background: #f7faf8;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   }
   .lang-switcher__menu[hidden] { display: none !important; }
-  .lang-switcher__option,
-  .lang-switcher__mobile-option {
+  .lang-switcher__option {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.55rem;
     width: 100%;
-    padding: 0.55rem 0.65rem;
+    padding: 0.45rem 0.75rem;
     border: 0;
-    border-radius: 8px;
+    border-radius: 0;
     background: transparent;
-    color: var(--text);
+    color: #1a1f2c;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
     text-align: left;
     cursor: pointer;
   }
-  .lang-switcher__option:hover,
-  .lang-switcher__mobile-option:hover { background: var(--accent-light); }
-  .lang-switcher__option.is-active,
-  .lang-switcher__mobile-option.is-active {
-    background: var(--accent-light);
-    color: var(--accent);
-    font-weight: 600;
+  .lang-switcher__option:hover { background: #e8f3ec; }
+  .lang-switcher__option.is-active {
+    background: #dff1e6;
+    color: var(--accent, #16a34a);
   }
-  .lang-switcher__label { flex: 1; }
   .lang-switcher--mobile { margin: 0.5rem 0 0.25rem; }
   .lang-switcher__mobile-title {
     margin: 0 0 0.5rem;
@@ -88,16 +95,32 @@
   }
   .lang-switcher__mobile-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.35rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
   .lang-switcher__mobile-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 0.5rem 0.35rem;
     border: 1px solid var(--border);
+    border-radius: 8px;
     background: var(--bg);
-    font-size: 0.8125rem;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .lang-switcher__mobile-option.is-active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
   }
 </style>
 <header class="site-header" data-header>
@@ -132,15 +155,15 @@
           class="lang-switcher__trigger"
           aria-haspopup="listbox"
           aria-expanded="false"
-          aria-label="Language"
+          aria-label="Language: <?= e(lang_display_name($current)) ?>"
         >
           <img
             class="lang-switcher__flag"
             src="<?= e(lang_flag_src($current)) ?>"
-            width="24"
-            height="18"
+            width="22"
+            height="16"
             alt=""
-            loading="lazy"
+            loading="eager"
             decoding="async"
           >
           <span class="lang-switcher__code"><?= strtoupper(e($current)) ?></span>
@@ -156,18 +179,18 @@
                 class="lang-switcher__option<?= $code === $current ? ' is-active' : '' ?>"
                 role="option"
                 data-lang="<?= e($code) ?>"
+                aria-label="<?= e(lang_display_name($code)) ?>"
                 aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
               >
                 <img
                   class="lang-switcher__flag"
                   src="<?= e(lang_flag_src($code)) ?>"
-                  width="24"
-                  height="18"
+                  width="22"
+                  height="16"
                   alt=""
                   loading="lazy"
                   decoding="async"
                 >
-                <span class="lang-switcher__label"><?= e(lang_display_name($code)) ?></span>
                 <span class="lang-switcher__code"><?= strtoupper(e($code)) ?></span>
               </button>
             </li>
@@ -200,18 +223,19 @@
               class="lang-switcher__mobile-option<?= $code === $current ? ' is-active' : '' ?>"
               role="option"
               data-lang="<?= e($code) ?>"
+              aria-label="<?= e(lang_display_name($code)) ?>"
               aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
             >
               <img
                 class="lang-switcher__flag"
                 src="<?= e(lang_flag_src($code)) ?>"
-                width="24"
-                height="18"
+                width="22"
+                height="16"
                 alt=""
                 loading="lazy"
                 decoding="async"
               >
-              <span><?= e(lang_display_name($code)) ?></span>
+              <span class="lang-switcher__code"><?= strtoupper(e($code)) ?></span>
             </button>
           </li>
         <?php endforeach; ?>

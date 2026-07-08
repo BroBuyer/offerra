@@ -17,6 +17,8 @@ function exec(conn, cmd) {
 
 const conn = new Client();
 conn.on('ready', async () => {
+  await exec(conn, 'cd /var/www/offerra && git fetch origin main && git reset --hard origin/main');
+
   await exec(
     conn,
     `cd /var/www/offerra && php artisan tinker --execute="
