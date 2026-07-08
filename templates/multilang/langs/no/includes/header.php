@@ -1,1 +1,3 @@
-﻿<?php\nrequire_once __DIR__ . '/../../../includes/header.php';\n
+<?php
+
+require_once __DIR__ . '/../../../includes/header.php';

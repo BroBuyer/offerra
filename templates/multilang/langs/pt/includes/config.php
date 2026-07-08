@@ -1,1 +1,4 @@
-﻿<?php\ndefine('ACTIVE_LANG', '{pt}');\nrequire_once __DIR__ . '/../../../includes/config.php';\n
+<?php
+
+define('ACTIVE_LANG', 'pt');
+require_once __DIR__ . '/../../../includes/config.php';

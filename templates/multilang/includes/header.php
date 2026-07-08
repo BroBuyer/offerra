@@ -19,36 +19,62 @@
     </nav>
 
     <div class="header-actions">
-      <a href="sign.php" class="btn btn-primary btn-sm">Get Started</a>
-
       <?php
-      // Supported languages are determined by existing `langs/{code}` folders.
-      $langsRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'langs';
-      $supported = [];
-      if (is_dir($langsRoot)) {
-        foreach (scandir($langsRoot) ?: [] as $entry) {
-          if (!is_dir($langsRoot . DIRECTORY_SEPARATOR . $entry)) continue;
-          $code = strtolower((string) $entry);
-          if (preg_match('/^[a-z]{2}$/', $code)) {
-            $supported[] = $code;
-          }
-        }
-      }
-      $supported = array_values(array_unique(array_merge(['en'], $supported)));
-      sort($supported);
+      $supported = multilang_supported_codes();
       $current = active_lang();
       $current = in_array($current, $supported, true) ? $current : 'en';
       ?>
 
       <div class="lang-switcher" data-lang-switcher>
-        <select id="lang-switcher" name="lang-switcher" aria-label="Language">
+        <button
+          type="button"
+          class="lang-switcher__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="Language"
+        >
+          <img
+            class="lang-switcher__flag"
+            src="https://flagcdn.com/24x18/<?= e(lang_flag_code($current)) ?>.png"
+            width="24"
+            height="18"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          >
+          <span class="lang-switcher__code"><?= strtoupper(e($current)) ?></span>
+          <svg class="lang-switcher__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+            <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <ul class="lang-switcher__menu" role="listbox" hidden>
           <?php foreach ($supported as $code): ?>
-            <option value="<?= e($code) ?>" <?= $code === $current ? 'selected' : '' ?>>
-              <?= strtoupper(e($code)) ?>
-            </option>
+            <li role="presentation">
+              <button
+                type="button"
+                class="lang-switcher__option<?= $code === $current ? ' is-active' : '' ?>"
+                role="option"
+                data-lang="<?= e($code) ?>"
+                aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
+              >
+                <img
+                  class="lang-switcher__flag"
+                  src="https://flagcdn.com/24x18/<?= e(lang_flag_code($code)) ?>.png"
+                  width="24"
+                  height="18"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                >
+                <span class="lang-switcher__label"><?= e(lang_display_name($code)) ?></span>
+                <span class="lang-switcher__code"><?= strtoupper(e($code)) ?></span>
+              </button>
+            </li>
           <?php endforeach; ?>
-        </select>
+        </ul>
       </div>
+
+      <a href="sign.php" class="btn btn-primary btn-sm">Get Started</a>
 
       <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
         <span></span><span></span>
@@ -62,49 +88,97 @@
     <a href="offer.php">Offer</a>
     <a href="contacts.php">Contact</a>
     <a href="faq.php">FAQ</a>
+
+    <div class="lang-switcher lang-switcher--mobile" data-lang-switcher>
+      <p class="lang-switcher__mobile-title">Language</p>
+      <ul class="lang-switcher__mobile-grid" role="listbox">
+        <?php foreach ($supported as $code): ?>
+          <li role="presentation">
+            <button
+              type="button"
+              class="lang-switcher__mobile-option<?= $code === $current ? ' is-active' : '' ?>"
+              role="option"
+              data-lang="<?= e($code) ?>"
+              aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
+            >
+              <img
+                class="lang-switcher__flag"
+                src="https://flagcdn.com/24x18/<?= e(lang_flag_code($code)) ?>.png"
+                width="24"
+                height="18"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              >
+              <span><?= e(lang_display_name($code)) ?></span>
+            </button>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+
     <a href="sign.php" class="btn btn-primary">Get Started</a>
   </nav>
 
   <script>
     (() => {
-      const supported = <?=
-        json_encode($supported, JSON_UNESCAPED_UNICODE);
-      ?>;
-      const select = document.getElementById('lang-switcher');
-      if (!select) return;
+      const supported = <?= json_encode($supported, JSON_UNESCAPED_UNICODE) ?>;
 
-      const currentLangFromPath = () => {
-        const parts = window.location.pathname.split('/').filter(Boolean);
-        const first = parts[0];
-        if (first && supported.includes(first)) return first;
-        return 'en';
-      };
-
-      const applyRedirect = (nextLang) => {
+      const buildPath = (nextLang) => {
         const parts = window.location.pathname.split('/').filter(Boolean);
         const first = parts[0];
         const hasLangSeg = first && supported.includes(first);
         const rest = hasLangSeg ? parts.slice(1) : parts;
         const isIndex = rest.length === 0;
 
-        let newPath = '/';
         if (nextLang === 'en') {
-          newPath = isIndex ? '/' : `/${rest.join('/')}`;
-        } else {
-          newPath = isIndex ? `/${nextLang}/` : `/${nextLang}/${rest.join('/')}`;
+          return isIndex ? '/' : `/${rest.join('/')}`;
         }
 
-        const suffix = window.location.search + window.location.hash;
-        window.location.href = newPath + suffix;
+        return isIndex ? `/${nextLang}/` : `/${nextLang}/${rest.join('/')}`;
       };
 
-      const cur = currentLangFromPath();
-      if (supported.includes(cur)) select.value = cur;
+      const redirect = (nextLang) => {
+        if (!nextLang || !supported.includes(nextLang)) return;
+        const suffix = window.location.search + window.location.hash;
+        window.location.href = buildPath(nextLang) + suffix;
+      };
 
-      select.addEventListener('change', (e) => {
-        const next = e.target.value;
-        if (next && next !== select.value) applyRedirect(next);
-        if (next && next === select.value) applyRedirect(next);
+      document.querySelectorAll('[data-lang-switcher]').forEach((root) => {
+        const trigger = root.querySelector('.lang-switcher__trigger');
+        const menu = root.querySelector('.lang-switcher__menu');
+
+        if (trigger && menu) {
+          const closeMenu = () => {
+            menu.hidden = true;
+            trigger.setAttribute('aria-expanded', 'false');
+          };
+
+          trigger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const open = menu.hidden;
+            document.querySelectorAll('.lang-switcher__menu').forEach((item) => {
+              if (item !== menu) item.hidden = true;
+            });
+            document.querySelectorAll('.lang-switcher__trigger').forEach((item) => {
+              if (item !== trigger) item.setAttribute('aria-expanded', 'false');
+            });
+            menu.hidden = !open;
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+
+          document.addEventListener('click', (event) => {
+            if (!root.contains(event.target)) closeMenu();
+          });
+
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeMenu();
+          });
+        }
+
+        root.querySelectorAll('[data-lang]').forEach((button) => {
+          button.addEventListener('click', () => redirect(button.dataset.lang));
+        });
       });
     })();
   </script>

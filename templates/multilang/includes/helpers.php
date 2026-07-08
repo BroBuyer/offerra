@@ -24,6 +24,60 @@ function active_lang(): string
     return strtolower((string) (defined('SITE_LANG') ? SITE_LANG : 'en')) ?: 'en';
 }
 
+function lang_flag_code(string $lang): string
+{
+    $map = ['en' => 'gb'];
+
+    return $map[strtolower($lang)] ?? strtolower($lang);
+}
+
+function lang_display_name(string $lang): string
+{
+    $names = [
+        'en' => 'English',
+        'cs' => 'Čeština',
+        'de' => 'Deutsch',
+        'es' => 'Español',
+        'fr' => 'Français',
+        'hr' => 'Hrvatski',
+        'it' => 'Italiano',
+        'nl' => 'Nederlands',
+        'no' => 'Norsk',
+        'pl' => 'Polski',
+        'pt' => 'Português',
+        'tr' => 'Türkçe',
+    ];
+
+    return $names[strtolower($lang)] ?? strtoupper($lang);
+}
+
+/**
+ * @return list<string>
+ */
+function multilang_supported_codes(): array
+{
+    $langsRoot = dirname(__DIR__).DIRECTORY_SEPARATOR.'langs';
+    $supported = [];
+
+    if (is_dir($langsRoot)) {
+        foreach (scandir($langsRoot) ?: [] as $entry) {
+            if (! is_dir($langsRoot.DIRECTORY_SEPARATOR.$entry)) {
+                continue;
+            }
+
+            $code = strtolower((string) $entry);
+            if (preg_match('/^[a-z]{2}$/', $code)) {
+                $supported[] = $code;
+            }
+        }
+    }
+
+    $supported = array_values(array_unique(array_merge(['en'], $supported)));
+    sort($supported);
+
+    return $supported;
+}
+
 function site_locale(): string
 {
     $map = [
