@@ -26,9 +26,31 @@ function active_lang(): string
 
 function lang_flag_code(string $lang): string
 {
-    $map = ['en' => 'gb'];
+    // Country codes used for flag image filenames.
+    // Some language codes don't match country ISO2 (e.g. cs -> cz).
+    $map = [
+        'en' => 'gb',
+        'cs' => 'cz',
+        'de' => 'de',
+        'fr' => 'fr',
+        'es' => 'es',
+        'it' => 'it',
+        'pl' => 'pl',
+        'pt' => 'pt',
+        'nl' => 'nl',
+        'hr' => 'hr',
+        'tr' => 'tr',
+        'no' => 'no',
+    ];
 
     return $map[strtolower($lang)] ?? strtolower($lang);
+}
+
+function lang_flag_src(string $lang): string
+{
+    $code = strtolower(lang_flag_code($lang));
+
+    return asset('static/img/flags/'.$code.'.png');
 }
 
 function lang_flag_emoji(string $lang): string

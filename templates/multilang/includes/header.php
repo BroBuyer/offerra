@@ -23,9 +23,14 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-light);
   }
-  .lang-switcher__emoji {
-    font-size: 1.1rem;
-    line-height: 1;
+  .lang-switcher__flag {
+    display: block;
+    width: 24px;
+    height: 18px;
+    border-radius: 3px;
+    object-fit: cover;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
   }
   .lang-switcher__code { letter-spacing: 0.04em; }
   .lang-switcher__chevron { color: var(--text-muted); flex-shrink: 0; }
@@ -129,7 +134,15 @@
           aria-expanded="false"
           aria-label="Language"
         >
-          <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($current) ?></span>
+          <img
+            class="lang-switcher__flag"
+            src="<?= e(lang_flag_src($current)) ?>"
+            width="24"
+            height="18"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          >
           <span class="lang-switcher__code"><?= strtoupper(e($current)) ?></span>
           <svg class="lang-switcher__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
             <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -145,7 +158,15 @@
                 data-lang="<?= e($code) ?>"
                 aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
               >
-                <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($code) ?></span>
+                <img
+                  class="lang-switcher__flag"
+                  src="<?= e(lang_flag_src($code)) ?>"
+                  width="24"
+                  height="18"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                >
                 <span class="lang-switcher__label"><?= e(lang_display_name($code)) ?></span>
                 <span class="lang-switcher__code"><?= strtoupper(e($code)) ?></span>
               </button>
@@ -181,7 +202,15 @@
               data-lang="<?= e($code) ?>"
               aria-selected="<?= $code === $current ? 'true' : 'false' ?>"
             >
-              <span class="lang-switcher__emoji" aria-hidden="true"><?= lang_flag_emoji($code) ?></span>
+              <img
+                class="lang-switcher__flag"
+                src="<?= e(lang_flag_src($code)) ?>"
+                width="24"
+                height="18"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              >
               <span><?= e(lang_display_name($code)) ?></span>
             </button>
           </li>
