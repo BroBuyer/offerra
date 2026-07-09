@@ -237,7 +237,7 @@ class OfferController extends Controller
         $offer->loadMissing('user');
 
         try {
-            $deploy->deploy($offer->user, $offer);
+            $deploy->enqueueDeploy($offer->user, $offer);
         } catch (\InvalidArgumentException|\RuntimeException $e) {
             return redirect()
                 ->back()
@@ -250,7 +250,7 @@ class OfferController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', "Задеплоєно: {$offer->domain} → {$offer->fresh()->deploy_panel_name}");
+            ->with('success', "Деплой запущено у фоні: {$offer->domain}. Статус оновиться автоматично.");
     }
 
     public function update(

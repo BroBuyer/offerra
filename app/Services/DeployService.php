@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\DeployOfferJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
@@ -52,6 +53,35 @@ class DeployService
         return $stuck->count();
     }
 
+    public function enqueueDeploy(User $user, Offer $offer): void
+    {
+        $this->assertCanDeploy($user, $offer);
+
+        if ($offer->status === 'deploying') {
+            throw new RuntimeException(
+                'Деплой цього оффера вже виконується. Зачекайте кілька хвилин і оновіть сторінку.',
+            );
+        }
+
+        $offer->update([
+            'status' => 'deploying',
+            'deploy_error' => null,
+        ]);
+
+        DeployOfferJob::dispatch($offer->id)->afterResponse();
+    }
+
+    public function assertCanDeploy(User $user, Offer $offer): void
+    {
+        $settings = $user->settings;
+
+        if (! $settings || ! $this->settingsReady($settings)) {
+            throw new InvalidArgumentException(
+                'Заповніть SFTP-налаштування в розділі «Деплой на Hestia».',
+            );
+        }
+    }
+
     public function deploy(User $user, Offer $offer): Offer
     {
         @set_time_limit(0);
@@ -80,14 +110,6 @@ class DeployService
     {
         $this->knownRemoteDirs = [];
 
-        $settings = $user->settings;
-
-        if (! $settings || ! $this->settingsReady($settings)) {
-            throw new InvalidArgumentException(
-                'Заповніть SFTP-налаштування в розділі «Деплой на Hestia».',
-            );
-        }
-
         $offer->loadMissing('user.settings');
 
         $this->generator->refreshConfig($offer);
@@ -107,6 +129,7 @@ class DeployService
         ]);
 
         try {
+            $settings = $user->settings;
             $config = $this->configFromSettings($settings);
             $filesystem = $this->connection->connect($config, self::DEPLOY_TIMEOUT);
             $remotePath = $this->connection->resolveExistingRemotePath(

@@ -247,6 +247,27 @@ export default function OffersIndex({
         return () => window.clearTimeout(timeout);
     }, [brandQuery, filters.brand]);
 
+    const hasDeploying = useMemo(
+        () => rows.some((offer) => offer.status === 'deploying'),
+        [rows],
+    );
+
+    useEffect(() => {
+        if (!hasDeploying) {
+            return undefined;
+        }
+
+        const interval = window.setInterval(() => {
+            router.reload({
+                only: ['offers'],
+                preserveScroll: true,
+                preserveState: true,
+            });
+        }, 5000);
+
+        return () => window.clearInterval(interval);
+    }, [hasDeploying]);
+
     const deployOffer = (offer) => {
         setDeployingId(offer.id);
         router.post(route('offers.deploy', offer.id), {}, {
