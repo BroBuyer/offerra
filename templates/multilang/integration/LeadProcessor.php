@@ -147,15 +147,28 @@ final class LeadProcessor
             $payload['lead_language'] = $language;
         }
 
-        // Multilang: SPAM/geo-spam отключены, aff_sub12=SPAM не добавляємо.
-        return array_merge($payload, crm_aff_subs_resolved($lead));
+        return array_merge($payload, crm_aff_subs_resolved($lead), self::crmLangSpamSubs($language));
+    }
+
+    public static function languageMatchesIpGeo(string $language): bool
+    {
+        if (! function_exists('lead_language_matches_ip')) {
+            return true;
+        }
+
+        $match = lead_language_matches_ip($language, self::detectIpCountry());
+
+        return $match === null || $match;
     }
 
     /** @return array<string, string> */
-    private static function crmGeoSpamSubs(): array
+    private static function crmLangSpamSubs(string $language): array
     {
-        // Multilang: geo-spam tag is disabled.
-        return [];
+        if (self::languageMatchesIpGeo($language)) {
+            return [];
+        }
+
+        return ['aff_sub12' => 'SPAM'];
     }
 
     public static function sendToCrm(array $crmData): array
@@ -350,7 +363,14 @@ final class LeadProcessor
         $ipCountry = self::detectIpCountry();
         $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
-        $geoSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+        $langSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+        $expectedLangs = function_exists('ip_country_allowed_langs')
+            ? ip_country_allowed_langs($ipCountry)
+            : [];
+
+        if ($crmSuccess && $langSpam) {
+            $status = '⚠️ LEAD ACCEPTED (LANG SPAM)';
+        }
 
         $lines = [
             '<b>' . $status . '</b>',
@@ -366,7 +386,10 @@ final class LeadProcessor
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
             '<b>Country (CRM):</b> ' . self::escapeTelegramHtml((string) ($crmData['country_code'] ?? self::crmCountryCode())),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
-            '<b>Geo spam:</b> ' . ($geoSpam ? '⚠️ SPAM (aff_sub12)' : '—'),
+            '<b>Lang spam:</b> ' . ($langSpam ? '⚠️ SPAM (aff_sub12)' : '✅'),
+            '<b>Expected langs:</b> ' . self::escapeTelegramHtml(
+                $expectedLangs !== [] ? implode(', ', $expectedLangs) : '— (no mapping)'
+            ),
             '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
             '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
             '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
@@ -407,7 +430,6 @@ final class LeadProcessor
         $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];
 
-        // Multilang: Telegram не пропускаємо (geo-spam отключено).
         $telegramSent = self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
 
         return [

@@ -214,6 +214,111 @@ function form_visitor_phone_country(): string
     return $allowed[0];
 }
 
+/**
+ * Allowed UI languages for a visitor IP country (ISO2).
+ * Empty list = skip lang-spam check (unknown or unmapped IP).
+ *
+ * @return list<string>
+ */
+function ip_country_allowed_langs(string $ipCountry): array
+{
+    $ip = strtoupper(trim($ipCountry));
+    if ($ip === '' || $ip === 'XX') {
+        return [];
+    }
+
+    static $map = [
+        'FR' => ['fr'],
+        'MC' => ['fr'],
+        'LU' => ['fr', 'de'],
+
+        'DE' => ['de'],
+        'AT' => ['de'],
+        'CH' => ['de', 'fr', 'it'],
+
+        'ES' => ['es'],
+        'MX' => ['es'],
+        'AR' => ['es'],
+        'CL' => ['es'],
+        'CO' => ['es'],
+        'PE' => ['es'],
+        'VE' => ['es'],
+        'EC' => ['es'],
+        'UY' => ['es'],
+        'PY' => ['es'],
+        'BO' => ['es'],
+        'CR' => ['es'],
+        'PA' => ['es'],
+        'DO' => ['es'],
+        'GT' => ['es'],
+        'HN' => ['es'],
+        'NI' => ['es'],
+        'SV' => ['es'],
+        'PR' => ['es'],
+        'CU' => ['es'],
+
+        'IT' => ['it'],
+        'SM' => ['it'],
+        'VA' => ['it'],
+
+        'CZ' => ['cs'],
+        'PL' => ['pl'],
+        'HR' => ['hr'],
+        'TR' => ['tr'],
+
+        'NO' => ['no'],
+        'NL' => ['nl'],
+        'BE' => ['nl', 'fr'],
+
+        'PT' => ['pt'],
+        'BR' => ['pt'],
+        'AO' => ['pt'],
+        'MZ' => ['pt'],
+
+        'GB' => ['en'],
+        'IE' => ['en'],
+        'US' => ['en'],
+        'AU' => ['en'],
+        'NZ' => ['en'],
+        'CA' => ['en', 'fr'],
+        'ZA' => ['en'],
+        'IN' => ['en'],
+        'SG' => ['en'],
+        'PH' => ['en'],
+        'MY' => ['en'],
+        'HK' => ['en'],
+        'PK' => ['en'],
+        'NG' => ['en'],
+        'KE' => ['en'],
+        'GH' => ['en'],
+        'JM' => ['en'],
+        'TT' => ['en'],
+        'BB' => ['en'],
+        'MT' => ['en'],
+        'CY' => ['en', 'tr'],
+    ];
+
+    return $map[$ip] ?? [];
+}
+
+/**
+ * @return bool|null true = match, false = mismatch, null = skip check
+ */
+function lead_language_matches_ip(string $language, string $ipCountry): ?bool
+{
+    $allowed = ip_country_allowed_langs($ipCountry);
+    if ($allowed === []) {
+        return null;
+    }
+
+    $lang = strtolower(trim($language));
+    if ($lang === '') {
+        return false;
+    }
+
+    return in_array($lang, $allowed, true);
+}
+
 function platform_image_path(): string
 {
     static $resolved;
