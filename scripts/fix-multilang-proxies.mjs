@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const base = path.resolve('templates/multilang/langs');
-const langs = ['cs', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'hr', 'tr', 'no', 'sk'];
+const langs = ['cs', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'hr', 'tr', 'no', 'sk', 'da'];
 
 for (const lang of langs) {
     const dir = path.join(base, lang, 'includes');

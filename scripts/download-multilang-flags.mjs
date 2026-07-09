@@ -6,7 +6,7 @@ const outDir = path.resolve('templates/multilang/static/img/flags');
 fs.mkdirSync(outDir, { recursive: true });
 
 // Country ISO2 (filenames) for language switcher.
-const codes = ['gb', 'cz', 'sk', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'hr', 'tr', 'no'];
+const codes = ['gb', 'cz', 'sk', 'de', 'fr', 'es', 'it', 'pl', 'pt', 'nl', 'hr', 'tr', 'no', 'dk'];
 
 function download(url, dest) {
   return new Promise((resolve, reject) => {
