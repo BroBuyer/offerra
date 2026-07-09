@@ -23,8 +23,15 @@ function resolveMarket(geo, geoPresets, availableLanguages) {
     const langCodes = availableLanguages.map((item) => item.code);
     const suggested = preset?.lang && langCodes.includes(preset.lang) ? preset.lang : availableLanguages[0]?.code;
     const phone = preset?.phone ?? code.toLowerCase();
+    const currency = preset?.currency ?? null;
 
-    return { geo: code, lang: suggested ?? '', phone, phone_countries: [phone] };
+    return {
+        geo: code,
+        lang: suggested ?? '',
+        phone,
+        phone_countries: [phone],
+        ...(currency ? { currency } : {}),
+    };
 }
 
 function templateLabel(templates, templateId) {
@@ -157,6 +164,7 @@ export default function OffersCreate({
             return {
                 ...prev,
                 geo: resolved.geo,
+                ...(resolved.currency ? { currency: resolved.currency } : {}),
                 phone_countries: list,
                 phone: resolved.phone,
                 // Multilang: мова на ленді керується URL (`/fr/...`), а не вибором тут.
@@ -375,7 +383,7 @@ export default function OffersCreate({
                                     value={isMultilangTemplate(data.template) ? MULTILANG_GEO : data.geo}
                                     onChange={(e) => updateGeo(e.target.value)}
                                     onBlur={(e) => updateGeo(e.target.value)}
-                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, ZA…'}
+                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, CH, ZA…'}
                                     maxLength={2}
                                     autoComplete="off"
                                     readOnly={isMultilangTemplate(data.template)}
