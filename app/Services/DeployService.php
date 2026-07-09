@@ -17,7 +17,7 @@ use RuntimeException;
 
 class DeployService
 {
-    private const DEPLOY_TIMEOUT = 180;
+    private const DEPLOY_TIMEOUT = 600;
 
     /** @var array<string, true> */
     private array $knownRemoteDirs = [];
@@ -35,7 +35,7 @@ class DeployService
         private readonly string $offersPath,
     ) {}
 
-    public function resetStuckDeploys(int $minutes = 3): int
+    public function resetStuckDeploys(int $minutes = 8): int
     {
         $stuck = Offer::query()
             ->where('status', 'deploying')
@@ -311,6 +311,11 @@ class DeployService
         }
 
         if (str_starts_with($relativePath, '.git/') || str_contains($relativePath, '/.git/')) {
+            return true;
+        }
+
+        // Multilang: langs/{code}/static|integration are unused duplicates of offer root.
+        if (preg_match('#^langs/[a-z]{2}/(static|integration)(/|$)#', $relativePath)) {
             return true;
         }
 

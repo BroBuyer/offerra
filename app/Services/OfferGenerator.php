@@ -63,6 +63,10 @@ class OfferGenerator
             File::copyDirectory($templatePath, $targetPath);
             $this->syncSharedIntegrationFiles($targetPath, $template);
 
+            if ($template === 'multilang') {
+                $this->pruneMultilangDuplicates($targetPath);
+            }
+
             $config = $this->configBuilder->build($input, $settings);
             File::put($targetPath.'/includes/config.php', $config);
 
@@ -220,6 +224,10 @@ class OfferGenerator
         }
 
         if (! $needsRebuild) {
+            if ($offer->template === 'multilang') {
+                $this->pruneMultilangDuplicates($targetPath);
+            }
+
             return $targetPath;
         }
 
@@ -284,6 +292,10 @@ class OfferGenerator
 
         File::copyDirectory($templatePath, $targetPath);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
+
+        if ($offer->template === 'multilang') {
+            $this->pruneMultilangDuplicates($targetPath);
+        }
 
         $keitaroToken = '';
 
@@ -453,6 +465,29 @@ class OfferGenerator
             $manifestPath,
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
         );
+    }
+
+    /**
+     * Multilang pages load assets from offer root (`/static/*`, `/integration/*`).
+     * Per-lang copies under langs/{code}/static and langs/{code}/integration are unused bloat.
+     */
+    public function pruneMultilangDuplicates(string $targetPath): void
+    {
+        $langsRoot = $targetPath.DIRECTORY_SEPARATOR.'langs';
+
+        if (! File::isDirectory($langsRoot)) {
+            return;
+        }
+
+        foreach (File::directories($langsRoot) as $langDir) {
+            foreach (['static', 'integration'] as $sub) {
+                $path = $langDir.DIRECTORY_SEPARATOR.$sub;
+
+                if (File::isDirectory($path)) {
+                    File::deleteDirectory($path);
+                }
+            }
+        }
     }
 
     /**
