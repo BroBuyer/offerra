@@ -292,6 +292,7 @@ class OfferGenerator
         }
 
         File::copyDirectory($templatePath, $targetPath);
+        $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
 
         if ($offer->template === 'multilang') {
@@ -393,6 +394,7 @@ class OfferGenerator
 
         File::ensureDirectoryExists(dirname($configPath));
         File::put($configPath, $this->configBuilder->build($input, $settings));
+        $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
@@ -487,6 +489,32 @@ class OfferGenerator
                 if (File::isDirectory($path)) {
                     File::deleteDirectory($path);
                 }
+            }
+        }
+    }
+
+    /**
+     * helpers.php / keitaro.php — єдине джерело в templates/{id}/includes/.
+     * Мовні копії в langs/{code}/includes/ часто застарілі.
+     */
+    public function syncSharedIncludeFiles(string $targetPath, string $templateId = 'default'): void
+    {
+        $source = rtrim($this->templatesPath, DIRECTORY_SEPARATOR)
+            .DIRECTORY_SEPARATOR.$templateId
+            .DIRECTORY_SEPARATOR.'includes';
+
+        if (! File::isDirectory($source)) {
+            return;
+        }
+
+        $destination = $targetPath.DIRECTORY_SEPARATOR.'includes';
+        File::ensureDirectoryExists($destination);
+
+        foreach (['helpers.php', 'keitaro.php'] as $filename) {
+            $src = $source.DIRECTORY_SEPARATOR.$filename;
+
+            if (File::isFile($src)) {
+                File::copy($src, $destination.DIRECTORY_SEPARATOR.$filename);
             }
         }
     }
