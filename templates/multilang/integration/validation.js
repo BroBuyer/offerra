@@ -120,6 +120,38 @@ function getThanksPageUrl(formAction, thankYouFile = 'Thanks.php') {
   return url;
 }
 
+function integrationBaseUrl(form) {
+  const action = form.action || '';
+  const match = action.match(/^(.*\/integration\/)/i);
+  if (match) return match[1];
+  return '/integration/';
+}
+
+async function resolveVisitorPhoneCountry(form, onlyCountries) {
+  try {
+    const res = await fetch(`${integrationBaseUrl(form)}visitor-geo.php`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
+    if (!res.ok) return '';
+    const data = await res.json();
+    const code = String(data.phone_country || '').toLowerCase();
+    if (!/^[a-z]{2}$/.test(code)) return '';
+    if (onlyCountries.length && !onlyCountries.includes(code)) return '';
+    return code;
+  } catch (_) {
+    return '';
+  }
+}
+
+function syncPhoneCountryHidden(form, iti) {
+  const hidden = form.querySelector('input[name="phone_country"]');
+  const iso2 = iti.getSelectedCountryData()?.iso2;
+  if (hidden && iso2) {
+    hidden.value = iso2.toLowerCase();
+  }
+}
+
 function setupFormValidation(form) {
   if (hasLeadCookie(form)) {
     showAlreadyRegistered(form);
@@ -162,7 +194,16 @@ function setupFormValidation(form) {
       },
       true,
     );
+  } else {
+    resolveVisitorPhoneCountry(form, onlyCountries).then((code) => {
+      if (code && code !== phoneCountry) {
+        iti.setCountry(code);
+        syncPhoneCountryHidden(form, iti);
+      }
+    });
   }
+
+  phone.addEventListener('countrychange', () => syncPhoneCountryHidden(form, iti));
 
   phone.addEventListener('input', () => {
     clearFieldError(phone);
@@ -195,6 +236,7 @@ function setupFormValidation(form) {
 
     preloader?.classList.remove('hidden');
 
+    syncPhoneCountryHidden(form, iti);
     const fullPhone = iti.getNumber();
     const formData = new FormData(form);
     formData.set('fullphone', fullPhone);

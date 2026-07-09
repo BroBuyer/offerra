@@ -81,6 +81,7 @@ define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
 define('KEITARO_DEBUG', false);
 
 require_once __DIR__ . '/helpers.php';
+offer_send_personalization_headers();
 require_once __DIR__ . '/keitaro.php';
 keitaro_bootstrap();
 

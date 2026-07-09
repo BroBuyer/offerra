@@ -255,6 +255,7 @@ class OfferGenerator
             'includes/helpers.php',
             'includes/schema.php',
             'integration/validation.js',
+            'integration/visitor-geo.php',
             'integration/send.php',
             'integration/default-integration.css',
             'static/css/main.css',

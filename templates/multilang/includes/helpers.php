@@ -211,11 +211,39 @@ function form_visitor_phone_country(): string
         return $ipCode;
     }
 
+    if (count($allowed) === 1) {
+        return $allowed[0];
+    }
+
+    // Multi-GEO без IP (кеш, prefetch): не брати перший preset (часто IT) — клієнт підтягне через visitor-geo.php.
+    if (in_array('gb', $allowed, true)) {
+        return 'gb';
+    }
+
     if ($default !== '' && in_array($default, $allowed, true)) {
         return $default;
     }
 
     return $allowed[0];
+}
+
+/** HTML з phone_country по IP не кешувати (Cloudflare / браузер). */
+function offer_send_personalization_headers(): void
+{
+    if (headers_sent() || PHP_SAPI === 'cli') {
+        return;
+    }
+
+    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
+    $skip = ['send.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
+
+    if (in_array($script, $skip, true)) {
+        return;
+    }
+
+    header('Cache-Control: private, no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
+    header('Vary: CF-IPCountry');
 }
 
 /**

@@ -108,11 +108,37 @@ function form_visitor_phone_country(): string
         return $ipCode;
     }
 
+    if (count($allowed) === 1) {
+        return $allowed[0];
+    }
+
+    if (in_array('gb', $allowed, true)) {
+        return 'gb';
+    }
+
     if ($default !== '' && in_array($default, $allowed, true)) {
         return $default;
     }
 
     return $allowed[0];
+}
+
+function offer_send_personalization_headers(): void
+{
+    if (headers_sent() || PHP_SAPI === 'cli') {
+        return;
+    }
+
+    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
+    $skip = ['send.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
+
+    if (in_array($script, $skip, true)) {
+        return;
+    }
+
+    header('Cache-Control: private, no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
+    header('Vary: CF-IPCountry');
 }
 
 function platform_image_path(): string

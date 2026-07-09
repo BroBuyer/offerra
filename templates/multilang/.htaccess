@@ -14,7 +14,7 @@ RewriteCond %2 !^(integration/|static/|robots\.txt$|sitemap\.xml$)
 RewriteRule ^([a-z]{2})/(.+)$ langs/$1/$2 [L,QSA]
 
 <IfModule mod_headers.c>
-  SetEnvIf Request_URI "/integration/(validation\.js|default-integration\.css)(\?.*)?$" integration_asset=1
+  SetEnvIf Request_URI "/integration/(validation\.js|default-integration\.css|visitor-geo\.php)(\?.*)?$" integration_asset=1
   Header set Cache-Control "no-cache, no-store, must-revalidate" env=integration_asset
   Header set Pragma "no-cache" env=integration_asset
   Header set Expires "0" env=integration_asset
