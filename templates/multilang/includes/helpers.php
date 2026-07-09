@@ -31,6 +31,7 @@ function lang_flag_code(string $lang): string
     $map = [
         'en' => 'gb',
         'cs' => 'cz',
+        'sk' => 'sk',
         'de' => 'de',
         'fr' => 'fr',
         'es' => 'es',
@@ -72,6 +73,7 @@ function lang_display_name(string $lang): string
     $names = [
         'en' => 'English',
         'cs' => 'Čeština',
+        'sk' => 'Slovenčina',
         'de' => 'Deutsch',
         'es' => 'Español',
         'fr' => 'Français',
@@ -262,6 +264,7 @@ function ip_country_allowed_langs(string $ipCountry): array
         'VA' => ['it'],
 
         'CZ' => ['cs'],
+        'SK' => ['sk'],
         'PL' => ['pl'],
         'HR' => ['hr'],
         'TR' => ['tr'],
