@@ -257,12 +257,16 @@ class OfferController extends Controller
         UpdateOfferRequest $request,
         Offer $offer,
         OfferGenerator $generator,
+        DeployService $deploy,
     ): RedirectResponse {
+        $createKeitaro = $request->boolean('create_keitaro');
+        $shouldAutoDeploy = $createKeitaro && ! $offer->keitaro_campaign_id;
+
         try {
             $offer = $generator->updateSettings($offer, [
                 'phone' => $request->string('phone')->toString(),
                 'phone_countries' => $request->input('phone_countries', []),
-                'create_keitaro' => $request->boolean('create_keitaro'),
+                'create_keitaro' => $createKeitaro,
             ]);
         } catch (\Throwable $e) {
             return redirect()
@@ -270,10 +274,23 @@ class OfferController extends Controller
                 ->withErrors(['edit' => $e->getMessage()]);
         }
 
-        $message = 'Оффер оновлено. Натисніть «Деплой», щоб застосувати на сервері.';
+        $message = 'Оффер оновлено.';
 
-        if ($request->boolean('create_keitaro') && $offer->keitaro_campaign_id) {
+        if ($createKeitaro && $offer->keitaro_campaign_id) {
             $message .= " Keitaro #{$offer->keitaro_campaign_id}.";
+
+            if ($shouldAutoDeploy) {
+                try {
+                    $deploy->enqueueDeploy($offer->user, $offer->fresh());
+                    $message .= ' Деплой з токеном Keitaro запущено у фоні.';
+                } catch (\InvalidArgumentException|\RuntimeException $e) {
+                    $message .= ' Натисніть «Деплой», щоб застосувати токен на сервері.';
+                }
+            } else {
+                $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
+            }
+        } else {
+            $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
         }
 
         return redirect()

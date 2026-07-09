@@ -136,6 +136,9 @@ export default function OfferEditModal({
                                     <Link href={route('settings.index')}>налаштуваннях</Link>.
                                 </p>
                             )}
+                            <p className="field-hint">
+                                Після збереження токен Keitaro автоматично задеплоїться на ленд.
+                            </p>
                         </div>
                     )}
 
@@ -152,7 +155,7 @@ export default function OfferEditModal({
                     )}
 
                     <p className="field-hint">
-                        Після збереження натисніть «Деплой», щоб оновити файли на сервері.
+                        Зміни phone GEO застосуються на ленді після «Деплой».
                     </p>
 
                     <div className="btn-row">
