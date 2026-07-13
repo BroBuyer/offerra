@@ -382,10 +382,19 @@ export default function OffersCreate({
                                             <div className="domain-search-results__main">
                                                 <span className="domain-search-results__name">{item.domain}</span>
                                                 <span className={`domain-search-results__badge domain-search-results__badge--${item.status}`}>
-                                                    {item.available ? 'Вільний' : item.status === 'taken' ? 'Зайнятий' : item.status}
+                                                    {item.available
+                                                        ? 'Вільний'
+                                                        : item.status === 'taken'
+                                                            ? 'Зайнятий'
+                                                            : item.status === 'error'
+                                                                ? 'Помилка'
+                                                                : item.status}
                                                 </span>
                                             </div>
                                             <div className="domain-search-results__meta">
+                                                {item.message && item.status === 'error' && (
+                                                    <span title={item.message}>{item.message}</span>
+                                                )}
                                                 {item.price && <span>{item.price}</span>}
                                                 {item.available && (
                                                     <button

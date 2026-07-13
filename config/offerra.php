@@ -5,7 +5,11 @@ return [
     'purge_local_after_deploy' => env('OFFERRA_PURGE_LOCAL_AFTER_DEPLOY', true),
 
     // TLD для пошуку домену (Dynadot) — якщо введено лише імʼя без зони
-    'domain_search_tlds' => ['com', 'org', 'online', 'net', 'site', 'live', 'ai', 'info'],
+    'domain_search_tlds' => [
+        'com', 'org', 'online', 'net', 'site', 'live', 'ai', 'info',
+        'my', 'vip', 'co', 'io', 'xyz', 'world', 'store', 'shop',
+        'club', 'pro', 'biz', 'top', 'eu', 'me',
+    ],
 
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),
     'offers_path' => base_path(env('OFFERS_PATH', 'offers')),
