@@ -2,6 +2,7 @@ import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 const steps = ['Основне', 'Шаблон', 'GEO & мова', 'Keitaro', 'Підсумок'];
@@ -59,6 +60,8 @@ function buildDefaults(templates) {
 export default function OffersCreate({
     settingsReady,
     hasKeitaroApiKey,
+    hasDynadotApiKey = false,
+    domainSearchTlds = [],
     affiliateTag = 'BRO',
     geoPresets,
     currencies = [],
@@ -71,6 +74,9 @@ export default function OffersCreate({
     const skipPersist = useRef(false);
     const initial = useMemo(() => (fresh ? { step: 0, data: defaults } : loadWizardState(defaults)), [fresh, defaults]);
     const [step, setStep] = useState(initial.step);
+    const [domainSearching, setDomainSearching] = useState(false);
+    const [domainSearchError, setDomainSearchError] = useState('');
+    const [domainSearchResults, setDomainSearchResults] = useState(null);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
 
@@ -200,6 +206,45 @@ export default function OffersCreate({
         setData(field, value);
     };
 
+    const domainSearchQuery = useMemo(() => {
+        const brand = data.brand.trim();
+        const domain = data.domain.trim();
+        return domain || brand;
+    }, [data.brand, data.domain]);
+
+    const searchDomains = async () => {
+        const query = domainSearchQuery;
+
+        if (query.length < 2) {
+            setDomainSearchError('Введіть назву бренду або домен (мін. 2 символи).');
+            return;
+        }
+
+        setDomainSearching(true);
+        setDomainSearchError('');
+        setDomainSearchResults(null);
+
+        try {
+            const { data: result } = await axios.post(route('domains.search'), { query });
+            if (!result.ok) {
+                setDomainSearchError(result.message ?? 'Помилка пошуку');
+                return;
+            }
+            setDomainSearchResults(result.results ?? []);
+        } catch (error) {
+            setDomainSearchError(
+                error.response?.data?.message ?? 'Не вдалося виконати пошук доменів',
+            );
+        } finally {
+            setDomainSearching(false);
+        }
+    };
+
+    const pickDomain = (domain) => {
+        update('domain', domain);
+        setDomainSearchResults(null);
+    };
+
     const folderPreview = useMemo(() => {
         if (!data.brand || !data.domain || !data.geo) return '…';
         const brandSlug = data.brand.trim().replace(/\s+/g, '-');
@@ -286,13 +331,76 @@ export default function OffersCreate({
                         </div>
                         <div className="field">
                             <label htmlFor="domain">Домен</label>
-                            <input
-                                id="domain"
-                                type="text"
-                                value={data.domain}
-                                onChange={(e) => update('domain', e.target.value)}
-                                placeholder="example.com або strumieńwartoryn.com"
-                            />
+                            <div className="domain-search-row">
+                                <input
+                                    id="domain"
+                                    type="text"
+                                    value={data.domain}
+                                    onChange={(e) => {
+                                        update('domain', e.target.value);
+                                        setDomainSearchResults(null);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            searchDomains();
+                                        }
+                                    }}
+                                    placeholder="example.com або spirebondtron"
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-ghost"
+                                    disabled={domainSearching || !hasDynadotApiKey}
+                                    onClick={searchDomains}
+                                >
+                                    {domainSearching ? 'Пошук…' : 'Шукати'}
+                                </button>
+                            </div>
+                            {!hasDynadotApiKey && (
+                                <p className="field-hint" style={{ color: '#f59e0b' }}>
+                                    Збережіть Dynadot API key у{' '}
+                                    <Link href={route('settings.index')}>налаштуваннях</Link>.
+                                </p>
+                            )}
+                            {hasDynadotApiKey && domainSearchTlds.length > 0 && (
+                                <p className="field-hint">
+                                    Пошук по зонах: {domainSearchTlds.map((t) => `.${t}`).join(', ')}
+                                    {data.brand && !data.domain ? ' (з назви бренду)' : ''}
+                                </p>
+                            )}
+                            {domainSearchError && (
+                                <p className="field-hint" style={{ color: '#f87171' }}>{domainSearchError}</p>
+                            )}
+                            {domainSearchResults && (
+                                <ul className="domain-search-results">
+                                    {domainSearchResults.map((item) => (
+                                        <li
+                                            key={item.domain}
+                                            className={`domain-search-results__item${item.available ? ' is-available' : ''}`}
+                                        >
+                                            <div className="domain-search-results__main">
+                                                <span className="domain-search-results__name">{item.domain}</span>
+                                                <span className={`domain-search-results__badge domain-search-results__badge--${item.status}`}>
+                                                    {item.available ? 'Вільний' : item.status === 'taken' ? 'Зайнятий' : item.status}
+                                                </span>
+                                            </div>
+                                            <div className="domain-search-results__meta">
+                                                {item.price && <span>{item.price}</span>}
+                                                {item.available && (
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-ghost btn-sm"
+                                                        onClick={() => pickDomain(item.domain)}
+                                                    >
+                                                        Обрати
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div className="field-row">
                             <div className="field">

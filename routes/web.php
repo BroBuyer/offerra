@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DomainSearchController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/preview/{template}/{path?}', [TemplatePreviewController::class, 'show'])
         ->where('path', '.*')
         ->name('templates.preview');
+    Route::post('/domains/search', [DomainSearchController::class, 'store'])->name('domains.search');
+
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/test-deploy', [SettingsController::class, 'testDeploy'])->name('settings.test-deploy');

@@ -56,12 +56,20 @@ class SettingsController extends Controller
             'deploy_username' => $data['deploy_username'] ?? $settings->deploy_username,
             'deploy_path_template' => $data['deploy_path_template'] ?? $settings->deploy_path_template,
             'deploy_panel_url' => $data['deploy_panel_url'] ?? $settings->deploy_panel_url,
+            'dynadot_contact_id' => $data['dynadot_contact_id'] ?? $settings->dynadot_contact_id,
+            'dynadot_sandbox' => $request->boolean('dynadot_sandbox'),
+            'dynadot_default_years' => (int) ($data['dynadot_default_years'] ?? $settings->dynadot_default_years ?? 1),
+            'cloudflare_account_id' => $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id,
+            'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),
         ]);
 
         $this->mergeSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
         $this->mergeSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
         $this->mergeSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
         $this->mergeSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
+        $this->mergeSecret($settings, 'dynadot_api_key', $data['dynadot_api_key'] ?? null);
+        $this->mergeSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
+        $this->mergeSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
 
         $settings->save();
 

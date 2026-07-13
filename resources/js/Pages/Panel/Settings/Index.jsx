@@ -22,6 +22,14 @@ function formFromSettings(settings, userId = null) {
         deploy_password: settings.deploy_password ?? '',
         deploy_path_template: settings.deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
         deploy_panel_url: settings.deploy_panel_url ?? '',
+        dynadot_api_key: settings.dynadot_api_key ?? '',
+        dynadot_api_secret: settings.dynadot_api_secret ?? '',
+        dynadot_contact_id: settings.dynadot_contact_id ?? '',
+        dynadot_sandbox: settings.dynadot_sandbox ?? false,
+        dynadot_default_years: settings.dynadot_default_years ?? 1,
+        cloudflare_api_token: settings.cloudflare_api_token ?? '',
+        cloudflare_account_id: settings.cloudflare_account_id ?? '',
+        cloudflare_default_proxied: settings.cloudflare_default_proxied ?? true,
         test_domain: 'reserve-safegrove-ie.com',
     };
 }
@@ -199,6 +207,84 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             Додайте бота в групу — ліди дублюватимуться туди. Якщо порожньо, лише в особистий чат.
                         </p>
                     </div>
+                </section>
+
+                <section className="card">
+                    <h3>Dynadot (домени)</h3>
+                    <p className="card-desc">API для пошуку та реєстрації доменів при створенні оффера</p>
+                    <div className="field">
+                        <label htmlFor="dynadot-api-key">API key</label>
+                        <SecretInput
+                            id="dynadot-api-key"
+                            value={data.dynadot_api_key}
+                            onChange={(e) => setData('dynadot_api_key', e.target.value)}
+                            placeholder="Dynadot API key"
+                        />
+                    </div>
+                    <div className="field-row">
+                        <div className="field">
+                            <label htmlFor="dynadot-contact">Contact ID</label>
+                            <input
+                                type="text"
+                                id="dynadot-contact"
+                                value={data.dynadot_contact_id}
+                                onChange={(e) => setData('dynadot_contact_id', e.target.value)}
+                                placeholder="для реєстрації (пізніше)"
+                            />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="dynadot-years">Років за замовч.</label>
+                            <input
+                                type="number"
+                                id="dynadot-years"
+                                min={1}
+                                max={10}
+                                value={data.dynadot_default_years}
+                                onChange={(e) => setData('dynadot_default_years', Number(e.target.value))}
+                            />
+                        </div>
+                    </div>
+                    <label className="field-check" htmlFor="dynadot-sandbox">
+                        <input
+                            id="dynadot-sandbox"
+                            type="checkbox"
+                            checked={data.dynadot_sandbox}
+                            onChange={(e) => setData('dynadot_sandbox', e.target.checked)}
+                        />
+                        <span>Sandbox (тестовий API)</span>
+                    </label>
+                </section>
+
+                <section className="card">
+                    <h3>Cloudflare (DNS)</h3>
+                    <p className="card-desc">API для автоматичного DNS — наступний етап після пошуку доменів</p>
+                    <div className="field">
+                        <label htmlFor="cf-token">API token</label>
+                        <SecretInput
+                            id="cf-token"
+                            value={data.cloudflare_api_token}
+                            onChange={(e) => setData('cloudflare_api_token', e.target.value)}
+                            placeholder="Cloudflare API token"
+                        />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="cf-account">Account ID</label>
+                        <input
+                            type="text"
+                            id="cf-account"
+                            value={data.cloudflare_account_id}
+                            onChange={(e) => setData('cloudflare_account_id', e.target.value)}
+                        />
+                    </div>
+                    <label className="field-check" htmlFor="cf-proxied">
+                        <input
+                            id="cf-proxied"
+                            type="checkbox"
+                            checked={data.cloudflare_default_proxied}
+                            onChange={(e) => setData('cloudflare_default_proxied', e.target.checked)}
+                        />
+                        <span>Proxied (помаранчева хмарка) за замовчуванням</span>
+                    </label>
                 </section>
 
                 <section className="card">

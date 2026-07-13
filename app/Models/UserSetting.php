@@ -24,6 +24,14 @@ class UserSetting extends Model
         'deploy_password',
         'deploy_path_template',
         'deploy_panel_url',
+        'dynadot_api_key',
+        'dynadot_api_secret',
+        'dynadot_contact_id',
+        'dynadot_sandbox',
+        'dynadot_default_years',
+        'cloudflare_api_token',
+        'cloudflare_account_id',
+        'cloudflare_default_proxied',
     ];
 
     protected function casts(): array
@@ -33,7 +41,13 @@ class UserSetting extends Model
             'crm_api_key' => 'encrypted',
             'tg_bot_token' => 'encrypted',
             'deploy_password' => 'encrypted',
+            'dynadot_api_key' => 'encrypted',
+            'dynadot_api_secret' => 'encrypted',
+            'cloudflare_api_token' => 'encrypted',
             'deploy_port' => 'integer',
+            'dynadot_sandbox' => 'boolean',
+            'dynadot_default_years' => 'integer',
+            'cloudflare_default_proxied' => 'boolean',
         ];
     }
 
@@ -63,6 +77,13 @@ class UserSetting extends Model
             'deploy_path_template' => $this->deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
             'deploy_panel_url' => $this->deploy_panel_url ?? '',
             'has_deploy_password' => filled($this->deploy_password),
+            'has_dynadot_api_key' => filled($this->dynadot_api_key),
+            'dynadot_contact_id' => $this->dynadot_contact_id ?? '',
+            'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
+            'dynadot_default_years' => (int) ($this->dynadot_default_years ?? 1),
+            'has_cloudflare_api_token' => filled($this->cloudflare_api_token),
+            'cloudflare_account_id' => $this->cloudflare_account_id ?? '',
+            'cloudflare_default_proxied' => (bool) ($this->cloudflare_default_proxied ?? true),
         ];
     }
 
@@ -76,6 +97,9 @@ class UserSetting extends Model
             'crm_api_key' => $this->crm_api_key ?? '',
             'tg_bot_token' => $this->tg_bot_token ?? '',
             'deploy_password' => $this->deploy_password ?? '',
+            'dynadot_api_key' => $this->dynadot_api_key ?? '',
+            'dynadot_api_secret' => $this->dynadot_api_secret ?? '',
+            'cloudflare_api_token' => $this->cloudflare_api_token ?? '',
         ]);
     }
 }

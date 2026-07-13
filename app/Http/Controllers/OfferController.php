@@ -183,6 +183,8 @@ class OfferController extends Controller
         return Inertia::render('Panel/Offers/Create', [
             'settingsReady' => $ready,
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
+            'hasDynadotApiKey' => filled($settings?->dynadot_api_key),
+            'domainSearchTlds' => config('offerra.domain_search_tlds', []),
             'affiliateTag' => $settings?->affiliate_tag ?? 'BRO',
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
