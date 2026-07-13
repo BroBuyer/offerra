@@ -67,7 +67,7 @@ class SettingsController extends Controller
         $this->mergeSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
         $this->mergeSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
         $this->mergeSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
-        $this->mergeSecret($settings, 'dynadot_api_key', $data['dynadot_api_key'] ?? null);
+        $this->mergeSecret($settings, 'dynadot_api_key', isset($data['dynadot_api_key']) ? trim((string) $data['dynadot_api_key']) : null);
         $this->mergeSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
         $this->mergeSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
 

@@ -499,7 +499,9 @@ a:hover { text-decoration: underline; }
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 10px;
-  overflow: hidden;
+  max-height: 13.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .domain-search-results__item {
@@ -556,8 +558,15 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 0.65rem;
   flex-shrink: 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--muted);
+  max-width: 42%;
+}
+
+.domain-search-results__meta > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Wizard steps */
