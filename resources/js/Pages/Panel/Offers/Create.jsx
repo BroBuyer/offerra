@@ -212,6 +212,11 @@ export default function OffersCreate({
         return domain || brand;
     }, [data.brand, data.domain]);
 
+    const domainSearchHasZone = useMemo(() => {
+        const query = domainSearchQuery.replace(/^https?:\/\//i, '').split(/[/?#]/)[0] ?? '';
+        return query.includes('.');
+    }, [domainSearchQuery]);
+
     const searchDomains = async () => {
         const query = domainSearchQuery;
 
@@ -365,8 +370,9 @@ export default function OffersCreate({
                             )}
                             {hasDynadotApiKey && domainSearchTlds.length > 0 && (
                                 <p className="field-hint">
-                                    Пошук по зонах: {domainSearchTlds.map((t) => `.${t}`).join(', ')}
-                                    {data.brand && !data.domain ? ' (з назви бренду)' : ''}
+                                    {domainSearchHasZone
+                                        ? `Пошук конкретного домену: ${domainSearchQuery}`
+                                        : `Пошук по зонах: ${domainSearchTlds.map((t) => `.${t}`).join(', ')}${data.brand && !data.domain ? ' (з назви бренду)' : ''}`}
                                 </p>
                             )}
                             {domainSearchError && (

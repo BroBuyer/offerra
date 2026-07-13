@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Models\UserSetting;
 use App\Support\DomainName;
+use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class DynadotClient
 {
+    private const PARALLEL_CHUNK_SIZE = 8;
     /**
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
      */
@@ -26,20 +29,19 @@ class DynadotClient
             return [];
         }
 
-        $results = [];
+        if (count($domains) === 1) {
+            $row = $this->searchOne($settings, $apiKey, $domains[0]);
+            $this->throwOnGlobalApiError($row, (bool) $settings->dynadot_sandbox);
 
-        foreach ($domains as $domain) {
-            $row = $this->searchOne($settings, $apiKey, $domain);
-
-            if ($row['status'] === 'error' && $this->isGlobalApiError($row['message'])) {
-                throw new RuntimeException($this->humanizeApiError((string) $row['message']));
-            }
-
-            $results[] = $row;
-            usleep(120_000);
+            return [$row];
         }
 
-        return $results;
+        $batch = $this->searchBatch($settings, $apiKey, $domains);
+        if ($batch !== null) {
+            return $batch;
+        }
+
+        return $this->searchMany($settings, $apiKey, $domains);
     }
 
     /**
@@ -61,19 +63,9 @@ class DynadotClient
 
         if (str_contains($raw, '.')) {
             $ascii = DomainName::normalize($raw);
-            if ($ascii !== '') {
-                $domains[] = $ascii;
-            }
+            $ascii = preg_replace('/^www\./', '', $ascii) ?? $ascii;
 
-            $base = preg_replace('/\.[^.]+$/', '', $ascii !== '' ? $ascii : $raw) ?? $raw;
-            $base = preg_replace('/[^a-z0-9-]/', '', $base) ?? $base;
-
-            foreach ($tlds as $tld) {
-                $candidate = $base.'.'.ltrim($tld, '.');
-                if ($candidate !== '' && ! in_array($candidate, $domains, true)) {
-                    $domains[] = $candidate;
-                }
-            }
+            return $ascii !== '' ? [$ascii] : [];
         } else {
             $slug = preg_replace('/[^a-z0-9-]/', '', $raw) ?? '';
 
@@ -84,7 +76,122 @@ class DynadotClient
             }
         }
 
-        return array_values(array_slice(array_unique(array_filter($domains)), 0, 20));
+        return array_values(array_unique(array_filter($domains)));
+    }
+
+    /**
+     * @param  list<string>  $domains
+     * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>|null
+     */
+    private function searchBatch(UserSetting $settings, string $apiKey, array $domains): ?array
+    {
+        $sandbox = (bool) $settings->dynadot_sandbox;
+        $params = [
+            'key' => $apiKey,
+            'command' => 'search',
+            'show_price' => 1,
+            'currency' => 'USD',
+        ];
+
+        foreach (array_values($domains) as $index => $domain) {
+            $params["domain{$index}"] = $domain;
+        }
+
+        $response = Http::timeout(40)->get($this->apiBaseUrl($sandbox), $params);
+
+        if ($response->failed()) {
+            return null;
+        }
+
+        /** @var array<string, mixed> $payload */
+        $payload = $response->json() ?? [];
+
+        if ($payload === []) {
+            return null;
+        }
+
+        return $this->parseBatchSearchResult($domains, $payload, $sandbox);
+    }
+
+    /**
+     * @param  list<string>  $domains
+     * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
+     */
+    private function searchMany(UserSetting $settings, string $apiKey, array $domains): array
+    {
+        $sandbox = (bool) $settings->dynadot_sandbox;
+        $baseUrl = $this->apiBaseUrl($sandbox);
+        $resultsByDomain = [];
+
+        foreach (array_chunk($domains, self::PARALLEL_CHUNK_SIZE) as $chunk) {
+            /** @var array<string, Response> $responses */
+            $responses = Http::pool(function (Pool $pool) use ($chunk, $baseUrl, $apiKey) {
+                foreach ($chunk as $domain) {
+                    $pool->as($domain)
+                        ->timeout(25)
+                        ->get($baseUrl, [
+                            'key' => $apiKey,
+                            'command' => 'search',
+                            'domain0' => $domain,
+                            'show_price' => 1,
+                            'currency' => 'USD',
+                        ]);
+                }
+            });
+
+            foreach ($chunk as $domain) {
+                $response = $responses[$domain] ?? null;
+
+                if (! $response instanceof Response || $response->failed()) {
+                    $row = [
+                        'domain' => $domain,
+                        'available' => false,
+                        'price' => null,
+                        'status' => 'error',
+                        'message' => $response instanceof Response
+                            ? 'HTTP '.$response->status()
+                            : 'Немає відповіді Dynadot',
+                    ];
+                } else {
+                    /** @var array<string, mixed> $payload */
+                    $payload = $response->json() ?? [];
+                    $row = $payload === []
+                        ? [
+                            'domain' => $domain,
+                            'available' => false,
+                            'price' => null,
+                            'status' => 'error',
+                            'message' => 'Порожня відповідь Dynadot',
+                        ]
+                        : $this->parseSearchResult($domain, $payload, $sandbox);
+                }
+
+                $this->throwOnGlobalApiError($row, $sandbox);
+                $resultsByDomain[$domain] = $row;
+            }
+        }
+
+        return array_map(
+            static fn (string $domain): array => $resultsByDomain[$domain],
+            $domains,
+        );
+    }
+
+    /**
+     * @param  array{domain: string, available: bool, price: ?string, status: string, message: ?string}  $row
+     */
+    private function throwOnGlobalApiError(array $row, bool $sandbox): void
+    {
+        if ($row['status'] === 'error' && $this->isGlobalApiError($row['message'])) {
+            throw new RuntimeException($this->humanizeApiError((string) $row['message'], $sandbox));
+        }
+    }
+
+    private function apiBaseUrl(bool $sandbox): string
+    {
+        return $sandbox
+            ? 'https://api-sandbox.dynadot.com/api3.json'
+            : 'https://api.dynadot.com/api3.json';
     }
 
     /**
@@ -92,9 +199,7 @@ class DynadotClient
      */
     private function searchOne(UserSetting $settings, string $apiKey, string $domain): array
     {
-        $baseUrl = $settings->dynadot_sandbox
-            ? 'https://api-sandbox.dynadot.com/api3.json'
-            : 'https://api.dynadot.com/api3.json';
+        $baseUrl = $this->apiBaseUrl((bool) $settings->dynadot_sandbox);
 
         $response = Http::timeout(25)->get($baseUrl, [
             'key' => $apiKey,
@@ -127,16 +232,81 @@ class DynadotClient
             ];
         }
 
-        return $this->parseSearchResult($domain, $payload);
+        return $this->parseSearchResult($domain, $payload, (bool) $settings->dynadot_sandbox);
+    }
+
+    /**
+     * @param  list<string>  $domains
+     * @param  array<string, mixed>  $payload
+     * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>|null
+     */
+    private function parseBatchSearchResult(array $domains, array $payload, bool $sandbox): ?array
+    {
+        $apiError = $this->extractPayloadError($payload, $sandbox);
+
+        if ($apiError !== null) {
+            if ($this->isGlobalApiError($apiError)) {
+                throw new RuntimeException($this->humanizeApiError($apiError, $sandbox));
+            }
+
+            return null;
+        }
+
+        $searchResponse = $payload['SearchResponse'] ?? $payload['searchResponse'] ?? null;
+
+        if (! is_array($searchResponse)) {
+            return null;
+        }
+
+        $responseCode = (string) ($searchResponse['ResponseCode'] ?? $searchResponse['SuccessCode'] ?? '');
+
+        if ($responseCode !== '' && $responseCode !== '0') {
+            return null;
+        }
+
+        $rows = $this->collectSearchRows($searchResponse);
+
+        if ($rows === [] || count($rows) < count($domains)) {
+            return null;
+        }
+
+        $byName = [];
+
+        foreach ($rows as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $name = strtolower((string) ($row['DomainName'] ?? ''));
+
+            if ($name !== '') {
+                $byName[$name] = $this->mapSearchRow($name, $row);
+            }
+        }
+
+        $results = [];
+
+        foreach ($domains as $domain) {
+            $key = strtolower($domain);
+            $results[] = $byName[$key] ?? [
+                'domain' => $domain,
+                'available' => false,
+                'price' => null,
+                'status' => 'error',
+                'message' => 'Немає в відповіді Dynadot',
+            ];
+        }
+
+        return $results;
     }
 
     /**
      * @param  array<string, mixed>  $payload
      * @return array{domain: string, available: bool, price: ?string, status: string, message: ?string}
      */
-    private function parseSearchResult(string $domain, array $payload): array
+    private function parseSearchResult(string $domain, array $payload, bool $sandbox = false): array
     {
-        $apiError = $this->extractPayloadError($payload);
+        $apiError = $this->extractPayloadError($payload, $sandbox);
 
         if ($apiError !== null) {
             return [
@@ -169,7 +339,7 @@ class DynadotClient
                 'available' => false,
                 'price' => null,
                 'status' => 'error',
-                'message' => $this->humanizeApiError((string) ($searchResponse['Error'] ?? 'Dynadot error')),
+                'message' => $this->humanizeApiError((string) ($searchResponse['Error'] ?? 'Dynadot error'), $sandbox),
             ];
         }
 
@@ -192,7 +362,7 @@ class DynadotClient
     /**
      * @param  array<string, mixed>  $payload
      */
-    private function extractPayloadError(array $payload): ?string
+    private function extractPayloadError(array $payload, bool $sandbox = false): ?string
     {
         $response = $payload['Response'] ?? $payload['response'] ?? null;
 
@@ -206,7 +376,7 @@ class DynadotClient
             return null;
         }
 
-        return $this->humanizeApiError((string) ($response['Error'] ?? 'Dynadot error'));
+        return $this->humanizeApiError((string) ($response['Error'] ?? 'Dynadot error'), $sandbox);
     }
 
     private function isGlobalApiError(?string $message): bool
@@ -224,11 +394,12 @@ class DynadotClient
             || str_contains($normalized, 'sandbox');
     }
 
-    private function humanizeApiError(string $message): string
+    private function humanizeApiError(string $message, bool $sandbox = false): string
     {
         $normalized = strtolower(trim($message));
 
         return match (true) {
+            str_contains($normalized, 'invalid key') && $sandbox => 'Невірний ключ для Sandbox. Вставте ключ з вкладки «Ключ песочницы» або вимкніть Sandbox.',
             str_contains($normalized, 'invalid key') => 'Невірний Dynadot API key. Вставте Production Key (не Secret Key) і збережіть налаштування.',
             str_contains($normalized, 'not enabled') => 'Dynadot API не увімкнено в акаунті.',
             str_contains($normalized, 'over quota') => 'Перевищено ліміт запитів Dynadot API.',
