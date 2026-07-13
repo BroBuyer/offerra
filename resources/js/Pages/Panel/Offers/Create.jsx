@@ -372,7 +372,7 @@ export default function OffersCreate({
                                 <p className="field-hint">
                                     {domainSearchHasZone
                                         ? `Пошук конкретного домену: ${domainSearchQuery}`
-                                        : `Пошук по зонах: ${domainSearchTlds.map((t) => `.${t}`).join(', ')}${data.brand && !data.domain ? ' (з назви бренду)' : ''}`}
+                                        : `Швидкий пошук: ${domainSearchTlds.map((t) => `.${t}`).join(', ')}. Іншу зону — вкажіть повний домен${data.brand && !data.domain ? ' (зараз з назви бренду)' : ''}`}
                                 </p>
                             )}
                             {domainSearchError && (

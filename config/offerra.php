@@ -4,11 +4,9 @@ return [
     'allow_registration' => env('OFFERRA_ALLOW_REGISTRATION', false),
     'purge_local_after_deploy' => env('OFFERRA_PURGE_LOCAL_AFTER_DEPLOY', true),
 
-    // TLD для пошуку домену (Dynadot) — якщо введено лише імʼя без зони
+    // TLD для швидкого пошуку (без зони в полі). Іншу зону — вкажіть повний домен, напр. brand.io
     'domain_search_tlds' => [
-        'com', 'org', 'online', 'net', 'site', 'live', 'ai', 'info',
-        'my', 'vip', 'co', 'io', 'xyz', 'world', 'store', 'shop',
-        'club', 'pro', 'biz', 'top', 'eu', 'me',
+        'online', 'com', 'org', 'live',
     ],
 
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),
