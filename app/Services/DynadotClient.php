@@ -4,14 +4,12 @@ namespace App\Services;
 
 use App\Models\UserSetting;
 use App\Support\DomainName;
-use Illuminate\Http\Client\Pool;
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class DynadotClient
 {
-    private const PARALLEL_CHUNK_SIZE = 8;
+    private const REQUEST_GAP_MICROSECONDS = 180_000;
     /**
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
      */
@@ -120,61 +118,54 @@ class DynadotClient
     private function searchMany(UserSetting $settings, string $apiKey, array $domains): array
     {
         $sandbox = (bool) $settings->dynadot_sandbox;
-        $baseUrl = $this->apiBaseUrl($sandbox);
-        $resultsByDomain = [];
+        $results = [];
 
-        foreach (array_chunk($domains, self::PARALLEL_CHUNK_SIZE) as $chunk) {
-            /** @var array<string, Response> $responses */
-            $responses = Http::pool(function (Pool $pool) use ($chunk, $baseUrl, $apiKey) {
-                foreach ($chunk as $domain) {
-                    $pool->as($domain)
-                        ->timeout(25)
-                        ->get($baseUrl, [
-                            'key' => $apiKey,
-                            'command' => 'search',
-                            'domain0' => $domain,
-                            'show_price' => 1,
-                            'currency' => 'USD',
-                        ]);
-                }
-            });
+        foreach ($domains as $index => $domain) {
+            if ($index > 0) {
+                usleep(self::REQUEST_GAP_MICROSECONDS);
+            }
 
-            foreach ($chunk as $domain) {
-                $response = $responses[$domain] ?? null;
+            $row = $this->searchOneWithRetry($settings, $apiKey, $domain);
+            $this->throwOnGlobalApiError($row, $sandbox);
+            $results[] = $row;
+        }
 
-                if (! $response instanceof Response || $response->failed()) {
-                    $row = [
-                        'domain' => $domain,
-                        'available' => false,
-                        'price' => null,
-                        'status' => 'error',
-                        'message' => $response instanceof Response
-                            ? 'HTTP '.$response->status()
-                            : 'Немає відповіді Dynadot',
-                    ];
-                } else {
-                    /** @var array<string, mixed> $payload */
-                    $payload = $response->json() ?? [];
-                    $row = $payload === []
-                        ? [
-                            'domain' => $domain,
-                            'available' => false,
-                            'price' => null,
-                            'status' => 'error',
-                            'message' => 'Порожня відповідь Dynadot',
-                        ]
-                        : $this->parseSearchResult($domain, $payload, $sandbox);
-                }
+        return $results;
+    }
 
-                $this->throwOnGlobalApiError($row, $sandbox);
-                $resultsByDomain[$domain] = $row;
+    /**
+     * @return array{domain: string, available: bool, price: ?string, status: string, message: ?string}
+     */
+    private function searchOneWithRetry(UserSetting $settings, string $apiKey, string $domain): array
+    {
+        $maxAttempts = 5;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $row = $this->searchOne($settings, $apiKey, $domain);
+
+            if ($row['status'] !== 'error' || ! $this->isBusyApiError($row['message'])) {
+                return $row;
+            }
+
+            if ($attempt < $maxAttempts) {
+                usleep(450_000 * $attempt);
             }
         }
 
-        return array_map(
-            static fn (string $domain): array => $resultsByDomain[$domain],
-            $domains,
-        );
+        return $row;
+    }
+
+    private function isBusyApiError(?string $message): bool
+    {
+        if ($message === null || $message === '') {
+            return false;
+        }
+
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'currently processing')
+            || str_contains($normalized, 'another request')
+            || str_contains($normalized, 'system_busy');
     }
 
     /**
@@ -458,7 +449,7 @@ class DynadotClient
 
         $message = null;
         if ($statusKey === 'error') {
-            $message = (string) ($row['Error'] ?? $row['MoreInfo'] ?? 'Помилка реєстру');
+            $message = $this->humanizeSearchMessage((string) ($row['Error'] ?? $row['MoreInfo'] ?? 'Помилка реєстру'));
         }
 
         return [
@@ -468,6 +459,18 @@ class DynadotClient
             'status' => $statusKey,
             'message' => $message,
         ];
+    }
+
+    private function humanizeSearchMessage(string $message): string
+    {
+        $normalized = strtolower(trim($message));
+
+        return match (true) {
+            str_contains($normalized, 'currently processing'),
+            str_contains($normalized, 'another request') => 'Dynadot зайнятий — спробуйте ще раз',
+            str_contains($normalized, 'system_busy') => 'Реєстр тимчасово перевантажений',
+            default => $message,
+        };
     }
 
     /**
