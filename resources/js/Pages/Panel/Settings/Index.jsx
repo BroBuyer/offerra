@@ -22,6 +22,8 @@ function formFromSettings(settings, userId = null) {
         deploy_password: settings.deploy_password ?? '',
         deploy_path_template: settings.deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
         deploy_panel_url: settings.deploy_panel_url ?? '',
+        deploy_api_access_key: settings.deploy_api_access_key ?? '',
+        deploy_api_secret_key: settings.deploy_api_secret_key ?? '',
         dynadot_api_key: settings.dynadot_api_key ?? '',
         dynadot_api_secret: settings.dynadot_api_secret ?? '',
         dynadot_contact_id: settings.dynadot_contact_id ?? '',
@@ -37,6 +39,8 @@ function formFromSettings(settings, userId = null) {
 export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [deployTest, setDeployTest] = useState(null);
     const [testingDeploy, setTestingDeploy] = useState(false);
+    const [hestiaApiTest, setHestiaApiTest] = useState(null);
+    const [testingHestiaApi, setTestingHestiaApi] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [dynadotBalanceError, setDynadotBalanceError] = useState('');
@@ -80,6 +84,23 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             });
         } finally {
             setTestingDeploy(false);
+        }
+    };
+
+    const testHestiaApi = async () => {
+        setTestingHestiaApi(true);
+        setHestiaApiTest(null);
+
+        try {
+            const { data: result } = await axios.post(route('settings.test-hestia-api'), data);
+            setHestiaApiTest(result);
+        } catch (error) {
+            setHestiaApiTest({
+                ok: false,
+                message: error.response?.data?.message ?? 'Не вдалося перевірити Hestia API',
+            });
+        } finally {
+            setTestingHestiaApi(false);
         }
     };
 
@@ -360,7 +381,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 <section className="card">
                     <h3>Деплой на Hestia</h3>
                     <p className="card-desc">
-                        SFTP-заливка в <code>public_html</code> домена. Панель — для довідки; заливка через SSH/SFTP.
+                        SFTP — заливка в <code>public_html</code>. API access key — створення доменів і SSL
+                        (інфраструктура). У Hestia → Server → API додайте IP панелі Offer: <code>213.176.115.14</code>.
                     </p>
                     <div className="field-row">
                         <div className="field">
@@ -422,10 +444,36 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="deploy-pass"
                                 value={data.deploy_password}
                                 onChange={(e) => setData('deploy_password', e.target.value)}
-                                placeholder="пароль користувача Hestia"
+                                placeholder={settings.has_deploy_password ? 'збережено — залиште порожнім' : 'пароль користувача Hestia'}
                             />
                         </div>
                     </div>
+                    <div className="field-row">
+                        <div className="field">
+                            <label htmlFor="deploy-api-access">Hestia API access key</label>
+                            <input
+                                type="text"
+                                id="deploy-api-access"
+                                value={data.deploy_api_access_key}
+                                onChange={(e) => setData('deploy_api_access_key', e.target.value)}
+                                placeholder="20 символів"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="deploy-api-secret">Hestia API secret key</label>
+                            <SecretInput
+                                id="deploy-api-secret"
+                                value={data.deploy_api_secret_key}
+                                onChange={(e) => setData('deploy_api_secret_key', e.target.value)}
+                                placeholder={settings.has_deploy_api_secret_key ? 'збережено — залиште порожнім' : '40 символів'}
+                            />
+                        </div>
+                    </div>
+                    <p className="field-hint">
+                        Створіть ключ на Hestia: <code>v-add-access-key &apos;user&apos; &apos;v-list-web-domains,v-add-web-domain,v-add-letsencrypt-domain&apos; offerra json</code>
+                        {' '}або через панель → Access Keys. Потрібні права на домени для користувача <code>{data.deploy_username || 'user'}</code>.
+                    </p>
                     <div className="field">
                         <label htmlFor="deploy-path">Шаблон шляху на сервері</label>
                         <input
@@ -457,7 +505,26 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                         >
                             {testingDeploy ? 'Перевірка…' : 'Перевірити SFTP'}
                         </button>
+                        <button
+                            type="button"
+                            className="btn btn-ghost"
+                            disabled={testingHestiaApi}
+                            onClick={testHestiaApi}
+                        >
+                            {testingHestiaApi ? 'Перевірка…' : 'Перевірити Hestia API'}
+                        </button>
                     </div>
+                    {hestiaApiTest && (
+                        <p
+                            className="field-hint"
+                            style={{
+                                marginTop: '0.75rem',
+                                color: hestiaApiTest.ok ? 'var(--accent)' : '#f87171',
+                            }}
+                        >
+                            {hestiaApiTest.message}
+                        </p>
+                    )}
                     {deployTest && (
                         <p
                             className="field-hint"

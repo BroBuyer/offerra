@@ -8,6 +8,37 @@ use RuntimeException;
 
 class HestiaClient
 {
+    /**
+     * @return array{ok: bool, message: string, domains?: int}
+     */
+    public function testConnection(UserSetting $settings): array
+    {
+        $user = trim((string) $settings->deploy_username);
+
+        if ($user === '') {
+            return [
+                'ok' => false,
+                'message' => 'Вкажіть користувача Hestia (SFTP user).',
+            ];
+        }
+
+        try {
+            $response = $this->apiRaw($settings, 'v-list-web-domains', [$user, 'json']);
+            $payload = json_decode($response, true);
+
+            return [
+                'ok' => true,
+                'message' => 'Hestia API відповідає. Доменів у акаунті: '.(is_array($payload) ? count($payload) : 0),
+                'domains' => is_array($payload) ? count($payload) : 0,
+            ];
+        } catch (RuntimeException $e) {
+            return [
+                'ok' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function addWebDomain(UserSetting $settings, string $domain): void
     {
         $user = trim((string) $settings->deploy_username);
@@ -44,10 +75,14 @@ class HestiaClient
             return false;
         }
 
-        /** @var array<string, mixed> $payload */
-        $payload = json_decode($response, true) ?? [];
+        /** @var mixed $decoded */
+        $decoded = json_decode($response, true);
 
-        return array_key_exists($domain, $payload);
+        if (! is_array($decoded)) {
+            return false;
+        }
+
+        return array_key_exists($domain, $decoded);
     }
 
     public function serverIp(UserSetting $settings): string
@@ -94,24 +129,20 @@ class HestiaClient
     private function apiRaw(UserSetting $settings, string $command, array $args): string
     {
         $host = trim((string) $settings->deploy_host);
-        $user = trim((string) $settings->deploy_username);
-        $password = (string) ($settings->deploy_password ?? '');
         $panelUrl = trim((string) ($settings->deploy_panel_url ?? ''));
 
-        if ($password === '') {
-            throw new RuntimeException('Збережіть пароль SFTP/Hestia у налаштуваннях.');
+        if ($host === '' && $panelUrl === '') {
+            throw new RuntimeException('Заповніть SSH host або URL панелі Hestia у налаштуваннях.');
         }
 
         $baseUrl = $panelUrl !== ''
             ? rtrim($panelUrl, '/').'/api/'
             : "https://{$host}:8083/api/";
 
-        $payload = [
-            'user' => $user,
-            'password' => $password,
+        $payload = array_merge($this->authPayload($settings), [
             'returncode' => 'yes',
             'cmd' => $command,
-        ];
+        ]);
 
         foreach (array_values($args) as $index => $value) {
             $payload['arg'.($index + 1)] = $value;
@@ -123,9 +154,57 @@ class HestiaClient
             ->post($baseUrl, $payload);
 
         if ($response->failed()) {
-            throw new RuntimeException('Hestia HTTP '.$response->status());
+            throw new RuntimeException($this->formatHttpError($response->status(), $response->body()));
         }
 
         return trim($response->body());
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function authPayload(UserSetting $settings): array
+    {
+        $accessKey = trim((string) ($settings->deploy_api_access_key ?? ''));
+        $secretKey = (string) ($settings->deploy_api_secret_key ?? '');
+
+        if ($accessKey !== '' && $secretKey !== '') {
+            return [
+                'access_key' => $accessKey,
+                'secret_key' => $secretKey,
+            ];
+        }
+
+        $user = trim((string) $settings->deploy_username);
+        $password = (string) ($settings->deploy_password ?? '');
+
+        if ($user === '' || $password === '') {
+            throw new RuntimeException(
+                'Збережіть Hestia API access key + secret (рекомендовано) або пароль SFTP у налаштуваннях.',
+            );
+        }
+
+        return [
+            'user' => $user,
+            'password' => $password,
+        ];
+    }
+
+    private function formatHttpError(int $status, string $body): string
+    {
+        $message = 'Hestia HTTP '.$status;
+        $body = trim($body);
+
+        if ($body !== '') {
+            $message .= ': '.$body;
+        }
+
+        if ($status === 401) {
+            $message .= ' — перевірте API access key/secret або пароль admin; для віддаленого API додайте IP панелі Offer (213.176.115.14) у Hestia → Server → API.';
+        } elseif ($status === 403) {
+            $message .= ' — IP сервера панелі не дозволений для Hestia API. Додайте 213.176.115.14 у whitelist або `allow-all`.';
+        }
+
+        return $message;
     }
 }

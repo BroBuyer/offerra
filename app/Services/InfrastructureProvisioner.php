@@ -25,10 +25,23 @@ class InfrastructureProvisioner
 
         return filled($settings->deploy_host)
             && filled($settings->deploy_username)
-            && filled($settings->deploy_password)
+            && self::hestiaApiReady($settings)
             && filled($settings->cloudflare_api_token)
             && filled($settings->cloudflare_account_id)
             && filled($settings->dynadot_api_key);
+    }
+
+    public static function hestiaApiReady(?UserSetting $settings): bool
+    {
+        if ($settings === null) {
+            return false;
+        }
+
+        if (filled($settings->deploy_api_access_key) && filled($settings->deploy_api_secret_key)) {
+            return true;
+        }
+
+        return filled($settings->deploy_password);
     }
 
     public function enqueue(Offer $offer): void

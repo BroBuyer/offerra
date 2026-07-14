@@ -48,6 +48,8 @@ class UpdateSettingsRequest extends FormRequest
             'deploy_password' => ['nullable', 'string', 'max:255'],
             'deploy_path_template' => ['nullable', 'string', 'max:255'],
             'deploy_panel_url' => ['nullable', 'url', 'max:255'],
+            'deploy_api_access_key' => ['nullable', 'string', 'max:40'],
+            'deploy_api_secret_key' => ['nullable', 'string', 'max:80'],
             'dynadot_api_key' => ['nullable', 'string', 'max:255'],
             'dynadot_api_secret' => ['nullable', 'string', 'max:255'],
             'dynadot_contact_id' => ['nullable', 'string', 'max:40'],
