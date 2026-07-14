@@ -68,14 +68,14 @@ class SettingsController extends Controller
             'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),
         ]);
 
-        $this->mergeSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
-        $this->mergeSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
-        $this->mergeSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
-        $this->assignDeploySecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
-        $this->assignDeploySecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
-        $this->mergeSecret($settings, 'dynadot_api_key', isset($data['dynadot_api_key']) ? trim((string) $data['dynadot_api_key']) : null);
-        $this->mergeSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
-        $this->mergeSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
+        $this->assignSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
+        $this->assignSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
+        $this->assignSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
+        $this->assignSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
+        $this->assignSecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
+        $this->assignSecret($settings, 'dynadot_api_key', $data['dynadot_api_key'] ?? null);
+        $this->assignSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
+        $this->assignSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
 
         $settings->save();
 
@@ -135,8 +135,8 @@ class SettingsController extends Controller
             'deploy_panel_url' => $data['deploy_panel_url'] ?? $settings->deploy_panel_url,
             'deploy_api_access_key' => trim((string) ($data['deploy_api_access_key'] ?? '')) ?: null,
         ]);
-        $this->assignDeploySecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
-        $this->assignDeploySecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
+        $this->assignSecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
+        $this->assignSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
 
         return response()->json($hestia->testConnection($settings));
     }
@@ -154,16 +154,7 @@ class SettingsController extends Controller
         return $authUser;
     }
 
-    private function mergeSecret(UserSetting $settings, string $field, ?string $value): void
-    {
-        if ($value === null || trim($value) === '') {
-            return;
-        }
-
-        $settings->{$field} = SecretValue::normalize($value);
-    }
-
-    private function assignDeploySecret(UserSetting $settings, string $field, ?string $value): void
+    private function assignSecret(UserSetting $settings, string $field, ?string $value): void
     {
         $normalized = SecretValue::normalize((string) $value);
 
