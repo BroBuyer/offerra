@@ -64,6 +64,7 @@ function buildDefaults(templates) {
         phone: 'tr',
         phone_countries: ['tr'],
         create_keitaro: true,
+        provision_infrastructure: false,
     };
 }
 
@@ -72,6 +73,7 @@ export default function OffersCreate({
     hasKeitaroApiKey,
     hasDynadotApiKey = false,
     hasDynadotContactId = false,
+    canProvisionInfrastructure = false,
     domainSearchTlds = [],
     affiliateTag = 'BRO',
     geoPresets,
@@ -91,6 +93,7 @@ export default function OffersCreate({
     const [domainSearchResults, setDomainSearchResults] = useState(null);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
+    const [domainPurchasedViaPanel, setDomainPurchasedViaPanel] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
 
@@ -305,6 +308,7 @@ export default function OffersCreate({
             }
 
             pickDomain(result.result?.domain ?? item.domain);
+            setDomainPurchasedViaPanel(true);
             if (result.result?.message) {
                 setDomainSearchError(result.result.message);
             }
@@ -317,6 +321,12 @@ export default function OffersCreate({
             setDomainPurchasing(null);
         }
     };
+
+    useEffect(() => {
+        if (canProvisionInfrastructure && domainPurchasedViaPanel && !data.provision_infrastructure) {
+            setData('provision_infrastructure', true);
+        }
+    }, [canProvisionInfrastructure, domainPurchasedViaPanel, data.provision_infrastructure, setData]);
 
     useEffect(() => {
         if (hasDynadotApiKey && step === 0) {
@@ -736,6 +746,23 @@ export default function OffersCreate({
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
                         </dl>
+                        {canProvisionInfrastructure && (
+                            <div style={{ marginTop: '1.25rem' }}>
+                                <label className="field-check" htmlFor="provision-infra">
+                                    <input
+                                        id="provision-infra"
+                                        type="checkbox"
+                                        checked={data.provision_infrastructure}
+                                        onChange={(e) => setData('provision_infrastructure', e.target.checked)}
+                                    />
+                                    <span>Підготувати домен на сервері (Hestia + Cloudflare + NS у Dynadot)</span>
+                                </label>
+                                <p className="field-hint">
+                                    Оффер створиться одразу. DNS може оновлюватись 15 хв – 48 год.
+                                    {domainPurchasedViaPanel ? ' Рекомендовано для щойно купленого домену.' : ' Вимкніть, якщо домен уже налаштований.'}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </section>
             )}

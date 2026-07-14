@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateOfferRequest;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
+use App\Services\InfrastructureProvisioner;
 use App\Services\OfferGenerator;
 use App\Services\OfferVerificationFileService;
 use App\Services\TemplateCatalog;
@@ -192,11 +193,15 @@ class OfferController extends Controller
             'templates' => $catalog->forWizard(),
             'fresh' => request()->boolean('fresh'),
             'initialTemplate' => request()->string('template')->toString() ?: null,
+            'canProvisionInfrastructure' => InfrastructureProvisioner::settingsReady($settings),
         ]);
     }
 
-    public function store(StoreOfferRequest $request, OfferGenerator $generator): RedirectResponse
-    {
+    public function store(
+        StoreOfferRequest $request,
+        OfferGenerator $generator,
+        InfrastructureProvisioner $provisioner,
+    ): RedirectResponse {
         try {
             $result = $generator->generate($request->user(), [
                 'brand' => $request->string('brand')->toString(),
@@ -209,6 +214,7 @@ class OfferController extends Controller
                 'phone_countries' => $request->input('phone_countries', []),
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
+                'provision_infrastructure' => $request->boolean('provision_infrastructure'),
             ]);
         } catch (\Throwable $e) {
             return redirect()
@@ -222,6 +228,11 @@ class OfferController extends Controller
 
         if ($result['offer']->keitaro_campaign_id) {
             $message .= " · Keitaro #{$result['offer']->keitaro_campaign_id}";
+        }
+
+        if ($result['offer']->provision_infrastructure) {
+            $provisioner->enqueue($result['offer']);
+            $message .= ' · DNS/Hestia налаштовується у фоні';
         }
 
         return redirect()
@@ -254,6 +265,41 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with('success', "Деплой запущено у фоні: {$offer->domain}. Статус оновиться автоматично.");
+    }
+
+    public function provision(
+        Offer $offer,
+        InfrastructureProvisioner $provisioner,
+    ): RedirectResponse {
+        $authUser = auth()->user();
+
+        if ($offer->user_id !== $authUser->id && ! $authUser->isAdmin()) {
+            abort(403);
+        }
+
+        $wasRecheck = in_array($offer->infra_status, ['dns_propagating', 'ready'], true);
+
+        $offer->update([
+            'provision_infrastructure' => true,
+            'infra_status' => $wasRecheck ? $offer->infra_status : 'pending',
+            'infra_error' => null,
+        ]);
+
+        try {
+            if ($wasRecheck) {
+                $provisioner->recheckDns($offer->fresh());
+            } else {
+                $provisioner->enqueue($offer->fresh());
+            }
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['provision' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Інфраструктура для {$offer->domain} оновлюється у фоні.");
     }
 
     public function update(

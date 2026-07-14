@@ -130,6 +130,55 @@ class DynadotClient
         return $result;
     }
 
+    /**
+     * @param  list<string>  $nameservers
+     */
+    public function setNameservers(UserSetting $settings, string $domain, array $nameservers): void
+    {
+        $apiKey = $this->requireApiKey($settings);
+        $domain = DomainName::normalize($domain);
+        $nameservers = array_values(array_filter(array_map(
+            static fn (string $ns) => strtolower(trim($ns)),
+            $nameservers,
+        )));
+
+        if ($domain === '' || $nameservers === []) {
+            throw new RuntimeException('Немає nameservers для оновлення Dynadot.');
+        }
+
+        $params = [
+            'command' => 'set_ns',
+            'domain' => $domain,
+        ];
+
+        foreach ($nameservers as $index => $nameserver) {
+            $params["ns{$index}"] = $nameserver;
+        }
+
+        $payload = $this->apiGet($settings, $apiKey, $params);
+        $apiError = $this->extractPayloadError($payload, (bool) $settings->dynadot_sandbox);
+
+        if ($apiError !== null) {
+            throw new RuntimeException($apiError);
+        }
+
+        $response = $payload['SetNsResponse'] ?? $payload['setNsResponse'] ?? null;
+
+        if (! is_array($response)) {
+            throw new RuntimeException('Неочікувана відповідь Dynadot (set_ns)');
+        }
+
+        $responseCode = (string) ($response['ResponseCode'] ?? $response['SuccessCode'] ?? '');
+        $status = strtolower((string) ($response['Status'] ?? ''));
+
+        if ($responseCode !== '0' && $status !== 'success') {
+            throw new RuntimeException($this->humanizeApiError(
+                (string) ($response['Error'] ?? 'Dynadot set_ns error'),
+                (bool) $settings->dynadot_sandbox,
+            ));
+        }
+    }
+
     private function disableAutoRenew(UserSetting $settings, string $apiKey, string $domain): bool
     {
         $maxAttempts = 4;

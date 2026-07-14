@@ -108,6 +108,8 @@ class OfferGenerator
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
+                'provision_infrastructure' => ! empty($input['provision_infrastructure']),
+                'infra_status' => ! empty($input['provision_infrastructure']) ? 'pending' : null,
             ]);
         } catch (\Throwable $e) {
             if (File::isDirectory($targetPath)) {

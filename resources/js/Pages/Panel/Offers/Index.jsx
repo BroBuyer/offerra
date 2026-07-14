@@ -17,6 +17,26 @@ function statusBadge(status) {
     }
 }
 
+function infraBadge(offer) {
+    if (!offer.provision_infrastructure && !offer.infra_status) {
+        return null;
+    }
+
+    switch (offer.infra_status) {
+        case 'ready':
+            return <span className="badge badge-ok">DNS готово</span>;
+        case 'dns_propagating':
+            return <span className="badge badge-warn">DNS поширюється</span>;
+        case 'provisioning':
+        case 'pending':
+            return <span className="badge badge-warn">Інфра…</span>;
+        case 'failed':
+            return <span className="badge badge-error">Інфра</span>;
+        default:
+            return null;
+    }
+}
+
 function formatCreatedDate(isoDate) {
     if (!isoDate) {
         return '—';
@@ -180,6 +200,7 @@ export default function OffersIndex({
 }) {
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
+    const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
     const [verificationId, setVerificationId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
@@ -252,8 +273,13 @@ export default function OffersIndex({
         [rows],
     );
 
+    const hasInfraPending = useMemo(
+        () => rows.some((offer) => ['pending', 'provisioning', 'dns_propagating'].includes(offer.infra_status)),
+        [rows],
+    );
+
     useEffect(() => {
-        if (!hasDeploying) {
+        if (!hasDeploying && !hasInfraPending) {
             return undefined;
         }
 
@@ -266,13 +292,21 @@ export default function OffersIndex({
         }, 5000);
 
         return () => window.clearInterval(interval);
-    }, [hasDeploying]);
+    }, [hasDeploying, hasInfraPending]);
 
     const deployOffer = (offer) => {
         setDeployingId(offer.id);
         router.post(route('offers.deploy', offer.id), {}, {
             preserveScroll: true,
             onFinish: () => setDeployingId(null),
+        });
+    };
+
+    const provisionOffer = (offer) => {
+        setProvisioningId(offer.id);
+        router.post(route('offers.provision', offer.id), {}, {
+            preserveScroll: true,
+            onFinish: () => setProvisioningId(null),
         });
     };
 
@@ -388,6 +422,11 @@ export default function OffersIndex({
             {errors?.deploy && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.deploy}</p>
+                </div>
+            )}
+            {errors?.provision && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.provision}</p>
                 </div>
             )}
 
@@ -648,6 +687,14 @@ export default function OffersIndex({
                                     </td>
                                     <td>
                                         {statusBadge(offer.status)}
+                                        {infraBadge(offer) && (
+                                            <div style={{ marginTop: '0.35rem' }}>{infraBadge(offer)}</div>
+                                        )}
+                                        {offer.infra_error && (
+                                            <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
+                                                {offer.infra_error}
+                                            </p>
+                                        )}
                                         {offer.deploy_error && (
                                             <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
                                                 {offer.deploy_error}
@@ -728,6 +775,21 @@ export default function OffersIndex({
                                                     title="Редагувати phone GEO / Keitaro"
                                                 >
                                                     ✎
+                                                </button>
+                                            )}
+                                            {canManageOffer(offer) && offer.provision_infrastructure && ['failed', 'dns_propagating', 'pending'].includes(offer.infra_status) && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    disabled={provisioningId === offer.id}
+                                                    onClick={() => provisionOffer(offer)}
+                                                    title={offer.infra_status === 'dns_propagating' ? 'Перевірити DNS' : 'Повторити налаштування'}
+                                                >
+                                                    {provisioningId === offer.id
+                                                        ? '…'
+                                                        : offer.infra_status === 'dns_propagating'
+                                                            ? 'DNS'
+                                                            : 'Інфра'}
                                                 </button>
                                             )}
                                             {canDeployOffer(offer) ? (

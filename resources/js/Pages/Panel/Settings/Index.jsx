@@ -327,7 +327,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
 
                 <section className="card">
                     <h3>Cloudflare (DNS)</h3>
-                    <p className="card-desc">API для автоматичного DNS — наступний етап після пошуку доменів</p>
+                    <p className="card-desc">API для DNS: зона, A-запис, NS у Dynadot при створенні оффера</p>
                     <div className="field">
                         <label htmlFor="cf-token">API token</label>
                         <SecretInput

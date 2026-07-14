@@ -30,6 +30,10 @@ class Offer extends Model
         'verification_filename',
         'keitaro_campaign_id',
         'keitaro_alias',
+        'provision_infrastructure',
+        'infra_status',
+        'infra_error',
+        'infra_meta',
     ];
 
     protected function casts(): array
@@ -38,6 +42,8 @@ class Offer extends Model
             'deployed_at' => 'datetime',
             'submitted_for_indexing' => 'boolean',
             'indexed_at' => 'datetime',
+            'provision_infrastructure' => 'boolean',
+            'infra_meta' => 'array',
         ];
     }
 
@@ -96,6 +102,10 @@ class Offer extends Model
                 ? 'https://'.$this->domain.'/'.$this->verification_filename
                 : null,
             'date' => $this->created_at?->format('Y-m-d'),
+            'provision_infrastructure' => (bool) $this->provision_infrastructure,
+            'infra_status' => $this->infra_status,
+            'infra_error' => $this->infra_error,
+            'infra_meta' => $this->infra_meta ?? [],
         ];
     }
 }

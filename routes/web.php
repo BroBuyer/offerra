@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
+    Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
     Route::post('/offers/{offer}/verification', [OfferController::class, 'storeVerification'])->name('offers.verification.store');

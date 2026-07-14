@@ -80,6 +80,7 @@ class StoreOfferRequest extends FormRequest
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'create_keitaro' => ['boolean'],
+            'provision_infrastructure' => ['boolean'],
         ];
     }
 
