@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
+use App\Jobs\RecheckInfrastructureDnsJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
@@ -287,7 +288,7 @@ class OfferController extends Controller
 
         try {
             if ($wasRecheck) {
-                $provisioner->recheckDns($offer->fresh());
+                RecheckInfrastructureDnsJob::dispatch($offer->id);
             } else {
                 $provisioner->enqueue($offer->fresh());
             }

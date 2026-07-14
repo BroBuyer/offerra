@@ -8,6 +8,10 @@ use RuntimeException;
 
 class HestiaClient
 {
+    private const int DEFAULT_TIMEOUT = 60;
+
+    private const int SSL_TIMEOUT = 180;
+
     /**
      * @return array{ok: bool, message: string, domains?: int}
      */
@@ -71,8 +75,8 @@ class HestiaClient
 
         $www = 'www.'.$domain;
 
-        $this->api($settings, 'v-add-letsencrypt-domain', [$user, $domain, $www]);
-        $this->api($settings, 'v-add-web-domain-ssl-force', [$user, $domain]);
+        $this->api($settings, 'v-add-letsencrypt-domain', [$user, $domain, $www], self::SSL_TIMEOUT);
+        $this->api($settings, 'v-add-web-domain-ssl-force', [$user, $domain], self::SSL_TIMEOUT);
         $this->api($settings, 'v-add-web-domain-ssl-hsts', [$user, $domain]);
         $this->api($settings, 'v-add-web-domain-redirect', [$user, $domain, $domain]);
     }
@@ -119,9 +123,9 @@ class HestiaClient
     /**
      * @param  list<string>  $args
      */
-    private function api(UserSetting $settings, string $command, array $args): void
+    private function api(UserSetting $settings, string $command, array $args, int $timeout = self::DEFAULT_TIMEOUT): void
     {
-        [$body, $code] = $this->apiCall($settings, $command, $args);
+        [$body, $code] = $this->apiCall($settings, $command, $args, $timeout);
 
         if ($code === 4 && $command === 'v-add-web-domain') {
             return;
@@ -136,7 +140,7 @@ class HestiaClient
      * @param  list<string>  $args
      * @return array{0: string, 1: int}
      */
-    private function apiCall(UserSetting $settings, string $command, array $args): array
+    private function apiCall(UserSetting $settings, string $command, array $args, int $timeout = self::DEFAULT_TIMEOUT): array
     {
         $host = trim((string) $settings->deploy_host);
         $panelUrl = trim((string) ($settings->deploy_panel_url ?? ''));
@@ -158,7 +162,7 @@ class HestiaClient
             $payload['arg'.($index + 1)] = $value;
         }
 
-        $response = Http::timeout(60)
+        $response = Http::timeout($timeout)
             ->asForm()
             ->withOptions(['verify' => false])
             ->post($baseUrl, $payload);

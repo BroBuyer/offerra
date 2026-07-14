@@ -185,7 +185,7 @@ class InfrastructureProvisioner
             $meta['ssl'] = 'pending';
             $offer->update([
                 'infra_status' => 'dns_propagating',
-                'infra_error' => 'DNS готовий, SSL ще не видано: '.$e->getMessage(),
+                'infra_error' => $this->formatSslError($e),
                 'infra_meta' => $meta,
             ]);
 
@@ -246,5 +246,16 @@ class InfrastructureProvisioner
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    private function formatSslError(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+
+        if (str_contains($message, 'timed out') || str_contains($message, 'cURL error 28')) {
+            return 'DNS готовий. Видача SSL на Hestia триває довше звичайного — автоперевірка повториться через кілька хвилин, або натисніть «Перевірити DNS» ще раз.';
+        }
+
+        return 'DNS готовий, SSL ще не видано: '.$message;
     }
 }
