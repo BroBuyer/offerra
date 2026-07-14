@@ -2,7 +2,7 @@ import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
 import { Link, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function formFromSettings(settings, userId = null) {
     return {
@@ -37,6 +37,9 @@ function formFromSettings(settings, userId = null) {
 export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [deployTest, setDeployTest] = useState(null);
     const [testingDeploy, setTestingDeploy] = useState(false);
+    const [dynadotBalance, setDynadotBalance] = useState(null);
+    const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
+    const [dynadotBalanceError, setDynadotBalanceError] = useState('');
 
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm(
         formFromSettings(settings, settingsUser.id),
@@ -79,6 +82,38 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             setTestingDeploy(false);
         }
     };
+
+    const loadDynadotBalance = async () => {
+        if (!settings.has_dynadot_api_key) {
+            return;
+        }
+
+        setDynadotBalanceLoading(true);
+        setDynadotBalanceError('');
+
+        try {
+            const { data: result } = await axios.get(route('domains.balance'), {
+                params: { user_id: settingsUser.id },
+            });
+            if (!result.ok) {
+                setDynadotBalanceError(result.message ?? 'Не вдалося отримати баланс');
+                return;
+            }
+            setDynadotBalance(result.balance ?? null);
+        } catch (error) {
+            setDynadotBalanceError(
+                error.response?.data?.message ?? 'Не вдалося отримати баланс Dynadot',
+            );
+        } finally {
+            setDynadotBalanceLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (settings.has_dynadot_api_key) {
+            loadDynadotBalance();
+        }
+    }, [settingsUser.id, settings.has_dynadot_api_key]);
 
     return (
         <PanelLayout title="Налаштування">
@@ -229,7 +264,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="dynadot-contact"
                                 value={data.dynadot_contact_id}
                                 onChange={(e) => setData('dynadot_contact_id', e.target.value)}
-                                placeholder="для реєстрації (пізніше)"
+                                placeholder="ID з Dynadot → Tools → Contacts"
                             />
                         </div>
                         <div className="field">
@@ -251,8 +286,40 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             checked={data.dynadot_sandbox}
                             onChange={(e) => setData('dynadot_sandbox', e.target.checked)}
                         />
-                        <span>Sandbox (тестовий API)</span>
+                        <span>Sandbox (тестовий API — потрібен окремий ключ з вкладки «Ключ песочницы»)</span>
                     </label>
+                    {data.dynadot_sandbox && (
+                        <p className="field-hint field-hint--warn">
+                            Увімкнено Sandbox: Production Key не працюватиме. Вимкніть галочку для робочого пошуку доменів.
+                        </p>
+                    )}
+                    {settings.has_dynadot_api_key && (
+                        <div className="domain-balance-row" style={{ marginTop: '0.75rem' }}>
+                            <span className={`domain-balance${dynadotBalance?.low_balance ? ' is-low' : ''}`}>
+                                {dynadotBalanceLoading
+                                    ? 'Баланс Dynadot…'
+                                    : dynadotBalance?.balances?.length
+                                        ? `Баланс: ${dynadotBalance.balances.map((item) => `${item.amount} ${item.currency}`).join(', ')}`
+                                        : 'Баланс: —'}
+                            </span>
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-sm"
+                                disabled={dynadotBalanceLoading}
+                                onClick={loadDynadotBalance}
+                            >
+                                Оновити
+                            </button>
+                        </div>
+                    )}
+                    {dynadotBalance?.low_balance && (
+                        <p className="field-hint field-hint--warn">
+                            Баланс низький — поповніть Dynadot, щоб купувати домени.
+                        </p>
+                    )}
+                    {dynadotBalanceError && (
+                        <p className="field-hint" style={{ color: '#f87171' }}>{dynadotBalanceError}</p>
+                    )}
                 </section>
 
                 <section className="card">

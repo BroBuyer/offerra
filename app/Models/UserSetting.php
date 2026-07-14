@@ -78,6 +78,7 @@ class UserSetting extends Model
             'deploy_panel_url' => $this->deploy_panel_url ?? '',
             'has_deploy_password' => filled($this->deploy_password),
             'has_dynadot_api_key' => filled($this->dynadot_api_key),
+            'has_dynadot_contact_id' => filled($this->dynadot_contact_id),
             'dynadot_contact_id' => $this->dynadot_contact_id ?? '',
             'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
             'dynadot_default_years' => (int) ($this->dynadot_default_years ?? 1),

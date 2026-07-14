@@ -492,6 +492,23 @@ a:hover { text-decoration: underline; }
   align-items: stretch;
 }
 
+.domain-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.domain-balance {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.domain-balance.is-low {
+  color: #f59e0b;
+}
+
 .domain-search-row input {
   flex: 1;
   min-width: 0;
@@ -586,11 +603,13 @@ a:hover { text-decoration: underline; }
 .domain-search-results__meta {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.45rem;
   flex-shrink: 0;
   font-size: 0.8rem;
   color: var(--muted);
-  max-width: 42%;
+  max-width: 52%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .domain-search-results__meta > span {

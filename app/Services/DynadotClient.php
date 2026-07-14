@@ -43,6 +43,270 @@ class DynadotClient
     }
 
     /**
+     * @return array{
+     *     balances: list<array{currency: string, amount: string}>,
+     *     usd: ?float,
+     *     low_balance: bool
+     * }
+     */
+    public function getAccountBalance(UserSetting $settings): array
+    {
+        $apiKey = $this->requireApiKey($settings);
+        $payload = $this->apiGet($settings, $apiKey, ['command' => 'get_account_balance']);
+
+        return $this->parseAccountBalance($payload, (bool) $settings->dynadot_sandbox);
+    }
+
+    /**
+     * @return array{
+     *     ok: bool,
+     *     domain: string,
+     *     status: string,
+     *     expiration: ?int,
+     *     message: ?string,
+     *     price: ?string
+     * }
+     */
+    public function register(UserSetting $settings, string $domain, ?int $years = null): array
+    {
+        $apiKey = $this->requireApiKey($settings);
+        $domain = DomainName::normalize($domain);
+
+        if ($domain === '') {
+            throw new RuntimeException('Невірний домен.');
+        }
+
+        $duration = max(1, min(10, $years ?? (int) ($settings->dynadot_default_years ?? 1)));
+        $contactId = trim((string) ($settings->dynadot_contact_id ?? ''));
+
+        if ($contactId === '') {
+            throw new RuntimeException('Вкажіть Dynadot Contact ID у налаштуваннях (Tools → Contacts).');
+        }
+
+        $availability = $this->searchOne($settings, $apiKey, $domain);
+        $this->throwOnGlobalApiError($availability, (bool) $settings->dynadot_sandbox);
+
+        if (! $availability['available']) {
+            return [
+                'ok' => false,
+                'domain' => $domain,
+                'status' => $availability['status'],
+                'expiration' => null,
+                'message' => $availability['status'] === 'taken'
+                    ? 'Домен уже зайнятий.'
+                    : ($availability['message'] ?? 'Домен недоступний для реєстрації.'),
+                'price' => $availability['price'],
+            ];
+        }
+
+        $params = [
+            'command' => 'register',
+            'domain' => $domain,
+            'duration' => $duration,
+            'currency' => 'USD',
+            'registrant_contact' => $contactId,
+            'admin_contact' => $contactId,
+            'technical_contact' => $contactId,
+            'billing_contact' => $contactId,
+        ];
+
+        $payload = $this->apiGet($settings, $apiKey, $params);
+
+        return $this->parseRegisterResult($domain, $payload, (bool) $settings->dynadot_sandbox, $availability['price']);
+    }
+
+    private function requireApiKey(UserSetting $settings): string
+    {
+        $apiKey = trim((string) $settings->dynadot_api_key);
+
+        if ($apiKey === '') {
+            throw new RuntimeException('Збережіть Dynadot API key у налаштуваннях.');
+        }
+
+        return $apiKey;
+    }
+
+    /**
+     * @param  array<string, scalar|null>  $params
+     * @return array<string, mixed>
+     */
+    private function apiGet(UserSetting $settings, string $apiKey, array $params): array
+    {
+        $response = Http::timeout(40)->get($this->apiBaseUrl((bool) $settings->dynadot_sandbox), [
+            'key' => $apiKey,
+            ...$params,
+        ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException('Dynadot HTTP '.$response->status());
+        }
+
+        /** @var array<string, mixed> $payload */
+        $payload = $response->json() ?? [];
+
+        if ($payload === []) {
+            throw new RuntimeException('Порожня відповідь Dynadot');
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array{
+     *     balances: list<array{currency: string, amount: string}>,
+     *     usd: ?float,
+     *     low_balance: bool
+     * }
+     */
+    private function parseAccountBalance(array $payload, bool $sandbox): array
+    {
+        $apiError = $this->extractPayloadError($payload, $sandbox);
+
+        if ($apiError !== null) {
+            throw new RuntimeException($apiError);
+        }
+
+        $balanceResponse = $payload['GetAccountBalanceResponse']
+            ?? $payload['getAccountBalanceResponse']
+            ?? null;
+
+        if (! is_array($balanceResponse)) {
+            throw new RuntimeException('Неочікувана відповідь Dynadot (balance)');
+        }
+
+        $responseCode = (string) ($balanceResponse['ResponseCode'] ?? $balanceResponse['SuccessCode'] ?? '');
+        $status = strtolower((string) ($balanceResponse['Status'] ?? ''));
+
+        if ($responseCode !== '' && $responseCode !== '0' && $status === 'error') {
+            throw new RuntimeException($this->humanizeApiError(
+                (string) ($balanceResponse['Error'] ?? 'Dynadot balance error'),
+                $sandbox,
+            ));
+        }
+
+        $balances = [];
+        $balanceList = $balanceResponse['BalanceList'] ?? $balanceResponse['balanceList'] ?? [];
+
+        if (is_array($balanceList)) {
+            $rows = isset($balanceList['Currency']) || isset($balanceList['Amount'])
+                ? [$balanceList]
+                : $balanceList;
+
+            foreach ($rows as $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+
+                $currency = strtoupper(trim((string) ($row['Currency'] ?? $row['currency'] ?? '')));
+                $amount = trim((string) ($row['Amount'] ?? $row['amount'] ?? ''));
+
+                if ($currency !== '' && $amount !== '') {
+                    $balances[] = [
+                        'currency' => $currency,
+                        'amount' => $amount,
+                    ];
+                }
+            }
+        }
+
+        $usd = null;
+
+        foreach ($balances as $balance) {
+            if ($balance['currency'] === 'USD') {
+                $usd = (float) str_replace(',', '', $balance['amount']);
+                break;
+            }
+        }
+
+        return [
+            'balances' => $balances,
+            'usd' => $usd,
+            'low_balance' => $usd !== null && $usd < 15,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array{
+     *     ok: bool,
+     *     domain: string,
+     *     status: string,
+     *     expiration: ?int,
+     *     message: ?string,
+     *     price: ?string
+     * }
+     */
+    private function parseRegisterResult(string $domain, array $payload, bool $sandbox, ?string $price): array
+    {
+        $apiError = $this->extractPayloadError($payload, $sandbox);
+
+        if ($apiError !== null) {
+            return [
+                'ok' => false,
+                'domain' => $domain,
+                'status' => 'error',
+                'expiration' => null,
+                'message' => $apiError,
+                'price' => $price,
+            ];
+        }
+
+        $registerResponse = $payload['RegisterResponse'] ?? $payload['registerResponse'] ?? null;
+
+        if (! is_array($registerResponse)) {
+            return [
+                'ok' => false,
+                'domain' => $domain,
+                'status' => 'error',
+                'expiration' => null,
+                'message' => 'Неочікувана відповідь Dynadot (register)',
+                'price' => $price,
+            ];
+        }
+
+        $responseCode = (string) ($registerResponse['ResponseCode'] ?? $registerResponse['SuccessCode'] ?? '');
+        $status = strtolower((string) ($registerResponse['Status'] ?? ''));
+
+        if ($responseCode === '0' || $status === 'success') {
+            $expiration = $registerResponse['Expiration'] ?? $registerResponse['expiration'] ?? null;
+
+            return [
+                'ok' => true,
+                'domain' => strtolower((string) ($registerResponse['DomainName'] ?? $domain)),
+                'status' => 'success',
+                'expiration' => is_numeric($expiration) ? (int) $expiration : null,
+                'message' => null,
+                'price' => $price,
+            ];
+        }
+
+        $error = (string) ($registerResponse['Error'] ?? $registerResponse['Message'] ?? 'Помилка реєстрації');
+
+        return [
+            'ok' => false,
+            'domain' => $domain,
+            'status' => $status !== '' ? $status : 'error',
+            'expiration' => null,
+            'message' => $this->humanizeRegisterError($error),
+            'price' => $price,
+        ];
+    }
+
+    private function humanizeRegisterError(string $message): string
+    {
+        $normalized = strtolower(trim($message));
+
+        return match (true) {
+            str_contains($normalized, 'insufficient') => 'Недостатньо коштів на балансі Dynadot. Поповніть акаунт.',
+            str_contains($normalized, 'not_available'),
+            str_contains($normalized, 'not available') => 'Домен уже зайнятий.',
+            str_contains($normalized, 'invalid contact') => 'Невірний Contact ID у налаштуваннях Dynadot.',
+            default => $message,
+        };
+    }
+
+    /**
      * @return list<string>
      */
     public function expandQuery(string $query): array

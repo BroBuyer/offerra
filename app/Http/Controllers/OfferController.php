@@ -184,6 +184,7 @@ class OfferController extends Controller
             'settingsReady' => $ready,
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'hasDynadotApiKey' => filled($settings?->dynadot_api_key),
+            'hasDynadotContactId' => filled($settings?->dynadot_contact_id),
             'domainSearchTlds' => config('offerra.domain_search_tlds', []),
             'affiliateTag' => $settings?->affiliate_tag ?? 'BRO',
             'geoPresets' => config('offerra.geo_presets'),

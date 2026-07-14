@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DomainBalanceController;
+use App\Http\Controllers\DomainPurchaseController;
 use App\Http\Controllers\DomainSearchController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
@@ -27,6 +29,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->where('path', '.*')
         ->name('templates.preview');
     Route::post('/domains/search', [DomainSearchController::class, 'store'])->name('domains.search');
+    Route::post('/domains/purchase', [DomainPurchaseController::class, 'store'])->name('domains.purchase');
+    Route::get('/domains/balance', [DomainBalanceController::class, 'show'])->name('domains.balance');
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');

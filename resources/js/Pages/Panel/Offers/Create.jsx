@@ -61,6 +61,7 @@ export default function OffersCreate({
     settingsReady,
     hasKeitaroApiKey,
     hasDynadotApiKey = false,
+    hasDynadotContactId = false,
     domainSearchTlds = [],
     affiliateTag = 'BRO',
     geoPresets,
@@ -75,8 +76,11 @@ export default function OffersCreate({
     const initial = useMemo(() => (fresh ? { step: 0, data: defaults } : loadWizardState(defaults)), [fresh, defaults]);
     const [step, setStep] = useState(initial.step);
     const [domainSearching, setDomainSearching] = useState(false);
+    const [domainPurchasing, setDomainPurchasing] = useState(null);
     const [domainSearchError, setDomainSearchError] = useState('');
     const [domainSearchResults, setDomainSearchResults] = useState(null);
+    const [dynadotBalance, setDynadotBalance] = useState(null);
+    const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
 
@@ -250,6 +254,63 @@ export default function OffersCreate({
         setDomainSearchResults(null);
     };
 
+    const loadDynadotBalance = async () => {
+        if (!hasDynadotApiKey) {
+            return;
+        }
+
+        setDynadotBalanceLoading(true);
+
+        try {
+            const { data: result } = await axios.get(route('domains.balance'));
+            if (result.ok) {
+                setDynadotBalance(result.balance ?? null);
+            }
+        } catch {
+            // Balance is optional in the wizard.
+        } finally {
+            setDynadotBalanceLoading(false);
+        }
+    };
+
+    const purchaseDomain = async (item) => {
+        if (!hasDynadotContactId) {
+            setDomainSearchError('Вкажіть Dynadot Contact ID у налаштуваннях перед покупкою.');
+            return;
+        }
+
+        const priceHint = item.price ? ` за ${item.price}` : '';
+        if (!window.confirm(`Купити ${item.domain}${priceHint}? Списання з балансу Dynadot.`)) {
+            return;
+        }
+
+        setDomainPurchasing(item.domain);
+        setDomainSearchError('');
+
+        try {
+            const { data: result } = await axios.post(route('domains.purchase'), { domain: item.domain });
+            if (!result.ok) {
+                setDomainSearchError(result.message ?? 'Не вдалося купити домен');
+                return;
+            }
+
+            pickDomain(result.result?.domain ?? item.domain);
+            await loadDynadotBalance();
+        } catch (error) {
+            setDomainSearchError(
+                error.response?.data?.message ?? 'Не вдалося купити домен',
+            );
+        } finally {
+            setDomainPurchasing(null);
+        }
+    };
+
+    useEffect(() => {
+        if (hasDynadotApiKey && step === 0) {
+            loadDynadotBalance();
+        }
+    }, [hasDynadotApiKey, step]);
+
     const folderPreview = useMemo(() => {
         if (!data.brand || !data.domain || !data.geo) return '…';
         const brandSlug = data.brand.trim().replace(/\s+/g, '-');
@@ -362,6 +423,31 @@ export default function OffersCreate({
                                     {domainSearching ? 'Пошук…' : 'Шукати'}
                                 </button>
                             </div>
+                            {hasDynadotApiKey && (
+                                <div className="domain-balance-row">
+                                    <span className={`domain-balance${dynadotBalance?.low_balance ? ' is-low' : ''}`}>
+                                        {dynadotBalanceLoading
+                                            ? 'Баланс Dynadot…'
+                                            : dynadotBalance?.balances?.length
+                                                ? `Баланс Dynadot: ${dynadotBalance.balances.map((item) => `${item.amount} ${item.currency}`).join(', ')}`
+                                                : 'Баланс Dynadot: —'}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        disabled={dynadotBalanceLoading}
+                                        onClick={loadDynadotBalance}
+                                    >
+                                        Оновити
+                                    </button>
+                                </div>
+                            )}
+                            {hasDynadotApiKey && !hasDynadotContactId && (
+                                <p className="field-hint field-hint--warn">
+                                    Для покупки вкажіть Contact ID у{' '}
+                                    <Link href={route('settings.index')}>налаштуваннях</Link> (Dynadot → Tools → Contacts).
+                                </p>
+                            )}
                             {!hasDynadotApiKey && (
                                 <p className="field-hint" style={{ color: '#f59e0b' }}>
                                     Збережіть Dynadot API key у{' '}
@@ -403,13 +489,23 @@ export default function OffersCreate({
                                                 )}
                                                 {item.price && <span>{item.price}</span>}
                                                 {item.available && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-ghost btn-sm"
-                                                        onClick={() => pickDomain(item.domain)}
-                                                    >
-                                                        Обрати
-                                                    </button>
+                                                    <>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-ghost btn-sm"
+                                                            onClick={() => pickDomain(item.domain)}
+                                                        >
+                                                            Обрати
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary btn-sm"
+                                                            disabled={!hasDynadotContactId || domainPurchasing === item.domain}
+                                                            onClick={() => purchaseDomain(item)}
+                                                        >
+                                                            {domainPurchasing === item.domain ? 'Купівля…' : 'Купити'}
+                                                        </button>
+                                                    </>
                                                 )}
                                             </div>
                                         </li>
