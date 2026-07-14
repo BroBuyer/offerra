@@ -99,14 +99,14 @@ class UserSetting extends Model
     public function toEditArray(): array
     {
         return array_merge($this->toPanelArray(), [
-            'keitaro_api_key' => $this->keitaro_api_key ?? '',
-            'crm_api_key' => $this->crm_api_key ?? '',
-            'tg_bot_token' => $this->tg_bot_token ?? '',
-            'deploy_password' => $this->deploy_password ?? '',
-            'deploy_api_secret_key' => $this->deploy_api_secret_key ?? '',
-            'dynadot_api_key' => $this->dynadot_api_key ?? '',
-            'dynadot_api_secret' => $this->dynadot_api_secret ?? '',
-            'cloudflare_api_token' => $this->cloudflare_api_token ?? '',
+            'keitaro_api_key' => '',
+            'crm_api_key' => '',
+            'tg_bot_token' => '',
+            'deploy_password' => '',
+            'deploy_api_secret_key' => '',
+            'dynadot_api_key' => '',
+            'dynadot_api_secret' => '',
+            'cloudflare_api_token' => '',
         ]);
     }
 }
