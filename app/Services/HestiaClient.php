@@ -111,22 +111,22 @@ class HestiaClient
      */
     private function api(UserSetting $settings, string $command, array $args): void
     {
-        $body = $this->apiRaw($settings, $command, $args);
-        $code = (int) trim($body);
+        [$body, $code] = $this->apiCall($settings, $command, $args);
 
         if ($code === 4 && $command === 'v-add-web-domain') {
             return;
         }
 
-        if ($code !== 0 && $body !== '0') {
-            throw new RuntimeException("Hestia {$command}: ".($body !== '' ? $body : 'невідома помилка'));
+        if ($code !== 0) {
+            throw new RuntimeException("Hestia {$command}: ".($body !== '' ? $body : 'код '.$code));
         }
     }
 
     /**
      * @param  list<string>  $args
+     * @return array{0: string, 1: int}
      */
-    private function apiRaw(UserSetting $settings, string $command, array $args): string
+    private function apiCall(UserSetting $settings, string $command, array $args): array
     {
         $host = trim((string) $settings->deploy_host);
         $panelUrl = trim((string) ($settings->deploy_panel_url ?? ''));
@@ -140,7 +140,7 @@ class HestiaClient
             : "https://{$host}:8083/api/";
 
         $payload = array_merge($this->authPayload($settings), [
-            'returncode' => 'yes',
+            'returncode' => 'no',
             'cmd' => $command,
         ]);
 
@@ -157,7 +157,29 @@ class HestiaClient
             throw new RuntimeException($this->formatHttpError($response->status(), $response->body()));
         }
 
-        return trim($response->body());
+        $exitCode = (int) ($response->header('hestia-exit-code') ?? $response->header('Hestia-Exit-Code') ?? -1);
+        $body = trim($response->body());
+
+        if ($exitCode < 0 && $body !== '' && preg_match('/^\d+$/', $body)) {
+            $exitCode = (int) $body;
+            $body = '';
+        }
+
+        return [$body, $exitCode];
+    }
+
+    /**
+     * @param  list<string>  $args
+     */
+    private function apiRaw(UserSetting $settings, string $command, array $args): string
+    {
+        [$body, $code] = $this->apiCall($settings, $command, $args);
+
+        if ($code !== 0) {
+            throw new RuntimeException("Hestia {$command}: ".($body !== '' ? $body : 'код '.$code));
+        }
+
+        return $body;
     }
 
     /**

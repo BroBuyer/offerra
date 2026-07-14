@@ -13,8 +13,8 @@ class HestiaClientTest extends TestCase
     {
         Http::fake([
             'https://10.0.0.1:8083/api/*' => Http::sequence()
-                ->push('{}', 200)
-                ->push('0', 200),
+                ->push('{}', 200, ['hestia-exit-code' => '0'])
+                ->push('', 200, ['hestia-exit-code' => '0']),
         ]);
 
         $settings = new UserSetting([
@@ -31,6 +31,7 @@ class HestiaClientTest extends TestCase
             $data = $request->data();
 
             return $request->url() === 'https://10.0.0.1:8083/api/'
+                && ($data['returncode'] ?? '') === 'no'
                 && ($data['access_key'] ?? '') === 'abcdefghij1234567890'
                 && ($data['secret_key'] ?? '') === 'secret1234567890123456789012345678901234'
                 && ($data['cmd'] ?? '') === 'v-add-web-domain'
@@ -42,8 +43,8 @@ class HestiaClientTest extends TestCase
     {
         Http::fake([
             'https://10.0.0.1:8083/api/*' => Http::sequence()
-                ->push('{}', 200)
-                ->push('0', 200),
+                ->push('{}', 200, ['hestia-exit-code' => '0'])
+                ->push('', 200, ['hestia-exit-code' => '0']),
         ]);
 
         $settings = new UserSetting([
@@ -60,8 +61,32 @@ class HestiaClientTest extends TestCase
 
             return ($data['user'] ?? '') === 'user'
                 && ($data['password'] ?? '') === 'sftp-pass'
+                && ($data['returncode'] ?? '') === 'no'
                 && ! isset($data['access_key']);
         });
+    }
+
+    public function test_test_connection_counts_domains_from_json_body(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::response(
+                '{"a.example":{"DOMAIN":"a.example"},"b.example":{"DOMAIN":"b.example"}}',
+                200,
+                ['hestia-exit-code' => '0'],
+            ),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        $result = (new HestiaClient)->testConnection($settings);
+
+        $this->assertTrue($result['ok']);
+        $this->assertSame(2, $result['domains']);
     }
 
     public function test_http_401_includes_helpful_hint(): void

@@ -402,7 +402,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="deploy-panel-url"
                                 value={data.deploy_panel_url}
                                 onChange={(e) => setData('deploy_panel_url', e.target.value)}
-                                placeholder="https://176.126.86.35:8083"
+                                placeholder="https://85.155.190.150:8083"
                             />
                         </div>
                     </div>
@@ -414,7 +414,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="deploy-host"
                                 value={data.deploy_host}
                                 onChange={(e) => setData('deploy_host', e.target.value)}
-                                placeholder="176.126.86.35"
+                                placeholder="85.155.190.150"
                             />
                         </div>
                         <div className="field">
