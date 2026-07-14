@@ -80,6 +80,62 @@ class DynadotPurchaseTest extends TestCase
         $this->assertTrue($result['auto_renew_disabled']);
     }
 
+    public function test_register_strips_c_prefix_from_contact_id(): void
+    {
+        Http::fake([
+            'https://api.dynadot.com/api3.json*' => function ($request) {
+                $query = $request->data();
+
+                if (($query['command'] ?? '') === 'search') {
+                    return Http::response([
+                        'SearchResponse' => [
+                            'ResponseCode' => '0',
+                            'SearchResults' => [
+                                [
+                                    'DomainName' => 'brand-new.online',
+                                    'Available' => 'yes',
+                                    'Price' => '2.50 in USD',
+                                ],
+                            ],
+                        ],
+                    ]);
+                }
+
+                if (($query['command'] ?? '') === 'set_renew_option') {
+                    return Http::response([
+                        'SetRenewOptionResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                        ],
+                    ]);
+                }
+
+                $this->assertSame('1885528', $query['registrant_contact'] ?? null);
+
+                return Http::response([
+                    'RegisterResponse' => [
+                        'ResponseCode' => 0,
+                        'Status' => 'success',
+                        'DomainName' => 'brand-new.online',
+                        'Expiration' => 1458379145266,
+                    ],
+                ]);
+            },
+        ]);
+
+        $settings = $this->makeSettings(['dynadot_contact_id' => 'C-1885528']);
+        $result = app(DynadotClient::class)->register($settings, 'brand-new.online');
+
+        $this->assertTrue($result['ok']);
+    }
+
+    public function test_normalize_contact_id(): void
+    {
+        $this->assertSame('1885528', DynadotClient::normalizeContactId('C-1885528'));
+        $this->assertSame('1885528', DynadotClient::normalizeContactId('c-1885528'));
+        $this->assertSame('0', DynadotClient::normalizeContactId('0'));
+    }
+
     public function test_register_requires_contact_id(): void
     {
         $this->expectException(\RuntimeException::class);

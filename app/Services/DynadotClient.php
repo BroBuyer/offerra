@@ -78,10 +78,10 @@ class DynadotClient
         }
 
         $duration = max(1, min(10, $years ?? (int) ($settings->dynadot_default_years ?? 1)));
-        $contactId = trim((string) ($settings->dynadot_contact_id ?? ''));
+        $contactId = self::normalizeContactId((string) ($settings->dynadot_contact_id ?? ''));
 
         if ($contactId === '') {
-            throw new RuntimeException('Вкажіть Dynadot Contact ID у налаштуваннях (Tools → Contacts).');
+            throw new RuntimeException('Вкажіть Dynadot Contact ID у налаштуваннях (Мои домены → Контактные записи).');
         }
 
         $availability = $this->searchOne($settings, $apiKey, $domain);
@@ -372,11 +372,29 @@ class DynadotClient
         ];
     }
 
+    public static function normalizeContactId(string $contactId): string
+    {
+        $contactId = trim($contactId);
+
+        if ($contactId === '') {
+            return '';
+        }
+
+        if (preg_match('/^c-(\d+)$/i', $contactId, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return $contactId;
+    }
+
     private function humanizeRegisterError(string $message): string
     {
         $normalized = strtolower(trim($message));
 
         return match (true) {
+            str_contains($normalized, 'invalid registrant_contact'),
+            str_contains($normalized, 'invalid admin_contact'),
+            str_contains($normalized, 'invalid contact') => 'Невірний Contact ID. Вставте лише цифри (наприклад 1885528), без префікса C-.',
             str_contains($normalized, 'insufficient') => 'Недостатньо коштів на балансі Dynadot. Поповніть акаунт.',
             str_contains($normalized, 'not_available'),
             str_contains($normalized, 'not available') => 'Домен уже зайнятий.',

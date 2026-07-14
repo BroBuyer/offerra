@@ -264,8 +264,11 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="dynadot-contact"
                                 value={data.dynadot_contact_id}
                                 onChange={(e) => setData('dynadot_contact_id', e.target.value)}
-                                placeholder="ID з Dynadot → Tools → Contacts"
+                                placeholder="1885528 (лише цифри, без C-)"
                             />
+                            <p className="field-hint">
+                                У Dynadot показується як C-1885528 — вставляйте лише <strong>1885528</strong>.
+                            </p>
                         </div>
                         <div className="field">
                             <label htmlFor="dynadot-years">Років за замовч.</label>
