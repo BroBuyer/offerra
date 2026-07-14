@@ -64,7 +64,8 @@ class DynadotClient
      *     status: string,
      *     expiration: ?int,
      *     message: ?string,
-     *     price: ?string
+     *     price: ?string,
+     *     auto_renew_disabled: bool
      * }
      */
     public function register(UserSetting $settings, string $domain, ?int $years = null): array
@@ -96,6 +97,7 @@ class DynadotClient
                     ? 'Домен уже зайнятий.'
                     : ($availability['message'] ?? 'Домен недоступний для реєстрації.'),
                 'price' => $availability['price'],
+                'auto_renew_disabled' => false,
             ];
         }
 
@@ -112,7 +114,79 @@ class DynadotClient
 
         $payload = $this->apiGet($settings, $apiKey, $params);
 
-        return $this->parseRegisterResult($domain, $payload, (bool) $settings->dynadot_sandbox, $availability['price']);
+        $result = $this->parseRegisterResult($domain, $payload, (bool) $settings->dynadot_sandbox, $availability['price']);
+
+        if (! $result['ok']) {
+            return $result;
+        }
+
+        $autoRenewDisabled = $this->disableAutoRenew($settings, $apiKey, $result['domain']);
+        $result['auto_renew_disabled'] = $autoRenewDisabled;
+
+        if (! $autoRenewDisabled) {
+            $result['message'] = 'Домен зареєстровано, але не вдалося вимкнути автопродовження в Dynadot. Перевірте вручну.';
+        }
+
+        return $result;
+    }
+
+    private function disableAutoRenew(UserSetting $settings, string $apiKey, string $domain): bool
+    {
+        $maxAttempts = 4;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                if ($this->setRenewOption($settings, $apiKey, $domain, 'donot')) {
+                    return true;
+                }
+            } catch (RuntimeException) {
+                // Retry below when Dynadot is busy.
+            }
+
+            if ($attempt < $maxAttempts) {
+                usleep(450_000 * $attempt);
+            }
+        }
+
+        return false;
+    }
+
+    private function setRenewOption(UserSetting $settings, string $apiKey, string $domain, string $option): bool
+    {
+        $payload = $this->apiGet($settings, $apiKey, [
+            'command' => 'set_renew_option',
+            'domain' => $domain,
+            'renew_option' => $option,
+        ]);
+
+        return $this->parseSetRenewOptionResult($payload, (bool) $settings->dynadot_sandbox);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function parseSetRenewOptionResult(array $payload, bool $sandbox): bool
+    {
+        $apiError = $this->extractPayloadError($payload, $sandbox);
+
+        if ($apiError !== null) {
+            if ($this->isBusyApiError($apiError)) {
+                throw new RuntimeException($apiError);
+            }
+
+            return false;
+        }
+
+        $response = $payload['SetRenewOptionResponse'] ?? $payload['setRenewOptionResponse'] ?? null;
+
+        if (! is_array($response)) {
+            return false;
+        }
+
+        $responseCode = (string) ($response['ResponseCode'] ?? $response['SuccessCode'] ?? '');
+        $status = strtolower((string) ($response['Status'] ?? ''));
+
+        return $responseCode === '0' || $status === 'success';
     }
 
     private function requireApiKey(UserSetting $settings): string
@@ -234,7 +308,8 @@ class DynadotClient
      *     status: string,
      *     expiration: ?int,
      *     message: ?string,
-     *     price: ?string
+     *     price: ?string,
+     *     auto_renew_disabled: bool
      * }
      */
     private function parseRegisterResult(string $domain, array $payload, bool $sandbox, ?string $price): array
@@ -249,6 +324,7 @@ class DynadotClient
                 'expiration' => null,
                 'message' => $apiError,
                 'price' => $price,
+                'auto_renew_disabled' => false,
             ];
         }
 
@@ -262,6 +338,7 @@ class DynadotClient
                 'expiration' => null,
                 'message' => 'Неочікувана відповідь Dynadot (register)',
                 'price' => $price,
+                'auto_renew_disabled' => false,
             ];
         }
 
@@ -278,6 +355,7 @@ class DynadotClient
                 'expiration' => is_numeric($expiration) ? (int) $expiration : null,
                 'message' => null,
                 'price' => $price,
+                'auto_renew_disabled' => false,
             ];
         }
 
@@ -290,6 +368,7 @@ class DynadotClient
             'expiration' => null,
             'message' => $this->humanizeRegisterError($error),
             'price' => $price,
+            'auto_renew_disabled' => false,
         ];
     }
 

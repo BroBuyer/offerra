@@ -39,6 +39,16 @@ function templateLabel(templates, templateId) {
     return templates.find((item) => item.id === templateId)?.name ?? templateId;
 }
 
+function formatDomainPrice(price) {
+    const match = String(price).match(/([\d.]+)\s*in\s*([A-Z]{3})/i);
+
+    if (match) {
+        return `${match[1]} ${match[2]}`;
+    }
+
+    return String(price).slice(0, 40);
+}
+
 function buildDefaults(templates) {
     const defaultTemplate = templates[0]?.id ?? 'default';
     const defaultLanguages = templates[0]?.languages ?? [];
@@ -279,8 +289,8 @@ export default function OffersCreate({
             return;
         }
 
-        const priceHint = item.price ? ` за ${item.price}` : '';
-        if (!window.confirm(`Купити ${item.domain}${priceHint}? Списання з балансу Dynadot.`)) {
+        const priceHint = item.price ? ` (${formatDomainPrice(item.price)})` : '';
+        if (!window.confirm(`Купити ${item.domain} на 1 рік без автопродовження${priceHint}? Списання з балансу Dynadot.`)) {
             return;
         }
 
@@ -295,6 +305,9 @@ export default function OffersCreate({
             }
 
             pickDomain(result.result?.domain ?? item.domain);
+            if (result.result?.message) {
+                setDomainSearchError(result.result.message);
+            }
             await loadDynadotBalance();
         } catch (error) {
             setDomainSearchError(

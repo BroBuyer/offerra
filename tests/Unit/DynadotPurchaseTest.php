@@ -52,6 +52,15 @@ class DynadotPurchaseTest extends TestCase
                     ]);
                 }
 
+                if (($query['command'] ?? '') === 'set_renew_option') {
+                    return Http::response([
+                        'SetRenewOptionResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                        ],
+                    ]);
+                }
+
                 return Http::response([
                     'RegisterResponse' => [
                         'ResponseCode' => 0,
@@ -68,6 +77,7 @@ class DynadotPurchaseTest extends TestCase
         $this->assertTrue($result['ok']);
         $this->assertSame('brand-new.online', $result['domain']);
         $this->assertSame('success', $result['status']);
+        $this->assertTrue($result['auto_renew_disabled']);
     }
 
     public function test_register_requires_contact_id(): void
