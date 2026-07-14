@@ -444,7 +444,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="deploy-pass"
                                 value={data.deploy_password}
                                 onChange={(e) => setData('deploy_password', e.target.value)}
-                                placeholder={settings.has_deploy_password ? 'збережено — залиште порожнім' : 'пароль користувача Hestia'}
+                                placeholder="пароль користувача Hestia"
                             />
                         </div>
                     </div>
@@ -466,7 +466,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 id="deploy-api-secret"
                                 value={data.deploy_api_secret_key}
                                 onChange={(e) => setData('deploy_api_secret_key', e.target.value)}
-                                placeholder={settings.has_deploy_api_secret_key ? 'збережено — залиште порожнім' : '40 символів'}
+                                placeholder="40 символів"
                             />
                         </div>
                     </div>

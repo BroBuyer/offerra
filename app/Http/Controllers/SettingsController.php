@@ -58,7 +58,7 @@ class SettingsController extends Controller
             'deploy_username' => $data['deploy_username'] ?? $settings->deploy_username,
             'deploy_path_template' => $data['deploy_path_template'] ?? $settings->deploy_path_template,
             'deploy_panel_url' => $data['deploy_panel_url'] ?? $settings->deploy_panel_url,
-            'deploy_api_access_key' => $data['deploy_api_access_key'] ?? $settings->deploy_api_access_key,
+            'deploy_api_access_key' => trim((string) ($data['deploy_api_access_key'] ?? '')) ?: null,
             'dynadot_contact_id' => DynadotClient::normalizeContactId(
                 (string) ($data['dynadot_contact_id'] ?? $settings->dynadot_contact_id ?? ''),
             ) ?: null,
@@ -71,12 +71,8 @@ class SettingsController extends Controller
         $this->mergeSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
         $this->mergeSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
         $this->mergeSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
-        $this->mergeSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
-        $this->mergeSecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
-
-        if (array_key_exists('deploy_api_access_key', $data) && trim((string) ($data['deploy_api_access_key'] ?? '')) === '') {
-            $settings->deploy_api_access_key = null;
-        }
+        $this->assignDeploySecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
+        $this->assignDeploySecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
         $this->mergeSecret($settings, 'dynadot_api_key', isset($data['dynadot_api_key']) ? trim((string) $data['dynadot_api_key']) : null);
         $this->mergeSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
         $this->mergeSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
@@ -99,13 +95,9 @@ class SettingsController extends Controller
         $settings = $targetUser->settings;
         $data = $request->validated();
 
-        $password = $data['deploy_password'] ?? null;
+        $password = trim((string) ($data['deploy_password'] ?? ''));
 
-        if (! filled(trim((string) $password)) && $settings) {
-            $password = $settings->deploy_password;
-        }
-
-        if (! filled($password)) {
+        if ($password === '') {
             return response()->json([
                 'ok' => false,
                 'message' => 'Вкажіть пароль SFTP (або збережіть його в налаштуваннях).',
@@ -141,24 +133,10 @@ class SettingsController extends Controller
             'deploy_host' => $data['deploy_host'] ?? $settings->deploy_host,
             'deploy_username' => $data['deploy_username'] ?? $settings->deploy_username,
             'deploy_panel_url' => $data['deploy_panel_url'] ?? $settings->deploy_panel_url,
-            'deploy_api_access_key' => $data['deploy_api_access_key'] ?? $settings->deploy_api_access_key,
+            'deploy_api_access_key' => trim((string) ($data['deploy_api_access_key'] ?? '')) ?: null,
         ]);
-
-        $secret = $data['deploy_api_secret_key'] ?? null;
-        if (! filled(trim((string) $secret))) {
-            $secret = $settings->deploy_api_secret_key;
-        }
-        if (filled($secret)) {
-            $settings->deploy_api_secret_key = SecretValue::normalize((string) $secret);
-        }
-
-        $password = $data['deploy_password'] ?? null;
-        if (! filled(trim((string) $password))) {
-            $password = $settings->deploy_password;
-        }
-        if (filled($password)) {
-            $settings->deploy_password = SecretValue::normalize((string) $password);
-        }
+        $this->assignDeploySecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
+        $this->assignDeploySecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
 
         return response()->json($hestia->testConnection($settings));
     }
@@ -183,5 +161,12 @@ class SettingsController extends Controller
         }
 
         $settings->{$field} = SecretValue::normalize($value);
+    }
+
+    private function assignDeploySecret(UserSetting $settings, string $field, ?string $value): void
+    {
+        $normalized = SecretValue::normalize((string) $value);
+
+        $settings->{$field} = $normalized === '' ? null : $normalized;
     }
 }
