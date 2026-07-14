@@ -61,17 +61,63 @@ class CloudflareClient
     public function ensureRootARecord(UserSetting $settings, string $zoneId, string $domain, string $ip): void
     {
         $proxied = (bool) ($settings->cloudflare_default_proxied ?? true);
-        $records = $this->listDnsRecords($settings, $zoneId, $domain);
+        $this->ensureARecord($settings, $zoneId, $domain, '@', $ip, $proxied);
+        $this->ensureARecord($settings, $zoneId, $domain, 'www', $ip, $proxied);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function listARecords(UserSetting $settings, string $zoneId, string $name): array
+    {
+        $response = $this->request($settings, 'GET', '/zones/'.$zoneId.'/dns_records', [
+            'type' => 'A',
+            'name' => $name,
+        ]);
+
+        /** @var list<array<string, mixed>> */
+        return is_array($response['result'] ?? null) ? $response['result'] : [];
+    }
+
+    public function setARecordsProxied(UserSetting $settings, string $zoneId, string $domain, bool $proxied): void
+    {
+        foreach ([$domain, 'www.'.$domain] as $name) {
+            foreach ($this->listARecords($settings, $zoneId, $name) as $record) {
+                if (($record['type'] ?? '') !== 'A') {
+                    continue;
+                }
+
+                $this->request($settings, 'PUT', '/zones/'.$zoneId.'/dns_records/'.($record['id'] ?? ''), [
+                    'type' => 'A',
+                    'name' => ($record['name'] ?? '') === $domain ? '@' : 'www',
+                    'content' => $record['content'] ?? '',
+                    'proxied' => $proxied,
+                    'ttl' => 1,
+                ]);
+            }
+        }
+    }
+
+    private function ensureARecord(
+        UserSetting $settings,
+        string $zoneId,
+        string $domain,
+        string $label,
+        string $ip,
+        bool $proxied,
+    ): void {
+        $name = $label === '@' ? $domain : 'www.'.$domain;
+        $records = $this->listARecords($settings, $zoneId, $name);
 
         foreach ($records as $record) {
-            if (($record['type'] ?? '') === 'A' && in_array($record['name'] ?? '', [$domain, '@'], true)) {
+            if (($record['type'] ?? '') === 'A') {
                 if (($record['content'] ?? '') === $ip && (bool) ($record['proxied'] ?? false) === $proxied) {
                     return;
                 }
 
                 $this->request($settings, 'PUT', '/zones/'.$zoneId.'/dns_records/'.($record['id'] ?? ''), [
                     'type' => 'A',
-                    'name' => '@',
+                    'name' => $label,
                     'content' => $ip,
                     'proxied' => $proxied,
                     'ttl' => 1,
@@ -83,7 +129,7 @@ class CloudflareClient
 
         $this->request($settings, 'POST', '/zones/'.$zoneId.'/dns_records', [
             'type' => 'A',
-            'name' => '@',
+            'name' => $label,
             'content' => $ip,
             'proxied' => $proxied,
             'ttl' => 1,
@@ -95,13 +141,7 @@ class CloudflareClient
      */
     private function listDnsRecords(UserSetting $settings, string $zoneId, string $domain): array
     {
-        $response = $this->request($settings, 'GET', '/zones/'.$zoneId.'/dns_records', [
-            'type' => 'A',
-            'name' => $domain,
-        ]);
-
-        /** @var list<array<string, mixed>> */
-        return is_array($response['result'] ?? null) ? $response['result'] : [];
+        return $this->listARecords($settings, $zoneId, $domain);
     }
 
     /**

@@ -7,7 +7,6 @@ use App\Models\Offer;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use RuntimeException;
 
 class InfrastructureProvisioner
 {
@@ -110,8 +109,11 @@ class InfrastructureProvisioner
                 $meta['dns'] = 'done';
 
                 try {
-                    $this->hestia->issueLetsEncrypt($settings, $domain);
+                    $this->issueSsl($settings, $domain, $zone['zone_id'], $meta);
                     $meta['ssl'] = 'done';
+                    $meta['ssl_force'] = 'done';
+                    $meta['ssl_hsts'] = 'done';
+                    $meta['www_redirect'] = 'done';
                 } catch (\Throwable $e) {
                     $meta['ssl'] = 'pending';
                     Log::warning('SSL not ready yet', ['domain' => $domain, 'error' => $e->getMessage()]);
@@ -172,8 +174,12 @@ class InfrastructureProvisioner
 
         try {
             if (($meta['ssl'] ?? '') !== 'done') {
-                $this->hestia->issueLetsEncrypt($settings, $domain);
+                $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
+                $this->issueSsl($settings, $domain, $zoneId, $meta);
                 $meta['ssl'] = 'done';
+                $meta['ssl_force'] = 'done';
+                $meta['ssl_hsts'] = 'done';
+                $meta['www_redirect'] = 'done';
             }
         } catch (\Throwable $e) {
             $meta['ssl'] = 'pending';
@@ -191,6 +197,32 @@ class InfrastructureProvisioner
             'infra_error' => null,
             'infra_meta' => $meta,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function issueSsl(UserSetting $settings, string $domain, string $zoneId, array &$meta): void
+    {
+        if ($zoneId !== '') {
+            $serverIp = $this->hestia->serverIp($settings);
+            $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
+            $meta['cloudflare_www_dns'] = 'done';
+        }
+
+        $greyCloud = (bool) ($settings->cloudflare_default_proxied ?? true);
+
+        if ($greyCloud && $zoneId !== '') {
+            $this->cloudflare->setARecordsProxied($settings, $zoneId, $domain, false);
+        }
+
+        try {
+            $this->hestia->configureDomainSsl($settings, $domain);
+        } finally {
+            if ($greyCloud && $zoneId !== '') {
+                $this->cloudflare->setARecordsProxied($settings, $zoneId, $domain, true);
+            }
+        }
     }
 
     private function dnsLooksReady(string $domain, string $serverIp): bool

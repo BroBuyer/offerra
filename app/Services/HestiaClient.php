@@ -58,13 +58,23 @@ class HestiaClient
 
     public function issueLetsEncrypt(UserSetting $settings, string $domain): void
     {
+        $this->configureDomainSsl($settings, $domain);
+    }
+
+    public function configureDomainSsl(UserSetting $settings, string $domain): void
+    {
         $user = trim((string) $settings->deploy_username);
 
         if ($user === '') {
             throw new RuntimeException('Заповніть користувача Hestia у налаштуваннях.');
         }
 
-        $this->api($settings, 'v-add-letsencrypt-domain', [$user, $domain]);
+        $www = 'www.'.$domain;
+
+        $this->api($settings, 'v-add-letsencrypt-domain', [$user, $domain, $www]);
+        $this->api($settings, 'v-add-web-domain-ssl-force', [$user, $domain]);
+        $this->api($settings, 'v-add-web-domain-ssl-hsts', [$user, $domain]);
+        $this->api($settings, 'v-add-web-domain-redirect', [$user, $domain, $domain]);
     }
 
     public function domainExists(UserSetting $settings, string $user, string $domain): bool
