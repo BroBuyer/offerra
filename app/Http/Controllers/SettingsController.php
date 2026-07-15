@@ -133,10 +133,18 @@ class SettingsController extends Controller
             'deploy_host' => $data['deploy_host'] ?? $settings->deploy_host,
             'deploy_username' => $data['deploy_username'] ?? $settings->deploy_username,
             'deploy_panel_url' => $data['deploy_panel_url'] ?? $settings->deploy_panel_url,
-            'deploy_api_access_key' => trim((string) ($data['deploy_api_access_key'] ?? '')) ?: null,
+            'deploy_api_access_key' => trim((string) ($data['deploy_api_access_key'] ?? '')) ?: $settings->deploy_api_access_key,
         ]);
-        $this->assignSecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
-        $this->assignSecret($settings, 'deploy_password', $data['deploy_password'] ?? null);
+
+        $secret = SecretValue::normalize((string) ($data['deploy_api_secret_key'] ?? ''));
+        if ($secret !== '') {
+            $settings->deploy_api_secret_key = $secret;
+        }
+
+        $password = SecretValue::normalize((string) ($data['deploy_password'] ?? ''));
+        if ($password !== '') {
+            $settings->deploy_password = $password;
+        }
 
         return response()->json($hestia->testConnection($settings));
     }
