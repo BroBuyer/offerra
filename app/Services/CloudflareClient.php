@@ -98,6 +98,88 @@ class CloudflareClient
         }
     }
 
+    /**
+     * Edge SSL + HTTPS + www→apex via Cloudflare (без Let's Encrypt на Hestia).
+     */
+    public function configureEdgeSecurity(UserSetting $settings, string $zoneId, string $domain): void
+    {
+        if ($zoneId === '') {
+            throw new RuntimeException('Cloudflare zone ID порожній.');
+        }
+
+        $this->setZoneSetting($settings, $zoneId, 'ssl', 'flexible');
+        $this->setZoneSetting($settings, $zoneId, 'always_use_https', 'on');
+        $this->ensureWwwRedirectRule($settings, $zoneId, $domain);
+    }
+
+    private function setZoneSetting(UserSetting $settings, string $zoneId, string $setting, string $value): void
+    {
+        $response = $this->request($settings, 'PATCH', '/zones/'.$zoneId.'/settings/'.$setting, [
+            'value' => $value,
+        ]);
+
+        if (! ($response['success'] ?? false)) {
+            throw new RuntimeException('Cloudflare '.$setting.': '.$this->extractError($response));
+        }
+    }
+
+    private function ensureWwwRedirectRule(UserSetting $settings, string $zoneId, string $domain): void
+    {
+        $wwwHost = 'www.'.$domain;
+        $description = 'Offerra: www to apex';
+        $rules = [];
+
+        $existing = $this->request(
+            $settings,
+            'GET',
+            '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
+        );
+
+        if (($existing['success'] ?? false) && is_array($existing['result'] ?? null)) {
+            /** @var list<array<string, mixed>> $rules */
+            $rules = is_array($existing['result']['rules'] ?? null) ? $existing['result']['rules'] : [];
+            $rules = array_values(array_filter(
+                $rules,
+                static fn (array $rule): bool => ($rule['description'] ?? '') !== $description,
+            ));
+        }
+
+        $rules[] = [
+            'description' => $description,
+            'expression' => sprintf('(http.host eq "%s")', $wwwHost),
+            'action' => 'redirect',
+            'action_parameters' => [
+                'from_value' => [
+                    'status_code' => 301,
+                    'preserve_query_string' => true,
+                    'target_url' => [
+                        'expression' => sprintf('concat("https://%s", http.request.uri.path)', $domain),
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->request(
+            $settings,
+            'PUT',
+            '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
+            ['rules' => $rules],
+        );
+
+        if (! ($response['success'] ?? false)) {
+            $create = $this->request($settings, 'POST', '/zones/'.$zoneId.'/rulesets', [
+                'name' => 'Offerra redirects',
+                'kind' => 'zone',
+                'phase' => 'http_request_dynamic_redirect',
+                'rules' => $rules,
+            ]);
+
+            if (! ($create['success'] ?? false)) {
+                throw new RuntimeException('Cloudflare www redirect: '.$this->extractError($create));
+            }
+        }
+    }
+
     private function ensureARecord(
         UserSetting $settings,
         string $zoneId,
@@ -194,6 +276,7 @@ class CloudflareClient
             'GET' => $pending->get($url, $body),
             'POST' => $pending->post($url, $body),
             'PUT' => $pending->put($url, $body),
+            'PATCH' => $pending->patch($url, $body),
             default => throw new RuntimeException('Unsupported Cloudflare method: '.$method),
         };
 

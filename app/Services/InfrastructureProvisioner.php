@@ -6,7 +6,6 @@ use App\Jobs\ProvisionInfrastructureJob;
 use App\Models\Offer;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class InfrastructureProvisioner
 {
@@ -95,6 +94,9 @@ class InfrastructureProvisioner
             $serverIp = $this->hestia->serverIp($settings);
             $this->cloudflare->ensureRootARecord($settings, $zone['zone_id'], $domain, $serverIp);
             $meta['cloudflare_dns'] = 'done';
+            $meta['cloudflare_www_dns'] = 'done';
+
+            $this->applyCloudflareEdge($settings, $domain, $zone['zone_id'], $meta);
 
             if ($zone['nameservers'] !== []) {
                 $this->dynadot->setNameservers($settings, $domain, $zone['nameservers']);
@@ -103,21 +105,8 @@ class InfrastructureProvisioner
                 $meta['dynadot_ns'] = 'skipped';
             }
 
-            $dnsReady = $this->dnsLooksReady($domain, $serverIp);
-
-            if ($dnsReady) {
+            if ($this->dnsLooksReady($domain, $serverIp)) {
                 $meta['dns'] = 'done';
-
-                try {
-                    $this->issueSsl($settings, $domain, $zone['zone_id'], $meta);
-                    $meta['ssl'] = 'done';
-                    $meta['ssl_force'] = 'done';
-                    $meta['ssl_hsts'] = 'done';
-                    $meta['www_redirect'] = 'done';
-                } catch (\Throwable $e) {
-                    $meta['ssl'] = 'pending';
-                    Log::warning('SSL not ready yet', ['domain' => $domain, 'error' => $e->getMessage()]);
-                }
 
                 $offer->update([
                     'infra_status' => 'ready',
@@ -129,7 +118,6 @@ class InfrastructureProvisioner
             }
 
             $meta['dns'] = 'pending';
-            $meta['ssl'] = 'pending';
 
             $offer->update([
                 'infra_status' => 'dns_propagating',
@@ -159,6 +147,22 @@ class InfrastructureProvisioner
         $meta = $offer->infra_meta ?? [];
         $domain = strtolower(trim($offer->domain));
         $serverIp = $this->hestia->serverIp($settings);
+        $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
+
+        try {
+            if ($zoneId !== '') {
+                $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
+                $this->applyCloudflareEdge($settings, $domain, $zoneId, $meta);
+            }
+        } catch (\Throwable $e) {
+            $offer->update([
+                'infra_status' => 'dns_propagating',
+                'infra_error' => 'Cloudflare: '.$e->getMessage(),
+                'infra_meta' => $meta,
+            ]);
+
+            return;
+        }
 
         if (! $this->dnsLooksReady($domain, $serverIp)) {
             $offer->update([
@@ -172,26 +176,6 @@ class InfrastructureProvisioner
 
         $meta['dns'] = 'done';
 
-        try {
-            if (($meta['ssl'] ?? '') !== 'done') {
-                $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
-                $this->issueSsl($settings, $domain, $zoneId, $meta);
-                $meta['ssl'] = 'done';
-                $meta['ssl_force'] = 'done';
-                $meta['ssl_hsts'] = 'done';
-                $meta['www_redirect'] = 'done';
-            }
-        } catch (\Throwable $e) {
-            $meta['ssl'] = 'pending';
-            $offer->update([
-                'infra_status' => 'dns_propagating',
-                'infra_error' => $this->formatSslError($e),
-                'infra_meta' => $meta,
-            ]);
-
-            return;
-        }
-
         $offer->update([
             'infra_status' => 'ready',
             'infra_error' => null,
@@ -202,41 +186,41 @@ class InfrastructureProvisioner
     /**
      * @param  array<string, mixed>  $meta
      */
-    private function issueSsl(UserSetting $settings, string $domain, string $zoneId, array &$meta): void
+    private function applyCloudflareEdge(UserSetting $settings, string $domain, string $zoneId, array &$meta): void
     {
-        if ($zoneId !== '') {
-            $serverIp = $this->hestia->serverIp($settings);
-            $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
-            $meta['cloudflare_www_dns'] = 'done';
+        if ($zoneId === '') {
+            return;
         }
 
-        $greyCloud = (bool) ($settings->cloudflare_default_proxied ?? true);
+        $this->cloudflare->configureEdgeSecurity($settings, $zoneId, $domain);
 
-        if ($greyCloud && $zoneId !== '') {
-            $this->cloudflare->setARecordsProxied($settings, $zoneId, $domain, false);
-        }
-
-        try {
-            $this->hestia->configureDomainSsl($settings, $domain);
-        } finally {
-            if ($greyCloud && $zoneId !== '') {
-                $this->cloudflare->setARecordsProxied($settings, $zoneId, $domain, true);
-            }
-        }
+        $meta['cloudflare_edge'] = 'done';
+        $meta['ssl'] = 'done';
+        $meta['ssl_force'] = 'done';
+        $meta['www_redirect'] = 'done';
+        $meta['ssl_hsts'] = 'skipped';
     }
 
     private function dnsLooksReady(string $domain, string $serverIp): bool
     {
         $records = @dns_get_record($domain, DNS_A);
+        $hasRecords = is_array($records) && $records !== [];
 
-        if (is_array($records)) {
+        if ($hasRecords) {
             foreach ($records as $record) {
                 if (($record['ip'] ?? '') === $serverIp) {
                     return true;
                 }
             }
+
+            return $this->siteResponds($domain);
         }
 
+        return $this->siteResponds($domain);
+    }
+
+    private function siteResponds(string $domain): bool
+    {
         try {
             $response = Http::timeout(12)
                 ->withOptions(['verify' => false])
@@ -246,16 +230,5 @@ class InfrastructureProvisioner
         } catch (\Throwable) {
             return false;
         }
-    }
-
-    private function formatSslError(\Throwable $e): string
-    {
-        $message = $e->getMessage();
-
-        if (str_contains($message, 'timed out') || str_contains($message, 'cURL error 28')) {
-            return 'DNS готовий. Видача SSL на Hestia триває довше звичайного — автоперевірка повториться через кілька хвилин, або натисніть «Перевірити DNS» ще раз.';
-        }
-
-        return 'DNS готовий, SSL ще не видано: '.$message;
     }
 }
