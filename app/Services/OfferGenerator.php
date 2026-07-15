@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Offer;
+use App\Models\User;
 use App\Support\InfrastructureOptions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
