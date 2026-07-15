@@ -36,7 +36,7 @@ class CloudflareClient
             $message = $this->extractError($response);
 
             if (str_contains(strtolower($message), 'already exists')) {
-                $existing = $this->findZone($settings, $domain);
+                $existing = $this->findZoneByName($settings, $domain);
 
                 if ($existing !== null) {
                     return $existing;
@@ -100,16 +100,38 @@ class CloudflareClient
 
     /**
      * Edge SSL + HTTPS + www→apex via Cloudflare (без Let's Encrypt на Hestia).
+     *
+     * @param  array{cloudflare_ssl?: bool, cloudflare_https?: bool, cloudflare_www_redirect?: bool}  $options
      */
-    public function configureEdgeSecurity(UserSetting $settings, string $zoneId, string $domain): void
+    public function configureEdgeSecurity(UserSetting $settings, string $zoneId, string $domain, array $options = []): void
     {
         if ($zoneId === '') {
             throw new RuntimeException('Cloudflare zone ID порожній.');
         }
 
-        $this->setZoneSetting($settings, $zoneId, 'ssl', 'flexible');
-        $this->setZoneSetting($settings, $zoneId, 'always_use_https', 'on');
-        $this->ensureWwwRedirectRule($settings, $zoneId, $domain);
+        $ssl = $options['cloudflare_ssl'] ?? true;
+        $https = $options['cloudflare_https'] ?? true;
+        $www = $options['cloudflare_www_redirect'] ?? true;
+
+        if ($ssl) {
+            $this->setZoneSetting($settings, $zoneId, 'ssl', 'flexible');
+        }
+
+        if ($https) {
+            $this->setZoneSetting($settings, $zoneId, 'always_use_https', 'on');
+        }
+
+        if ($www) {
+            $this->ensureWwwRedirectRule($settings, $zoneId, $domain);
+        }
+    }
+
+    /**
+     * @return array{zone_id: string, nameservers: list<string>}|null
+     */
+    public function findZone(UserSetting $settings, string $domain): ?array
+    {
+        return $this->findZoneByName($settings, $domain);
     }
 
     private function setZoneSetting(UserSetting $settings, string $zoneId, string $setting, string $value): void
@@ -229,7 +251,7 @@ class CloudflareClient
     /**
      * @return array{zone_id: string, nameservers: list<string>}|null
      */
-    private function findZone(UserSetting $settings, string $domain): ?array
+    private function findZoneByName(UserSetting $settings, string $domain): ?array
     {
         $response = $this->request($settings, 'GET', '/zones', [
             'name' => $domain,

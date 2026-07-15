@@ -5,7 +5,33 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-const steps = ['Основне', 'Шаблон', 'GEO & мова', 'Keitaro', 'Підсумок'];
+const steps = ['Основне', 'Шаблон', 'GEO & мова', 'Keitaro & інфра', 'Підсумок'];
+
+const INFRA_TASKS = [
+    { key: 'infra_hestia', label: 'Hestia — додати домен (vhost + public_html)' },
+    { key: 'infra_cloudflare_zone', label: 'Cloudflare — створити DNS-зону' },
+    { key: 'infra_cloudflare_dns', label: 'Cloudflare — A-записи @ і www', requiresZone: true },
+    { key: 'infra_dynadot_ns', label: 'Dynadot — NS → Cloudflare', requiresZone: true },
+    { key: 'infra_cloudflare_ssl', label: 'Cloudflare — SSL (flexible)', requiresZone: true },
+    { key: 'infra_cloudflare_https', label: 'Cloudflare — HTTP → HTTPS', requiresZone: true },
+    { key: 'infra_cloudflare_www_redirect', label: 'Cloudflare — www → домен (301)', requiresZone: true },
+];
+
+function defaultInfraOptions(enabled = false) {
+    return {
+        infra_hestia: enabled,
+        infra_cloudflare_zone: enabled,
+        infra_cloudflare_dns: enabled,
+        infra_dynadot_ns: enabled,
+        infra_cloudflare_ssl: enabled,
+        infra_cloudflare_https: enabled,
+        infra_cloudflare_www_redirect: enabled,
+    };
+}
+
+function anyInfraEnabled(data) {
+    return INFRA_TASKS.some((task) => data[task.key]);
+}
 
 /** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
 const MULTILANG_GEO = 'ML';
@@ -64,7 +90,7 @@ function buildDefaults(templates) {
         phone: 'tr',
         phone_countries: ['tr'],
         create_keitaro: true,
-        provision_infrastructure: false,
+        ...defaultInfraOptions(false),
     };
 }
 
@@ -322,11 +348,35 @@ export default function OffersCreate({
         }
     };
 
+    const toggleInfraOption = (key, checked) => {
+        setData((prev) => {
+            const next = { ...prev, [key]: checked };
+
+            if (!checked && key === 'infra_cloudflare_zone') {
+                INFRA_TASKS.forEach((task) => {
+                    if (task.requiresZone) {
+                        next[task.key] = false;
+                    }
+                });
+            }
+
+            if (checked && INFRA_TASKS.find((task) => task.key === key)?.requiresZone) {
+                next.infra_cloudflare_zone = true;
+            }
+
+            return next;
+        });
+    };
+
+    const enableAllInfraOptions = () => {
+        setData((prev) => ({ ...prev, ...defaultInfraOptions(true) }));
+    };
+
     useEffect(() => {
-        if (canProvisionInfrastructure && domainPurchasedViaPanel && !data.provision_infrastructure) {
-            setData('provision_infrastructure', true);
+        if (canProvisionInfrastructure && domainPurchasedViaPanel && !anyInfraEnabled(data)) {
+            enableAllInfraOptions();
         }
-    }, [canProvisionInfrastructure, domainPurchasedViaPanel, data.provision_infrastructure, setData]);
+    }, [canProvisionInfrastructure, domainPurchasedViaPanel]);
 
     useEffect(() => {
         if (hasDynadotApiKey && step === 0) {
@@ -724,6 +774,44 @@ export default function OffersCreate({
                             Патерн: {keitaroNamePreview}
                         </p>
                     </div>
+
+                    {canProvisionInfrastructure && (
+                        <div className="card" style={{ marginTop: '1rem' }}>
+                            <h3>Інфраструктура домену</h3>
+                            <p className="card-desc" style={{ marginBottom: '1rem' }}>
+                                Оберіть, що виконати автоматично після генерації. Кожен пункт — окремо.
+                            </p>
+                            <div className="field" style={{ display: 'grid', gap: '0.65rem' }}>
+                                {INFRA_TASKS.map((task) => (
+                                    <label key={task.key} className="field-check" htmlFor={task.key}>
+                                        <input
+                                            id={task.key}
+                                            type="checkbox"
+                                            checked={Boolean(data[task.key])}
+                                            onChange={(e) => toggleInfraOption(task.key, e.target.checked)}
+                                        />
+                                        <span>{task.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+                            <div className="btn-row" style={{ marginTop: '0.75rem' }}>
+                                <button type="button" className="btn btn-ghost btn-sm" onClick={enableAllInfraOptions}>
+                                    Увімкнути все
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-ghost btn-sm"
+                                    onClick={() => setData((prev) => ({ ...prev, ...defaultInfraOptions(false) }))}
+                                >
+                                    Вимкнути все
+                                </button>
+                            </div>
+                            <p className="field-hint" style={{ marginTop: '0.75rem' }}>
+                                DNS може оновлюватись 15 хв – 48 год, якщо увімкнено зону Cloudflare або NS у Dynadot.
+                                {domainPurchasedViaPanel ? ' Для щойно купленого домену рекомендовано увімкнути все.' : ''}
+                            </p>
+                        </div>
+                    )}
                 </section>
             )}
 
@@ -745,24 +833,19 @@ export default function OffersCreate({
                             </div>
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
-                        </dl>
-                        {canProvisionInfrastructure && (
-                            <div style={{ marginTop: '1.25rem' }}>
-                                <label className="field-check" htmlFor="provision-infra">
-                                    <input
-                                        id="provision-infra"
-                                        type="checkbox"
-                                        checked={data.provision_infrastructure}
-                                        onChange={(e) => setData('provision_infrastructure', e.target.checked)}
-                                    />
-                                    <span>Підготувати домен на сервері (Hestia + Cloudflare + NS у Dynadot)</span>
-                                </label>
-                                <p className="field-hint">
-                                    Оффер створиться одразу. DNS може оновлюватись 15 хв – 48 год.
-                                    {domainPurchasedViaPanel ? ' Рекомендовано для щойно купленого домену.' : ' Вимкніть, якщо домен уже налаштований.'}
-                                </p>
+                            <div className="summary-row">
+                                <span>Keitaro</span>
+                                <span>{data.create_keitaro ? 'Створити кампанію' : '—'}</span>
                             </div>
-                        )}
+                            <div className="summary-row">
+                                <span>Інфраструктура</span>
+                                <span>
+                                    {anyInfraEnabled(data)
+                                        ? INFRA_TASKS.filter((task) => data[task.key]).map((task) => task.label).join(' · ')
+                                        : '—'}
+                                </span>
+                            </div>
+                        </dl>
                     </div>
                 </section>
             )}

@@ -30,7 +30,11 @@ class CloudflareClientTest extends TestCase
             'cloudflare_account_id' => 'acct',
         ]);
 
-        (new CloudflareClient)->configureEdgeSecurity($settings, 'zone123', 'example.com');
+        (new CloudflareClient)->configureEdgeSecurity($settings, 'zone123', 'example.com', [
+            'cloudflare_ssl' => true,
+            'cloudflare_https' => true,
+            'cloudflare_www_redirect' => true,
+        ]);
 
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.cloudflare.com/client/v4/zones/zone123/settings/ssl'

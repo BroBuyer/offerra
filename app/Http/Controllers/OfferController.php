@@ -215,7 +215,13 @@ class OfferController extends Controller
                 'phone_countries' => $request->input('phone_countries', []),
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
-                'provision_infrastructure' => $request->boolean('provision_infrastructure'),
+                'infra_hestia' => $request->boolean('infra_hestia'),
+                'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
+                'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
+                'infra_dynadot_ns' => $request->boolean('infra_dynadot_ns'),
+                'infra_cloudflare_ssl' => $request->boolean('infra_cloudflare_ssl'),
+                'infra_cloudflare_https' => $request->boolean('infra_cloudflare_https'),
+                'infra_cloudflare_www_redirect' => $request->boolean('infra_cloudflare_www_redirect'),
             ]);
         } catch (\Throwable $e) {
             return redirect()

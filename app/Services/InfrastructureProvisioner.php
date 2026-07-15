@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Jobs\ProvisionInfrastructureJob;
 use App\Models\Offer;
 use App\Models\UserSetting;
+use App\Support\InfrastructureOptions;
 use Illuminate\Support\Facades\Http;
 
 class InfrastructureProvisioner
@@ -64,6 +65,7 @@ class InfrastructureProvisioner
     {
         $offer->loadMissing('user.settings');
         $settings = $offer->user?->settings;
+        $options = InfrastructureOptions::forOffer($offer);
 
         if (! $settings || ! self::settingsReady($settings)) {
             $offer->update([
@@ -74,8 +76,17 @@ class InfrastructureProvisioner
             return;
         }
 
+        if (! InfrastructureOptions::anyEnabled($options)) {
+            $offer->update([
+                'infra_status' => null,
+                'infra_error' => null,
+            ]);
+
+            return;
+        }
+
         $domain = strtolower(trim($offer->domain));
-        $meta = $offer->infra_meta ?? [];
+        $meta = array_merge($offer->infra_meta ?? [], ['options' => $options]);
 
         $offer->update([
             'infra_status' => 'provisioning',
@@ -83,30 +94,10 @@ class InfrastructureProvisioner
         ]);
 
         try {
-            $this->hestia->addWebDomain($settings, $domain);
-            $meta['hestia'] = 'done';
+            $this->runSteps($settings, $domain, $options, $meta);
 
-            $zone = $this->cloudflare->ensureZone($settings, $domain);
-            $meta['cloudflare'] = 'done';
-            $meta['cloudflare_zone_id'] = $zone['zone_id'];
-            $meta['nameservers'] = $zone['nameservers'];
-
-            $serverIp = $this->hestia->serverIp($settings);
-            $this->cloudflare->ensureRootARecord($settings, $zone['zone_id'], $domain, $serverIp);
-            $meta['cloudflare_dns'] = 'done';
-            $meta['cloudflare_www_dns'] = 'done';
-
-            $this->applyCloudflareEdge($settings, $domain, $zone['zone_id'], $meta);
-
-            if ($zone['nameservers'] !== []) {
-                $this->dynadot->setNameservers($settings, $domain, $zone['nameservers']);
-                $meta['dynadot_ns'] = 'done';
-            } else {
-                $meta['dynadot_ns'] = 'skipped';
-            }
-
-            if ($this->dnsLooksReady($domain, $serverIp)) {
-                $meta['dns'] = 'done';
+            if (! InfrastructureOptions::needsDnsWait($options) || $this->dnsLooksReady($domain, $this->hestia->serverIp($settings))) {
+                $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : 'skipped';
 
                 $offer->update([
                     'infra_status' => 'ready',
@@ -144,16 +135,13 @@ class InfrastructureProvisioner
             return;
         }
 
-        $meta = $offer->infra_meta ?? [];
+        $options = InfrastructureOptions::forOffer($offer);
+        $meta = array_merge($offer->infra_meta ?? [], ['options' => $options]);
         $domain = strtolower(trim($offer->domain));
         $serverIp = $this->hestia->serverIp($settings);
-        $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
 
         try {
-            if ($zoneId !== '') {
-                $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
-                $this->applyCloudflareEdge($settings, $domain, $zoneId, $meta);
-            }
+            $this->runSteps($settings, $domain, $options, $meta);
         } catch (\Throwable $e) {
             $offer->update([
                 'infra_status' => 'dns_propagating',
@@ -164,7 +152,7 @@ class InfrastructureProvisioner
             return;
         }
 
-        if (! $this->dnsLooksReady($domain, $serverIp)) {
+        if (InfrastructureOptions::needsDnsWait($options) && ! $this->dnsLooksReady($domain, $serverIp)) {
             $offer->update([
                 'infra_status' => 'dns_propagating',
                 'infra_error' => null,
@@ -174,7 +162,7 @@ class InfrastructureProvisioner
             return;
         }
 
-        $meta['dns'] = 'done';
+        $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : ($meta['dns'] ?? 'skipped');
 
         $offer->update([
             'infra_status' => 'ready',
@@ -184,20 +172,84 @@ class InfrastructureProvisioner
     }
 
     /**
+     * @param  array<string, bool>  $options
      * @param  array<string, mixed>  $meta
      */
-    private function applyCloudflareEdge(UserSetting $settings, string $domain, string $zoneId, array &$meta): void
+    private function runSteps(UserSetting $settings, string $domain, array $options, array &$meta): void
     {
-        if ($zoneId === '') {
-            return;
+        if ($options['hestia'] ?? false) {
+            $this->hestia->addWebDomain($settings, $domain);
+            $meta['hestia'] = 'done';
         }
 
-        $this->cloudflare->configureEdgeSecurity($settings, $zoneId, $domain);
+        $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
+        $nameservers = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+
+        if (InfrastructureOptions::needsCloudflareZone($options)) {
+            if ($options['cloudflare_zone'] ?? false) {
+                $zone = $this->cloudflare->ensureZone($settings, $domain);
+                $zoneId = $zone['zone_id'];
+                $nameservers = $zone['nameservers'];
+                $meta['cloudflare'] = 'done';
+                $meta['cloudflare_zone_id'] = $zoneId;
+                $meta['nameservers'] = $nameservers;
+            } elseif ($zoneId === '') {
+                $zone = $this->cloudflare->findZone($settings, $domain);
+
+                if ($zone !== null) {
+                    $zoneId = $zone['zone_id'];
+                    $nameservers = $zone['nameservers'];
+                    $meta['cloudflare_zone_id'] = $zoneId;
+                    $meta['nameservers'] = $nameservers;
+                }
+            }
+        }
+
+        $serverIp = $this->hestia->serverIp($settings);
+
+        if (($options['cloudflare_dns'] ?? false) && $zoneId !== '') {
+            $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
+            $meta['cloudflare_dns'] = 'done';
+            $meta['cloudflare_www_dns'] = 'done';
+        }
+
+        if (InfrastructureOptions::needsCloudflareEdge($options) && $zoneId !== '') {
+            $this->applyCloudflareEdge($settings, $domain, $zoneId, $options, $meta);
+        }
+
+        if (($options['dynadot_ns'] ?? false) && $nameservers !== []) {
+            $this->dynadot->setNameservers($settings, $domain, $nameservers);
+            $meta['dynadot_ns'] = 'done';
+        }
+    }
+
+    /**
+     * @param  array<string, bool>  $options
+     * @param  array<string, mixed>  $meta
+     */
+    private function applyCloudflareEdge(
+        UserSetting $settings,
+        string $domain,
+        string $zoneId,
+        array $options,
+        array &$meta,
+    ): void {
+        $this->cloudflare->configureEdgeSecurity($settings, $zoneId, $domain, $options);
 
         $meta['cloudflare_edge'] = 'done';
-        $meta['ssl'] = 'done';
-        $meta['ssl_force'] = 'done';
-        $meta['www_redirect'] = 'done';
+
+        if ($options['cloudflare_ssl'] ?? false) {
+            $meta['ssl'] = 'done';
+        }
+
+        if ($options['cloudflare_https'] ?? false) {
+            $meta['ssl_force'] = 'done';
+        }
+
+        if ($options['cloudflare_www_redirect'] ?? false) {
+            $meta['www_redirect'] = 'done';
+        }
+
         $meta['ssl_hsts'] = 'skipped';
     }
 

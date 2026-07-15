@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Offer;
-use App\Models\User;
+use App\Support\InfrastructureOptions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 use RuntimeException;
@@ -93,6 +93,9 @@ class OfferGenerator
                 json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
             );
 
+            $infraOptions = InfrastructureOptions::fromInput($input);
+            $provisionInfrastructure = InfrastructureOptions::anyEnabled($infraOptions);
+
             $offer = Offer::create([
                 'user_id' => $user->id,
                 'folder' => $folder,
@@ -108,8 +111,9 @@ class OfferGenerator
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
-                'provision_infrastructure' => ! empty($input['provision_infrastructure']),
-                'infra_status' => ! empty($input['provision_infrastructure']) ? 'pending' : null,
+                'provision_infrastructure' => $provisionInfrastructure,
+                'infra_status' => $provisionInfrastructure ? 'pending' : null,
+                'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
             ]);
         } catch (\Throwable $e) {
             if (File::isDirectory($targetPath)) {

@@ -81,6 +81,13 @@ class StoreOfferRequest extends FormRequest
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'create_keitaro' => ['boolean'],
             'provision_infrastructure' => ['boolean'],
+            'infra_hestia' => ['boolean'],
+            'infra_cloudflare_zone' => ['boolean'],
+            'infra_cloudflare_dns' => ['boolean'],
+            'infra_dynadot_ns' => ['boolean'],
+            'infra_cloudflare_ssl' => ['boolean'],
+            'infra_cloudflare_https' => ['boolean'],
+            'infra_cloudflare_www_redirect' => ['boolean'],
         ];
     }
 
