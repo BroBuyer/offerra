@@ -946,6 +946,13 @@ a:hover { text-decoration: underline; }
 
 .dns-status--ready {
   color: var(--accent);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.col-dns {
+  min-width: 4rem;
+  text-align: center;
 }
 
 .dns-status--pending {
@@ -963,10 +970,6 @@ a:hover { text-decoration: underline; }
 .dns-status--waiting,
 .dns-status--na {
   color: var(--muted);
-}
-
-.col-dns {
-  min-width: 8.5rem;
 }
 
 @keyframes dns-pulse {

@@ -23,8 +23,6 @@ function infraBadge(offer) {
     }
 
     switch (offer.infra_status) {
-        case 'ready':
-            return <span className="badge badge-ok">Інфра ✓</span>;
         case 'provisioning':
         case 'pending':
             return <span className="badge badge-warn">Інфра…</span>;
@@ -39,8 +37,8 @@ function dnsBadge(offer) {
     switch (offer.dns_status) {
         case 'ready':
             return (
-                <span className="dns-status dns-status--ready" title="DNS поширено">
-                    <span aria-hidden="true">✓</span> DNS
+                <span className="dns-status dns-status--ready" title="DNS поширено" aria-label="DNS поширено">
+                    ✓
                 </span>
             );
         case 'pending':
