@@ -1,8 +1,8 @@
 import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function formFromSettings(settings, userId = null) {
     return {
@@ -37,6 +37,7 @@ function formFromSettings(settings, userId = null) {
 }
 
 export default function SettingsIndex({ settings, settingsUser, users = [] }) {
+    const { errors: pageErrors } = usePage().props;
     const [deployTest, setDeployTest] = useState(null);
     const [testingDeploy, setTestingDeploy] = useState(false);
     const [hestiaApiTest, setHestiaApiTest] = useState(null);
@@ -44,6 +45,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [dynadotBalanceError, setDynadotBalanceError] = useState('');
+    const [uploadingGscVerification, setUploadingGscVerification] = useState(false);
+    const gscVerificationInputRef = useRef(null);
 
     const { data, setData, patch, processing, errors, recentlySuccessful } = useForm(
         formFromSettings(settings, settingsUser.id),
@@ -135,6 +138,44 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             loadDynadotBalance();
         }
     }, [settingsUser.id, settings.has_dynadot_api_key]);
+
+    const pickGscVerificationFile = () => {
+        gscVerificationInputRef.current?.click();
+    };
+
+    const uploadGscVerificationFile = (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+
+        if (!file) {
+            return;
+        }
+
+        setUploadingGscVerification(true);
+
+        const formData = new FormData();
+        formData.append('verification_file', file);
+        formData.append('user_id', String(settingsUser.id));
+
+        router.post(route('settings.gsc-verification.store'), formData, {
+            forceFormData: true,
+            preserveScroll: true,
+            onFinish: () => setUploadingGscVerification(false),
+        });
+    };
+
+    const removeGscVerificationFile = () => {
+        if (!settings.has_gsc_verification_file) {
+            return;
+        }
+
+        setUploadingGscVerification(true);
+        router.delete(route('settings.gsc-verification.destroy'), {
+            data: { user_id: settingsUser.id },
+            preserveScroll: true,
+            onFinish: () => setUploadingGscVerification(false),
+        });
+    };
 
     return (
         <PanelLayout title="Налаштування">
@@ -376,6 +417,50 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                         />
                         <span>Proxied (помаранчева хмарка) за замовчуванням</span>
                     </label>
+                </section>
+
+                <section className="card">
+                    <h3>Google Search Console</h3>
+                    <p className="card-desc">
+                        Файл <code>google….html</code> з GSC — один раз тут, далі автоматично додається до кожного нового оффера при генерації та деплої.
+                    </p>
+                    <input
+                        ref={gscVerificationInputRef}
+                        type="file"
+                        accept=".html,text/html"
+                        hidden
+                        onChange={uploadGscVerificationFile}
+                    />
+                    <div className="verification-file">
+                        {settings.has_gsc_verification_file ? (
+                            <>
+                                <span className="verification-file__link">{settings.gsc_verification_filename}</span>
+                                <button
+                                    type="button"
+                                    className="verification-file__remove"
+                                    disabled={uploadingGscVerification}
+                                    onClick={removeGscVerificationFile}
+                                    title="Видалити файл"
+                                >
+                                    ×
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-sm verification-file__upload"
+                                disabled={uploadingGscVerification}
+                                onClick={pickGscVerificationFile}
+                            >
+                                {uploadingGscVerification ? 'Завантаження…' : 'Завантажити GSC файл'}
+                            </button>
+                        )}
+                    </div>
+                    {pageErrors?.gsc_verification && (
+                        <p className="field-hint" style={{ color: '#f87171', marginTop: '0.5rem' }}>
+                            {pageErrors.gsc_verification}
+                        </p>
+                    )}
                 </section>
 
                 <section className="card">

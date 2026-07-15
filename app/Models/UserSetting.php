@@ -34,6 +34,7 @@ class UserSetting extends Model
         'cloudflare_api_token',
         'cloudflare_account_id',
         'cloudflare_default_proxied',
+        'gsc_verification_filename',
     ];
 
     protected function casts(): array
@@ -90,6 +91,8 @@ class UserSetting extends Model
             'has_cloudflare_api_token' => filled($this->cloudflare_api_token),
             'cloudflare_account_id' => $this->cloudflare_account_id ?? '',
             'cloudflare_default_proxied' => (bool) ($this->cloudflare_default_proxied ?? true),
+            'gsc_verification_filename' => $this->gsc_verification_filename ?? '',
+            'has_gsc_verification_file' => filled($this->gsc_verification_filename),
         ];
     }
 

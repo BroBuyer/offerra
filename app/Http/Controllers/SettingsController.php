@@ -8,6 +8,7 @@ use App\Models\UserSetting;
 use App\Services\DeployConnection;
 use App\Services\DynadotClient;
 use App\Services\HestiaClient;
+use App\Services\OfferVerificationFileService;
 use App\Support\SecretValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -147,6 +148,56 @@ class SettingsController extends Controller
         }
 
         return response()->json($hestia->testConnection($settings));
+    }
+
+    public function storeGscVerification(
+        UpdateSettingsRequest $request,
+        OfferVerificationFileService $verification,
+    ): RedirectResponse {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+        $settings = $targetUser->settings()->firstOrCreate([]);
+
+        $request->validate([
+            'verification_file' => ['required', 'file', 'max:64'],
+        ]);
+
+        try {
+            $filename = $verification->storeForUser($settings, $request->file('verification_file'));
+        } catch (\InvalidArgumentException $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['gsc_verification' => $e->getMessage()]);
+        }
+
+        $redirect = redirect()->route('settings.index');
+
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        return $redirect->with('success', "Файл GSC збережено: {$filename}");
+    }
+
+    public function destroyGscVerification(
+        UpdateSettingsRequest $request,
+        OfferVerificationFileService $verification,
+    ): RedirectResponse {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+        $settings = $targetUser->settings;
+
+        if ($settings && filled($settings->gsc_verification_filename)) {
+            $verification->deleteForUser($settings);
+        }
+
+        $redirect = redirect()->route('settings.index');
+
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        return $redirect->with('success', 'Файл GSC видалено');
     }
 
     private function resolveSettingsUser(User $authUser, ?int $userId = null): User

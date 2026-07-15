@@ -23,8 +23,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
-    Route::post('/offers/{offer}/verification', [OfferController::class, 'storeVerification'])->name('offers.verification.store');
-    Route::delete('/offers/{offer}/verification', [OfferController::class, 'destroyVerification'])->name('offers.verification.destroy');
     Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
     Route::get('/preview/{template}/{path?}', [TemplatePreviewController::class, 'show'])
         ->where('path', '.*')
@@ -37,6 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/test-deploy', [SettingsController::class, 'testDeploy'])->name('settings.test-deploy');
     Route::post('/settings/test-hestia-api', [SettingsController::class, 'testHestiaApi'])->name('settings.test-hestia-api');
+    Route::post('/settings/gsc-verification', [SettingsController::class, 'storeGscVerification'])->name('settings.gsc-verification.store');
+    Route::delete('/settings/gsc-verification', [SettingsController::class, 'destroyGscVerification'])->name('settings.gsc-verification.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

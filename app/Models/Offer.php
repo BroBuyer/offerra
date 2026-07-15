@@ -131,10 +131,6 @@ class Offer extends Model
             'deploy_error' => $this->deploy_error,
             'submitted_for_indexing' => $this->submitted_for_indexing,
             'indexed_at' => $this->indexed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
-            'verification_filename' => $this->verification_filename,
-            'verification_url' => filled($this->verification_filename)
-                ? 'https://'.$this->domain.'/'.$this->verification_filename
-                : null,
             'date' => $this->created_at?->format('Y-m-d'),
             'provision_infrastructure' => (bool) $this->provision_infrastructure,
             'infra_status' => $this->infra_status === 'dns_propagating' ? 'ready' : $this->infra_status,

@@ -116,6 +116,8 @@ class OfferGenerator
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
                 'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
             ]);
+
+            $this->verificationFiles->syncToOfferFolder($offer);
         } catch (\Throwable $e) {
             if (File::isDirectory($targetPath)) {
                 File::deleteDirectory($targetPath);
