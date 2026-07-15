@@ -19,11 +19,13 @@ class UpdateSettingsRequest extends FormRequest
             return true;
         }
 
-        if (! $user->isAdmin()) {
-            return false;
+        $requestedUserId = $this->integer('user_id');
+
+        if ($user->isAdmin()) {
+            return User::query()->whereKey($requestedUserId)->exists();
         }
 
-        return User::query()->whereKey($this->integer('user_id'))->exists();
+        return $requestedUserId === (int) $user->id;
     }
 
     /**
