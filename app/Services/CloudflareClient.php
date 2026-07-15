@@ -155,6 +155,8 @@ class CloudflareClient
             $settings,
             'GET',
             '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
+            [],
+            allowNotFound: true,
         );
 
         if (($existing['success'] ?? false) && is_array($existing['result'] ?? null)) {
@@ -186,6 +188,7 @@ class CloudflareClient
             'PUT',
             '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
             ['rules' => $rules],
+            allowNotFound: true,
         );
 
         if (! ($response['success'] ?? false)) {
@@ -285,8 +288,13 @@ class CloudflareClient
      * @param  array<string, mixed>  $body
      * @return array<string, mixed>
      */
-    private function request(UserSetting $settings, string $method, string $path, array $body = []): array
-    {
+    private function request(
+        UserSetting $settings,
+        string $method,
+        string $path,
+        array $body = [],
+        bool $allowNotFound = false,
+    ): array {
         $token = trim((string) $settings->cloudflare_api_token);
         $url = 'https://api.cloudflare.com/client/v4'.$path;
 
@@ -303,7 +311,16 @@ class CloudflareClient
         };
 
         if ($response->failed()) {
-            throw new RuntimeException('Cloudflare HTTP '.$response->status());
+            if ($allowNotFound && $response->status() === 404) {
+                return ['success' => false, 'errors' => [['message' => 'Not found']]];
+            }
+
+            $payload = $response->json();
+            $detail = is_array($payload) ? $this->extractError($payload) : '';
+
+            throw new RuntimeException(
+                'Cloudflare HTTP '.$response->status().($detail !== '' && $detail !== 'невідома помилка' ? ' — '.$detail : '').' ('.$method.' '.$path.')',
+            );
         }
 
         /** @var array<string, mixed> $payload */
