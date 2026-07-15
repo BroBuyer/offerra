@@ -258,8 +258,10 @@ class InfrastructureProvisioner
 
         if ($hasRecords) {
             foreach ($records as $record) {
-                if (($record['ip'] ?? '') === $serverIp) {
-                    return true;
+                $ip = (string) ($record['ip'] ?? '');
+
+                if ($ip === $serverIp || $this->isCloudflareProxyIp($ip)) {
+                    return $this->siteResponds($domain) || $ip === $serverIp;
                 }
             }
 
@@ -269,14 +271,32 @@ class InfrastructureProvisioner
         return $this->siteResponds($domain);
     }
 
+    private function isCloudflareProxyIp(string $ip): bool
+    {
+        // Типові anycast CF (proxied orange cloud); точний список не потрібен —
+        // достатньо відрізнити від «DNS ще не встав» / NXDOMAIN.
+        return str_starts_with($ip, '104.')
+            || str_starts_with($ip, '172.64.')
+            || str_starts_with($ip, '172.65.')
+            || str_starts_with($ip, '172.66.')
+            || str_starts_with($ip, '172.67.')
+            || str_starts_with($ip, '188.114.');
+    }
+
     private function siteResponds(string $domain): bool
     {
         try {
+            // Не ходимо по redirect loop (Flexible+HTTPS на origin) — достатньо першої відповіді.
             $response = Http::timeout(12)
-                ->withOptions(['verify' => false])
+                ->withOptions([
+                    'verify' => false,
+                    'allow_redirects' => false,
+                ])
                 ->get('https://'.$domain.'/');
 
-            return $response->status() > 0;
+            $status = $response->status();
+
+            return $status > 0 && $status < 500;
         } catch (\Throwable) {
             return false;
         }

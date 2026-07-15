@@ -114,7 +114,9 @@ class CloudflareClient
         $www = $options['cloudflare_www_redirect'] ?? true;
 
         if ($ssl) {
-            $this->setZoneSetting($settings, $zoneId, 'ssl', 'flexible');
+            // Full (not Flexible): Hestia майже завжди редіректить HTTP→HTTPS.
+            // Flexible + origin 301 на HTTPS дає redirect loop і «Очікується DNS» зависає.
+            $this->setZoneSetting($settings, $zoneId, 'ssl', 'full');
         }
 
         if ($https) {
