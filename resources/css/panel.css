@@ -935,6 +935,45 @@ a:hover { text-decoration: underline; }
   color: #f87171;
 }
 
+.dns-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dns-status--ready {
+  color: var(--accent);
+}
+
+.dns-status--pending {
+  color: #f59e0b;
+}
+
+.dns-status__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dns-pulse 1.4s ease-in-out infinite;
+}
+
+.dns-status--waiting,
+.dns-status--na {
+  color: var(--muted);
+}
+
+.col-dns {
+  min-width: 8.5rem;
+}
+
+@keyframes dns-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
 .btn-sm {
   padding: 0.35rem 0.65rem;
   font-size: 0.8rem;

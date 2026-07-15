@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withSchedule(function (Schedule $schedule): void {
-        $schedule->command('offers:recheck-infra-dns')->everyFiveMinutes();
+        $schedule->command('offers:recheck-infra-dns')->everyMinute();
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [

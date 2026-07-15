@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\InfrastructureOptions;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -70,6 +71,39 @@ class Offer extends Model
     }
 
     /**
+     * DNS propagation state for the offers table.
+     * na | skipped | waiting | pending | ready
+     */
+    public function dnsStatus(): string
+    {
+        if (! $this->provision_infrastructure) {
+            return 'na';
+        }
+
+        $options = InfrastructureOptions::forOffer($this);
+
+        if (! InfrastructureOptions::needsDnsWait($options)) {
+            return 'skipped';
+        }
+
+        $dns = is_array($this->infra_meta) ? ($this->infra_meta['dns'] ?? null) : null;
+
+        if ($dns === 'done') {
+            return 'ready';
+        }
+
+        if ($dns === 'pending' || $this->infra_status === 'dns_propagating') {
+            return 'pending';
+        }
+
+        if (in_array($this->infra_status, ['ready', 'dns_propagating'], true)) {
+            return 'pending';
+        }
+
+        return 'waiting';
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toPanelArray(): array
@@ -103,8 +137,10 @@ class Offer extends Model
                 : null,
             'date' => $this->created_at?->format('Y-m-d'),
             'provision_infrastructure' => (bool) $this->provision_infrastructure,
-            'infra_status' => $this->infra_status,
-            'infra_error' => $this->infra_error,
+            'infra_status' => $this->infra_status === 'dns_propagating' ? 'ready' : $this->infra_status,
+            'infra_error' => $this->infra_status === 'failed' ? $this->infra_error : null,
+            'dns_status' => $this->dnsStatus(),
+            'dns_error' => is_array($this->infra_meta) ? ($this->infra_meta['dns_error'] ?? null) : null,
             'infra_meta' => $this->infra_meta ?? [],
         ];
     }

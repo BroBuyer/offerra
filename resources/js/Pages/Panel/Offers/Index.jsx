@@ -24,9 +24,7 @@ function infraBadge(offer) {
 
     switch (offer.infra_status) {
         case 'ready':
-            return <span className="badge badge-ok">DNS готово</span>;
-        case 'dns_propagating':
-            return <span className="badge badge-warn">DNS поширюється</span>;
+            return <span className="badge badge-ok">Інфра ✓</span>;
         case 'provisioning':
         case 'pending':
             return <span className="badge badge-warn">Інфра…</span>;
@@ -34,6 +32,28 @@ function infraBadge(offer) {
             return <span className="badge badge-error">Інфра</span>;
         default:
             return null;
+    }
+}
+
+function dnsBadge(offer) {
+    switch (offer.dns_status) {
+        case 'ready':
+            return (
+                <span className="dns-status dns-status--ready" title="DNS поширено">
+                    <span aria-hidden="true">✓</span> DNS
+                </span>
+            );
+        case 'pending':
+            return (
+                <span className="dns-status dns-status--pending" title="Очікується поширення DNS">
+                    <span className="dns-status__dot" aria-hidden="true" />
+                    Очікується DNS
+                </span>
+            );
+        case 'waiting':
+            return <span className="dns-status dns-status--waiting">—</span>;
+        default:
+            return <span className="dns-status dns-status--na">—</span>;
     }
 }
 
@@ -273,13 +293,18 @@ export default function OffersIndex({
         [rows],
     );
 
-    const hasInfraPending = useMemo(
-        () => rows.some((offer) => ['pending', 'provisioning', 'dns_propagating'].includes(offer.infra_status)),
+    const hasInfraProvisioning = useMemo(
+        () => rows.some((offer) => ['pending', 'provisioning'].includes(offer.infra_status)),
+        [rows],
+    );
+
+    const hasDnsPending = useMemo(
+        () => rows.some((offer) => offer.dns_status === 'pending'),
         [rows],
     );
 
     useEffect(() => {
-        if (!hasDeploying && !hasInfraPending) {
+        if (!hasDeploying && !hasInfraProvisioning) {
             return undefined;
         }
 
@@ -292,7 +317,23 @@ export default function OffersIndex({
         }, 5000);
 
         return () => window.clearInterval(interval);
-    }, [hasDeploying, hasInfraPending]);
+    }, [hasDeploying, hasInfraProvisioning]);
+
+    useEffect(() => {
+        if (!hasDnsPending) {
+            return undefined;
+        }
+
+        const interval = window.setInterval(() => {
+            router.reload({
+                only: ['offers'],
+                preserveScroll: true,
+                preserveState: true,
+            });
+        }, 60000);
+
+        return () => window.clearInterval(interval);
+    }, [hasDnsPending]);
 
     const deployOffer = (offer) => {
         setDeployingId(offer.id);
@@ -615,6 +656,7 @@ export default function OffersIndex({
                             <th>Створено</th>
                             <th className="col-deployed">Останній деплой</th>
                             <th>Статус</th>
+                            <th>DNS</th>
                             <th>Індексація</th>
                             <th />
                         </tr>
@@ -701,6 +743,14 @@ export default function OffersIndex({
                                             </p>
                                         )}
                                     </td>
+                                    <td className="col-dns">
+                                        {dnsBadge(offer)}
+                                        {offer.dns_error && (
+                                            <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
+                                                {offer.dns_error}
+                                            </p>
+                                        )}
+                                    </td>
                                     <td>
                                         <div className="indexing-cell">
                                             {canManageOffer(offer) ? (
@@ -777,19 +827,26 @@ export default function OffersIndex({
                                                     ✎
                                                 </button>
                                             )}
-                                            {canManageOffer(offer) && offer.provision_infrastructure && ['failed', 'dns_propagating', 'pending'].includes(offer.infra_status) && (
+                                            {canManageOffer(offer) && offer.provision_infrastructure && offer.dns_status === 'pending' && (
                                                 <button
                                                     type="button"
                                                     className="btn btn-ghost btn-sm"
                                                     disabled={provisioningId === offer.id}
                                                     onClick={() => provisionOffer(offer)}
-                                                    title={offer.infra_status === 'dns_propagating' ? 'Перевірити DNS' : 'Повторити налаштування'}
+                                                    title="Перевірити DNS зараз"
                                                 >
-                                                    {provisioningId === offer.id
-                                                        ? '…'
-                                                        : offer.infra_status === 'dns_propagating'
-                                                            ? 'DNS'
-                                                            : 'Інфра'}
+                                                    {provisioningId === offer.id ? '…' : 'DNS'}
+                                                </button>
+                                            )}
+                                            {canManageOffer(offer) && offer.provision_infrastructure && ['failed', 'pending', 'provisioning'].includes(offer.infra_status) && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    disabled={provisioningId === offer.id}
+                                                    onClick={() => provisionOffer(offer)}
+                                                    title="Повторити налаштування інфраструктури"
+                                                >
+                                                    {provisioningId === offer.id ? '…' : 'Інфра'}
                                                 </button>
                                             )}
                                             {canDeployOffer(offer) ? (

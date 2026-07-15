@@ -238,8 +238,28 @@ class OfferController extends Controller
         }
 
         if ($result['offer']->provision_infrastructure) {
-            $provisioner->enqueue($result['offer']);
-            $message .= ' · DNS/Hestia налаштовується у фоні';
+            try {
+                set_time_limit(300);
+                $provisioner->provision($result['offer']->fresh());
+                $result['offer']->refresh();
+            } catch (\Throwable $e) {
+                return redirect()
+                    ->route('offers.create')
+                    ->withErrors(['generate' => 'Інфраструктура: '.$e->getMessage()]);
+            }
+
+            if ($result['offer']->infra_status === 'failed') {
+                return redirect()
+                    ->route('offers.create')
+                    ->withErrors(['generate' => 'Інфраструктура: '.($result['offer']->infra_error ?: 'невідома помилка')]);
+            }
+
+            $message .= ' · інфраструктура налаштована';
+
+            if ($result['offer']->dnsStatus() === 'pending') {
+                $message .= ' · DNS поширюється';
+                RecheckInfrastructureDnsJob::dispatch($result['offer']->id);
+            }
         }
 
         return redirect()
@@ -284,19 +304,20 @@ class OfferController extends Controller
             abort(403);
         }
 
-        $wasRecheck = in_array($offer->infra_status, ['dns_propagating', 'ready'], true);
+        $wasDnsRecheck = $offer->dnsStatus() === 'pending' && in_array($offer->infra_status, ['ready', 'dns_propagating'], true);
 
         $offer->update([
             'provision_infrastructure' => true,
-            'infra_status' => $wasRecheck ? $offer->infra_status : 'pending',
+            'infra_status' => $wasDnsRecheck ? 'ready' : 'pending',
             'infra_error' => null,
         ]);
 
         try {
-            if ($wasRecheck) {
-                RecheckInfrastructureDnsJob::dispatch($offer->id);
+            if ($wasDnsRecheck) {
+                RecheckInfrastructureDnsJob::dispatchSync($offer->id);
             } else {
-                $provisioner->enqueue($offer->fresh());
+                set_time_limit(300);
+                $provisioner->provision($offer->fresh());
             }
         } catch (\Throwable $e) {
             return redirect()
@@ -306,7 +327,9 @@ class OfferController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', "Інфраструктура для {$offer->domain} оновлюється у фоні.");
+            ->with('success', $wasDnsRecheck
+                ? "DNS для {$offer->domain} перевірено."
+                : "Інфраструктура для {$offer->domain} налаштована.");
     }
 
     public function update(

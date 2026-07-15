@@ -951,7 +951,11 @@ export default function OffersCreate({
                         onClick={generate}
                         title={generateBlockReason ?? undefined}
                     >
-                        {processing ? 'Генерація…' : 'Згенерувати оффер'}
+                        {processing
+                            ? (anyInfraEnabled(data)
+                                ? 'Налаштовуємо інфраструктуру…'
+                                : 'Генерація…')
+                            : 'Згенерувати оффер'}
                     </button>
                 )}
             </div>

@@ -98,20 +98,14 @@ class InfrastructureProvisioner
 
             if (! InfrastructureOptions::needsDnsWait($options) || $this->dnsLooksReady($domain, $this->hestia->serverIp($settings))) {
                 $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : 'skipped';
-
-                $offer->update([
-                    'infra_status' => 'ready',
-                    'infra_error' => null,
-                    'infra_meta' => $meta,
-                ]);
-
-                return;
+                unset($meta['dns_error']);
+            } else {
+                $meta['dns'] = 'pending';
+                unset($meta['dns_error']);
             }
 
-            $meta['dns'] = 'pending';
-
             $offer->update([
-                'infra_status' => 'dns_propagating',
+                'infra_status' => 'ready',
                 'infra_error' => null,
                 'infra_meta' => $meta,
             ]);
@@ -143,18 +137,21 @@ class InfrastructureProvisioner
         try {
             $this->runSteps($settings, $domain, $options, $meta);
         } catch (\Throwable $e) {
+            $meta['dns_error'] = $e->getMessage();
+
             $offer->update([
-                'infra_status' => 'dns_propagating',
-                'infra_error' => 'Cloudflare: '.$e->getMessage(),
-                'infra_meta' => $meta,
+                'infra_status' => 'ready',
+                'infra_error' => null,
+                'infra_meta' => array_merge($meta, ['dns' => 'pending']),
             ]);
 
             return;
         }
 
         if (InfrastructureOptions::needsDnsWait($options) && ! $this->dnsLooksReady($domain, $serverIp)) {
+            unset($meta['dns_error']);
             $offer->update([
-                'infra_status' => 'dns_propagating',
+                'infra_status' => 'ready',
                 'infra_error' => null,
                 'infra_meta' => array_merge($meta, ['dns' => 'pending']),
             ]);
@@ -163,6 +160,7 @@ class InfrastructureProvisioner
         }
 
         $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : ($meta['dns'] ?? 'skipped');
+        unset($meta['dns_error']);
 
         $offer->update([
             'infra_status' => 'ready',
