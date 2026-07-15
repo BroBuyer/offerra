@@ -76,6 +76,12 @@ class Offer extends Model
      */
     public function dnsStatus(): string
     {
+        $dns = is_array($this->infra_meta) ? ($this->infra_meta['dns'] ?? null) : null;
+
+        if ($dns === 'done') {
+            return 'ready';
+        }
+
         if (! $this->provision_infrastructure) {
             return 'na';
         }
@@ -84,12 +90,6 @@ class Offer extends Model
 
         if (! InfrastructureOptions::needsDnsWait($options)) {
             return 'skipped';
-        }
-
-        $dns = is_array($this->infra_meta) ? ($this->infra_meta['dns'] ?? null) : null;
-
-        if ($dns === 'done') {
-            return 'ready';
         }
 
         if ($dns === 'pending' || $this->infra_status === 'dns_propagating') {

@@ -7,6 +7,17 @@ use Tests\TestCase;
 
 class OfferDnsStatusTest extends TestCase
 {
+    public function test_dns_status_is_ready_when_dns_marked_done_without_infra(): void
+    {
+        $offer = new Offer([
+            'provision_infrastructure' => false,
+            'infra_status' => null,
+            'infra_meta' => ['dns' => 'done'],
+        ]);
+
+        $this->assertSame('ready', $offer->dnsStatus());
+    }
+
     public function test_dns_status_is_pending_when_infra_ready_and_dns_not_propagated(): void
     {
         $offer = new Offer([
