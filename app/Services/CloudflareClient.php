@@ -114,9 +114,12 @@ class CloudflareClient
         $www = $options['cloudflare_www_redirect'] ?? true;
 
         if ($ssl) {
-            // Full (not Flexible): Hestia майже завжди редіректить HTTP→HTTPS.
-            // Flexible + origin 301 на HTTPS дає redirect loop і «Очікується DNS» зависає.
-            $this->setZoneSetting($settings, $zoneId, 'ssl', 'full');
+            $this->setZoneSetting(
+                $settings,
+                $zoneId,
+                'ssl',
+                $this->preferredSslMode($settings, $domain),
+            );
         }
 
         if ($https) {
@@ -145,6 +148,43 @@ class CloudflareClient
         if (! ($response['success'] ?? false)) {
             throw new RuntimeException('Cloudflare '.$setting.': '.$this->extractError($response));
         }
+    }
+
+    /**
+     * Full — якщо origin HTTPS відповідає нормально.
+     * Flexible — якщо origin HTTPS редіректить на HTTP (типово admin Hestia без LE),
+     * інакше Full + Always Use HTTPS дає ERR_TOO_MANY_REDIRECTS.
+     */
+    private function preferredSslMode(UserSetting $settings, string $domain): string
+    {
+        $hostIp = trim((string) ($settings->deploy_host ?? ''));
+
+        if ($hostIp === '') {
+            return 'flexible';
+        }
+
+        try {
+            $response = Http::timeout(8)
+                ->withOptions([
+                    'verify' => false,
+                    'allow_redirects' => false,
+                    'curl' => [
+                        CURLOPT_RESOLVE => [$domain.':443:'.$hostIp],
+                    ],
+                ])
+                ->get('https://'.$domain.'/');
+
+            $status = $response->status();
+            $location = strtolower((string) $response->header('Location'));
+
+            if ($status >= 200 && $status < 400 && ! str_starts_with($location, 'http://')) {
+                return 'full';
+            }
+        } catch (\Throwable) {
+            // Origin ще може бути недоступним під час першого provision.
+        }
+
+        return 'flexible';
     }
 
     private function ensureWwwRedirectRule(UserSetting $settings, string $zoneId, string $domain): void

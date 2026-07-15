@@ -286,7 +286,7 @@ class InfrastructureProvisioner
     private function siteResponds(string $domain): bool
     {
         try {
-            // Не ходимо по redirect loop (Flexible+HTTPS на origin) — достатньо першої відповіді.
+            // Не ходимо по redirect loop — дивимось першу відповідь.
             $response = Http::timeout(12)
                 ->withOptions([
                     'verify' => false,
@@ -295,8 +295,20 @@ class InfrastructureProvisioner
                 ->get('https://'.$domain.'/');
 
             $status = $response->status();
+            $location = strtolower((string) $response->header('Location'));
 
-            return $status > 0 && $status < 500;
+            // HTTPS → HTTP разом із Always Use HTTPS = ERR_TOO_MANY_REDIRECTS.
+            if (str_starts_with($location, 'http://')) {
+                return false;
+            }
+
+            // Самопереадресація на той самий HTTPS URL — теж loop.
+            $self = 'https://'.strtolower($domain);
+            if ($status >= 300 && $status < 400 && rtrim($location, '/') === rtrim($self, '/')) {
+                return false;
+            }
+
+            return $status >= 200 && $status < 500;
         } catch (\Throwable) {
             return false;
         }
