@@ -396,20 +396,68 @@ export default function OffersCreate({
         return `SEO ${data.geo || '…'} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
     }, [data.brand, data.domain, data.geo, affiliateTag]);
 
+    const canProceedStep0 = data.brand.trim() && data.domain.trim();
+    const canProceedStep1 = Boolean(data.template) && templates.length > 0;
+    const canProceedStep2 = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
+
+    const generateBlockReason = useMemo(() => {
+        if (!settingsReady) {
+            return 'Збережіть CRM API key і Telegram bot token у налаштуваннях.';
+        }
+        if (!canProceedStep0) {
+            return 'Заповніть бренд і домен (крок 1).';
+        }
+        if (!canProceedStep1) {
+            return 'Оберіть шаблон (крок 2).';
+        }
+        if (!canProceedStep2) {
+            return 'Перевірте GEO, мову та phone GEO (крок 3).';
+        }
+        if (data.create_keitaro && !hasKeitaroApiKey) {
+            return 'Збережіть Keitaro Admin API key у налаштуваннях або зніміть «Створити кампанію в Keitaro».';
+        }
+
+        return null;
+    }, [
+        settingsReady,
+        canProceedStep0,
+        canProceedStep1,
+        canProceedStep2,
+        data.create_keitaro,
+        hasKeitaroApiKey,
+    ]);
+
+    const submitErrors = useMemo(
+        () => Object.entries(errors).filter(([, message]) => Boolean(message)),
+        [errors],
+    );
+
+    const firstSubmitError = submitErrors[0]?.[1] ?? null;
+
+    useEffect(() => {
+        if (step === steps.length - 1 && (firstSubmitError || generateBlockReason)) {
+            document.getElementById('wizard-submit-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [step, firstSubmitError, generateBlockReason]);
+
     const generate = () => {
+        if (generateBlockReason) {
+            return;
+        }
+
         post(route('offers.store'), {
+            preserveScroll: true,
             onSuccess: () => {
                 skipPersist.current = true;
                 clearWizardState();
                 setStep(0);
                 reset();
             },
+            onError: () => {
+                setStep(steps.length - 1);
+            },
         });
     };
-
-    const canProceedStep0 = data.brand.trim() && data.domain.trim();
-    const canProceedStep1 = Boolean(data.template) && templates.length > 0;
-    const canProceedStep2 = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
 
     return (
         <PanelLayout title="Створити оффер">
@@ -428,11 +476,13 @@ export default function OffersCreate({
                 </div>
             )}
 
-            {(errors.generate || errors.domain || errors.geo || errors.lang || errors.template) && (
+            {submitErrors.length > 0 && (
                 <div className="card" style={{ marginBottom: '1.5rem', borderColor: '#f87171' }}>
-                    <p className="card-desc" style={{ color: '#f87171' }}>
-                        {errors.generate || errors.domain || errors.geo || errors.lang || errors.template}
-                    </p>
+                    {submitErrors.map(([field, message]) => (
+                        <p key={field} className="card-desc" style={{ color: '#f87171', marginBottom: submitErrors.length > 1 ? '0.35rem' : 0 }}>
+                            {message}
+                        </p>
+                    ))}
                     {errors.generate?.includes('Папка вже існує') && (
                         <p className="field-hint" style={{ marginTop: '0.5rem' }}>
                             Можливо, оффер уже створено. Перевірте{' '}
@@ -817,6 +867,30 @@ export default function OffersCreate({
 
             {step === 4 && (
                 <section className="wizard-panel is-active">
+                    {(generateBlockReason || firstSubmitError) && (
+                        <div id="wizard-submit-feedback" className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                            {generateBlockReason && (
+                                <p className="card-desc" style={{ color: '#f87171', marginBottom: firstSubmitError ? '0.5rem' : 0 }}>
+                                    {generateBlockReason}
+                                </p>
+                            )}
+                            {firstSubmitError && !generateBlockReason && (
+                                <p className="card-desc" style={{ color: '#f87171' }}>{firstSubmitError}</p>
+                            )}
+                            {data.create_keitaro && !hasKeitaroApiKey && (
+                                <div className="btn-row" style={{ marginTop: '0.75rem' }}>
+                                    <Link href={route('settings.index')} className="btn btn-ghost btn-sm">Налаштування Keitaro</Link>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        onClick={() => update('create_keitaro', false)}
+                                    >
+                                        Продовжити без Keitaro
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <div className="card">
                         <h3>Підсумок</h3>
                         <dl className="summary-grid">
@@ -873,15 +947,9 @@ export default function OffersCreate({
                     <button
                         type="button"
                         className="btn btn-primary"
-                        disabled={
-                            processing
-                            || !settingsReady
-                            || !canProceedStep0
-                            || !canProceedStep1
-                            || !canProceedStep2
-                            || (data.create_keitaro && !hasKeitaroApiKey)
-                        }
+                        disabled={processing || Boolean(generateBlockReason)}
                         onClick={generate}
+                        title={generateBlockReason ?? undefined}
                     >
                         {processing ? 'Генерація…' : 'Згенерувати оффер'}
                     </button>
