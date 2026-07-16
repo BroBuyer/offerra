@@ -17,14 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-if (! FormToken::requestViaCloudflare() || ! FormToken::requestLooksSameOrigin()) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'error' => 'Forbidden'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
+// Always return a token. Soft blocks (bot UA / rate) mark drop server-side;
+// send.php then fakes thank-you success without CRM.
 echo json_encode([
     'ok' => true,
     'token' => FormToken::issue(),
     'ttl' => defined('FORM_TOKEN_TTL') ? (int) FORM_TOKEN_TTL : 600,
+    'min_age' => FormToken::minAge(),
 ], JSON_UNESCAPED_UNICODE);

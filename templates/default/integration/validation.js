@@ -165,10 +165,36 @@ async function refreshFormToken(form) {
     const data = await res.json();
     if (!data?.ok || !data?.token) return false;
     input.value = String(data.token);
+    input.dataset.issuedAt = String(Date.now());
+    if (data.min_age != null) {
+      input.dataset.minAge = String(Number(data.min_age) || 3);
+    }
     return true;
   } catch (_) {
     return false;
   }
+}
+
+/** Prefer token from page-load prefetch; only refetch if missing. Honour min_age. */
+async function ensureFormToken(form) {
+  const input = form.querySelector('input[name="form_token"]');
+  if (!input) return false;
+
+  if (!input.value) {
+    const ok = await refreshFormToken(form);
+    if (!ok) return false;
+  }
+
+  const minAgeMs = Math.max(0, Number(input.dataset.minAge || 3) * 1000);
+  const issuedAt = Number(input.dataset.issuedAt || 0);
+  if (issuedAt > 0 && minAgeMs > 0) {
+    const wait = minAgeMs - (Date.now() - issuedAt);
+    if (wait > 0) {
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+  }
+
+  return Boolean(input.value);
 }
 
 function setupFormValidation(form) {
@@ -239,6 +265,9 @@ function setupFormValidation(form) {
     else clearFieldError(phone);
   });
 
+  // Point 5: token only via JS (not in HTML). Prefetch so min-age starts on load.
+  refreshFormToken(form).catch(() => {});
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideFormMessage(form);
@@ -255,7 +284,7 @@ function setupFormValidation(form) {
 
     preloader?.classList.remove('hidden');
 
-    const tokenOk = await refreshFormToken(form);
+    const tokenOk = await ensureFormToken(form);
     if (!tokenOk) {
       showFormMessage(form, 'Session expired. Please reload the page and try again.');
       preloader?.classList.add('hidden');

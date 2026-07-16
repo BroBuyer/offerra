@@ -75,6 +75,10 @@ define('FORM_THANK_YOU', 'Thanks.php');
 define('FORM_LEAD_COOKIE_DAYS', 30);
 define('FORM_TOKEN_SECRET', {$formTokenSecret});
 define('FORM_TOKEN_TTL', 600);
+define('FORM_TOKEN_MIN_AGE', 3);
+define('FORM_TOKEN_ISSUE_LIMIT', 8);
+define('FORM_TOKEN_SUBMIT_LIMIT', 3);
+define('FORM_TOKEN_RATE_WINDOW', 600);
 define('FORM_TOKEN_DEBUG', false);
 
 // ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────

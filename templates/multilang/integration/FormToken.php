@@ -4,18 +4,30 @@ declare(strict_types=1);
 /**
  * One-time form tokens (file-backed) — easy to debug under integration/tokens/.
  * Independent of Keitaro.
+ *
+ * Extra layers: UA bot block, per-IP rate limits, min age before consume.
+ * Soft rejects are meant to look like success to the client (see send.php).
  */
 final class FormToken
 {
     private const TOKEN_DIR_NAME = 'tokens';
+    private const RATE_DIR_NAME = 'rate';
 
+    /**
+     * Issue a signed one-time token. Bot UA / issue-rate still get a token,
+     * but marked drop=true so send.php can fake success without CRM.
+     */
     public static function issue(): string
     {
         self::ensureStorage();
         self::gc();
 
+        $drop = self::looksLikeBotUa() || self::rateExceeded('issue', self::issueLimit());
+        self::hitRate('issue');
+
         $id = bin2hex(random_bytes(16));
-        $exp = time() + self::ttl();
+        $now = time();
+        $exp = $now + self::ttl();
         $payload = $id.'.'.$exp;
         $sig = hash_hmac('sha256', $payload, self::secret());
         $token = $payload.'.'.$sig;
@@ -23,9 +35,11 @@ final class FormToken
         $meta = [
             'id' => $id,
             'exp' => $exp,
+            'created' => $now,
             'created_at' => date('c'),
             'ip' => self::clientIp(),
             'ua' => substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 240),
+            'drop' => $drop,
         ];
 
         $written = @file_put_contents(
@@ -36,13 +50,15 @@ final class FormToken
 
         if ($written === false) {
             self::debugLog('issue_write_failed', $id);
+        } elseif ($drop) {
+            self::debugLog('issue_marked_drop', $id);
         }
 
         return $token;
     }
 
     /**
-     * @return array{ok: bool, error?: string}
+     * @return array{ok: bool, drop?: bool, error?: string}
      */
     public static function consume(string $token): array
     {
@@ -78,16 +94,102 @@ final class FormToken
             return ['ok' => false, 'error' => 'missing_or_used'];
         }
 
-        // One-time: remove before CRM so retries cannot replay.
+        $raw = @file_get_contents($path);
+        $meta = is_string($raw) ? json_decode($raw, true) : null;
+        if (! is_array($meta)) {
+            @unlink($path);
+            self::debugLog('bad_meta', $id);
+
+            return ['ok' => false, 'error' => 'bad_meta'];
+        }
+
+        $created = (int) ($meta['created'] ?? 0);
+        if ($created <= 0 && isset($meta['created_at'])) {
+            $created = (int) strtotime((string) $meta['created_at']);
+        }
+
+        $minAge = self::minAge();
+        if ($created > 0 && (time() - $created) < $minAge) {
+            // Burn token so they cannot retry instantly with the same one.
+            @unlink($path);
+            self::debugLog('too_fast', $id);
+
+            return ['ok' => true, 'drop' => true, 'error' => 'too_fast'];
+        }
+
+        $drop = ! empty($meta['drop']) || self::looksLikeBotUa();
+
         if (! @unlink($path)) {
             self::debugLog('unlink_failed', $id);
 
             return ['ok' => false, 'error' => 'consume_failed'];
         }
 
+        if ($drop) {
+            self::debugLog('consumed_drop', $id);
+
+            return ['ok' => true, 'drop' => true];
+        }
+
         self::debugLog('consumed', $id);
 
-        return ['ok' => true];
+        return ['ok' => true, 'drop' => false];
+    }
+
+    public static function looksLikeBotUa(): bool
+    {
+        if (function_exists('offer_is_preview') && offer_is_preview()) {
+            return false;
+        }
+
+        $ua = strtolower(trim((string) ($_SERVER['HTTP_USER_AGENT'] ?? '')));
+        if ($ua === '') {
+            return true;
+        }
+
+        $needles = [
+            'bot', 'spider', 'crawler', 'crawl', 'slurp',
+            'curl/', 'wget', 'python-requests', 'python-urllib', 'scrapy',
+            'httpclient', 'libwww', 'go-http-client', 'java/',
+            'reparser', 'serpstat', 'semrush', 'ahrefs', 'dotbot',
+            'petalbot', 'bytespider', 'gptbot', 'claudebot', 'anthropic',
+            'chatgpt', 'ccbot', 'dataforseo', 'headlesschrome', 'phantomjs',
+            'puppeteer', 'selenium',
+        ];
+
+        foreach ($needles as $needle) {
+            if (str_contains($ua, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function submitRateExceeded(): bool
+    {
+        return self::rateExceeded('submit', self::submitLimit());
+    }
+
+    public static function hitSubmitRate(): void
+    {
+        self::hitRate('submit');
+    }
+
+    /**
+     * Client-facing “success” without CRM / Telegram.
+     *
+     * @return array{ok: bool, crm_success: bool, lead_uuid: null, telegram_sent: bool, thank_you_url: string}
+     */
+    public static function silentSuccessPayload(): array
+    {
+        return [
+            'ok' => true,
+            'crm_success' => true,
+            'lead_uuid' => null,
+            'telegram_sent' => true,
+            'thank_you_url' => defined('FORM_THANK_YOU') ? (string) FORM_THANK_YOU : 'Thanks.php',
+        ];
     }
 
     public static function requestViaCloudflare(): bool
@@ -144,6 +246,126 @@ final class FormToken
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
     }
 
+    public static function minAge(): int
+    {
+        if (defined('FORM_TOKEN_MIN_AGE')) {
+            $v = (int) FORM_TOKEN_MIN_AGE;
+
+            return $v >= 0 ? $v : 3;
+        }
+
+        return 3;
+    }
+
+    private static function issueLimit(): int
+    {
+        if (defined('FORM_TOKEN_ISSUE_LIMIT')) {
+            $v = (int) FORM_TOKEN_ISSUE_LIMIT;
+
+            return $v > 0 ? $v : 8;
+        }
+
+        return 8;
+    }
+
+    private static function submitLimit(): int
+    {
+        if (defined('FORM_TOKEN_SUBMIT_LIMIT')) {
+            $v = (int) FORM_TOKEN_SUBMIT_LIMIT;
+
+            return $v > 0 ? $v : 3;
+        }
+
+        return 3;
+    }
+
+    private static function rateWindow(): int
+    {
+        if (defined('FORM_TOKEN_RATE_WINDOW')) {
+            $v = (int) FORM_TOKEN_RATE_WINDOW;
+
+            return $v > 0 ? $v : 600;
+        }
+
+        return 600;
+    }
+
+    private static function rateExceeded(string $kind, int $limit): bool
+    {
+        $data = self::readRate($kind);
+        $now = time();
+        $window = self::rateWindow();
+        $hits = [];
+
+        foreach ($data['hits'] ?? [] as $ts) {
+            $t = (int) $ts;
+            if ($t > 0 && ($now - $t) < $window) {
+                $hits[] = $t;
+            }
+        }
+
+        return count($hits) >= $limit;
+    }
+
+    private static function hitRate(string $kind): void
+    {
+        self::ensureStorage();
+        $data = self::readRate($kind);
+        $now = time();
+        $window = self::rateWindow();
+        $hits = [];
+
+        foreach ($data['hits'] ?? [] as $ts) {
+            $t = (int) $ts;
+            if ($t > 0 && ($now - $t) < $window) {
+                $hits[] = $t;
+            }
+        }
+
+        $hits[] = $now;
+        $payload = [
+            'ip' => self::clientIp(),
+            'kind' => $kind,
+            'hits' => $hits,
+            'updated_at' => date('c'),
+        ];
+
+        @file_put_contents(
+            self::ratePath($kind),
+            json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n",
+            LOCK_EX,
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function readRate(string $kind): array
+    {
+        $path = self::ratePath($kind);
+        if (! is_file($path)) {
+            return ['hits' => []];
+        }
+
+        $raw = @file_get_contents($path);
+        $data = is_string($raw) ? json_decode($raw, true) : null;
+
+        return is_array($data) ? $data : ['hits' => []];
+    }
+
+    private static function ratePath(string $kind): string
+    {
+        $ip = self::clientIp();
+        $hash = hash('sha256', $kind.'|'.$ip);
+
+        return self::rateDir().DIRECTORY_SEPARATOR.$hash.'.json';
+    }
+
+    private static function rateDir(): string
+    {
+        return self::storageDir().DIRECTORY_SEPARATOR.self::RATE_DIR_NAME;
+    }
+
     private static function ttl(): int
     {
         if (defined('FORM_TOKEN_TTL')) {
@@ -185,6 +407,11 @@ final class FormToken
             @mkdir($dir, 0755, true);
         }
 
+        $rateDir = self::rateDir();
+        if (! is_dir($rateDir)) {
+            @mkdir($rateDir, 0755, true);
+        }
+
         $deny = $dir.DIRECTORY_SEPARATOR.'.htaccess';
         if (! is_file($deny)) {
             @file_put_contents($deny, "Require all denied\n");
@@ -213,6 +440,19 @@ final class FormToken
             $exp = is_array($data) ? (int) ($data['exp'] ?? 0) : 0;
 
             if ($exp > 0 && $exp < $now) {
+                @unlink($file);
+            }
+        }
+
+        $rateDir = self::rateDir();
+        if (! is_dir($rateDir)) {
+            return;
+        }
+
+        $window = self::rateWindow();
+        foreach (glob($rateDir.DIRECTORY_SEPARATOR.'*.json') ?: [] as $file) {
+            $mtime = @filemtime($file);
+            if ($mtime !== false && ($now - $mtime) > ($window * 2)) {
                 @unlink($file);
             }
         }

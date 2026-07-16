@@ -482,13 +482,10 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-/** One-time form anti-spam token (see integration/FormToken.php). */
+/** @deprecated Token is issued via integration/form-token.php (JS only). */
 function form_token_issue(): string
 {
-    $path = dirname(__DIR__).DIRECTORY_SEPARATOR.'integration'.DIRECTORY_SEPARATOR.'FormToken.php';
-    require_once $path;
-
-    return FormToken::issue();
+    return '';
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());
