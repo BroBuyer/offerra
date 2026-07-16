@@ -725,7 +725,7 @@ export default function OffersCreate({
                                     value={isMultilangTemplate(data.template) ? MULTILANG_GEO : data.geo}
                                     onChange={(e) => updateGeo(e.target.value)}
                                     onBlur={(e) => updateGeo(e.target.value)}
-                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, CH, ZA…'}
+                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, NG, ZA…'}
                                     maxLength={2}
                                     autoComplete="off"
                                     readOnly={isMultilangTemplate(data.template)}
