@@ -32,6 +32,7 @@ class OfferConfigBuilder
         $keitaroComment = ! empty($offer['keitaro_campaign_id'])
             ? " // кампанія #{$offer['keitaro_campaign_id']}"
             : '';
+        $formTokenSecret = $this->quote($this->resolveFormTokenSecret($offer));
 
         return <<<PHP
 <?php
@@ -72,6 +73,9 @@ define('FORM_PHONE_COUNTRY', {$phone});
 define('FORM_ALLOWED_COUNTRIES', {$allowedPhones});
 define('FORM_THANK_YOU', 'Thanks.php');
 define('FORM_LEAD_COOKIE_DAYS', 30);
+define('FORM_TOKEN_SECRET', {$formTokenSecret});
+define('FORM_TOKEN_TTL', 600);
+define('FORM_TOKEN_DEBUG', false);
 
 // ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────
 define('KEITARO_ENABLED', true);
@@ -86,6 +90,24 @@ require_once __DIR__ . '/keitaro.php';
 keitaro_bootstrap();
 
 PHP;
+    }
+
+    /**
+     * @param  array<string, mixed>  $offer
+     */
+    private function resolveFormTokenSecret(array $offer): string
+    {
+        $existing = trim((string) ($offer['form_token_secret'] ?? ''));
+
+        if ($existing !== '' && preg_match('/^[a-f0-9]{32,128}$/i', $existing)) {
+            return strtolower($existing);
+        }
+
+        if ($existing !== '' && strlen($existing) >= 32) {
+            return $existing;
+        }
+
+        return bin2hex(random_bytes(32));
     }
 
     private function quote(string $value): string

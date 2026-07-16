@@ -35,6 +35,9 @@ define('FORM_PHONE_COUNTRY', 'gb');
 define('FORM_ALLOWED_COUNTRIES', 'gb');
 define('FORM_THANK_YOU', 'Thanks.php');
 define('FORM_LEAD_COOKIE_DAYS', 30);            // не давати повторно відправити з цього браузера
+define('FORM_TOKEN_SECRET', 'local-dev-form-token-secret-change-me-32b');
+define('FORM_TOKEN_TTL', 600);
+define('FORM_TOKEN_DEBUG', false);
 
 // ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────
 define('KEITARO_ENABLED', true);

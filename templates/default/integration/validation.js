@@ -152,6 +152,25 @@ function syncPhoneCountryHidden(form, iti) {
   }
 }
 
+async function refreshFormToken(form) {
+  const input = form.querySelector('input[name="form_token"]');
+  if (!input) return false;
+
+  try {
+    const res = await fetch(`${integrationBaseUrl(form)}form-token.php`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data?.ok || !data?.token) return false;
+    input.value = String(data.token);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 function setupFormValidation(form) {
   if (hasLeadCookie(form)) {
     showAlreadyRegistered(form);
@@ -235,6 +254,13 @@ function setupFormValidation(form) {
     }
 
     preloader?.classList.remove('hidden');
+
+    const tokenOk = await refreshFormToken(form);
+    if (!tokenOk) {
+      showFormMessage(form, 'Session expired. Please reload the page and try again.');
+      preloader?.classList.add('hidden');
+      return;
+    }
 
     syncPhoneCountryHidden(form, iti);
     const fullPhone = iti.getNumber();

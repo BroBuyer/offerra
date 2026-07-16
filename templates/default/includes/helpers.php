@@ -130,7 +130,7 @@ function offer_send_personalization_headers(): void
     }
 
     $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
-    $skip = ['send.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
+    $skip = ['send.php', 'form-token.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
 
     if (in_array($script, $skip, true)) {
         return;
@@ -252,6 +252,15 @@ function asset_version(string $path): string
 function e(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+/** One-time form anti-spam token (see integration/FormToken.php). */
+function form_token_issue(): string
+{
+    $path = dirname(__DIR__).DIRECTORY_SEPARATOR.'integration'.DIRECTORY_SEPARATOR.'FormToken.php';
+    require_once $path;
+
+    return FormToken::issue();
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());

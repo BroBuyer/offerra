@@ -296,6 +296,8 @@ class OfferGenerator
         $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $templateLangForSource);
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
 
+        $preservedFormTokenSecret = $this->extractFormTokenSecret($targetPath.'/includes/config.php');
+
         if (File::isDirectory($targetPath)) {
             File::deleteDirectory($targetPath);
         }
@@ -326,6 +328,7 @@ class OfferGenerator
             'phone_countries' => $offer->phone_countries ?: $offer->phone ?: $offer->lang,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+            'form_token_secret' => $preservedFormTokenSecret,
         ];
 
         File::put($targetPath.'/includes/config.php', $this->configBuilder->build($input, $settings));
@@ -388,6 +391,8 @@ class OfferGenerator
             }
         }
 
+        $formTokenSecret = $this->extractFormTokenSecret($configPath);
+
         $input = [
             'brand' => $offer->brand,
             'domain' => $offer->domain,
@@ -399,6 +404,7 @@ class OfferGenerator
             'phone_countries' => $offer->phone_countries ?: $offer->phone ?: $offer->lang,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
+            'form_token_secret' => $formTokenSecret,
         ];
 
         File::ensureDirectoryExists(dirname($configPath));
@@ -548,6 +554,28 @@ class OfferGenerator
         foreach (File::files($source) as $file) {
             File::copy($file->getPathname(), $destination.DIRECTORY_SEPARATOR.$file->getFilename());
         }
+
+        $tokensDeny = $source.DIRECTORY_SEPARATOR.'tokens'.DIRECTORY_SEPARATOR.'.htaccess';
+        if (File::isFile($tokensDeny)) {
+            $tokensDir = $destination.DIRECTORY_SEPARATOR.'tokens';
+            File::ensureDirectoryExists($tokensDir);
+            File::copy($tokensDeny, $tokensDir.DIRECTORY_SEPARATOR.'.htaccess');
+        }
+    }
+
+    private function extractFormTokenSecret(string $configPath): string
+    {
+        if (! File::exists($configPath)) {
+            return '';
+        }
+
+        $config = File::get($configPath);
+
+        if (preg_match("/define\('FORM_TOKEN_SECRET',\s*'([^']*)'\)/", $config, $matches)) {
+            return (string) $matches[1];
+        }
+
+        return '';
     }
 
     /** Старі оффери з папкою assets/ — один раз перед деплоєм. */

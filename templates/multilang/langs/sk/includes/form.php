@@ -32,6 +32,7 @@ $lead_cookie = site_slug() . '_lead';
 <?php if (($keitaro_subid = keitaro_subid()) !== ''): ?>
     <input type="hidden" name="subid" value="<?= e($keitaro_subid) ?>">
 <?php endif; ?>
+    <input type="hidden" name="form_token" value="<?= e(form_token_issue()) ?>">
 
     <div class="form-preloader hidden" aria-hidden="true">
       <div class="spinner"></div>
