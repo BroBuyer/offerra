@@ -134,10 +134,49 @@ class InfrastructureProvisioner
         $domain = strtolower(trim($offer->domain));
         $serverIp = $this->hestia->serverIp($settings);
 
+        // Спочатку лише перевірка DNS/HTTPS — без повторного проходження Cloudflare/Dynadot.
+        // Інакше тимчасові таймаути API тримають статус «Очікується DNS», хоча сайт уже живий.
+        if (! InfrastructureOptions::needsDnsWait($options)) {
+            $meta['dns'] = $meta['dns'] ?? 'skipped';
+            unset($meta['dns_error']);
+            $offer->update([
+                'infra_status' => 'ready',
+                'infra_error' => null,
+                'infra_meta' => $meta,
+            ]);
+
+            return;
+        }
+
+        if ($this->dnsLooksReady($domain, $serverIp)) {
+            $meta['dns'] = 'done';
+            unset($meta['dns_error']);
+            $offer->update([
+                'infra_status' => 'ready',
+                'infra_error' => null,
+                'infra_meta' => $meta,
+            ]);
+
+            return;
+        }
+
         try {
             $this->runSteps($settings, $domain, $options, $meta);
         } catch (\Throwable $e) {
             $meta['dns_error'] = $e->getMessage();
+
+            // Якщо сайт уже відповідає — не блокуємо статус через збій повторного provision.
+            if ($this->dnsLooksReady($domain, $serverIp)) {
+                $meta['dns'] = 'done';
+                unset($meta['dns_error']);
+                $offer->update([
+                    'infra_status' => 'ready',
+                    'infra_error' => null,
+                    'infra_meta' => $meta,
+                ]);
+
+                return;
+            }
 
             $offer->update([
                 'infra_status' => 'ready',
@@ -148,7 +187,7 @@ class InfrastructureProvisioner
             return;
         }
 
-        if (InfrastructureOptions::needsDnsWait($options) && ! $this->dnsLooksReady($domain, $serverIp)) {
+        if (! $this->dnsLooksReady($domain, $serverIp)) {
             unset($meta['dns_error']);
             $offer->update([
                 'infra_status' => 'ready',
@@ -159,7 +198,7 @@ class InfrastructureProvisioner
             return;
         }
 
-        $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : ($meta['dns'] ?? 'skipped');
+        $meta['dns'] = 'done';
         unset($meta['dns_error']);
 
         $offer->update([
