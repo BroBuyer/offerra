@@ -34,6 +34,7 @@ class Offer extends Model
         'verification_filename',
         'keitaro_campaign_id',
         'keitaro_alias',
+        'keitaro_campaign_token',
         'provision_infrastructure',
         'infra_status',
         'infra_error',
@@ -48,6 +49,7 @@ class Offer extends Model
             'submitted_for_indexing' => 'boolean',
             'indexed_at' => 'datetime',
             'provision_infrastructure' => 'boolean',
+            'keitaro_campaign_token' => 'encrypted',
             'infra_meta' => 'array',
             'teardown_meta' => 'array',
         ];

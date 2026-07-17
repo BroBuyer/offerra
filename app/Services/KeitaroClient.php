@@ -74,7 +74,7 @@ class KeitaroClient
             throw new RuntimeException('Keitaro: неочікувана відповідь при створенні кампанії.');
         }
 
-        $this->createDefaultStream($baseUrl, $apiKey, $campaignId);
+        $this->ensureDefaultStream($settings, $baseUrl, $apiKey, $campaignId);
 
         return [
             'id' => $campaignId,
@@ -122,31 +122,97 @@ class KeitaroClient
 
         $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
 
-        $response = Http::withHeaders([
-            'Api-Key' => $apiKey,
-            'Accept' => 'application/json',
-        ])
-            ->timeout(20)
-            ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+        for ($attempt = 0; $attempt < 2; $attempt++) {
+            try {
+                $response = Http::withHeaders([
+                    'Api-Key' => $apiKey,
+                    'Accept' => 'application/json',
+                ])
+                    ->timeout($attempt === 0 ? 45 : 90)
+                    ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+            } catch (\Throwable) {
+                if ($attempt === 1) {
+                    return null;
+                }
+
+                continue;
+            }
+
+            if ($response->failed()) {
+                return null;
+            }
+
+            /** @var array<string, mixed> $row */
+            $row = $response->json() ?? [];
+            $id = (int) ($row['id'] ?? 0);
+
+            if ($id === 0) {
+                return null;
+            }
+
+            return [
+                'id' => $id,
+                'name' => (string) ($row['name'] ?? ''),
+                'alias' => (string) ($row['alias'] ?? ''),
+                'token' => (string) ($row['token'] ?? ''),
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function listStreams(UserSetting $settings, int $campaignId): array
+    {
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey || $campaignId <= 0) {
+            return [];
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        try {
+            $response = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+            ])
+                ->timeout(45)
+                ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}/streams");
+        } catch (\Throwable) {
+            return [];
+        }
 
         if ($response->failed()) {
-            return null;
+            return [];
         }
 
-        /** @var array<string, mixed> $row */
-        $row = $response->json() ?? [];
-        $id = (int) ($row['id'] ?? 0);
+        /** @var list<array<string, mixed>> $streams */
+        $streams = $response->json() ?? [];
 
-        if ($id === 0) {
-            return null;
+        return is_array($streams) ? $streams : [];
+    }
+
+    public function ensureDefaultStream(UserSetting $settings, int $campaignId): void
+    {
+        if ($campaignId <= 0) {
+            return;
         }
 
-        return [
-            'id' => $id,
-            'name' => (string) ($row['name'] ?? ''),
-            'alias' => (string) ($row['alias'] ?? ''),
-            'token' => (string) ($row['token'] ?? ''),
-        ];
+        if ($this->listStreams($settings, $campaignId) !== []) {
+            return;
+        }
+
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey) {
+            throw new RuntimeException('Збережіть Keitaro Admin API key у налаштуваннях.');
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+        $this->createDefaultStream($settings, $baseUrl, $apiKey, $campaignId);
     }
 
     private function isDuplicateNameError(string $body): bool
@@ -158,7 +224,7 @@ class KeitaroClient
             || str_contains($normalized, 'has already');
     }
 
-    private function createDefaultStream(string $baseUrl, string $apiKey, int $campaignId): void
+    private function createDefaultStream(UserSetting $settings, string $baseUrl, string $apiKey, int $campaignId): void
     {
         $response = Http::withHeaders([
             'Api-Key' => $apiKey,

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Offer;
 use App\Models\User;
+use App\Models\UserSetting;
 use App\Support\InfrastructureOptions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
@@ -112,6 +113,7 @@ class OfferGenerator
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
+                'keitaro_campaign_token' => $keitaro['token'] ?? null,
                 'provision_infrastructure' => $provisionInfrastructure,
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
                 'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
@@ -310,12 +312,7 @@ class OfferGenerator
             $this->pruneMultilangDuplicates($targetPath);
         }
 
-        $keitaroToken = '';
-
-        if ($offer->keitaro_campaign_id) {
-            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
-            $keitaroToken = $campaign['token'] ?? '';
-        }
+        $keitaroToken = $this->resolveKeitaroToken($offer, $settings);
 
         $input = [
             'brand' => $offer->brand,
@@ -376,20 +373,7 @@ class OfferGenerator
         $targetPath = $this->ensureLocalFolder($offer);
         $configPath = $targetPath.'/includes/config.php';
 
-        $keitaroToken = '';
-
-        if ($offer->keitaro_campaign_id) {
-            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
-            $keitaroToken = $campaign['token'] ?? '';
-        }
-
-        if ($keitaroToken === '' && File::exists($configPath)) {
-            $config = File::get($configPath);
-
-            if (preg_match("/define\('KEITARO_CAMPAIGN_TOKEN',\s*'([^']*)'\)/", $config, $matches)) {
-                $keitaroToken = $matches[1];
-            }
-        }
+        $keitaroToken = $this->resolveKeitaroToken($offer, $settings, $configPath);
 
         $formTokenSecret = $this->extractFormTokenSecret($configPath);
 
@@ -450,6 +434,7 @@ class OfferGenerator
 
             $updates['keitaro_campaign_id'] = $keitaro['id'];
             $updates['keitaro_alias'] = $keitaro['alias'];
+            $updates['keitaro_campaign_token'] = $keitaro['token'] ?? null;
         }
 
         $offer->update($updates);
@@ -642,6 +627,38 @@ class OfferGenerator
             File::copyDirectory($assets, $static);
             File::deleteDirectory($assets);
         }
+    }
+
+    private function resolveKeitaroToken(Offer $offer, UserSetting $settings, ?string $configPath = null): string
+    {
+        $stored = trim((string) ($offer->keitaro_campaign_token ?? ''));
+
+        if ($stored !== '') {
+            return $stored;
+        }
+
+        if ($offer->keitaro_campaign_id) {
+            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
+            $token = trim((string) ($campaign['token'] ?? ''));
+
+            if ($token !== '') {
+                $offer->update(['keitaro_campaign_token' => $token]);
+
+                return $token;
+            }
+        }
+
+        if ($configPath !== null && File::exists($configPath)) {
+            $token = trim((string) ($this->readConfigConstant(File::get($configPath), 'KEITARO_CAMPAIGN_TOKEN') ?? ''));
+
+            if ($token !== '') {
+                $offer->update(['keitaro_campaign_token' => $token]);
+
+                return $token;
+            }
+        }
+
+        return '';
     }
 
     private function readConfigConstant(string $config, string $name): ?string
