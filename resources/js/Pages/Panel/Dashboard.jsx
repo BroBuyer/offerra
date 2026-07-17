@@ -1,27 +1,36 @@
 import PanelLayout from '@/Layouts/PanelLayout';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
-function StatusBadge({ status }) {
-    const isLive = status === 'deployed' || status === 'На сервері';
-
-    return (
-        <span className={`badge${isLive ? '' : ' badge-ok'}`}>
-            {isLive ? 'На сервері' : 'Згенеровано'}
-        </span>
-    );
-}
-
-export default function Dashboard({ stats, geoBars, recentOffers }) {
+export default function Dashboard({
+    stats,
+    geoBars,
+    recentOffers,
+    isAdmin = false,
+    users = [],
+    filters = {},
+    scopeLabel = 'Статистика ваших офферів',
+}) {
     const langPills = Object.entries(stats.lang_breakdown ?? {});
+    const selectedUser = filters.user ?? '';
+
+    const setUserFilter = (userId) => {
+        router.get(
+            route('dashboard'),
+            userId ? { user: userId } : {},
+            { preserveState: true, preserveScroll: true, replace: true },
+        );
+    };
+
+    const kpiSub = isAdmin
+        ? (selectedUser ? 'обраний користувач' : 'усі користувачі')
+        : 'ваші оффери';
 
     return (
         <PanelLayout title="Дашборд" wide>
             <header className="page-header">
                 <h2>Дашборд</h2>
                 <p className="dashboard-date">
-                    {stats.total > 0
-                        ? 'Статистика ваших офферів'
-                        : 'Ще немає офферів — створіть перший'}
+                    {stats.total > 0 ? scopeLabel : 'Ще немає офферів — створіть перший'}
                 </p>
             </header>
 
@@ -35,6 +44,21 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                 <Link href={route('templates.index')} className="btn btn-ghost">
                     Шаблони
                 </Link>
+                {isAdmin && users.length > 0 && (
+                    <select
+                        className="dashboard-user-filter"
+                        aria-label="Користувач"
+                        value={selectedUser}
+                        onChange={(e) => setUserFilter(e.target.value)}
+                    >
+                        <option value="">Усі користувачі</option>
+                        {users.map((user) => (
+                            <option key={user.id} value={user.id}>
+                                {user.name ?? user.email}
+                            </option>
+                        ))}
+                    </select>
+                )}
             </div>
 
             <div className="dashboard-kpi-grid">
@@ -42,18 +66,18 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                     <div className="kpi-card-label">Згенеровано сьогодні</div>
                     <div className="kpi-card-value accent">{stats.generated_today}</div>
                     <div className="kpi-card-sub up">
-                        {stats.total > 0 ? 'ваші оффери' : '—'}
+                        {stats.total > 0 ? kpiSub : '—'}
                     </div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Задеплоєно</div>
                     <div className="kpi-card-value">{stats.deployed}</div>
-                    <div className="kpi-card-sub">ваші задеплоєні</div>
+                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'ваші задеплоєні'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Всього офферів</div>
                     <div className="kpi-card-value">{stats.total}</div>
-                    <div className="kpi-card-sub">у вашому акаунті</div>
+                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'у вашому акаунті'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Очікують деплой</div>
@@ -66,7 +90,7 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                 <div className="kpi-card">
                     <div className="kpi-card-label">Keitaro підключено</div>
                     <div className="kpi-card-value">{stats.keitaro_linked}</div>
-                    <div className="kpi-card-sub">з ваших офферів</div>
+                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'з ваших офферів'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Унікальних GEO</div>
@@ -133,10 +157,11 @@ export default function Dashboard({ stats, geoBars, recentOffers }) {
                     <h3>Останні оффери</h3>
                     <ul className="activity-list">
                         {recentOffers.map((offer) => (
-                            <li className="activity-item" key={offer.domain}>
+                            <li className="activity-item" key={`${offer.domain}-${offer.date}`}>
                                 <span className="activity-time">{offer.date}</span>
                                 <span className="activity-text">
                                     <strong>{offer.brand}</strong>
+                                    {isAdmin && offer.user_name ? ` · ${offer.user_name}` : ''}
                                     {' · '}
                                     {offer.geo} · {offer.lang}
                                     {offer.keitaro_id ? ` · Keitaro #${offer.keitaro_id}` : ''}

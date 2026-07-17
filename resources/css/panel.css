@@ -1873,7 +1873,25 @@ td.col-num {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.dashboard-user-filter {
+  margin-left: auto;
+  min-width: 12rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.dashboard-user-filter:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .dashboard-date {
