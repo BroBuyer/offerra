@@ -17,9 +17,12 @@ Route::redirect('/', '/dashboard');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
+    Route::get('/offers/archive', [OfferController::class, 'archiveIndex'])->name('offers.archive.index');
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
+    Route::post('/offers/{offer}/archive', [OfferController::class, 'archive'])->name('offers.archive');
+    Route::post('/offers/{offer}/archive/retry', [OfferController::class, 'retryArchive'])->name('offers.archive.retry');
     Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');

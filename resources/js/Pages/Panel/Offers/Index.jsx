@@ -10,6 +10,10 @@ function statusBadge(status) {
             return <span className="badge badge-ok">На сервері</span>;
         case 'deploying':
             return <span className="badge badge-warn">Деплоїться…</span>;
+        case 'archiving':
+            return <span className="badge badge-warn">Архівація…</span>;
+        case 'teardown_failed':
+            return <span className="badge badge-error">Архів помилка</span>;
         case 'failed':
             return <span className="badge badge-error">Помилка</span>;
         default:
@@ -220,6 +224,7 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+    const [archivingId, setArchivingId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
@@ -284,7 +289,7 @@ export default function OffersIndex({
     }, [brandQuery, filters.brand]);
 
     const hasDeploying = useMemo(
-        () => rows.some((offer) => offer.status === 'deploying'),
+        () => rows.some((offer) => offer.status === 'deploying' || offer.status === 'archiving'),
         [rows],
     );
 
@@ -343,6 +348,22 @@ export default function OffersIndex({
         router.post(route('offers.provision', offer.id), {}, {
             preserveScroll: true,
             onFinish: () => setProvisioningId(null),
+        });
+    };
+
+    const archiveOffer = (offer) => {
+        const ok = window.confirm(
+            `Архівувати ${offer.domain}?\n\n`
+            + 'Сайт буде знято з Hestia і Cloudflare. Домен лишиться в Dynadot для перепродажу.',
+        );
+        if (!ok) {
+            return;
+        }
+
+        setArchivingId(offer.id);
+        router.post(route('offers.archive', offer.id), {}, {
+            preserveScroll: true,
+            onFinish: () => setArchivingId(null),
         });
     };
 
@@ -425,6 +446,11 @@ export default function OffersIndex({
             {errors?.provision && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.provision}</p>
+                </div>
+            )}
+            {errors?.archive && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.archive}</p>
                 </div>
             )}
 
@@ -780,6 +806,17 @@ export default function OffersIndex({
                                                 </button>
                                             ) : (
                                                 <span className="field-hint">—</span>
+                                            )}
+                                            {canManageOffer(offer) && !['archiving', 'archived'].includes(offer.status) && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    disabled={archivingId === offer.id || offer.status === 'deploying'}
+                                                    onClick={() => archiveOffer(offer)}
+                                                    title="Зняти з Hestia/Cloudflare, домен лишити в Dynadot"
+                                                >
+                                                    {archivingId === offer.id ? '…' : '📦'}
+                                                </button>
                                             )}
                                         </div>
                                     </td>

@@ -139,6 +139,21 @@ class CloudflareClient
         return $this->findZoneByName($settings, $domain);
     }
 
+    public function deleteZone(UserSetting $settings, string $zoneId): void
+    {
+        $zoneId = trim($zoneId);
+
+        if ($zoneId === '') {
+            return;
+        }
+
+        $response = $this->request($settings, 'DELETE', '/zones/'.$zoneId);
+
+        if (! ($response['success'] ?? false)) {
+            throw new RuntimeException('Cloudflare delete zone: '.$this->extractError($response));
+        }
+    }
+
     private function setZoneSetting(UserSetting $settings, string $zoneId, string $setting, string $value): void
     {
         $response = $this->request($settings, 'PATCH', '/zones/'.$zoneId.'/settings/'.$setting, [
@@ -349,6 +364,7 @@ class CloudflareClient
             'POST' => $pending->post($url, $body),
             'PUT' => $pending->put($url, $body),
             'PATCH' => $pending->patch($url, $body),
+            'DELETE' => $pending->delete($url, $body),
             default => throw new RuntimeException('Unsupported Cloudflare method: '.$method),
         };
 

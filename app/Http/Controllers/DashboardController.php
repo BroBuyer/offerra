@@ -12,6 +12,7 @@ class DashboardController extends Controller
     {
         $dbOffers = Offer::query()
             ->where('user_id', auth()->id())
+            ->whereNotIn('status', ['archived', 'archiving'])
             ->orderByDesc('created_at')
             ->get();
 

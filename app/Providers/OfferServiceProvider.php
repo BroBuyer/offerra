@@ -4,11 +4,14 @@ namespace App\Providers;
 
 use App\Services\DeployConnection;
 use App\Services\DeployService;
+use App\Services\HestiaClient;
+use App\Services\CloudflareClient;
 use App\Services\KeitaroClient;
 use App\Services\OfferConfigBuilder;
 use App\Services\OfferGenerator;
 use App\Services\OfferScanner;
 use App\Services\OfferStatusReconciler;
+use App\Services\OfferTeardownService;
 use App\Services\OfferVerificationFileService;
 use App\Services\TemplateCatalog;
 use Illuminate\Support\ServiceProvider;
@@ -58,6 +61,15 @@ class OfferServiceProvider extends ServiceProvider
             return new OfferStatusReconciler(
                 $app->make(DeployConnection::class),
                 $app->make(KeitaroClient::class),
+                config('offerra.offers_path'),
+            );
+        });
+
+        $this->app->singleton(OfferTeardownService::class, function ($app) {
+            return new OfferTeardownService(
+                $app->make(HestiaClient::class),
+                $app->make(CloudflareClient::class),
+                $app->make(OfferVerificationFileService::class),
                 config('offerra.offers_path'),
             );
         });

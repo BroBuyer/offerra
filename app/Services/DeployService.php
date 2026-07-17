@@ -63,6 +63,10 @@ class DeployService
             );
         }
 
+        if (in_array($offer->status, ['archived', 'archiving'], true)) {
+            throw new RuntimeException('Архівний оффер не можна деплоїти.');
+        }
+
         $offer->update([
             'status' => 'deploying',
             'deploy_error' => null,

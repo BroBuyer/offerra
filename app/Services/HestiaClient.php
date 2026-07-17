@@ -99,6 +99,22 @@ class HestiaClient
         return array_key_exists($domain, $decoded);
     }
 
+    public function deleteWebDomain(UserSetting $settings, string $domain): void
+    {
+        $user = trim((string) $settings->deploy_username);
+        $domain = strtolower(trim($domain));
+
+        if ($user === '' || $domain === '') {
+            throw new RuntimeException('Hestia user або домен порожній.');
+        }
+
+        if (! $this->domainExists($settings, $user, $domain)) {
+            return;
+        }
+
+        $this->api($settings, 'v-delete-web-domain', [$user, $domain]);
+    }
+
     public function serverIp(UserSetting $settings): string
     {
         $host = trim((string) $settings->deploy_host);
@@ -127,7 +143,7 @@ class HestiaClient
     {
         [$body, $code] = $this->apiCall($settings, $command, $args, $timeout);
 
-        if ($code === 4 && $command === 'v-add-web-domain') {
+        if ($code === 4 && in_array($command, ['v-add-web-domain', 'v-delete-web-domain'], true)) {
             return;
         }
 

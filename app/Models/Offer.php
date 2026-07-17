@@ -26,6 +26,9 @@ class Offer extends Model
         'remote_path',
         'deployed_at',
         'deploy_error',
+        'archived_at',
+        'archived_by',
+        'teardown_meta',
         'submitted_for_indexing',
         'indexed_at',
         'verification_filename',
@@ -41,16 +44,33 @@ class Offer extends Model
     {
         return [
             'deployed_at' => 'datetime',
+            'archived_at' => 'datetime',
             'submitted_for_indexing' => 'boolean',
             'indexed_at' => 'datetime',
             'provision_infrastructure' => 'boolean',
             'infra_meta' => 'array',
+            'teardown_meta' => 'array',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function archivedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'archived_by');
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === 'archived';
+    }
+
+    public function isArchiving(): bool
+    {
+        return $this->status === 'archiving';
     }
 
     /**
@@ -129,6 +149,8 @@ class Offer extends Model
             'deploy_panel' => $this->deploy_panel_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'deploy_error' => $this->deploy_error,
+            'archived_at' => $this->archived_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
+            'teardown_meta' => $this->teardown_meta ?? [],
             'submitted_for_indexing' => $this->submitted_for_indexing,
             'indexed_at' => $this->indexed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'date' => $this->created_at?->format('Y-m-d'),

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\DeployService;
 use App\Services\InfrastructureProvisioner;
 use App\Services\OfferGenerator;
+use App\Services\OfferTeardownService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -96,11 +97,17 @@ class OfferController extends Controller
         return in_array($perPage, self::PER_PAGE_OPTIONS, true) ? $perPage : 30;
     }
 
-    private function offerScopeQuery(User $user): Builder
+    private function offerScopeQuery(User $user, bool $archived = false): Builder
     {
         $query = Offer::query()
             ->with('user')
-            ->orderByDesc('created_at');
+            ->orderByDesc($archived ? 'archived_at' : 'created_at');
+
+        if ($archived) {
+            $query->whereIn('status', ['archived', 'teardown_failed']);
+        } else {
+            $query->whereNotIn('status', ['archived', 'teardown_failed']);
+        }
 
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
@@ -392,6 +399,71 @@ class OfferController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function archiveIndex(DeployService $deploy): Response
+    {
+        $user = auth()->user();
+        $filters = $this->indexFilters($user);
+        $baseQuery = $this->offerScopeQuery($user, archived: true);
+
+        $query = clone $baseQuery;
+        if ($filters['brand'] !== '') {
+            $query->where('brand', 'like', '%'.$filters['brand'].'%');
+        }
+
+        $offers = $query
+            ->paginate($filters['per_page'], ['*'], 'page', $filters['page'])
+            ->withQueryString()
+            ->through(fn (Offer $offer) => $offer->toPanelArray());
+
+        return Inertia::render('Panel/Offers/Archive', [
+            'offers' => $offers,
+            'filters' => $filters,
+            'perPageOptions' => self::PER_PAGE_OPTIONS,
+            'showUserColumn' => $user->isAdmin(),
+            'users' => $user->isAdmin()
+                ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
+                : [],
+        ]);
+    }
+
+    public function archive(Offer $offer, OfferTeardownService $teardown): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        try {
+            $teardown->enqueueArchive($offer, auth()->user());
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['archive' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Архівація запущена: {$offer->domain}. Hestia і Cloudflare будуть прибрані, домен лишиться в Dynadot.");
+    }
+
+    public function retryArchive(Offer $offer, OfferTeardownService $teardown): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        if ($offer->status !== 'teardown_failed') {
+            return redirect()->back()->withErrors(['archive' => 'Повтор доступний лише для офферів з помилкою архівації.']);
+        }
+
+        try {
+            $teardown->enqueueArchive($offer->fresh(), auth()->user());
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['archive' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Повтор архівації: {$offer->domain}.");
     }
 
     private function authorizeOfferManagement(Offer $offer): void

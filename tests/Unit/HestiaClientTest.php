@@ -106,4 +106,50 @@ class HestiaClientTest extends TestCase
         $this->assertFalse($result['ok']);
         $this->assertStringContainsString('213.176.115.14', $result['message']);
     }
+
+    public function test_delete_web_domain_skips_when_missing(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::sequence()
+                ->push('{}', 200, ['hestia-exit-code' => '0'])
+                ->push('', 200, ['hestia-exit-code' => '0']),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        (new HestiaClient)->deleteWebDomain($settings, 'gone.example');
+
+        Http::assertSentCount(1);
+    }
+
+    public function test_delete_web_domain_calls_v_delete_when_exists(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::sequence()
+                ->push('{"old.example":{"DOMAIN":"old.example"}}', 200, ['hestia-exit-code' => '0'])
+                ->push('', 200, ['hestia-exit-code' => '0']),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        (new HestiaClient)->deleteWebDomain($settings, 'old.example');
+
+        Http::assertSent(function ($request) {
+            $data = $request->data();
+
+            return ($data['cmd'] ?? '') === 'v-delete-web-domain'
+                && ($data['arg1'] ?? '') === 'user'
+                && ($data['arg2'] ?? '') === 'old.example';
+        });
+    }
 }
