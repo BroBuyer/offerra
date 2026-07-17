@@ -74,7 +74,7 @@ class KeitaroClient
             throw new RuntimeException('Keitaro: неочікувана відповідь при створенні кампанії.');
         }
 
-        $this->ensureDefaultStream($settings, $baseUrl, $apiKey, $campaignId);
+        $this->ensureDefaultStream($settings, $campaignId);
 
         return [
             'id' => $campaignId,
