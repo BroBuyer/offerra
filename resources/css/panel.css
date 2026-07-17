@@ -995,6 +995,21 @@ a:hover { text-decoration: underline; }
   cursor: wait;
 }
 
+.btn-archive {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.btn-archive:hover:not(:disabled) {
+  color: #fca5a5;
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.btn-archive:disabled {
+  opacity: 0.55;
+}
+
 .btn-spinner {
   width: 0.9rem;
   height: 0.9rem;

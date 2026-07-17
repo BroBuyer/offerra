@@ -25,6 +25,8 @@ function TrashIcon() {
         </svg>
     );
 }
+
+function statusBadge(status) {
     switch (status) {
         case 'deployed':
             return <span className="badge badge-ok">На сервері</span>;
