@@ -4,7 +4,27 @@ import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
-function statusBadge(status) {
+function TrashIcon() {
+    return (
+        <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M3 6h18" />
+            <path d="M8 6V4h8v2" />
+            <path d="M19 6l-1 14H6L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+        </svg>
+    );
+}
     switch (status) {
         case 'deployed':
             return <span className="badge badge-ok">На сервері</span>;
@@ -810,12 +830,17 @@ export default function OffersIndex({
                                             {canManageOffer(offer) && !['archiving', 'archived'].includes(offer.status) && (
                                                 <button
                                                     type="button"
-                                                    className="btn btn-ghost btn-sm"
+                                                    className="btn btn-ghost btn-sm btn-archive"
                                                     disabled={archivingId === offer.id || offer.status === 'deploying'}
                                                     onClick={() => archiveOffer(offer)}
-                                                    title="Зняти з Hestia/Cloudflare, домен лишити в Dynadot"
+                                                    title="Архівувати: зняти з Hestia/Cloudflare (домен лишиться в Dynadot)"
+                                                    aria-label={`Архівувати ${offer.domain}`}
                                                 >
-                                                    {archivingId === offer.id ? '…' : '📦'}
+                                                    {archivingId === offer.id ? (
+                                                        <span className="btn-spinner" aria-hidden="true" />
+                                                    ) : (
+                                                        <TrashIcon />
+                                                    )}
                                                 </button>
                                             )}
                                         </div>
