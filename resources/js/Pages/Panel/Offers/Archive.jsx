@@ -120,15 +120,35 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                                             </td>
                                         )}
                                         <td>
-                                            <button
-                                                type="button"
-                                                className="domain-copy"
-                                                onClick={() => copyDomain(offer)}
-                                                title="Скопіювати домен"
-                                            >
-                                                {offer.domain}
-                                                {copiedDomainId === offer.id ? ' ✓' : ''}
-                                            </button>
+                                            <div className="domain-cell">
+                                                <span className="domain-cell__name">{offer.domain}</span>
+                                                <button
+                                                    type="button"
+                                                    className={`domain-copy${copiedDomainId === offer.id ? ' is-copied' : ''}`}
+                                                    onClick={() => copyDomain(offer)}
+                                                    title="Скопіювати домен"
+                                                    aria-label={`Скопіювати ${offer.domain}`}
+                                                >
+                                                    {copiedDomainId === offer.id ? (
+                                                        <span aria-hidden="true">✓</span>
+                                                    ) : (
+                                                        <svg
+                                                            aria-hidden="true"
+                                                            viewBox="0 0 24 24"
+                                                            width="14"
+                                                            height="14"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <rect x="9" y="9" width="13" height="13" rx="2" />
+                                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            </div>
                                         </td>
                                         <td>{offer.brand}</td>
                                         <td>{offer.geo}</td>

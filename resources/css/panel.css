@@ -1069,7 +1069,8 @@ tr:last-child td { border-bottom: none; }
   max-width: 14rem;
 }
 
-.domain-cell a {
+.domain-cell a,
+.domain-cell__name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
