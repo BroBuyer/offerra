@@ -217,6 +217,58 @@ class DeployService
         }
     }
 
+    public function pushConfig(User $user, Offer $offer): void
+    {
+        @set_time_limit(120);
+
+        $offer->loadMissing('user.settings');
+        $settings = $user->settings;
+
+        if (! $this->settingsReady($settings)) {
+            throw new RuntimeException('Заповніть host, користувача і пароль SFTP у налаштуваннях.');
+        }
+
+        $this->generator->refreshConfig($offer->fresh());
+        $localPath = $this->generator->ensureLocalFolder($offer->fresh());
+        $configLocal = $localPath.'/includes/config.php';
+
+        if (! File::isFile($configLocal)) {
+            throw new RuntimeException('Локальний includes/config.php не знайдено.');
+        }
+
+        $config = $this->configFromSettings($settings);
+        $filesystem = $this->connection->connect($config, 60);
+        $remotePath = filled($offer->remote_path)
+            ? rtrim((string) $offer->remote_path, '/')
+            : $this->connection->resolveExistingRemotePath(
+                $filesystem,
+                $config['path_template'],
+                $config['username'],
+                $offer->domain,
+            );
+
+        if ($remotePath === null) {
+            $tried = $this->connection->resolveRemotePathCandidates(
+                $config['path_template'],
+                $config['username'],
+                $offer->domain,
+            );
+
+            throw new RuntimeException(
+                'Папка на сервері не знайдена. Перевірені шляхи: '.implode(', ', $tried).'.',
+            );
+        }
+
+        $remoteConfig = rtrim($remotePath, '/').'/includes/config.php';
+        $this->knownRemoteDirs = [];
+        $this->ensureRemoteDirectory($filesystem, dirname($remoteConfig));
+        $filesystem->write($remoteConfig, File::get($configLocal));
+
+        if (! $offer->remote_path) {
+            $offer->update(['remote_path' => $remotePath]);
+        }
+    }
+
     public function settingsReady(?UserSetting $settings): bool
     {
         return $settings

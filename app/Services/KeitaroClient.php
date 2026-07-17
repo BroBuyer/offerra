@@ -259,7 +259,8 @@ class KeitaroClient
 
         return str_contains($normalized, 'already')
             || str_contains($normalized, 'exists')
-            || str_contains($normalized, 'duplicate');
+            || str_contains($normalized, 'duplicate')
+            || str_contains($normalized, 'only one default flow');
     }
 
     /**
