@@ -77,7 +77,6 @@ function formatDomainPrice(price) {
 
 function buildDefaults(templates) {
     const defaultTemplate = templates[0]?.id ?? 'default';
-    const defaultLanguages = templates[0]?.languages ?? [];
 
     return {
         brand: '',
@@ -85,10 +84,10 @@ function buildDefaults(templates) {
         min_deposit: '250',
         currency: 'EUR',
         template: defaultTemplate,
-        geo: 'TR',
-        lang: defaultLanguages[0]?.code ?? 'en',
-        phone: 'tr',
-        phone_countries: ['tr'],
+        geo: '',
+        lang: '',
+        phone: '',
+        phone_countries: [],
         create_keitaro: true,
         ...defaultInfraOptions(false),
     };
@@ -164,17 +163,21 @@ export default function OffersCreate({
     const updateTemplate = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const lang = templateId === 'multilang'
+        const wasMultilang = isMultilangTemplate(data.template);
+        const isMultilang = isMultilangTemplate(templateId);
+        const lang = isMultilang
             ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
-            : (langs.some((item) => item.code === data.lang)
-                ? data.lang
-                : langs[0]?.code ?? '');
+            : (data.lang && langs.some((item) => item.code === data.lang) ? data.lang : '');
 
         setData((prev) => ({
             ...prev,
             template: templateId,
             lang,
-            ...(isMultilangTemplate(templateId) ? { geo: MULTILANG_GEO } : {}),
+            ...(isMultilang
+                ? { geo: MULTILANG_GEO }
+                : wasMultilang
+                    ? { geo: '', phone: '', phone_countries: [] }
+                    : {}),
         }));
     };
 
@@ -202,7 +205,31 @@ export default function OffersCreate({
             return;
         }
 
-        const resolved = resolveMarket(raw, geoPresets, availableLanguages);
+        const code = normalizeGeo(raw);
+
+        if (code.length === 0) {
+            setData((prev) => ({
+                ...prev,
+                geo: '',
+                lang: '',
+                phone: '',
+                phone_countries: [],
+            }));
+            return;
+        }
+
+        if (code.length < 2) {
+            setData((prev) => ({
+                ...prev,
+                geo: code,
+                lang: '',
+                phone: '',
+                phone_countries: [],
+            }));
+            return;
+        }
+
+        const resolved = resolveMarket(code, geoPresets, availableLanguages);
         setData((prev) => {
             const countries = new Set([
                 ...normalizePhoneCountries(prev.phone_countries, prev.phone),
@@ -214,10 +241,9 @@ export default function OffersCreate({
                 ...prev,
                 geo: resolved.geo,
                 ...(resolved.currency ? { currency: resolved.currency } : {}),
-                phone_countries: list,
+                phone_countries: list.length > 0 ? list : (resolved.phone ? [resolved.phone] : []),
                 phone: resolved.phone,
-                // Multilang: мова на ленді керується URL (`/fr/...`), а не вибором тут.
-                lang: isMultilangTemplate(selectedTemplate?.id) ? 'en' : resolved.lang,
+                lang: resolved.lang,
             };
         });
     };
@@ -755,8 +781,15 @@ export default function OffersCreate({
                                     id="lang"
                                     value={data.lang}
                                     onChange={(e) => update('lang', e.target.value)}
-                                    disabled={isMultilangTemplate(selectedTemplate?.id) || availableLanguages.length === 0}
+                                    disabled={
+                                        isMultilangTemplate(selectedTemplate?.id)
+                                        || availableLanguages.length === 0
+                                        || data.geo.length < 2
+                                    }
                                 >
+                                    <option value="">
+                                        {data.geo.length < 2 ? 'Спочатку вкажіть GEO' : '— оберіть —'}
+                                    </option>
                                     {availableLanguages.map((item) => (
                                         <option key={item.code} value={item.code}>
                                             {item.code} — {item.name}
@@ -777,6 +810,7 @@ export default function OffersCreate({
                                     options={phoneOptions}
                                     selected={selectedPhones}
                                     onToggle={togglePhoneCountry}
+                                    disabled={!isMultilangTemplate(data.template) && data.geo.length < 2}
                                 />
                                 <p className="field-hint">
                                     За IP (Cloudflare) підставляється код зі списку, інакше — дефолтний.
@@ -788,12 +822,17 @@ export default function OffersCreate({
                                     id="phone"
                                     value={data.phone}
                                     onChange={(e) => update('phone', e.target.value.toLowerCase())}
+                                    disabled={selectedPhones.length === 0}
                                 >
-                                    {selectedPhones.map((code) => (
-                                        <option key={code} value={code}>
-                                            {code.toUpperCase()}
-                                        </option>
-                                    ))}
+                                    {selectedPhones.length === 0 ? (
+                                        <option value="">Спочатку вкажіть GEO</option>
+                                    ) : (
+                                        selectedPhones.map((code) => (
+                                            <option key={code} value={code}>
+                                                {code.toUpperCase()}
+                                            </option>
+                                        ))
+                                    )}
                                 </select>
                             </div>
                         </div>

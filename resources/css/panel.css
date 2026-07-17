@@ -758,8 +758,18 @@ a:hover { text-decoration: underline; }
 }
 
 .phone-geo-select.is-open .phone-geo-select__trigger,
-.phone-geo-select__trigger:hover {
+.phone-geo-select__trigger:hover:not(:disabled) {
   border-color: var(--accent);
+}
+
+.phone-geo-select.is-disabled .phone-geo-select__trigger,
+.phone-geo-select__trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.phone-geo-select.is-disabled .phone-geo-select__value {
+  color: var(--muted);
 }
 
 .phone-geo-select__value {

@@ -44,7 +44,7 @@ export function uniquePhonePresets(geoPresets) {
     });
 }
 
-export default function PhoneGeoSelect({ options, selected, onToggle }) {
+export default function PhoneGeoSelect({ options, selected, onToggle, disabled = false }) {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const rootRef = useRef(null);
@@ -90,7 +90,9 @@ export default function PhoneGeoSelect({ options, selected, onToggle }) {
         };
     }, [open]);
 
-    const summary = selected.length
+    const summary = disabled
+        ? 'Спочатку вкажіть GEO'
+        : selected.length
         ? (() => {
             const count = selected.length;
             const optionsCount = Array.isArray(options) ? options.length : 0;
@@ -111,12 +113,17 @@ export default function PhoneGeoSelect({ options, selected, onToggle }) {
         : 'Оберіть країни…';
 
     return (
-        <div className={`phone-geo-select${open ? ' is-open' : ''}`} ref={rootRef}>
+        <div className={`phone-geo-select${open ? ' is-open' : ''}${disabled ? ' is-disabled' : ''}`} ref={rootRef}>
             <button
                 type="button"
                 className="phone-geo-select__trigger"
-                onClick={() => setOpen((value) => !value)}
+                onClick={() => {
+                    if (!disabled) {
+                        setOpen((value) => !value);
+                    }
+                }}
                 aria-expanded={open}
+                disabled={disabled}
             >
                 <span className="phone-geo-select__value">{summary}</span>
                 <span className="phone-geo-select__badge">{selected.length}</span>
