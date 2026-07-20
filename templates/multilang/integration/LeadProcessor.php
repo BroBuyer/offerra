@@ -147,7 +147,7 @@ final class LeadProcessor
             $payload['lead_language'] = $language;
         }
 
-        return array_merge($payload, crm_aff_subs_resolved($lead), self::crmLangSpamSubs($language));
+        return array_merge($payload, crm_aff_subs_resolved($lead));
     }
 
     public static function languageMatchesIpGeo(string $language): bool
@@ -161,14 +161,40 @@ final class LeadProcessor
         return $match === null || $match;
     }
 
-    /** @return array<string, string> */
-    private static function crmLangSpamSubs(string $language): array
+    private static function detectContentSpamReason(array $lead): ?string
     {
+        $language = strtolower(trim((string) ($lead['language'] ?? SITE_LANG)));
+
         if (self::languageMatchesIpGeo($language)) {
-            return [];
+            return null;
         }
 
-        return ['aff_sub12' => 'SPAM'];
+        return 'LANG_MISMATCH';
+    }
+
+    /** @return array<string, string> */
+    private static function applySpamMarkers(array $crmData, string $reason): array
+    {
+        $crmData['aff_sub12'] = 'SPAM';
+        $crmData['aff_sub13'] = $reason;
+
+        return $crmData;
+    }
+
+    public static function resolveSpamReason(array $lead, ?string $preflightReason = null): ?string
+    {
+        if ($preflightReason !== null && $preflightReason !== '') {
+            return $preflightReason;
+        }
+
+        require_once __DIR__ . '/KeitaroClickVerifier.php';
+        $ktReason = KeitaroClickVerifier::verifyLead($lead);
+
+        if ($ktReason !== null) {
+            return $ktReason;
+        }
+
+        return self::detectContentSpamReason($lead);
     }
 
     public static function sendToCrm(array $crmData): array
@@ -363,13 +389,16 @@ final class LeadProcessor
         $ipCountry = self::detectIpCountry();
         $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
-        $langSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+        $spamReason = trim((string) ($crmData['aff_sub13'] ?? ''));
+        $isSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
         $expectedLangs = function_exists('ip_country_allowed_langs')
             ? ip_country_allowed_langs($ipCountry)
             : [];
 
-        if ($crmSuccess && $langSpam) {
-            $status = '⚠️ LEAD ACCEPTED (LANG SPAM)';
+        if ($crmSuccess && $isSpam && $spamReason !== '') {
+            $status = '⚠️ LEAD ACCEPTED (' . self::escapeTelegramHtml($spamReason) . ')';
+        } elseif ($crmSuccess && $isSpam) {
+            $status = '⚠️ LEAD ACCEPTED (SPAM)';
         }
 
         $lines = [
@@ -386,7 +415,7 @@ final class LeadProcessor
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
             '<b>Country (CRM):</b> ' . self::escapeTelegramHtml((string) ($crmData['country_code'] ?? self::crmCountryCode())),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
-            '<b>Lang spam:</b> ' . ($langSpam ? '⚠️ SPAM (aff_sub12)' : '✅'),
+            '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
             '<b>Expected langs:</b> ' . self::escapeTelegramHtml(
                 $expectedLangs !== [] ? implode(', ', $expectedLangs) : '— (no mapping)'
             ),
@@ -410,7 +439,7 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
-    public static function process(array $lead): array
+    public static function process(array $lead, ?string $preflightSpamReason = null): array
     {
         $firstName = trim((string) ($lead['first_name'] ?? $lead['fname'] ?? ''));
         $lastName = trim((string) ($lead['last_name'] ?? $lead['lname'] ?? ''));
@@ -426,6 +455,12 @@ final class LeadProcessor
         }
 
         $crmData = self::buildCrmPayload($lead);
+
+        $spamReason = self::resolveSpamReason($lead, $preflightSpamReason);
+        if ($spamReason !== null) {
+            $crmData = self::applySpamMarkers($crmData, $spamReason);
+        }
+
         $crmResult = self::sendToCrm($crmData);
         $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];

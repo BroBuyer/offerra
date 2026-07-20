@@ -11,15 +11,52 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/FormToken.php';
 require_once __DIR__ . '/LeadProcessor.php';
 
-/**
- * Soft-block: look like a normal success so bots/AI still “win”,
- * but nothing goes to CRM / Telegram.
- */
-function form_token_silent_ok(): void
+function resolve_preflight_spam_reason(): ?string
 {
-    http_response_code(200);
-    echo json_encode(FormToken::silentSuccessPayload(), JSON_UNESCAPED_UNICODE);
-    exit;
+    if (! FormToken::requestViaCloudflare()) {
+        return 'NO_CLOUDFLARE';
+    }
+
+    if (! FormToken::requestLooksSameOrigin()) {
+        return 'ORIGIN_MISMATCH';
+    }
+
+    if (FormToken::looksLikeBotUa()) {
+        return 'BOT_UA';
+    }
+
+    if (FormToken::submitRateExceeded()) {
+        return 'RATE_LIMIT';
+    }
+
+    return null;
+}
+
+function resolve_form_token_spam_reason(string $token): ?string
+{
+    if ($token === '') {
+        return 'FORM_TOKEN_MISSING';
+    }
+
+    $consumed = FormToken::consume($token);
+
+    if (! ($consumed['ok'] ?? false)) {
+        return match ((string) ($consumed['error'] ?? '')) {
+            'expired' => 'FORM_TOKEN_EXPIRED',
+            'missing_or_used' => 'FORM_TOKEN_USED',
+            default => 'FORM_TOKEN_INVALID',
+        };
+    }
+
+    if (! empty($consumed['drop'])) {
+        if (($consumed['error'] ?? '') === 'too_fast') {
+            return 'FORM_TOKEN_TOO_FAST';
+        }
+
+        return 'FORM_TOKEN_DROP';
+    }
+
+    return null;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -28,17 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (! FormToken::requestViaCloudflare() || ! FormToken::requestLooksSameOrigin()) {
-    form_token_silent_ok();
-}
-
-if (FormToken::looksLikeBotUa()) {
-    form_token_silent_ok();
-}
-
-if (FormToken::submitRateExceeded()) {
-    form_token_silent_ok();
-}
+$preflightReason = resolve_preflight_spam_reason();
 
 $lead = LeadProcessor::parsePayload();
 
@@ -51,14 +78,17 @@ if (! $lead) {
 $token = trim((string) ($lead['form_token'] ?? ''));
 unset($lead['form_token']);
 
-$consumed = FormToken::consume($token);
-if (! ($consumed['ok'] ?? false) || ! empty($consumed['drop'])) {
-    form_token_silent_ok();
+$spamReason = $preflightReason;
+
+if ($spamReason === null) {
+    $spamReason = resolve_form_token_spam_reason($token);
 }
 
-FormToken::hitSubmitRate();
+if ($spamReason === null) {
+    FormToken::hitSubmitRate();
+}
 
-$result = LeadProcessor::process($lead);
+$result = LeadProcessor::process($lead, $spamReason);
 $status = (int) ($result['http_status'] ?? 200);
 unset($result['http_status']);
 

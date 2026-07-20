@@ -147,17 +147,41 @@ final class LeadProcessor
             $payload['lead_language'] = $language;
         }
 
-        return array_merge($payload, crm_aff_subs_resolved($lead), self::crmGeoSpamSubs());
+        return array_merge($payload, crm_aff_subs_resolved($lead));
+    }
+
+    private static function detectContentSpamReason(array $lead): ?string
+    {
+        if (self::ipCountryMatchesOffer()) {
+            return null;
+        }
+
+        return 'GEO_MISMATCH';
     }
 
     /** @return array<string, string> */
-    private static function crmGeoSpamSubs(): array
+    private static function applySpamMarkers(array $crmData, string $reason): array
     {
-        if (self::ipCountryMatchesOffer()) {
-            return [];
+        $crmData['aff_sub12'] = 'SPAM';
+        $crmData['aff_sub13'] = $reason;
+
+        return $crmData;
+    }
+
+    public static function resolveSpamReason(array $lead, ?string $preflightReason = null): ?string
+    {
+        if ($preflightReason !== null && $preflightReason !== '') {
+            return $preflightReason;
         }
 
-        return ['aff_sub12' => 'SPAM'];
+        require_once __DIR__ . '/KeitaroClickVerifier.php';
+        $ktReason = KeitaroClickVerifier::verifyLead($lead);
+
+        if ($ktReason !== null) {
+            return $ktReason;
+        }
+
+        return self::detectContentSpamReason($lead);
     }
 
     public static function sendToCrm(array $crmData): array
@@ -352,7 +376,14 @@ final class LeadProcessor
         $ipCountry = self::detectIpCountry();
         $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
-        $geoSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+        $spamReason = trim((string) ($crmData['aff_sub13'] ?? ''));
+        $isSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+
+        if ($crmSuccess && $isSpam && $spamReason !== '') {
+            $status = '⚠️ LEAD ACCEPTED (' . self::escapeTelegramHtml($spamReason) . ')';
+        } elseif ($crmSuccess && $isSpam) {
+            $status = '⚠️ LEAD ACCEPTED (SPAM)';
+        }
 
         $lines = [
             '<b>' . $status . '</b>',
@@ -368,7 +399,7 @@ final class LeadProcessor
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
             '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::crmCountryCode()),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
-            '<b>Geo spam:</b> ' . ($geoSpam ? '⚠️ SPAM (aff_sub12)' : '—'),
+            '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
             '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
             '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
             '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
@@ -389,7 +420,7 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
-    public static function process(array $lead): array
+    public static function process(array $lead, ?string $preflightSpamReason = null): array
     {
         $firstName = trim((string) ($lead['first_name'] ?? $lead['fname'] ?? ''));
         $lastName = trim((string) ($lead['last_name'] ?? $lead['lname'] ?? ''));
@@ -404,15 +435,18 @@ final class LeadProcessor
             ];
         }
 
-        $geoSpam = ! self::ipCountryMatchesOffer();
         $crmData = self::buildCrmPayload($lead);
+
+        $spamReason = self::resolveSpamReason($lead, $preflightSpamReason);
+        if ($spamReason !== null) {
+            $crmData = self::applySpamMarkers($crmData, $spamReason);
+        }
+
         $crmResult = self::sendToCrm($crmData);
         $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];
 
-        $telegramSent = $geoSpam
-            ? false
-            : self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
+        $telegramSent = self::sendTelegram(self::buildTelegramMessage($crmSuccess, $crmData, $crmResult));
 
         return [
             'ok' => true,

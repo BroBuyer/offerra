@@ -29,6 +29,8 @@ class OfferConfigBuilder
         $tgGroupChat = $this->quote($settings->tg_group_chat_id ?? '');
         $keitaroUrl = $this->quote(rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/'));
         $keitaroToken = $this->quote($offer['keitaro_token'] ?? '');
+        $keitaroApiKey = $this->quote(SecretValue::normalize($settings->keitaro_api_key ?? ''));
+        $keitaroCampaignId = ! empty($offer['keitaro_campaign_id']) ? (int) $offer['keitaro_campaign_id'] : 0;
         $keitaroComment = ! empty($offer['keitaro_campaign_id'])
             ? " // кампанія #{$offer['keitaro_campaign_id']}"
             : '';
@@ -62,6 +64,7 @@ define('CRM_AFF_SUB9', '');
 define('CRM_AFF_SUB10', '');
 define('CRM_AFF_SUB11', '');
 define('CRM_AFF_SUB12', '');
+define('CRM_AFF_SUB13', '');
 
 // ─── Telegram ───────────────────────────────────────────────────────────────
 define('TG_BOT_TOKEN', {$tgToken});
@@ -85,6 +88,8 @@ define('FORM_TOKEN_DEBUG', false);
 define('KEITARO_ENABLED', true);
 define('KEITARO_TRACKER_URL', {$keitaroUrl});
 define('KEITARO_CAMPAIGN_TOKEN', {$keitaroToken});{$keitaroComment}
+define('KEITARO_CAMPAIGN_ID', {$keitaroCampaignId});
+define('KEITARO_API_KEY', {$keitaroApiKey});
 define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
 define('KEITARO_DEBUG', false);
 
