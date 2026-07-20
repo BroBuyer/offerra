@@ -197,6 +197,37 @@ final class LeadProcessor
         return self::detectContentSpamReason($lead);
     }
 
+    private static function formatKeitaroDetail(string $spamReason): string
+    {
+        if ($spamReason === '' || ! str_starts_with($spamReason, 'KT_')) {
+            return '—';
+        }
+
+        if (! class_exists('KeitaroClickVerifier', false)) {
+            require_once __DIR__ . '/KeitaroClickVerifier.php';
+        }
+
+        $detail = KeitaroClickVerifier::lastDetail();
+        if (! is_array($detail) || $detail === []) {
+            return '—';
+        }
+
+        $parts = [];
+        if (isset($detail['http'])) {
+            $parts[] = 'http='.(string) $detail['http'];
+        }
+        if (! empty($detail['error'])) {
+            $parts[] = (string) $detail['error'];
+        }
+        if (! empty($detail['body'])) {
+            $parts[] = (string) $detail['body'];
+        }
+
+        $text = trim(implode(' | ', $parts));
+
+        return $text !== '' ? substr($text, 0, 280) : '—';
+    }
+
     public static function sendToCrm(array $crmData): array
     {
         if (!function_exists('curl_init')) {
@@ -416,6 +447,7 @@ final class LeadProcessor
             '<b>Country (CRM):</b> ' . self::escapeTelegramHtml((string) ($crmData['country_code'] ?? self::crmCountryCode())),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
             '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
+            '<b>KT detail:</b> ' . self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
             '<b>Expected langs:</b> ' . self::escapeTelegramHtml(
                 $expectedLangs !== [] ? implode(', ', $expectedLangs) : '— (no mapping)'
             ),

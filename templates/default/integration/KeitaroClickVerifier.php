@@ -10,8 +10,19 @@ final class KeitaroClickVerifier
     /** @var array<string, string|null> */
     private static array $cache = [];
 
+    /** @var array{http?: int, body?: string, error?: string}|null */
+    private static ?array $lastDetail = null;
+
+    /** @return array{http?: int, body?: string, error?: string}|null */
+    public static function lastDetail(): ?array
+    {
+        return self::$lastDetail;
+    }
+
     public static function verifyLead(array $lead): ?string
     {
+        self::$lastDetail = null;
+
         if (! function_exists('keitaro_is_enabled') || ! keitaro_is_enabled()) {
             return null;
         }
@@ -21,6 +32,8 @@ final class KeitaroClickVerifier
         $trackerUrl = defined('KEITARO_TRACKER_URL') ? rtrim((string) KEITARO_TRACKER_URL, '/') : '';
 
         if ($apiKey === '' || $campaignId <= 0 || $trackerUrl === '') {
+            self::$lastDetail = ['error' => 'missing api key / campaign id / tracker url'];
+
             return 'KT_NOT_CONFIGURED';
         }
 
@@ -36,6 +49,7 @@ final class KeitaroClickVerifier
 
         $result = self::lookupClick($trackerUrl, $apiKey, $subid, $campaignId);
         self::$cache[$cacheKey] = $result;
+        self::writeDebugLog($subid, $campaignId, $result);
 
         return $result;
     }
@@ -43,16 +57,22 @@ final class KeitaroClickVerifier
     private static function lookupClick(string $baseUrl, string $apiKey, string $subid, int $campaignId): ?string
     {
         if (! function_exists('curl_init')) {
+            self::$lastDetail = ['error' => 'curl extension missing'];
+
             return 'KT_API_UNAVAILABLE';
         }
 
+        // Keitaro rejects "last_30_days" — use explicit from/to dates.
         $payload = [
             'columns' => ['sub_id', 'campaign_id', 'datetime'],
             'filters' => [
                 ['name' => 'sub_id', 'operator' => 'EQUALS', 'expression' => $subid],
             ],
             'limit' => 10,
-            'range' => ['interval' => 'last_30_days'],
+            'range' => [
+                'from' => gmdate('Y-m-d H:i:s', time() - 86400 * 30),
+                'to' => gmdate('Y-m-d H:i:s'),
+            ],
         ];
 
         $response = self::apiPost("{$baseUrl}/admin_api/v1/clicks/log", $apiKey, $payload);
@@ -63,14 +83,27 @@ final class KeitaroClickVerifier
 
         $rows = self::extractRows($response);
         if ($rows === []) {
+            self::$lastDetail = ['http' => 200, 'body' => 'rows=0'];
+
             return 'KT_CLICK_NOT_FOUND';
         }
 
         foreach ($rows as $row) {
             if ((int) ($row['campaign_id'] ?? 0) === $campaignId) {
+                self::$lastDetail = [
+                    'http' => 200,
+                    'body' => 'click_ok campaign='.$campaignId,
+                ];
+
                 return null;
             }
         }
+
+        $found = (int) ($rows[0]['campaign_id'] ?? 0);
+        self::$lastDetail = [
+            'http' => 200,
+            'body' => 'campaign_mismatch expected='.$campaignId.' found='.$found,
+        ];
 
         return 'KT_CAMPAIGN_MISMATCH';
     }
@@ -96,10 +129,16 @@ final class KeitaroClickVerifier
 
         $raw = curl_exec($ch);
         $errno = curl_errno($ch);
+        $error = (string) curl_error($ch);
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
         if ($raw === false) {
+            self::$lastDetail = [
+                'http' => $httpCode,
+                'error' => $error !== '' ? $error : 'curl_exec_failed',
+            ];
+
             if ($errno === CURLE_OPERATION_TIMEDOUT) {
                 return 'KT_API_TIMEOUT';
             }
@@ -108,15 +147,28 @@ final class KeitaroClickVerifier
         }
 
         if ($httpCode === 0) {
+            self::$lastDetail = ['http' => 0, 'error' => $error !== '' ? $error : 'no_http_code'];
+
             return 'KT_API_UNAVAILABLE';
         }
 
         if ($httpCode >= 400) {
+            self::$lastDetail = [
+                'http' => $httpCode,
+                'body' => substr((string) $raw, 0, 400),
+            ];
+
             return 'KT_API_ERROR';
         }
 
         $decoded = json_decode((string) $raw, true);
         if (! is_array($decoded)) {
+            self::$lastDetail = [
+                'http' => $httpCode,
+                'body' => substr((string) $raw, 0, 400),
+                'error' => 'invalid_json',
+            ];
+
             return 'KT_API_ERROR';
         }
 
@@ -140,5 +192,27 @@ final class KeitaroClickVerifier
         }
 
         return [];
+    }
+
+    private static function writeDebugLog(string $subid, int $campaignId, ?string $reason): void
+    {
+        $dir = __DIR__.DIRECTORY_SEPARATOR.'tokens';
+        if (! is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+
+        $detail = self::$lastDetail ?? [];
+        $line = implode("\t", [
+            date('c'),
+            $reason ?? 'OK',
+            'campaign='.$campaignId,
+            'subid='.$subid,
+            'http='.(string) ($detail['http'] ?? ''),
+            'error='.substr((string) ($detail['error'] ?? ''), 0, 120),
+            'body='.substr((string) ($detail['body'] ?? ''), 0, 200),
+            'ip='.(string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? ''),
+        ])."\n";
+
+        @file_put_contents($dir.DIRECTORY_SEPARATOR.'_kt_verify.log', $line, FILE_APPEND | LOCK_EX);
     }
 }
