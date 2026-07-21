@@ -471,6 +471,16 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
+    /** Clear fake-click spam — no CRM / Telegram noise. */
+    private static function shouldSilentDrop(?string $spamReason): bool
+    {
+        return in_array($spamReason, [
+            'NO_SUBID',
+            'KT_CLICK_NOT_FOUND',
+            'KT_CAMPAIGN_MISMATCH',
+        ], true);
+    }
+
     public static function process(array $lead, ?string $preflightSpamReason = null): array
     {
         $firstName = trim((string) ($lead['first_name'] ?? $lead['fname'] ?? ''));
@@ -486,9 +496,24 @@ final class LeadProcessor
             ];
         }
 
-        $crmData = self::buildCrmPayload($lead);
-
         $spamReason = self::resolveSpamReason($lead, $preflightSpamReason);
+
+        // Definitive fake-subid spam: look like success, skip CRM/TG.
+        if (self::shouldSilentDrop($spamReason)) {
+            return [
+                'ok' => true,
+                'http_status' => 200,
+                'crm_success' => true,
+                'lead_uuid' => null,
+                'telegram_sent' => false,
+                'thank_you_url' => FORM_THANK_YOU,
+                'lead_language' => strtolower(trim((string) ($lead['language'] ?? SITE_LANG))) ?: SITE_LANG,
+                'fullphone' => $phone,
+                'spam_silent' => $spamReason,
+            ];
+        }
+
+        $crmData = self::buildCrmPayload($lead);
         if ($spamReason !== null) {
             $crmData = self::applySpamMarkers($crmData, $spamReason);
         }
