@@ -178,7 +178,7 @@ HTML;
 
         $mirror->save();
 
-        if ($isNew || $mirror->alerted_at === null) {
+        if ($mirror->alerted_at === null) {
             $this->alertNewMirror($settings, $mirror);
         }
 
@@ -208,15 +208,25 @@ HTML;
 
     private function alertNewMirror(UserSetting $settings, MirrorDomain $mirror): void
     {
+        // Atomic claim — CSS/pixel/collect can race; only one request sends TG.
+        $claimed = MirrorDomain::query()
+            ->whereKey($mirror->id)
+            ->whereNull('alerted_at')
+            ->update(['alerted_at' => now()]);
+
+        if ($claimed !== 1) {
+            return;
+        }
+
+        $mirror->alerted_at = now();
+
         $text = "🪞 Дзеркало / клон\n"
             ."Домен: {$mirror->host}\n"
             .'Path: '.($mirror->last_path ?: '/')
             ."\nIP: ".($mirror->last_ip ?: '—')
             ."\nУ панелі: Дзеркала → увімкни редірект на свій офер.";
 
-        if ($this->telegram->send($settings, $text)) {
-            $mirror->forceFill(['alerted_at' => now()])->save();
-        }
+        $this->telegram->send($settings, $text);
     }
 
     private function normalizeRedirectUrl(string $url): string
