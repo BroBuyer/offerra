@@ -19,9 +19,8 @@ function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
-        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
+        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'nl' => 'nl-NL',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK',
-        'el' => 'el-GR', 'sv' => 'sv-SE', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
     ];
     $lang = strtolower(SITE_LANG);
 
@@ -109,37 +108,11 @@ function form_visitor_phone_country(): string
         return $ipCode;
     }
 
-    if (count($allowed) === 1) {
-        return $allowed[0];
-    }
-
-    if (in_array('gb', $allowed, true)) {
-        return 'gb';
-    }
-
     if ($default !== '' && in_array($default, $allowed, true)) {
         return $default;
     }
 
     return $allowed[0];
-}
-
-function offer_send_personalization_headers(): void
-{
-    if (headers_sent() || PHP_SAPI === 'cli') {
-        return;
-    }
-
-    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
-    $skip = ['send.php', 'form-token.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
-
-    if (in_array($script, $skip, true)) {
-        return;
-    }
-
-    header('Cache-Control: private, no-store, no-cache, must-revalidate');
-    header('Pragma: no-cache');
-    header('Vary: CF-IPCountry');
 }
 
 function platform_image_path(): string
@@ -185,12 +158,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' plateforme de trading sur mobile — graphique BTC/USDT en direct, carnet d\'ordres et interface d\'achat/vente';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — trading mobile avec graphiques de cryptomonnaies en temps réel';
 }
 
 function offer_is_preview(): bool
@@ -237,7 +210,6 @@ function asset(string $path): string
 
     return './'.ltrim($path, '/');
 }
-
 function asset_version(string $path): string
 {
     $url = asset($path);
@@ -253,43 +225,6 @@ function asset_version(string $path): string
 function e(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-
-/** Optional RUM / CWV collector — only when enabled in config. */
-function offer_vitals_boot(): void
-{
-    static $printed = false;
-
-    if ($printed) {
-        return;
-    }
-
-    if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED) {
-        return;
-    }
-
-    if (! defined('VITALS_ENDPOINT')) {
-        return;
-    }
-
-    $endpoint = trim((string) VITALS_ENDPOINT);
-
-    if ($endpoint === '') {
-        return;
-    }
-
-    $printed = true;
-    echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
-}
-
-if (defined('VITALS_ENABLED') && VITALS_ENABLED) {
-    register_shutdown_function('offer_vitals_boot');
-}
-
-/** @deprecated Token is issued via integration/form-token.php (JS only). */
-function form_token_issue(): string
-{
-    return '';
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());
