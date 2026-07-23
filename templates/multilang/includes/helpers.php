@@ -508,6 +508,34 @@ function offer_vitals_boot(): void
         return;
     }
 
+    // Never inject into XML / API responses — breaks Google sitemap parsing.
+    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? $_SERVER['SCRIPT_NAME'] ?? ''));
+    $skip = [
+        'sitemap.php',
+        'robots.php',
+        'send.php',
+        'form-token.php',
+        'visitor-geo.php',
+    ];
+
+    if (in_array($script, $skip, true)) {
+        return;
+    }
+
+    foreach (headers_list() as $header) {
+        if (stripos($header, 'Content-Type:') !== 0) {
+            continue;
+        }
+
+        $type = strtolower($header);
+        if (
+            ! str_contains($type, 'text/html')
+            && ! str_contains($type, 'application/xhtml')
+        ) {
+            return;
+        }
+    }
+
     $printed = true;
     echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
 }
