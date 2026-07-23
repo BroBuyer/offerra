@@ -127,12 +127,22 @@ class MirrorDomainController extends Controller
         }
 
         $enabled = (bool) $data['redirect_enabled'];
+        $status = $data['status'] ?? $mirror->status;
+
+        // Destination + "redirecting" status (or chosen offer) means enable,
+        // even if the checkbox was left unchecked by mistake.
+        if (
+            ! $enabled
+            && $redirectUrl !== ''
+            && ($status === MirrorDomain::STATUS_REDIRECTING || $offerId)
+        ) {
+            $enabled = true;
+        }
 
         if ($enabled && $redirectUrl === '') {
             return back()->withErrors(['redirect_url' => 'Вкажи URL або обери свій офер для редіректу.']);
         }
 
-        $status = $data['status'] ?? $mirror->status;
         if ($enabled) {
             $status = MirrorDomain::STATUS_REDIRECTING;
         } elseif ($status === MirrorDomain::STATUS_REDIRECTING) {
@@ -142,7 +152,7 @@ class MirrorDomainController extends Controller
         $mirror->update([
             'redirect_enabled' => $enabled,
             'redirect_offer_id' => $offerId,
-            'redirect_url' => $enabled ? $redirectUrl : ($redirectUrl ?: null),
+            'redirect_url' => $redirectUrl !== '' ? $redirectUrl : null,
             'status' => $status,
             'notes' => $data['notes'] ?? $mirror->notes,
         ]);

@@ -97,11 +97,11 @@ function ProbeSnippetModal({ probe, onClose }) {
 }
 
 function MirrorManageModal({ mirror, offers, onClose }) {
-    const { data, setData, patch, processing, errors, delete: destroy } = useForm({
+    const { data, setData, patch, processing, errors, delete: destroy, transform } = useForm({
         redirect_enabled: Boolean(mirror.redirect_enabled),
         redirect_offer_id: mirror.redirect_offer_id || '',
         redirect_url: mirror.redirect_url || '',
-        status: mirror.status || 'watching',
+        status: mirror.redirect_enabled ? 'redirecting' : (mirror.status || 'watching'),
         notes: mirror.notes || '',
     });
 
@@ -117,6 +117,21 @@ function MirrorManageModal({ mirror, offers, onClose }) {
 
     const save = (event) => {
         event.preventDefault();
+        transform((payload) => {
+            const url = String(payload.redirect_url || '').trim();
+            const enabled = Boolean(payload.redirect_enabled)
+                || (payload.status === 'redirecting' && url !== '')
+                || Boolean(payload.redirect_offer_id);
+
+            return {
+                ...payload,
+                redirect_enabled: enabled,
+                status: enabled
+                    ? 'redirecting'
+                    : (payload.status === 'redirecting' ? 'watching' : payload.status),
+            };
+        });
+
         patch(route('mirrors.update', mirror.id), {
             preserveScroll: true,
             onSuccess: () => onClose(),
@@ -133,6 +148,14 @@ function MirrorManageModal({ mirror, offers, onClose }) {
         });
     };
 
+    const setEnabled = (enabled) => {
+        setData((prev) => ({
+            ...prev,
+            redirect_enabled: enabled,
+            status: enabled ? 'redirecting' : (prev.status === 'redirecting' ? 'watching' : prev.status),
+        }));
+    };
+
     const onOfferChange = (value) => {
         const id = value ? Number(value) : '';
         setData((prev) => {
@@ -141,8 +164,27 @@ function MirrorManageModal({ mirror, offers, onClose }) {
                 ...prev,
                 redirect_offer_id: id,
                 redirect_url: offer ? `https://${offer.domain}/` : prev.redirect_url,
+                redirect_enabled: id ? true : prev.redirect_enabled,
+                status: id ? 'redirecting' : prev.status,
             };
         });
+    };
+
+    const onUrlChange = (value) => {
+        setData((prev) => ({
+            ...prev,
+            redirect_url: value,
+            redirect_enabled: value.trim() !== '' ? true : prev.redirect_enabled,
+            status: value.trim() !== '' ? 'redirecting' : prev.status,
+        }));
+    };
+
+    const onStatusChange = (value) => {
+        setData((prev) => ({
+            ...prev,
+            status: value,
+            redirect_enabled: value === 'redirecting' ? true : (value === 'ignored' ? false : prev.redirect_enabled),
+        }));
     };
 
     return (
@@ -178,11 +220,14 @@ function MirrorManageModal({ mirror, offers, onClose }) {
                             <input
                                 id={`redir-${mirror.id}`}
                                 type="checkbox"
-                                checked={data.redirect_enabled}
-                                onChange={(e) => setData('redirect_enabled', e.target.checked)}
+                                checked={Boolean(data.redirect_enabled)}
+                                onChange={(e) => setEnabled(e.target.checked)}
                             />
                             <span>Увімкнути редірект трафіку на мій офер</span>
                         </label>
+                        <p className="field-hint" style={{ margin: '0.35rem 0 0' }}>
+                            Обери офер або вкажи URL нижче — редірект увімкнеться автоматично.
+                        </p>
                     </div>
 
                     <div className="field" style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: '1fr 1fr' }}>
@@ -207,7 +252,7 @@ function MirrorManageModal({ mirror, offers, onClose }) {
                                 id={`url-${mirror.id}`}
                                 type="text"
                                 value={data.redirect_url}
-                                onChange={(e) => setData('redirect_url', e.target.value)}
+                                onChange={(e) => onUrlChange(e.target.value)}
                                 placeholder="https://my-offer.com/"
                             />
                         </div>
@@ -219,7 +264,7 @@ function MirrorManageModal({ mirror, offers, onClose }) {
                             <select
                                 id={`status-${mirror.id}`}
                                 value={data.status}
-                                onChange={(e) => setData('status', e.target.value)}
+                                onChange={(e) => onStatusChange(e.target.value)}
                             >
                                 <option value="new">Нове</option>
                                 <option value="watching">Спостерігаємо</option>
