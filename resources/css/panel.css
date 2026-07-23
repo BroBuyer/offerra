@@ -267,7 +267,6 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
 }
 
 .offers-page .page-header {
@@ -285,7 +284,7 @@ a:hover { text-decoration: underline; }
 
 .offers-page .table-wrap {
   flex: 1;
-  min-height: 16rem;
+  min-height: 0;
   overflow: auto;
 }
 
@@ -1216,7 +1215,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: 100%;
   margin-top: 0.5rem;
   padding: 0.75rem 0.9rem;
-  max-height: 12rem;
+  max-height: min(50vh, 22rem);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -1234,6 +1233,46 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.mirrors-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mirrors-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.85rem;
+  flex-shrink: 0;
+}
+
+.mirrors-kpi {
+  margin: 0;
+  flex: 1;
+  min-width: 16rem;
+  grid-template-columns: repeat(3, minmax(0, 7.5rem));
+}
+
+.mirrors-kpi .kpi-card {
+  padding: 0.65rem 0.85rem;
+}
+
+.mirrors-kpi .kpi-card-value {
+  font-size: 1.25rem;
+}
+
+.mirrors-filters {
+  margin: 0;
+}
+
+.modal-card--wide {
+  width: min(100%, 40rem);
 }
 
 .filter-bar {
