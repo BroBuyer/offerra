@@ -172,7 +172,12 @@ HTML;
 
         if ($mirror->redirect_enabled && filled($mirror->redirect_url)) {
             $mirror->status = MirrorDomain::STATUS_REDIRECTING;
-        } elseif ($mirror->status === MirrorDomain::STATUS_NEW && ! $isNew) {
+        } elseif (
+            $mirror->status === MirrorDomain::STATUS_NEW
+            && ! $isNew
+            && ! $recentlySeen
+        ) {
+            // Promote only on a later visit — not on same-page CSS/pixel/collect burst.
             $mirror->status = MirrorDomain::STATUS_WATCHING;
         }
 
