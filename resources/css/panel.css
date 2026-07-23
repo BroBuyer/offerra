@@ -971,6 +971,27 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
+.col-cwv {
+  width: 3.25rem;
+  text-align: center;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.cwv-mark {
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cwv-mark--on {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.cwv-mark--off {
+  color: var(--muted);
+}
+
 .dns-status--pending {
   color: #f59e0b;
 }

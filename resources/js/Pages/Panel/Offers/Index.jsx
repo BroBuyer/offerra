@@ -645,6 +645,12 @@ export default function OffersIndex({
                             <th>Шаблон</th>
                             <th>Панель</th>
                             <th>Keitaro</th>
+                            <th
+                                className="col-cwv"
+                                title="CWV (Core Web Vitals) — CDN-скрипт на ленді: детекція дзеркал і повернення трафіку з копій"
+                            >
+                                CWV
+                            </th>
                             <th>Створено</th>
                             <th className="col-deployed">Останній деплой</th>
                             <th>Статус</th>
@@ -713,6 +719,24 @@ export default function OffersIndex({
                                     <td>
                                         {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
                                     </td>
+                                    <td
+                                        className="col-cwv"
+                                        title={
+                                            offer.vitals_enabled
+                                                ? 'CWV увімкнено: CDN-скрипт на ленді (дзеркала / редірект з копій)'
+                                                : 'CWV вимкнено'
+                                        }
+                                    >
+                                        {offer.vitals_enabled ? (
+                                            <span className="cwv-mark cwv-mark--on" aria-label="CWV увімкнено">
+                                                ✓
+                                            </span>
+                                        ) : (
+                                            <span className="cwv-mark cwv-mark--off" aria-label="CWV вимкнено">
+                                                —
+                                            </span>
+                                        )}
+                                    </td>
                                     <td title={offer.date ?? undefined}>
                                         {formatCreatedDate(offer.date)}
                                     </td>
@@ -778,7 +802,7 @@ export default function OffersIndex({
                                                     type="button"
                                                     className="btn btn-ghost btn-sm"
                                                     onClick={() => setEditingOffer(offer)}
-                                                    title="Редагувати phone GEO / Keitaro"
+                                                    title="Редагувати phone GEO / Keitaro / CWV"
                                                 >
                                                     ✎
                                                 </button>

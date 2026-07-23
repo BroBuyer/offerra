@@ -157,7 +157,9 @@ export default function OfferEditModal({
                                 checked={data.vitals_enabled}
                                 onChange={(event) => setData('vitals_enabled', event.target.checked)}
                             />
-                            <span>CWV-collector (дзеркала / редірект з копій)</span>
+                            <span title="CWV — Core Web Vitals collector (дзеркала / редірект з копій)">
+                                CWV-collector (дзеркала / редірект з копій)
+                            </span>
                         </label>
                         <p className="field-hint">
                             Після «Зберегти» деплой з CDN-скриптом запуститься автоматично.

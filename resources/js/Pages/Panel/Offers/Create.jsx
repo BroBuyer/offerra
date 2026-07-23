@@ -866,7 +866,7 @@ export default function OffersCreate({
                     </div>
 
                     <div className="card" style={{ marginTop: '1rem' }}>
-                        <h3>CWV / дзеркала</h3>
+                        <h3 title="CWV — Core Web Vitals collector">CWV / дзеркала</h3>
                         <label className="field-check" htmlFor="vitals-enabled">
                             <input
                                 id="vitals-enabled"
