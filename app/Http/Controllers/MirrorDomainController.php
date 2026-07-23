@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MirrorDomain;
 use App\Models\Offer;
 use App\Models\User;
+use App\Services\MirrorProbeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,10 +14,11 @@ use Inertia\Response;
 
 class MirrorDomainController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, MirrorProbeService $mirrors): Response
     {
         /** @var User $user */
         $user = $request->user();
+        $settings = $user->settings()->firstOrCreate([]);
 
         $query = MirrorDomain::query()
             ->with(['redirectOffer:id,domain,brand', 'user:id,email'])
@@ -83,6 +85,10 @@ class MirrorDomainController extends Controller
                     ->when(! $user->isAdmin(), fn ($q) => $q->where('user_id', $user->id))
                     ->where('status', MirrorDomain::STATUS_NEW)
                     ->count(),
+            ],
+            'probe' => [
+                'endpoint' => $mirrors->endpointFor($settings),
+                'snippet' => $mirrors->testSnippetFor($settings),
             ],
         ]);
     }

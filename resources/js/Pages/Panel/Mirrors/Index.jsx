@@ -180,6 +180,72 @@ function MirrorRow({ mirror, offers, showUserColumn }) {
     );
 }
 
+function ProbeSnippetCard({ probe }) {
+    const [copied, setCopied] = useState(false);
+    const [open, setOpen] = useState(true);
+    const snippet = probe?.snippet || '';
+    const endpoint = probe?.endpoint || '';
+
+    const copy = async () => {
+        if (!snippet) {
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(snippet);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = snippet;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2000);
+    };
+
+    if (!snippet) {
+        return null;
+    }
+
+    return (
+        <div className="card mirrors-probe-card" style={{ marginBottom: '1rem' }}>
+            <div className="btn-row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <div>
+                    <h3 style={{ margin: 0 }}>Тестовий JS (cwv-collector)</h3>
+                    <p className="field-hint" style={{ margin: '0.35rem 0 0' }}>
+                        Скопіюй і встав перед <code>&lt;/body&gt;</code> на будь-якому ленді — пінг прилетить сюди.
+                    </p>
+                </div>
+                <div className="btn-row" style={{ gap: '0.4rem', margin: 0 }}>
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen((v) => !v)}>
+                        {open ? 'Сховати' : 'Показати'}
+                    </button>
+                    <button type="button" className={`btn btn-sm ${copied ? 'btn-primary' : 'btn-ghost'}`} onClick={copy}>
+                        {copied ? 'Скопійовано' : 'Копіювати'}
+                    </button>
+                </div>
+            </div>
+
+            {open && (
+                <>
+                    <p className="field-hint" style={{ marginTop: '0.85rem' }}>
+                        Endpoint: <code>{endpoint}</code>
+                    </p>
+                    <textarea
+                        className="mirrors-probe-code"
+                        readOnly
+                        value={snippet.trim()}
+                        rows={8}
+                        onFocus={(e) => e.target.select()}
+                        spellCheck={false}
+                    />
+                </>
+            )}
+        </div>
+    );
+}
+
 export default function MirrorsIndex({
     mirrors,
     filters,
@@ -187,6 +253,7 @@ export default function MirrorsIndex({
     users = [],
     showUserColumn = false,
     stats = {},
+    probe = null,
 }) {
     const { flash } = usePage().props;
     const rows = mirrors?.data ?? [];
@@ -243,6 +310,8 @@ export default function MirrorsIndex({
                     </div>
                 </div>
 
+                <ProbeSnippetCard probe={probe} />
+
                 <div className="card" style={{ marginBottom: '1rem' }}>
                     <div className="filter-bar" style={{ marginBottom: 0 }}>
                         <select
@@ -268,7 +337,7 @@ export default function MirrorsIndex({
                         )}
                     </div>
                     <p className="field-hint" style={{ marginTop: '0.75rem', marginBottom: 0 }}>
-                        Скрипт на ленді називається <code>cwv-collector.js</code> (схоже на RUM). Увімкни опцію при створенні офера або в редагуванні, потім задеплой.
+                        На оферах скрипт підключається як <code>cwv-collector.js</code>. Для тесту — блок вище (готовий inline).
                     </p>
                 </div>
 
