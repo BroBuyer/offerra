@@ -17,19 +17,38 @@ class TelemetryController extends Controller
             return $this->cors(response()->noContent());
         }
 
-        $host = (string) ($request->input('h') ?: $request->input('host') ?: $request->header('X-Host') ?: '');
+        $hostFromQuery = trim((string) ($request->input('h') ?: $request->input('host') ?: $request->header('X-Host') ?: ''));
         $path = (string) ($request->input('p') ?: $request->input('path') ?: '/');
 
-        if ($host === '' && $request->headers->has('Origin')) {
-            $origin = parse_url((string) $request->headers->get('Origin'), PHP_URL_HOST);
-            $host = is_string($origin) ? $origin : '';
+        $originHost = '';
+        if ($request->headers->has('Origin')) {
+            $parsed = parse_url((string) $request->headers->get('Origin'), PHP_URL_HOST);
+            $originHost = is_string($parsed) ? $parsed : '';
         }
 
-        $payload = $mirrors->handlePing($token, $host, [
-            'path' => $path,
-            'ip' => (string) $request->ip(),
-            'ua' => Str::limit((string) $request->userAgent(), 500, ''),
-        ]);
+        $refHost = '';
+        if ($request->headers->has('Referer')) {
+            $parsed = parse_url((string) $request->headers->get('Referer'), PHP_URL_HOST);
+            $refHost = is_string($parsed) ? $parsed : '';
+        }
+
+        if ($hostFromQuery === '') {
+            $payload = $mirrors->handlePing($token, $originHost !== '' ? $originHost : $refHost, [
+                'path' => $path,
+                'ip' => (string) $request->ip(),
+                'ua' => Str::limit((string) $request->userAgent(), 500, ''),
+                'host_trusted' => false,
+            ]);
+        } else {
+            $payload = $mirrors->handlePing($token, $hostFromQuery, [
+                'path' => $path,
+                'ip' => (string) $request->ip(),
+                'ua' => Str::limit((string) $request->userAgent(), 500, ''),
+                'host_trusted' => true,
+                'referer_host' => $refHost,
+                'origin_host' => $originHost,
+            ]);
+        }
 
         return $this->cors(response()->json($payload));
     }

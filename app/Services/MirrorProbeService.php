@@ -116,7 +116,14 @@ HTML;
     }
 
     /**
-     * @param  array{path?: string, ip?: string, ua?: string}  $meta
+     * @param  array{
+     *     path?: string,
+     *     ip?: string,
+     *     ua?: string,
+     *     host_trusted?: bool,
+     *     referer_host?: string,
+     *     origin_host?: string
+     * }  $meta
      * @return array{r?: string}
      */
     public function handlePing(string $token, string $rawHost, array $meta = []): array
@@ -145,12 +152,27 @@ HTML;
             return [];
         }
 
+        if ($this->isNoiseHost($host)) {
+            return [];
+        }
+
+        $trusted = (bool) ($meta['host_trusted'] ?? false);
+
+        if ($trusted && ! $this->hostMatchesBrowserContext($host, $meta)) {
+            return [];
+        }
+
         $mirror = MirrorDomain::query()->firstOrNew([
             'user_id' => $user->id,
             'host' => $host,
         ]);
 
         $isNew = ! $mirror->exists;
+
+        // CSS/pixel only have Referer — do not invent new mirrors / TG noise from bots.
+        if ($isNew && ! $trusted) {
+            return [];
+        }
 
         // CSS + pixel + collect can fire together; debounce hit counting.
         $recentlySeen = ! $isNew
@@ -183,7 +205,8 @@ HTML;
 
         $mirror->save();
 
-        if ($mirror->alerted_at === null) {
+        // Telegram only for trusted JS collect (real location.hostname).
+        if ($trusted && $mirror->alerted_at === null) {
             $this->alertNewMirror($settings, $mirror);
         }
 
@@ -196,6 +219,48 @@ HTML;
         }
 
         return [];
+    }
+
+    /**
+     * When the browser sends Referer/Origin, it must agree with claimed host.
+     *
+     * @param  array{referer_host?: string, origin_host?: string}  $meta
+     */
+    private function hostMatchesBrowserContext(string $host, array $meta): bool
+    {
+        $ref = $this->normalizeHost((string) ($meta['referer_host'] ?? ''));
+        $origin = $this->normalizeHost((string) ($meta['origin_host'] ?? ''));
+
+        if ($ref !== '' && $ref !== $host) {
+            return false;
+        }
+
+        if ($origin !== '' && $origin !== $host) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /** Well-known sites that never host our landers — common fake Referers. */
+    private function isNoiseHost(string $host): bool
+    {
+        $noise = [
+            'yandex.com', 'yandex.ru', 'ya.ru',
+            'google.com', 'google.ru', 'googleapis.com', 'gstatic.com',
+            'bing.com', 'yahoo.com', 'duckduckgo.com',
+            'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
+            'youtube.com', 'reddit.com', 'tiktok.com',
+            'wikipedia.org', 'cloudflare.com', 'cdnedge.io',
+        ];
+
+        foreach ($noise as $blocked) {
+            if ($host === $blocked || str_ends_with($host, '.'.$blocked)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isOwnedHost(User $user, string $host): bool

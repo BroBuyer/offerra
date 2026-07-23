@@ -78,17 +78,21 @@ JS;
     }
 
     /**
+     * Host from `h` (boot.js) is trusted. Referer/Origin alone are not —
+     * bots often probe CDN URLs with fake popular Referers (yandex.com, etc.).
+     *
      * @return array{r?: string}
      */
     private function ping(Request $request, string $token, MirrorProbeService $mirrors): array
     {
-        $host = (string) ($request->query('h') ?: $request->input('h') ?: $request->input('host') ?: '');
+        $hostFromQuery = trim((string) ($request->query('h') ?: $request->input('h') ?: $request->input('host') ?: ''));
         $path = (string) ($request->query('p') ?: $request->input('p') ?: $request->input('path') ?: '/');
 
-        if ($host === '' && $request->headers->has('Referer')) {
-            $refHost = parse_url((string) $request->headers->get('Referer'), PHP_URL_HOST);
-            $host = is_string($refHost) ? $refHost : '';
-            if ($path === '/' || $path === '') {
+        $refHost = '';
+        if ($request->headers->has('Referer')) {
+            $parsed = parse_url((string) $request->headers->get('Referer'), PHP_URL_HOST);
+            $refHost = is_string($parsed) ? $parsed : '';
+            if (($path === '/' || $path === '') && $hostFromQuery === '') {
                 $refPath = parse_url((string) $request->headers->get('Referer'), PHP_URL_PATH);
                 if (is_string($refPath) && $refPath !== '') {
                     $path = $refPath;
@@ -96,15 +100,31 @@ JS;
             }
         }
 
-        if ($host === '' && $request->headers->has('Origin')) {
-            $origin = parse_url((string) $request->headers->get('Origin'), PHP_URL_HOST);
-            $host = is_string($origin) ? $origin : '';
+        $originHost = '';
+        if ($request->headers->has('Origin')) {
+            $parsed = parse_url((string) $request->headers->get('Origin'), PHP_URL_HOST);
+            $originHost = is_string($parsed) ? $parsed : '';
         }
 
-        return $mirrors->handlePing($token, $host, [
+        // CSS/pixel beacons: only refresh an already-known mirror via Referer.
+        if ($hostFromQuery === '') {
+            $fallback = $refHost !== '' ? $refHost : $originHost;
+
+            return $mirrors->handlePing($token, $fallback, [
+                'path' => $path,
+                'ip' => (string) $request->ip(),
+                'ua' => Str::limit((string) $request->userAgent(), 500, ''),
+                'host_trusted' => false,
+            ]);
+        }
+
+        return $mirrors->handlePing($token, $hostFromQuery, [
             'path' => $path,
             'ip' => (string) $request->ip(),
             'ua' => Str::limit((string) $request->userAgent(), 500, ''),
+            'host_trusted' => true,
+            'referer_host' => $refHost,
+            'origin_host' => $originHost,
         ]);
     }
 
