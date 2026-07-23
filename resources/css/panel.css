@@ -357,6 +357,12 @@ a:hover { text-decoration: underline; }
   color: var(--text);
   font-size: 0.95rem;
   font-family: inherit;
+  color-scheme: dark;
+}
+
+.field select option {
+  background: var(--surface);
+  color: var(--text);
 }
 
 .field input[type="checkbox"],
@@ -1213,11 +1219,24 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
 .filter-bar select {
   padding: 0.5rem 0.75rem;
-  background: var(--surface);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
   font-size: 0.85rem;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.filter-bar select option {
+  background: var(--surface);
+  color: var(--text);
 }
 
 .filter-bar__search {

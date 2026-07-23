@@ -244,7 +244,7 @@ export default function MirrorsIndex({
                 </div>
 
                 <div className="card" style={{ marginBottom: '1rem' }}>
-                    <div className="btn-row" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
+                    <div className="filter-bar" style={{ marginBottom: 0 }}>
                         <select
                             value={filters.status || ''}
                             onChange={(e) => reload({ status: e.target.value, page: 1 })}
