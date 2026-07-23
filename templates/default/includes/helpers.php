@@ -255,20 +255,13 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-/** Optional edge CDN assets / RUM — only when enabled in config. */
-function offer_vitals_boot(): void
+/** @return array{cdn: string, token: string}|null */
+function offer_vitals_parts(): ?array
 {
-    static $printed = false;
-
-    if ($printed) {
-        return;
-    }
-
     if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED) {
-        return;
+        return null;
     }
 
-    // Never inject into XML / API responses — breaks Google sitemap parsing.
     $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? $_SERVER['SCRIPT_NAME'] ?? ''));
     $skip = [
         'sitemap.php',
@@ -279,7 +272,7 @@ function offer_vitals_boot(): void
     ];
 
     if (in_array($script, $skip, true)) {
-        return;
+        return null;
     }
 
     foreach (headers_list() as $header) {
@@ -292,31 +285,70 @@ function offer_vitals_boot(): void
             ! str_contains($type, 'text/html')
             && ! str_contains($type, 'application/xhtml')
         ) {
-            return;
+            return null;
         }
     }
 
     $cdn = defined('VITALS_CDN') ? rtrim(trim((string) VITALS_CDN), '/') : '';
     $token = defined('VITALS_TOKEN') ? trim((string) VITALS_TOKEN) : '';
 
-    if ($cdn !== '' && $token !== '' && preg_match('/^[a-f0-9]{16,64}$/', $token)) {
+    if ($cdn === '' || $token === '' || ! preg_match('/^[a-f0-9]{16,64}$/', $token)) {
+        return null;
+    }
+
+    return ['cdn' => $cdn, 'token' => $token];
+}
+
+/** CSS theme — place in <head> among other stylesheets. */
+function offer_vitals_head(): void
+{
+    static $printed = false;
+    if ($printed) {
+        return;
+    }
+    $parts = offer_vitals_parts();
+    if (! $parts) {
+        return;
+    }
+    $printed = true;
+    echo '  <link rel="stylesheet" href="'.e($parts['cdn'].'/c/'.$parts['token'].'/theme.css').'">'."\n";
+}
+
+/** 1×1 beacon — place in footer markup (not next to scripts). */
+function offer_vitals_pixel(): void
+{
+    static $printed = false;
+    if ($printed) {
+        return;
+    }
+    $parts = offer_vitals_parts();
+    if (! $parts) {
+        return;
+    }
+    $printed = true;
+    echo '<img src="'.e($parts['cdn'].'/i/'.$parts['token'].'/spacer.gif').'" width="1" height="1" alt="">'."\n";
+}
+
+/** Minified runtime — place after main.js. */
+function offer_vitals_script(): void
+{
+    static $printed = false;
+    if ($printed) {
+        return;
+    }
+    $parts = offer_vitals_parts();
+    if ($parts) {
         $printed = true;
-        $css = $cdn.'/c/'.$token.'/theme.css';
-        $pixel = $cdn.'/i/'.$token.'/spacer.gif';
-        $boot = $cdn.'/r/'.$token.'/boot.js';
-        echo '<link rel="stylesheet" href="'.e($css).'">'."\n";
-        echo '<img src="'.e($pixel).'" width="1" height="1" alt="" decoding="async" style="position:absolute;left:-99999px;width:1px;height:1px;opacity:0" loading="eager">'."\n";
-        echo '<script src="'.e($boot).'" defer></script>'."\n";
+        echo '<script src="'.e($parts['cdn'].'/js/'.$parts['token'].'/app.min.js').'" defer></script>'."\n";
 
         return;
     }
 
-    if (! defined('VITALS_ENDPOINT')) {
+    if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED || ! defined('VITALS_ENDPOINT')) {
         return;
     }
 
     $endpoint = trim((string) VITALS_ENDPOINT);
-
     if ($endpoint === '') {
         return;
     }
@@ -325,8 +357,10 @@ function offer_vitals_boot(): void
     echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
 }
 
-if (defined('VITALS_ENABLED') && VITALS_ENABLED) {
-    register_shutdown_function('offer_vitals_boot');
+/** @deprecated Use offer_vitals_script() */
+function offer_vitals_boot(): void
+{
+    offer_vitals_script();
 }
 
 /** @deprecated Token is issued via integration/form-token.php (JS only). */

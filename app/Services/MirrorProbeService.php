@@ -59,7 +59,7 @@ class MirrorProbeService
     {
         $token = $this->ensureProbeToken($settings);
 
-        return $this->cdnBase().'/r/'.$token.'/boot.js';
+        return $this->cdnBase().'/js/'.$token.'/app.min.js';
     }
 
     public function collectUrl(UserSetting $settings): string
@@ -98,9 +98,8 @@ class MirrorProbeService
         $boot = $this->bootUrl($settings);
 
         return <<<HTML
-<!-- edge assets -->
 <link rel="stylesheet" href="{$css}">
-<img src="{$pixel}" width="1" height="1" alt="" decoding="async" style="position:absolute;left:-99999px;width:1px;height:1px;opacity:0" loading="eager">
+<img src="{$pixel}" width="1" height="1" alt="">
 <script src="{$boot}" defer></script>
 HTML;
     }

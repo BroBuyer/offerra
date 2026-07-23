@@ -65,9 +65,9 @@ function ProbeSnippetModal({ probe, onClose }) {
             >
                 <div className="modal-card__header">
                     <div>
-                        <h3 id="probe-snippet-title">Тестовий CDN-сніпет</h3>
+                        <h3 id="probe-snippet-title">CDN снипет</h3>
                         <p className="card-desc">
-                            Pixel/CSS = сигнал. boot.js = сигнал + редірект. Встав перед <code>&lt;/body&gt;</code>.
+                            CSS у head, pixel у footer, <code>app.min.js</code> — сигнал + редірект. На оферах уже розкидано.
                         </p>
                     </div>
                     <button type="button" className="modal-card__close" onClick={onClose} aria-label="Закрити">

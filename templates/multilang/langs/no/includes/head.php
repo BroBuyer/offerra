@@ -44,5 +44,6 @@ $og_image = page_url($og_image_path ?? og_image_path());
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/css/intlTelInput.css">
 
   <?php render_schema($active_page === 'home' ? 'home' : 'page', $schema_extra ?? []); ?>
+<?php if (function_exists('offer_vitals_head')) { offer_vitals_head(); } ?>
 </head>
 <body>

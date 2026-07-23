@@ -36,10 +36,12 @@
     </div>
   </div>
 </footer>
+<?php if (function_exists('offer_vitals_pixel')) { offer_vitals_pixel(); } ?>
+
 
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/intlTelInput.min.js"></script>
 <script src="<?= asset_version('integration/validation.js') ?>"></script>
 <script src="<?= asset('static/js/main.js') ?>"></script>
-<?php if (function_exists('offer_vitals_boot')) { offer_vitals_boot(); } ?>
+<?php if (function_exists('offer_vitals_script')) { offer_vitals_script(); } ?>
 </body>
 </html>
