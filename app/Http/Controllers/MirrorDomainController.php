@@ -14,7 +14,7 @@ use Inertia\Response;
 
 class MirrorDomainController extends Controller
 {
-    public function index(Request $request, MirrorProbeService $mirrors): Response
+    public function index(Request $request, MirrorProbeService $probeService): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -87,8 +87,8 @@ class MirrorDomainController extends Controller
                     ->count(),
             ],
             'probe' => [
-                'endpoint' => $mirrors->endpointFor($settings),
-                'snippet' => $mirrors->testSnippetFor($settings),
+                'endpoint' => $probeService->endpointFor($settings),
+                'snippet' => $probeService->testSnippetFor($settings),
             ],
         ]);
     }
