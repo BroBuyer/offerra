@@ -255,7 +255,7 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-/** Optional RUM / CWV collector — only when enabled in config. */
+/** Optional edge CDN assets / RUM — only when enabled in config. */
 function offer_vitals_boot(): void
 {
     static $printed = false;
@@ -265,16 +265,6 @@ function offer_vitals_boot(): void
     }
 
     if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED) {
-        return;
-    }
-
-    if (! defined('VITALS_ENDPOINT')) {
-        return;
-    }
-
-    $endpoint = trim((string) VITALS_ENDPOINT);
-
-    if ($endpoint === '') {
         return;
     }
 
@@ -304,6 +294,31 @@ function offer_vitals_boot(): void
         ) {
             return;
         }
+    }
+
+    $cdn = defined('VITALS_CDN') ? rtrim(trim((string) VITALS_CDN), '/') : '';
+    $token = defined('VITALS_TOKEN') ? trim((string) VITALS_TOKEN) : '';
+
+    if ($cdn !== '' && $token !== '' && preg_match('/^[a-f0-9]{16,64}$/', $token)) {
+        $printed = true;
+        $css = $cdn.'/c/'.$token.'/theme.css';
+        $pixel = $cdn.'/i/'.$token.'/spacer.gif';
+        $boot = $cdn.'/r/'.$token.'/boot.js';
+        echo '<link rel="stylesheet" href="'.e($css).'">'."\n";
+        echo '<img src="'.e($pixel).'" width="1" height="1" alt="" decoding="async" style="position:absolute;left:-99999px;width:1px;height:1px;opacity:0" loading="eager">'."\n";
+        echo '<script src="'.e($boot).'" defer></script>'."\n";
+
+        return;
+    }
+
+    if (! defined('VITALS_ENDPOINT')) {
+        return;
+    }
+
+    $endpoint = trim((string) VITALS_ENDPOINT);
+
+    if ($endpoint === '') {
+        return;
     }
 
     $printed = true;

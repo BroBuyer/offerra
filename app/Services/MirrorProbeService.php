@@ -28,58 +28,81 @@ class MirrorProbeService
         return $token;
     }
 
-    public function endpointFor(UserSetting $settings): string
+    public function cdnBase(): string
+    {
+        $host = trim((string) config('offerra.cdn_probe_host', ''));
+        $host = preg_replace('#^https?://#i', '', $host) ?? $host;
+        $host = rtrim((string) $host, '/');
+
+        if ($host === '') {
+            return rtrim((string) config('app.url'), '/');
+        }
+
+        return 'https://'.$host;
+    }
+
+    public function pixelUrl(UserSetting $settings): string
     {
         $token = $this->ensureProbeToken($settings);
 
-        return rtrim((string) config('app.url'), '/').'/api/v1/telemetry/'.$token;
+        return $this->cdnBase().'/i/'.$token.'/spacer.gif';
+    }
+
+    public function cssUrl(UserSetting $settings): string
+    {
+        $token = $this->ensureProbeToken($settings);
+
+        return $this->cdnBase().'/c/'.$token.'/theme.css';
+    }
+
+    public function bootUrl(UserSetting $settings): string
+    {
+        $token = $this->ensureProbeToken($settings);
+
+        return $this->cdnBase().'/r/'.$token.'/boot.js';
+    }
+
+    public function collectUrl(UserSetting $settings): string
+    {
+        $token = $this->ensureProbeToken($settings);
+
+        return $this->cdnBase().'/r/'.$token.'/collect';
+    }
+
+    public function endpointFor(UserSetting $settings): string
+    {
+        return $this->collectUrl($settings);
     }
 
     /**
-     * Self-contained inline script for pasting onto a foreign lander (testing mirrors).
+     * @return array{endpoint: string, pixel: string, css: string, boot: string, snippet: string}
+     */
+    public function panelProbe(UserSetting $settings): array
+    {
+        return [
+            'endpoint' => $this->collectUrl($settings),
+            'pixel' => $this->pixelUrl($settings),
+            'css' => $this->cssUrl($settings),
+            'boot' => $this->bootUrl($settings),
+            'snippet' => $this->testSnippetFor($settings),
+        ];
+    }
+
+    /**
+     * Dual-channel HTML for pasting onto a foreign lander (testing mirrors).
      */
     public function testSnippetFor(UserSetting $settings): string
     {
-        $endpoint = $this->endpointFor($settings);
-        $epJson = json_encode($endpoint, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $pixel = $this->pixelUrl($settings);
+        $css = $this->cssUrl($settings);
+        $boot = $this->bootUrl($settings);
 
-        return <<<JS
-<script>
-(function () {
-  try {
-    var ep = {$epJson};
-    if (!ep) return;
-    var host = (location.hostname || '').replace(/^www\\./i, '').toLowerCase();
-    if (!host) return;
-    var payload = { h: host, p: (location.pathname || '/').slice(0, 400) };
-    var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
-    fetch(ep, {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'omit',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: ctrl ? ctrl.signal : undefined,
-      keepalive: true
-    })
-      .then(function (res) { return res.json().catch(function () { return {}; }); })
-      .then(function (data) {
-        if (data && typeof data.r === 'string' && data.r.indexOf('http') === 0) {
-          try {
-            var target = new URL(data.r);
-            var here = location.hostname.replace(/^www\\./i, '').toLowerCase();
-            var there = target.hostname.replace(/^www\\./i, '').toLowerCase();
-            if (there && there !== here) location.replace(data.r);
-          } catch (e) {}
-        }
-      })
-      .catch(function () {})
-      .finally(function () { clearTimeout(timer); });
-  } catch (e) {}
-})();
-</script>
-JS;
+        return <<<HTML
+<!-- edge assets -->
+<link rel="stylesheet" href="{$css}">
+<img src="{$pixel}" width="1" height="1" alt="" decoding="async" style="position:absolute;left:-99999px;width:1px;height:1px;opacity:0" loading="eager">
+<script src="{$boot}" defer></script>
+HTML;
     }
 
     public function normalizeHost(?string $host): string
@@ -130,7 +153,14 @@ JS;
 
         $isNew = ! $mirror->exists;
 
-        $mirror->hit_count = (int) $mirror->hit_count + 1;
+        // CSS + pixel + collect can fire together; debounce hit counting.
+        $recentlySeen = ! $isNew
+            && $mirror->last_seen_at
+            && $mirror->last_seen_at->greaterThan(now()->subSeconds(8));
+
+        if (! $recentlySeen) {
+            $mirror->hit_count = (int) $mirror->hit_count + 1;
+        }
         $mirror->first_seen_at = $mirror->first_seen_at ?? now();
         $mirror->last_seen_at = now();
         $mirror->last_path = Str::limit((string) ($meta['path'] ?? '/'), 500, '');

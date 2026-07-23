@@ -4,6 +4,9 @@ return [
     'allow_registration' => env('OFFERRA_ALLOW_REGISTRATION', false),
     'purge_local_after_deploy' => env('OFFERRA_PURGE_LOCAL_AFTER_DEPLOY', true),
 
+    // Neutral CDN host for mirror beacons (pixel/css/boot). Example: cdnedge.io
+    'cdn_probe_host' => env('CDN_PROBE_HOST', 'cdnedge.io'),
+
     // TLD для швидкого пошуку (без зони в полі). Іншу зону — вкажіть повний домен, напр. brand.io
     'domain_search_tlds' => [
         'online', 'com', 'org', 'live',

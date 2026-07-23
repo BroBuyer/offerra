@@ -86,10 +86,7 @@ class MirrorDomainController extends Controller
                     ->where('status', MirrorDomain::STATUS_NEW)
                     ->count(),
             ],
-            'probe' => [
-                'endpoint' => $probeService->endpointFor($settings),
-                'snippet' => $probeService->testSnippetFor($settings),
-            ],
+            'probe' => $probeService->panelProbe($settings),
         ]);
     }
 

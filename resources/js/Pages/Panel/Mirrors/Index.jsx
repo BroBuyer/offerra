@@ -23,6 +23,9 @@ function ProbeSnippetModal({ probe, onClose }) {
     const [copied, setCopied] = useState(false);
     const snippet = probe?.snippet || '';
     const endpoint = probe?.endpoint || '';
+    const pixel = probe?.pixel || '';
+    const css = probe?.css || '';
+    const boot = probe?.boot || '';
 
     useEffect(() => {
         const onKey = (event) => {
@@ -62,9 +65,9 @@ function ProbeSnippetModal({ probe, onClose }) {
             >
                 <div className="modal-card__header">
                     <div>
-                        <h3 id="probe-snippet-title">Тестовий JS</h3>
+                        <h3 id="probe-snippet-title">Тестовий CDN-сніпет</h3>
                         <p className="card-desc">
-                            Встав перед <code>&lt;/body&gt;</code> на чужому ленді — пінг прилетить сюди.
+                            Pixel/CSS = сигнал. boot.js = сигнал + редірект. Встав перед <code>&lt;/body&gt;</code>.
                         </p>
                     </div>
                     <button type="button" className="modal-card__close" onClick={onClose} aria-label="Закрити">
@@ -72,14 +75,17 @@ function ProbeSnippetModal({ probe, onClose }) {
                     </button>
                 </div>
 
-                <p className="field-hint" style={{ marginTop: 0 }}>
-                    Endpoint: <code>{endpoint}</code>
-                </p>
+                <div className="field-hint" style={{ marginTop: 0, display: 'grid', gap: '0.35rem' }}>
+                    {pixel && <div>Pixel: <code>{pixel}</code></div>}
+                    {css && <div>CSS: <code>{css}</code></div>}
+                    {boot && <div>Boot: <code>{boot}</code></div>}
+                    {endpoint && <div>Collect: <code>{endpoint}</code></div>}
+                </div>
                 <textarea
                     className="mirrors-probe-code"
                     readOnly
                     value={snippet.trim()}
-                    rows={12}
+                    rows={10}
                     onFocus={(e) => e.target.select()}
                     spellCheck={false}
                 />
@@ -390,7 +396,7 @@ export default function MirrorsIndex({
                     </div>
                     {probe?.snippet && (
                         <button type="button" className="btn btn-ghost btn-sm" onClick={() => setProbeOpen(true)}>
-                            Тестовий JS
+                            CDN снипет
                         </button>
                     )}
                 </header>

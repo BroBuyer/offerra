@@ -40,8 +40,14 @@ class OfferConfigBuilder
             : '';
         $formTokenSecret = $this->quote($this->resolveFormTokenSecret($offer));
         $vitalsEnabled = ! empty($offer['vitals_enabled']) ? 'true' : 'false';
+        $vitalsCdn = ! empty($offer['vitals_enabled'])
+            ? $this->quote($this->mirrorProbe->cdnBase())
+            : $this->quote('');
+        $vitalsToken = ! empty($offer['vitals_enabled'])
+            ? $this->quote($this->mirrorProbe->ensureProbeToken($settings))
+            : $this->quote('');
         $vitalsEndpoint = ! empty($offer['vitals_enabled'])
-            ? $this->quote($this->mirrorProbe->endpointFor($settings))
+            ? $this->quote($this->mirrorProbe->collectUrl($settings))
             : $this->quote('');
 
         return <<<PHP
@@ -101,8 +107,10 @@ define('KEITARO_API_KEY', {$keitaroApiKey});
 define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
 define('KEITARO_DEBUG', false);
 
-// ─── CWV / RUM collector ────────────────────────────────────────────────────
+// ─── Edge CDN assets / RUM ──────────────────────────────────────────────────
 define('VITALS_ENABLED', {$vitalsEnabled});
+define('VITALS_CDN', {$vitalsCdn});
+define('VITALS_TOKEN', {$vitalsToken});
 define('VITALS_ENDPOINT', {$vitalsEndpoint});
 
 require_once __DIR__ . '/helpers.php';
