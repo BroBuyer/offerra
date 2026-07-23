@@ -267,6 +267,7 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
 }
 
 .offers-page .page-header {
@@ -284,7 +285,7 @@ a:hover { text-decoration: underline; }
 
 .offers-page .table-wrap {
   flex: 1;
-  min-height: 0;
+  min-height: 16rem;
   overflow: auto;
 }
 
@@ -1215,6 +1216,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: 100%;
   margin-top: 0.5rem;
   padding: 0.75rem 0.9rem;
+  max-height: 12rem;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -1224,7 +1226,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   line-height: 1.45;
   resize: vertical;
   white-space: pre;
-  overflow-x: auto;
+  overflow: auto;
   color-scheme: dark;
 }
 

@@ -182,7 +182,7 @@ function MirrorRow({ mirror, offers, showUserColumn }) {
 
 function ProbeSnippetCard({ probe }) {
     const [copied, setCopied] = useState(false);
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const snippet = probe?.snippet || '';
     const endpoint = probe?.endpoint || '';
 
@@ -219,7 +219,7 @@ function ProbeSnippetCard({ probe }) {
                 </div>
                 <div className="btn-row" style={{ gap: '0.4rem', margin: 0 }}>
                     <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen((v) => !v)}>
-                        {open ? 'Сховати' : 'Показати'}
+                        {open ? 'Сховати' : 'Показати код'}
                     </button>
                     <button type="button" className={`btn btn-sm ${copied ? 'btn-primary' : 'btn-ghost'}`} onClick={copy}>
                         {copied ? 'Скопійовано' : 'Копіювати'}
@@ -236,7 +236,7 @@ function ProbeSnippetCard({ probe }) {
                         className="mirrors-probe-code"
                         readOnly
                         value={snippet.trim()}
-                        rows={8}
+                        rows={6}
                         onFocus={(e) => e.target.select()}
                         spellCheck={false}
                     />
