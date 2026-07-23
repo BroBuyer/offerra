@@ -5,6 +5,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 const navItems = [
     { href: '/dashboard', icon: '📊', label: 'Дашборд' },
     { href: '/offers', icon: '📋', label: 'Оффери' },
+    { href: '/mirrors', icon: '🪞', label: 'Дзеркала' },
     { href: '/offers/archive', icon: '📦', label: 'Архів доменів' },
     { href: '/offers/create?fresh=1', icon: '➕', label: 'Створити оффер' },
     { href: '/templates', icon: '🎨', label: 'Шаблони' },
@@ -28,6 +29,9 @@ export default function PanelLayout({ title, children, wide = false, fullWidth =
         }
         if (href === '/offers/archive') {
             return path === '/offers/archive';
+        }
+        if (href === '/mirrors') {
+            return path === '/mirrors' || path.startsWith('/mirrors/');
         }
 
         return path === href || path.startsWith(`${href}/`);

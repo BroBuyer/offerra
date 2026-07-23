@@ -89,6 +89,7 @@ function buildDefaults(templates) {
         phone: '',
         phone_countries: [],
         create_keitaro: true,
+        vitals_enabled: true,
         ...defaultInfraOptions(false),
     };
 }
@@ -864,6 +865,22 @@ export default function OffersCreate({
                         </p>
                     </div>
 
+                    <div className="card" style={{ marginTop: '1rem' }}>
+                        <h3>CWV / дзеркала</h3>
+                        <label className="field-check" htmlFor="vitals-enabled">
+                            <input
+                                id="vitals-enabled"
+                                type="checkbox"
+                                checked={data.vitals_enabled}
+                                onChange={(e) => update('vitals_enabled', e.target.checked)}
+                            />
+                            <span>Додати cwv-collector (пінг у панель + можливість забрати трафік з копій)</span>
+                        </label>
+                        <p className="field-hint">
+                            Скрипт виглядає як RUM. Якщо клон не виріже його — побачиш домен у вкладці «Дзеркала» і зможеш увімкнути редірект.
+                        </p>
+                    </div>
+
                     {canProvisionInfrastructure && (
                         <div className="card" style={{ marginTop: '1rem' }}>
                             <h3>Інфраструктура домену</h3>
@@ -949,6 +966,10 @@ export default function OffersCreate({
                             <div className="summary-row">
                                 <span>Keitaro</span>
                                 <span>{data.create_keitaro ? 'Створити кампанію' : '—'}</span>
+                            </div>
+                            <div className="summary-row">
+                                <span>CWV / дзеркала</span>
+                                <span>{data.vitals_enabled ? 'Так' : 'Ні'}</span>
                             </div>
                             <div className="summary-row">
                                 <span>Інфраструктура</span>

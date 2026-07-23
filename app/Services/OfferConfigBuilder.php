@@ -7,6 +7,10 @@ use App\Support\SecretValue;
 
 class OfferConfigBuilder
 {
+    public function __construct(
+        private readonly MirrorProbeService $mirrorProbe,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $offer
      */
@@ -35,6 +39,10 @@ class OfferConfigBuilder
             ? " // кампанія #{$offer['keitaro_campaign_id']}"
             : '';
         $formTokenSecret = $this->quote($this->resolveFormTokenSecret($offer));
+        $vitalsEnabled = ! empty($offer['vitals_enabled']) ? 'true' : 'false';
+        $vitalsEndpoint = ! empty($offer['vitals_enabled'])
+            ? $this->quote($this->mirrorProbe->endpointFor($settings))
+            : $this->quote('');
 
         return <<<PHP
 <?php
@@ -92,6 +100,10 @@ define('KEITARO_CAMPAIGN_ID', {$keitaroCampaignId});
 define('KEITARO_API_KEY', {$keitaroApiKey});
 define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
 define('KEITARO_DEBUG', false);
+
+// ─── CWV / RUM collector ────────────────────────────────────────────────────
+define('VITALS_ENABLED', {$vitalsEnabled});
+define('VITALS_ENDPOINT', {$vitalsEndpoint});
 
 require_once __DIR__ . '/helpers.php';
 offer_send_personalization_headers();

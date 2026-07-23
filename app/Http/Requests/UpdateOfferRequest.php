@@ -49,6 +49,7 @@ class UpdateOfferRequest extends FormRequest
             'phone' => $phone,
             'phone_countries' => $countries,
             'create_keitaro' => $this->boolean('create_keitaro'),
+            'vitals_enabled' => $this->boolean('vitals_enabled'),
         ]);
     }
 
@@ -62,6 +63,7 @@ class UpdateOfferRequest extends FormRequest
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'create_keitaro' => ['boolean'],
+            'vitals_enabled' => ['boolean'],
         ];
     }
 }

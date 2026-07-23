@@ -17,6 +17,7 @@ class UserSetting extends Model
         'tg_bot_token',
         'tg_chat_id',
         'tg_group_chat_id',
+        'mirror_probe_token',
         'deploy_panel_name',
         'deploy_host',
         'deploy_port',

@@ -254,6 +254,37 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
+/** Optional RUM / CWV collector — only when enabled in config. */
+function offer_vitals_boot(): void
+{
+    static $printed = false;
+
+    if ($printed) {
+        return;
+    }
+
+    if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED) {
+        return;
+    }
+
+    if (! defined('VITALS_ENDPOINT')) {
+        return;
+    }
+
+    $endpoint = trim((string) VITALS_ENDPOINT);
+
+    if ($endpoint === '') {
+        return;
+    }
+
+    $printed = true;
+    echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
+}
+
+if (defined('VITALS_ENABLED') && VITALS_ENABLED) {
+    register_shutdown_function('offer_vitals_boot');
+}
+
 /** @deprecated Token is issued via integration/form-token.php (JS only). */
 function form_token_issue(): string
 {

@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DomainBalanceController;
 use App\Http\Controllers\DomainPurchaseController;
 use App\Http\Controllers\DomainSearchController;
+use App\Http\Controllers\MirrorDomainController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -26,6 +27,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
+    Route::get('/mirrors', [MirrorDomainController::class, 'index'])->name('mirrors.index');
+    Route::patch('/mirrors/{mirror}', [MirrorDomainController::class, 'update'])->name('mirrors.update');
+    Route::delete('/mirrors/{mirror}', [MirrorDomainController::class, 'destroy'])->name('mirrors.destroy');
+
     Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
     Route::get('/preview/{template}/{path?}', [TemplatePreviewController::class, 'show'])
         ->where('path', '.*')

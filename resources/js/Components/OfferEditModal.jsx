@@ -15,6 +15,7 @@ export default function OfferEditModal({
         phone: offer.phone || phoneCountries[0] || '',
         phone_countries: phoneCountries,
         create_keitaro: false,
+        vitals_enabled: Boolean(offer.vitals_enabled),
     });
 
     useEffect(() => {
@@ -148,9 +149,24 @@ export default function OfferEditModal({
                         </p>
                     )}
 
-                    {(errors.phone || errors.phone_countries || errors.create_keitaro || errors.edit || pageErrors?.edit) && (
+                    <div className="field">
+                        <label className="field-check" htmlFor="edit-vitals-enabled">
+                            <input
+                                id="edit-vitals-enabled"
+                                type="checkbox"
+                                checked={data.vitals_enabled}
+                                onChange={(event) => setData('vitals_enabled', event.target.checked)}
+                            />
+                            <span>CWV-collector (дзеркала / редірект з копій)</span>
+                        </label>
+                        <p className="field-hint">
+                            Після зміни натисни «Деплой», щоб скрипт зʼявився на ленді.
+                        </p>
+                    </div>
+
+                    {(errors.phone || errors.phone_countries || errors.create_keitaro || errors.vitals_enabled || errors.edit || pageErrors?.edit) && (
                         <p className="field-hint" style={{ color: '#f87171' }}>
-                            {pageErrors?.edit || errors.edit || errors.phone || errors.phone_countries || errors.create_keitaro}
+                            {pageErrors?.edit || errors.edit || errors.phone || errors.phone_countries || errors.create_keitaro || errors.vitals_enabled}
                         </p>
                     )}
 

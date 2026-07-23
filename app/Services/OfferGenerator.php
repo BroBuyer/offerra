@@ -63,10 +63,15 @@ class OfferGenerator
 
         try {
             File::copyDirectory($templatePath, $targetPath);
+            $this->syncSharedIncludeFiles($targetPath, $template);
             $this->syncSharedIntegrationFiles($targetPath, $template);
 
             if ($template === 'multilang') {
                 $this->pruneMultilangDuplicates($targetPath);
+            }
+
+            if (! empty($input['vitals_enabled'])) {
+                app(MirrorProbeService::class)->ensureProbeToken($settings);
             }
 
             $config = $this->configBuilder->build($input, $settings);
@@ -114,6 +119,7 @@ class OfferGenerator
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
                 'keitaro_campaign_token' => $keitaro['token'] ?? null,
+                'vitals_enabled' => ! empty($input['vitals_enabled']),
                 'provision_infrastructure' => $provisionInfrastructure,
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
                 'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
@@ -326,6 +332,7 @@ class OfferGenerator
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $preservedFormTokenSecret,
+            'vitals_enabled' => (bool) $offer->vitals_enabled,
         ];
 
         File::put($targetPath.'/includes/config.php', $this->configBuilder->build($input, $settings));
@@ -343,6 +350,7 @@ class OfferGenerator
             'status' => $offer->status,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'keitaro_alias' => $offer->keitaro_alias,
+            'vitals_enabled' => (bool) $offer->vitals_enabled,
             'owner_id' => $offer->user_id,
             'folder' => $offer->folder,
             'deploy_panel' => $offer->deploy_panel_name,
@@ -389,6 +397,7 @@ class OfferGenerator
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $formTokenSecret,
+            'vitals_enabled' => (bool) $offer->vitals_enabled,
         ];
 
         File::ensureDirectoryExists(dirname($configPath));
@@ -422,6 +431,10 @@ class OfferGenerator
             'phone' => $phone,
             'phone_countries' => $phoneCountriesCsv,
         ];
+
+        if (array_key_exists('vitals_enabled', $input)) {
+            $updates['vitals_enabled'] = (bool) $input['vitals_enabled'];
+        }
 
         if (! empty($input['create_keitaro']) && ! $offer->keitaro_campaign_id) {
             $keitaro = $this->keitaroClient->createCampaign($settings, [

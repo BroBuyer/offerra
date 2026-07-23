@@ -221,6 +221,7 @@ class OfferController extends Controller
                 'phone_countries' => $request->input('phone_countries', []),
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
+                'vitals_enabled' => $request->boolean('vitals_enabled'),
                 'infra_hestia' => $request->boolean('infra_hestia'),
                 'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
                 'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
@@ -345,13 +346,16 @@ class OfferController extends Controller
         DeployService $deploy,
     ): RedirectResponse {
         $createKeitaro = $request->boolean('create_keitaro');
+        $vitalsEnabled = $request->boolean('vitals_enabled');
         $shouldAutoDeploy = $createKeitaro && ! $offer->keitaro_campaign_id;
+        $vitalsChanged = $vitalsEnabled !== (bool) $offer->vitals_enabled;
 
         try {
             $offer = $generator->updateSettings($offer, [
                 'phone' => $request->string('phone')->toString(),
                 'phone_countries' => $request->input('phone_countries', []),
                 'create_keitaro' => $createKeitaro,
+                'vitals_enabled' => $vitalsEnabled,
             ]);
         } catch (\Throwable $e) {
             return redirect()
@@ -374,6 +378,10 @@ class OfferController extends Controller
             } else {
                 $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
             }
+        } elseif ($vitalsChanged) {
+            $message .= $vitalsEnabled
+                ? ' CWV-колектор увімкнено — натисни «Деплой».'
+                : ' CWV-колектор вимкнено — натисни «Деплой».';
         } else {
             $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
         }
