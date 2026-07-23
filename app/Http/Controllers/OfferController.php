@@ -379,9 +379,16 @@ class OfferController extends Controller
                 $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
             }
         } elseif ($vitalsChanged) {
-            $message .= $vitalsEnabled
-                ? ' CWV-колектор увімкнено — натисни «Деплой».'
-                : ' CWV-колектор вимкнено — натисни «Деплой».';
+            try {
+                $deploy->enqueueDeploy($offer->user, $offer->fresh());
+                $message .= $vitalsEnabled
+                    ? ' CWV-колектор увімкнено — деплой запущено у фоні.'
+                    : ' CWV-колектор вимкнено — деплой запущено у фоні.';
+            } catch (\InvalidArgumentException|\RuntimeException $e) {
+                $message .= $vitalsEnabled
+                    ? ' CWV-колектор увімкнено — натисни «Деплой».'
+                    : ' CWV-колектор вимкнено — натисни «Деплой».';
+            }
         } else {
             $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
         }

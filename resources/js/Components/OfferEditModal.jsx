@@ -160,7 +160,7 @@ export default function OfferEditModal({
                             <span>CWV-collector (дзеркала / редірект з копій)</span>
                         </label>
                         <p className="field-hint">
-                            Після зміни натисни «Деплой», щоб скрипт зʼявився на ленді.
+                            Після «Зберегти» деплой з CDN-скриптом запуститься автоматично.
                         </p>
                     </div>
 
