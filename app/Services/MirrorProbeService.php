@@ -248,6 +248,7 @@ HTML;
         $noise = [
             'yandex.com', 'yandex.ru', 'ya.ru',
             'google.com', 'google.ru', 'googleapis.com', 'gstatic.com',
+            'translate.goog',
             'bing.com', 'yahoo.com', 'duckduckgo.com',
             'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
             'youtube.com', 'reddit.com', 'tiktok.com',
