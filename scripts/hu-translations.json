@@ -1,0 +1,578 @@
+[
+  [
+    "First name",
+    "Keresztnév"
+  ],
+  [
+    "Last name",
+    "Vezetéknév"
+  ],
+  [
+    "Move faster.",
+    "Lépjen gyorsabban."
+  ],
+  [
+    "Please enter a valid phone number",
+    "Adjon meg egy érvényes telefonszámot"
+  ],
+  [
+    "Invalid country code",
+    "Érvénytelen országkód"
+  ],
+  [
+    "Phone number is too short",
+    "A telefonszám túl rövid"
+  ],
+  [
+    "Phone number is too long",
+    "A telefonszám túl hosszú"
+  ],
+  [
+    "Please enter your phone number",
+    "Adja meg a telefonszámát"
+  ],
+  [
+    "Please enter your first name",
+    "Adja meg a keresztnevét"
+  ],
+  [
+    "Please enter your last name",
+    "Adja meg a vezetéknevét"
+  ],
+  [
+    "Please enter your email",
+    "Adja meg az e-mail-címét"
+  ],
+  [
+    "Please enter a valid email",
+    "Adjon meg egy érvényes e-mail-címet"
+  ],
+  [
+    "Something went wrong. Please try again.",
+    "Valami hiba történt. Kérjük, próbálja újra."
+  ],
+  [
+    "Connection error. Please try again.",
+    "Kapcsolódási hiba. Kérjük, próbálja újra."
+  ],
+  [
+    "You're already registered",
+    "Már regisztrált"
+  ],
+  [
+    "has been received. Please wait for a call from our manager.",
+    "nál leadott kérelmét megkaptuk. Várja szakértőnk hívását."
+  ],
+  [
+    "Open your account in 2 minutes",
+    "Nyissa meg számláját 2 perc alatt"
+  ],
+  [
+    "Open an account in 2 minutes",
+    "Nyisson számlát 2 perc alatt"
+  ],
+  [
+    "Create free account",
+    "Ingyenes fiók létrehozása"
+  ],
+  [
+    "By submitting your information, you agree to our",
+    "Az adatok elküldésével elfogadja"
+  ],
+  [
+    "Privacy Policy",
+    "Adatvédelmi irányelveinket"
+  ],
+  [
+    "Terms of Use",
+    "Felhasználási feltételeinket"
+  ],
+  [
+    "Home",
+    "Kezdőlap"
+  ],
+  [
+    "AI-Powered Trading Platform",
+    "AI-alapú kereskedési platform"
+  ],
+  [
+    "AI Trading Platform",
+    "AI kereskedési platform"
+  ],
+  [
+    "Trade crypto, forex, and global markets with",
+    "Kripto, forex és globális piacok kereskedése a"
+  ],
+  [
+    "Real-time analytics, AI-assisted signals, and a platform built for speed and clarity.",
+    "Valós idejű elemzések, AI-támogatott jelek és egy gyors, átlátható platform."
+  ],
+  [
+    "Trade smarter.",
+    "Kereskedjen okosabban."
+  ],
+  [
+    "A new standard in crypto and multi-market trading. Advanced security, transparent fees,",
+    "Új szabvány a kripto- és többpiaci kereskedésben. Fejlett biztonság, átlátható díjak,"
+  ],
+  [
+    "AI-driven insights, and an interface that stays out of your way.",
+    "AI-vezérelt betekintések és egy felület, amely nem lassítja le."
+  ],
+  [
+    "SSL Secured",
+    "SSL-védelem"
+  ],
+  [
+    "24/7 Support",
+    "24/7 ügyfélszolgálat"
+  ],
+  [
+    "Fast Execution",
+    "Gyors végrehajtás"
+  ],
+  [
+    "Currencies available",
+    "Elérhető valuták"
+  ],
+  [
+    "Verified users",
+    "Ellenőrzött felhasználók"
+  ],
+  [
+    "Trading volume",
+    "Kereskedési volumen"
+  ],
+  [
+    "Countries supported",
+    "Támogatott országok"
+  ],
+  [
+    "Trading platform",
+    "Kereskedési platform"
+  ],
+  [
+    "Professional charts.",
+    "Professzionális chartok."
+  ],
+  [
+    "Mobile ready.",
+    "Mobilra kész."
+  ],
+  [
+    "A clean interface inspired by modern exchanges — live BTC/USDT data, portfolio management,",
+    "Tiszta felület modern tőzsdék mintájára — élő BTC/USDT adatok, portfóliókezelés,"
+  ],
+  [
+    "and one-click trading. Designed to give you confidence from the first login.",
+    "és egykattintásos kereskedés. Az első bejelentkezéstől magabiztosságot ad."
+  ],
+  [
+    "Real-time candlestick charts",
+    "Valós idejű gyertyadiagramok"
+  ],
+  [
+    "Portfolio and P/L at a glance",
+    "Portfólió és P/L egy pillantásra"
+  ],
+  [
+    "Secure account dashboard",
+    "Biztonságos fiókpanel"
+  ],
+  [
+    "Try the platform",
+    "Próbálja ki a platformot"
+  ],
+  [
+    "Why",
+    "Miért"
+  ],
+  [
+    "Everything you need to trade with confidence",
+    "Minden, amire szüksége van a magabiztos kereskedéshez"
+  ],
+  [
+    "Security, speed, and intelligence — in a clear platform built for modern traders.",
+    "Biztonság, sebesség és intelligencia — egy átlátható platformon modern tradereknek."
+  ],
+  [
+    "Bank-grade security",
+    "Banki szintű biztonság"
+  ],
+  [
+    "SSL encryption, 2FA, and secure fund management protect your data and capital at every step.",
+    "Az SSL-titkosítás, a 2FA és a biztonságos alapkezelés minden lépésben védi adatait és tőkéjét."
+  ],
+  [
+    "AI market signals",
+    "AI piaci jelek"
+  ],
+  [
+    "Precise real-time insights help you spot opportunities and make faster, informed decisions.",
+    "Pontos valós idejű betekintések segítenek meglátni a lehetőségeket és gyorsabb, tájékozott döntéseket hozni."
+  ],
+  [
+    "Automated trading",
+    "Automatizált kereskedés"
+  ],
+  [
+    "AI-assisted bots work 24/7 to execute strategies efficiently while you stay in control.",
+    "Az AI-támogatott botok 24/7 hatékonyan hajtják végre a stratégiákat, miközben Ön irányít."
+  ],
+  [
+    "Multi-market access",
+    "Többpiaci hozzáférés"
+  ],
+  [
+    "Trade crypto, forex, stocks, and commodities in one unified environment.",
+    "Kripto, forex, részvények és árucikkek egy egységes környezetben."
+  ],
+  [
+    "Low-latency execution",
+    "Alacsony késleltetésű végrehajtás"
+  ],
+  [
+    "Optimized infrastructure for stable order execution even during high market volatility.",
+    "Optimalizált infrastruktúra a stabil megbízás-végrehajtáshoz erős piaci volatilitás mellett is."
+  ],
+  [
+    "Clean interface",
+    "Tiszta felület"
+  ],
+  [
+    "Minimalist design that cuts the noise so you can focus on strategy, not navigation.",
+    "Minimalista dizájn, amely csökkenti a zajt, hogy a stratégiára figyelhessen, ne a navigációra."
+  ],
+  [
+    "Live markets",
+    "Élő piacok"
+  ],
+  [
+    "Trade Bitcoin, Ethereum, and more",
+    "Bitcoin, Ethereum és további eszközök"
+  ],
+  [
+    "Live prices, advanced indicators, and a professional view of the markets you care about.",
+    "Élő árak, fejlett indikátorok és professzionális piaci áttekintés."
+  ],
+  [
+    "Enter the markets",
+    "Belépés a piacokra"
+  ],
+  [
+    "Live market prices",
+    "Élő piaci árak"
+  ],
+  [
+    "How to get started",
+    "Hogyan kezdje el"
+  ],
+  [
+    "From signup to first trade in minutes",
+    "Regisztrációtól az első trade-ig percek alatt"
+  ],
+  [
+    "A clear path — no complexity, no guesswork.",
+    "Egyértelmű út — bonyodalom és találgatás nélkül."
+  ],
+  [
+    "Create your account",
+    "Hozza létre fiókját"
+  ],
+  [
+    "Sign up with your details and get immediate, secure access to the platform.",
+    "Regisztráljon adataival, és azonnal biztonságos hozzáférést kap a platformhoz."
+  ],
+  [
+    "Verify your email",
+    "Erősítse meg e-mailjét"
+  ],
+  [
+    "Confirm your address to unlock the full trading environment.",
+    "Erősítse meg címét a teljes kereskedési környezet feloldásához."
+  ],
+  [
+    "Fund your account",
+    "Töltse fel számláját"
+  ],
+  [
+    "Deposit a minimum of",
+    "Helyezzen el legalább"
+  ],
+  [
+    "via bank transfer, card, or e-wallet.",
+    "banki átutalással, kártyával vagy e-pénztárcával."
+  ],
+  [
+    "Set your strategy",
+    "Állítsa be stratégiáját"
+  ],
+  [
+    "Choose risk level and preferences — manual or with AI-assisted automation.",
+    "Válassza ki a kockázati szintet és preferenciákat — manuálisan vagy AI-támogatott automatizálással."
+  ],
+  [
+    "Enter the market with live charts, tools, and support whenever you need it.",
+    "Lépjen a piacra élő chartokkal, eszközökkel és támogatással, amikor szüksége van rá."
+  ],
+  [
+    "Open account now",
+    "Számla megnyitása most"
+  ],
+  [
+    "Funding",
+    "Befizetés"
+  ],
+  [
+    "Deposit with methods you already trust",
+    "Fizessen olyan módokon, amelyekben már megbízik"
+  ],
+  [
+    "Cards, e-wallets, and bank transfers — protected by SSL encryption.",
+    "Kártyák, e-pénztárcák és banki átutalások — SSL-titkosítással védve."
+  ],
+  [
+    "Accepted secure payments",
+    "Elfogadott biztonságos fizetések"
+  ],
+  [
+    "Trusted infrastructure",
+    "Megbízható infrastruktúra"
+  ],
+  [
+    "Built with leading industry partners",
+    "Vezető iparági partnerekkel építve"
+  ],
+  [
+    "Reviews",
+    "Vélemények"
+  ],
+  [
+    "What traders say",
+    "Mit mondanak a traderek"
+  ],
+  [
+    "Independent trader",
+    "Független trader"
+  ],
+  [
+    "Crypto enthusiast",
+    "Kripto-rajongó"
+  ],
+  [
+    "Digital asset operator",
+    "Digitális eszközök kezelője"
+  ],
+  [
+    "Private investor",
+    "Magánbefektető"
+  ],
+  [
+    "Frequently asked questions",
+    "Gyakran ismételt kérdések"
+  ],
+  [
+    "How can I get started?",
+    "Hogyan kezdhetem el?"
+  ],
+  [
+    "Are my money and data safe?",
+    "Biztonságban vannak a pénzem és az adataim?"
+  ],
+  [
+    "When can I withdraw my profits?",
+    "Mikor vehetem fel a nyereségemet?"
+  ],
+  [
+    "Do I need trading experience?",
+    "Szükségem van kereskedési tapasztalatra?"
+  ],
+  [
+    "Not at all.",
+    "Egyáltalán nem."
+  ],
+  [
+    "Which markets can I trade?",
+    "Mely piacokon kereskedhetek?"
+  ],
+  [
+    "Key capabilities at a glance",
+    "Fő képességek egy pillantásra"
+  ],
+  [
+    "AI trading engine",
+    "AI kereskedési motor"
+  ],
+  [
+    "Funding methods",
+    "Befizetési módok"
+  ],
+  [
+    "Device access",
+    "Eszközhozzáférés"
+  ],
+  [
+    "Web, tablet, and mobile — fully responsive",
+    "Web, tablet és mobil — teljesen reszponzív"
+  ],
+  [
+    "Signal accuracy",
+    "Jelpontosság"
+  ],
+  [
+    "Up to 85% on supported AI strategies",
+    "Akár 85% a támogatott AI stratégiáknál"
+  ],
+  [
+    "Fast account setup with assisted verification",
+    "Gyors számlanyitás segített ellenőrzéssel"
+  ],
+  [
+    "Support",
+    "Ügyfélszolgálat"
+  ],
+  [
+    "Professional 24/7 support —",
+    "Professzionális 24/7 támogatás —"
+  ],
+  [
+    "Contact us",
+    "Lépjen kapcsolatba velünk"
+  ],
+  [
+    "Trusted",
+    "Megbízható"
+  ],
+  [
+    "Ready to trade on a platform built for clarity?",
+    "Készen áll kereskedni egy átláthatóságra tervezett platformon?"
+  ],
+  [
+    "You're all set!",
+    "Minden kész!"
+  ],
+  [
+    "Thank you for registering with",
+    "Köszönjük, hogy regisztrált a(z)"
+  ],
+  [
+    "Redirecting you to the platform in",
+    "Átirányítjuk a platformra"
+  ],
+  [
+    "seconds…",
+    "másodperc múlva…"
+  ],
+  [
+    "We're here to help",
+    "Itt vagyunk, hogy segítsünk"
+  ],
+  [
+    "Contact support",
+    "Kapcsolatfelvétel"
+  ],
+  [
+    "Last updated:",
+    "Utolsó frissítés:"
+  ],
+  [
+    "Our product",
+    "Termékünk"
+  ],
+  [
+    "Trading offer",
+    "Kereskedési ajánlat"
+  ],
+  [
+    "Bitte geben Sie eine gültige Telefonnummer ein",
+    "Adjon meg egy érvényes telefonszámot"
+  ],
+  [
+    "Ungültige Ländervorwahl",
+    "Érvénytelen országkód"
+  ],
+  [
+    "Die Telefonnummer ist zu kurz",
+    "A telefonszám túl rövid"
+  ],
+  [
+    "Die Telefonnummer ist zu lang",
+    "A telefonszám túl hosszú"
+  ],
+  [
+    "Bitte geben Sie Ihre Telefonnummer ein",
+    "Adja meg a telefonszámát"
+  ],
+  [
+    "Sie sind bereits registriert",
+    "Már regisztrált"
+  ],
+  [
+    "erhalten. Unser Spezialist wird Sie in Kürze telefonisch kontaktieren.",
+    "nál leadott kérelmét megkaptuk. Várja szakértőnk hívását."
+  ],
+  [
+    "Vorname",
+    "Keresztnév"
+  ],
+  [
+    "Nachname",
+    "Vezetéknév"
+  ],
+  [
+    "Telefonnummer",
+    "Telefonszám"
+  ],
+  [
+    "Konto in 2 Minuten eröffnen",
+    "Nyissa meg számláját 2 perc alatt"
+  ],
+  [
+    "Kostenloses Konto erstellen",
+    "Ingyenes fiók létrehozása"
+  ],
+  [
+    "Startseite",
+    "Kezdőlap"
+  ],
+  [
+    "Reagieren Sie schneller.",
+    "Lépjen gyorsabban."
+  ],
+  [
+    "Handeln Sie smarter.",
+    "Kereskedjen okosabban."
+  ],
+  [
+    "Keresztnev",
+    "Keresztnév"
+  ],
+  [
+    "Lepjen",
+    "Lépjen"
+  ],
+  [
+    "ervenyes",
+    "érvényes"
+  ],
+  [
+    "telefonszamot",
+    "telefonszámot"
+  ],
+  [
+    "telefonszamat",
+    "telefonszámát"
+  ],
+  [
+    "telefonszam",
+    "telefonszám"
+  ],
+  [
+    "ervenytelen",
+    "érvénytelen"
+  ],
+  [
+    "orszagkod",
+    "országkód"
+  ]
+]

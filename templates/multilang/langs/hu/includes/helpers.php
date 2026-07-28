@@ -19,9 +19,8 @@ function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
-        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
-        'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
-        'el' => 'el-GR', 'sv' => 'sv-SE', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
+        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'nl' => 'nl-NL',
+        'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK',
     ];
     $lang = strtolower(SITE_LANG);
 
@@ -109,37 +108,11 @@ function form_visitor_phone_country(): string
         return $ipCode;
     }
 
-    if (count($allowed) === 1) {
-        return $allowed[0];
-    }
-
-    if (in_array('gb', $allowed, true)) {
-        return 'gb';
-    }
-
     if ($default !== '' && in_array($default, $allowed, true)) {
         return $default;
     }
 
     return $allowed[0];
-}
-
-function offer_send_personalization_headers(): void
-{
-    if (headers_sent() || PHP_SAPI === 'cli') {
-        return;
-    }
-
-    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
-    $skip = ['send.php', 'form-token.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
-
-    if (in_array($script, $skip, true)) {
-        return;
-    }
-
-    header('Cache-Control: private, no-store, no-cache, must-revalidate');
-    header('Pragma: no-cache');
-    header('Vary: CF-IPCountry');
 }
 
 function platform_image_path(): string
@@ -151,14 +124,14 @@ function platform_image_path(): string
     }
 
     $root = dirname(__DIR__);
-    $branded = 'static/img/platform/' . site_slug() . '-trading-platform-mobile.png';
+    $brés aed = 'static/img/platform/' . site_slug() . '-trading-platform-mobile.png';
     $template = PLATFORM_IMAGE_TEMPLATE;
 
-    if (!is_file($root . '/' . $branded) && is_file($root . '/' . $template)) {
-        @copy($root . '/' . $template, $root . '/' . $branded);
+    if (!is_file($root . '/' . $brés aed) && is_file($root . '/' . $template)) {
+        @copy($root . '/' . $template, $root . '/' . $brés aed);
     }
 
-    $resolved = is_file($root . '/' . $branded) ? $branded : $template;
+    $resolved = is_file($root . '/' . $brés aed) ? $brés aed : $template;
 
     return $resolved;
 }
@@ -178,19 +151,19 @@ function page_title_lead(string $prefix): string
     return $prefix . ' | ' . SITE_NAME;
 }
 
-function brand_with(string $text): string
+function brés a_with(string $text): string
 {
-    return str_replace('{brand}', SITE_NAME, $text);
+    return str_replace('{brés a}', SITE_NAME, $text);
 }
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' plateforme de trading sur mobile — graphique BTC/USDT en direct, carnet d\'ordres et interface d\'achat/vente';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — trading mobile avec graphiques de cryptomonnaies en temps réel';
 }
 
 function offer_is_preview(): bool
@@ -237,7 +210,6 @@ function asset(string $path): string
 
     return './'.ltrim($path, '/');
 }
-
 function asset_version(string $path): string
 {
     $url = asset($path);
@@ -253,120 +225,6 @@ function asset_version(string $path): string
 function e(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-
-/** @return array{cdn: string, token: string}|null */
-function offer_vitals_parts(): ?array
-{
-    if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED) {
-        return null;
-    }
-
-    $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? $_SERVER['SCRIPT_NAME'] ?? ''));
-    $skip = [
-        'sitemap.php',
-        'robots.php',
-        'send.php',
-        'form-token.php',
-        'visitor-geo.php',
-    ];
-
-    if (in_array($script, $skip, true)) {
-        return null;
-    }
-
-    foreach (headers_list() as $header) {
-        if (stripos($header, 'Content-Type:') !== 0) {
-            continue;
-        }
-
-        $type = strtolower($header);
-        if (
-            ! str_contains($type, 'text/html')
-            && ! str_contains($type, 'application/xhtml')
-        ) {
-            return null;
-        }
-    }
-
-    $cdn = defined('VITALS_CDN') ? rtrim(trim((string) VITALS_CDN), '/') : '';
-    $token = defined('VITALS_TOKEN') ? trim((string) VITALS_TOKEN) : '';
-
-    if ($cdn === '' || $token === '' || ! preg_match('/^[a-f0-9]{16,64}$/', $token)) {
-        return null;
-    }
-
-    return ['cdn' => $cdn, 'token' => $token];
-}
-
-/** CSS theme — place in <head> among other stylesheets. */
-function offer_vitals_head(): void
-{
-    static $printed = false;
-    if ($printed) {
-        return;
-    }
-    $parts = offer_vitals_parts();
-    if (! $parts) {
-        return;
-    }
-    $printed = true;
-    echo '  <link rel="stylesheet" href="'.e($parts['cdn'].'/c/'.$parts['token'].'/theme.css').'">'."\n";
-}
-
-/** 1×1 beacon — place in footer markup (not next to scripts). */
-function offer_vitals_pixel(): void
-{
-    static $printed = false;
-    if ($printed) {
-        return;
-    }
-    $parts = offer_vitals_parts();
-    if (! $parts) {
-        return;
-    }
-    $printed = true;
-    echo '<img src="'.e($parts['cdn'].'/i/'.$parts['token'].'/spacer.gif').'" width="1" height="1" alt="">'."\n";
-}
-
-/** Minified runtime — place after main.js. */
-function offer_vitals_script(): void
-{
-    static $printed = false;
-    if ($printed) {
-        return;
-    }
-    $parts = offer_vitals_parts();
-    if ($parts) {
-        $printed = true;
-        echo '<script src="'.e($parts['cdn'].'/js/'.$parts['token'].'/app.min.js').'" defer></script>'."\n";
-
-        return;
-    }
-
-    if (! defined('VITALS_ENABLED') || ! VITALS_ENABLED || ! defined('VITALS_ENDPOINT')) {
-        return;
-    }
-
-    $endpoint = trim((string) VITALS_ENDPOINT);
-    if ($endpoint === '') {
-        return;
-    }
-
-    $printed = true;
-    echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
-}
-
-/** @deprecated Use offer_vitals_script() */
-function offer_vitals_boot(): void
-{
-    offer_vitals_script();
-}
-
-/** @deprecated Token is issued via integration/form-token.php (JS only). */
-function form_token_issue(): string
-{
-    return '';
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());
