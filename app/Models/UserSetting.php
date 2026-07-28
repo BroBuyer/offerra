@@ -32,9 +32,11 @@ class UserSetting extends Model
         'dynadot_contact_id',
         'dynadot_sandbox',
         'dynadot_default_years',
+        'dynadot_account_name',
         'cloudflare_api_token',
         'cloudflare_account_id',
         'cloudflare_default_proxied',
+        'cloudflare_account_name',
         'gsc_verification_filename',
     ];
 
@@ -89,11 +91,47 @@ class UserSetting extends Model
             'dynadot_contact_id' => $this->dynadot_contact_id ?? '',
             'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
             'dynadot_default_years' => (int) ($this->dynadot_default_years ?? 1),
+            'dynadot_account_name' => $this->dynadot_account_name ?? '',
             'has_cloudflare_api_token' => filled($this->cloudflare_api_token),
             'cloudflare_account_id' => $this->cloudflare_account_id ?? '',
             'cloudflare_default_proxied' => (bool) ($this->cloudflare_default_proxied ?? true),
+            'cloudflare_account_name' => $this->cloudflare_account_name ?? '',
             'gsc_verification_filename' => $this->gsc_verification_filename ?? '',
             'has_gsc_verification_file' => filled($this->gsc_verification_filename),
+        ];
+    }
+
+    /**
+     * Snapshot of Cloudflare/Dynadot credentials + labels at offer creation time.
+     * Names are shown in the offers table; secrets stay encrypted and out of the UI.
+     *
+     * @return array{
+     *     cloudflare_account_name: ?string,
+     *     dynadot_account_name: ?string,
+     *     cloudflare_api_token: ?string,
+     *     cloudflare_account_id: ?string,
+     *     dynadot_api_key: ?string,
+     *     dynadot_contact_id: ?string,
+     *     dynadot_sandbox: ?bool
+     * }
+     */
+    public function providerSnapshotForOffer(): array
+    {
+        $cfName = trim((string) ($this->cloudflare_account_name ?? ''));
+        $dynName = trim((string) ($this->dynadot_account_name ?? ''));
+        $cfToken = trim((string) ($this->cloudflare_api_token ?? ''));
+        $cfAccountId = trim((string) ($this->cloudflare_account_id ?? ''));
+        $dynKey = trim((string) ($this->dynadot_api_key ?? ''));
+        $dynContact = trim((string) ($this->dynadot_contact_id ?? ''));
+
+        return [
+            'cloudflare_account_name' => $cfName !== '' ? $cfName : null,
+            'dynadot_account_name' => $dynName !== '' ? $dynName : null,
+            'cloudflare_api_token' => $cfToken !== '' ? $cfToken : null,
+            'cloudflare_account_id' => $cfAccountId !== '' ? $cfAccountId : null,
+            'dynadot_api_key' => $dynKey !== '' ? $dynKey : null,
+            'dynadot_contact_id' => $dynContact !== '' ? $dynContact : null,
+            'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
         ];
     }
 

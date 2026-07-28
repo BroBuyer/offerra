@@ -65,8 +65,10 @@ class SettingsController extends Controller
             ) ?: null,
             'dynadot_sandbox' => $request->boolean('dynadot_sandbox'),
             'dynadot_default_years' => (int) ($data['dynadot_default_years'] ?? $settings->dynadot_default_years ?? 1),
+            'dynadot_account_name' => trim((string) ($data['dynadot_account_name'] ?? '')) ?: null,
             'cloudflare_account_id' => $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id,
             'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),
+            'cloudflare_account_name' => trim((string) ($data['cloudflare_account_name'] ?? '')) ?: null,
         ]);
 
         $this->assignSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);

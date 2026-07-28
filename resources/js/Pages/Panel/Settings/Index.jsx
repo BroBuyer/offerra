@@ -29,9 +29,11 @@ function formFromSettings(settings, userId = null) {
         dynadot_contact_id: settings.dynadot_contact_id ?? '',
         dynadot_sandbox: settings.dynadot_sandbox ?? false,
         dynadot_default_years: settings.dynadot_default_years ?? 1,
+        dynadot_account_name: settings.dynadot_account_name ?? '',
         cloudflare_api_token: settings.cloudflare_api_token ?? '',
         cloudflare_account_id: settings.cloudflare_account_id ?? '',
         cloudflare_default_proxied: settings.cloudflare_default_proxied ?? true,
+        cloudflare_account_name: settings.cloudflare_account_name ?? '',
         test_domain: 'reserve-safegrove-ie.com',
     };
 }
@@ -310,6 +312,19 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                     <h3>Dynadot (домени)</h3>
                     <p className="card-desc">API для пошуку та реєстрації доменів при створенні оффера</p>
                     <div className="field">
+                        <label htmlFor="dynadot-account-name">Назва акаунта</label>
+                        <input
+                            type="text"
+                            id="dynadot-account-name"
+                            value={data.dynadot_account_name}
+                            onChange={(e) => setData('dynadot_account_name', e.target.value)}
+                            placeholder="DynadotEGO"
+                        />
+                        <p className="field-hint">
+                            Коротка мітка для таблиці оферів (фіксується при створенні офера).
+                        </p>
+                    </div>
+                    <div className="field">
                         <label htmlFor="dynadot-api-key">API key</label>
                         <SecretInput
                             id="dynadot-api-key"
@@ -390,6 +405,19 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 <section className="card">
                     <h3>Cloudflare (DNS)</h3>
                     <p className="card-desc">API для DNS: зона, A-запис, NS у Dynadot при створенні оффера</p>
+                    <div className="field">
+                        <label htmlFor="cf-account-name">Назва акаунта</label>
+                        <input
+                            type="text"
+                            id="cf-account-name"
+                            value={data.cloudflare_account_name}
+                            onChange={(e) => setData('cloudflare_account_name', e.target.value)}
+                            placeholder="CloudflareEGO"
+                        />
+                        <p className="field-hint">
+                            Коротка мітка для таблиці оферів (фіксується при створенні офера).
+                        </p>
+                    </div>
                     <div className="field">
                         <label htmlFor="cf-token">API token</label>
                         <SecretInput

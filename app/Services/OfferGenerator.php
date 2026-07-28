@@ -102,6 +102,7 @@ class OfferGenerator
 
             $infraOptions = InfrastructureOptions::fromInput($input);
             $provisionInfrastructure = InfrastructureOptions::anyEnabled($infraOptions);
+            $providerSnapshot = $settings->providerSnapshotForOffer();
 
             $offer = Offer::create([
                 'user_id' => $user->id,
@@ -123,6 +124,7 @@ class OfferGenerator
                 'provision_infrastructure' => $provisionInfrastructure,
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
                 'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
+                ...$providerSnapshot,
             ]);
 
             $this->verificationFiles->syncToOfferFolder($offer);
@@ -443,6 +445,7 @@ class OfferGenerator
                 'geo' => $offer->geo,
                 'lang' => $offer->lang,
                 'affiliate_tag' => $settings->affiliate_tag,
+                'created_at' => $offer->created_at,
             ]);
 
             $updates['keitaro_campaign_id'] = $keitaro['id'];

@@ -644,6 +644,8 @@ export default function OffersIndex({
                             <th>Мова</th>
                             <th>Шаблон</th>
                             <th>Панель</th>
+                            <th>Cloudflare</th>
+                            <th>Dynadot</th>
                             <th>Keitaro</th>
                             <th
                                 className="col-cwv"
@@ -716,6 +718,8 @@ export default function OffersIndex({
                                     <td>{offer.lang}</td>
                                     <td>{offer.template}</td>
                                     <td>{offer.deploy_panel ?? '—'}</td>
+                                    <td>{offer.cloudflare_account ?? '—'}</td>
+                                    <td>{offer.dynadot_account ?? '—'}</td>
                                     <td>
                                         {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
                                     </td>
