@@ -475,9 +475,12 @@ final class LeadProcessor
     private static function shouldSilentDrop(?string $spamReason): bool
     {
         return in_array($spamReason, [
+            'ORIGIN_MISMATCH',
+            'GEO_MISMATCH',
             'NO_SUBID',
             'KT_CLICK_NOT_FOUND',
             'KT_CAMPAIGN_MISMATCH',
+            'FORM_TOKEN_INVALID',
         ], true);
     }
 
