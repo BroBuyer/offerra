@@ -27,8 +27,6 @@ function formFromSettings(settings, userId = null) {
         dynadot_api_key: settings.dynadot_api_key ?? '',
         dynadot_api_secret: settings.dynadot_api_secret ?? '',
         dynadot_contact_id: settings.dynadot_contact_id ?? '',
-        dynadot_sandbox: settings.dynadot_sandbox ?? false,
-        dynadot_default_years: settings.dynadot_default_years ?? 1,
         dynadot_account_name: settings.dynadot_account_name ?? '',
         cloudflare_api_token: settings.cloudflare_api_token ?? '',
         cloudflare_account_id: settings.cloudflare_account_id ?? '',
@@ -333,46 +331,19 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             placeholder="Dynadot API key"
                         />
                     </div>
-                    <div className="field-row">
-                        <div className="field">
-                            <label htmlFor="dynadot-contact">Contact ID</label>
-                            <input
-                                type="text"
-                                id="dynadot-contact"
-                                value={data.dynadot_contact_id}
-                                onChange={(e) => setData('dynadot_contact_id', e.target.value)}
-                                placeholder="1885528 (лише цифри, без C-)"
-                            />
-                            <p className="field-hint">
-                                У Dynadot показується як C-1885528 — вставляйте лише <strong>1885528</strong>.
-                            </p>
-                        </div>
-                        <div className="field">
-                            <label htmlFor="dynadot-years">Років за замовч.</label>
-                            <input
-                                type="number"
-                                id="dynadot-years"
-                                min={1}
-                                max={10}
-                                value={data.dynadot_default_years}
-                                onChange={(e) => setData('dynadot_default_years', Number(e.target.value))}
-                            />
-                        </div>
-                    </div>
-                    <label className="field-check" htmlFor="dynadot-sandbox">
+                    <div className="field">
+                        <label htmlFor="dynadot-contact">Contact ID</label>
                         <input
-                            id="dynadot-sandbox"
-                            type="checkbox"
-                            checked={data.dynadot_sandbox}
-                            onChange={(e) => setData('dynadot_sandbox', e.target.checked)}
+                            type="text"
+                            id="dynadot-contact"
+                            value={data.dynadot_contact_id}
+                            onChange={(e) => setData('dynadot_contact_id', e.target.value)}
+                            placeholder="1885528 (лише цифри, без C-)"
                         />
-                        <span>Sandbox (тестовий API — потрібен окремий ключ з вкладки «Ключ песочницы»)</span>
-                    </label>
-                    {data.dynadot_sandbox && (
-                        <p className="field-hint field-hint--warn">
-                            Увімкнено Sandbox: Production Key не працюватиме. Вимкніть галочку для робочого пошуку доменів.
+                        <p className="field-hint">
+                            У Dynadot показується як C-1885528 — вставляйте лише <strong>1885528</strong>.
                         </p>
-                    )}
+                    </div>
                     {settings.has_dynadot_api_key && (
                         <div className="domain-balance-row" style={{ marginTop: '0.75rem' }}>
                             <span className={`domain-balance${dynadotBalance?.low_balance ? ' is-low' : ''}`}>

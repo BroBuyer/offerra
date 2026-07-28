@@ -63,8 +63,8 @@ class SettingsController extends Controller
             'dynadot_contact_id' => DynadotClient::normalizeContactId(
                 (string) ($data['dynadot_contact_id'] ?? $settings->dynadot_contact_id ?? ''),
             ) ?: null,
-            'dynadot_sandbox' => $request->boolean('dynadot_sandbox'),
-            'dynadot_default_years' => (int) ($data['dynadot_default_years'] ?? $settings->dynadot_default_years ?? 1),
+            'dynadot_sandbox' => false,
+            'dynadot_default_years' => 1,
             'dynadot_account_name' => trim((string) ($data['dynadot_account_name'] ?? '')) ?: null,
             'cloudflare_account_id' => $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id,
             'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),

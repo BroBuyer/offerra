@@ -55,8 +55,6 @@ class UpdateSettingsRequest extends FormRequest
             'dynadot_api_key' => ['nullable', 'string', 'max:255'],
             'dynadot_api_secret' => ['nullable', 'string', 'max:255'],
             'dynadot_contact_id' => ['nullable', 'string', 'max:40'],
-            'dynadot_sandbox' => ['boolean'],
-            'dynadot_default_years' => ['nullable', 'integer', 'min:1', 'max:10'],
             'dynadot_account_name' => ['nullable', 'string', 'max:80'],
             'cloudflare_api_token' => ['nullable', 'string', 'max:255'],
             'cloudflare_account_id' => ['nullable', 'string', 'max:40'],

@@ -89,8 +89,6 @@ class UserSetting extends Model
             'has_dynadot_api_key' => filled($this->dynadot_api_key),
             'has_dynadot_contact_id' => filled($this->dynadot_contact_id),
             'dynadot_contact_id' => $this->dynadot_contact_id ?? '',
-            'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
-            'dynadot_default_years' => (int) ($this->dynadot_default_years ?? 1),
             'dynadot_account_name' => $this->dynadot_account_name ?? '',
             'has_cloudflare_api_token' => filled($this->cloudflare_api_token),
             'cloudflare_account_id' => $this->cloudflare_account_id ?? '',
@@ -131,7 +129,7 @@ class UserSetting extends Model
             'cloudflare_account_id' => $cfAccountId !== '' ? $cfAccountId : null,
             'dynadot_api_key' => $dynKey !== '' ? $dynKey : null,
             'dynadot_contact_id' => $dynContact !== '' ? $dynContact : null,
-            'dynadot_sandbox' => (bool) ($this->dynadot_sandbox ?? false),
+            'dynadot_sandbox' => false,
         ];
     }
 

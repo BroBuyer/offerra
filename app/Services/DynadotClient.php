@@ -77,7 +77,7 @@ class DynadotClient
             throw new RuntimeException('Невірний домен.');
         }
 
-        $duration = max(1, min(10, $years ?? (int) ($settings->dynadot_default_years ?? 1)));
+        $duration = 1;
         $contactId = self::normalizeContactId((string) ($settings->dynadot_contact_id ?? ''));
 
         if ($contactId === '') {

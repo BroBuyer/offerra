@@ -18,7 +18,6 @@ class PurchaseDomainRequest extends FormRequest
     {
         return [
             'domain' => ['required', 'string', 'min:4', 'max:120'],
-            'years' => ['nullable', 'integer', 'min:1', 'max:10'],
         ];
     }
 }

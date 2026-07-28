@@ -21,7 +21,7 @@ class DomainPurchaseController extends Controller
 
         try {
             $domain = trim($request->string('domain')->toString());
-            $years = $request->integer('years') ?: null;
+            $years = null;
             $result = $dynadot->register($settings, $domain, $years);
 
             if (! $result['ok']) {
