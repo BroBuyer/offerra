@@ -78,6 +78,7 @@ class OfferController extends Controller
 
         return [
             'brand' => trim(request()->string('brand')->toString()),
+            'domain' => $this->normalizeDomainFilter(request()->string('domain')->toString()),
             'geo' => strtoupper(request()->string('geo')->toString()),
             'lang' => strtolower(request()->string('lang')->toString()),
             'indexing' => request()->string('indexing')->toString(),
@@ -90,6 +91,15 @@ class OfferController extends Controller
             'per_page' => $this->resolvePerPage($perPage),
             'page' => max(1, request()->integer('page', 1)),
         ];
+    }
+
+    private function normalizeDomainFilter(string $domain): string
+    {
+        $domain = strtolower(trim($domain));
+        $domain = preg_replace('#^https?://#', '', $domain) ?? $domain;
+        $domain = preg_replace('#^www\.#', '', $domain) ?? $domain;
+
+        return rtrim($domain, '/');
     }
 
     private function resolvePerPage(int $perPage): int
@@ -125,6 +135,10 @@ class OfferController extends Controller
     {
         if ($filters['brand'] !== '') {
             $query->where('brand', 'like', '%'.$filters['brand'].'%');
+        }
+
+        if ($filters['domain'] !== '') {
+            $query->where('domain', 'like', '%'.$filters['domain'].'%');
         }
 
         if ($filters['geo'] !== '') {
@@ -425,6 +439,9 @@ class OfferController extends Controller
         $query = clone $baseQuery;
         if ($filters['brand'] !== '') {
             $query->where('brand', 'like', '%'.$filters['brand'].'%');
+        }
+        if ($filters['domain'] !== '') {
+            $query->where('domain', 'like', '%'.$filters['domain'].'%');
         }
 
         $offers = $query

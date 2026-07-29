@@ -140,6 +140,14 @@ function buildActiveFilterChips(filters, users) {
         });
     }
 
+    if (filters.domain) {
+        chips.push({
+            id: 'domain',
+            label: `Домен: ${filters.domain}`,
+            clear: { domain: '' },
+        });
+    }
+
     if (filters.geo) {
         chips.push({
             id: 'geo',
@@ -250,6 +258,7 @@ export default function OffersIndex({
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
+    const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
 
     const pagination = resolveOffersPagination(offers, filters);
     const rows = pagination.rows;
@@ -266,6 +275,10 @@ export default function OffersIndex({
     useEffect(() => {
         setBrandQuery(filters.brand ?? '');
     }, [filters.brand]);
+
+    useEffect(() => {
+        setDomainQuery(filters.domain ?? '');
+    }, [filters.domain]);
 
     const reloadOffers = (overrides = {}, { resetPage = true } = {}) => {
         const next = { ...filters, ...overrides };
@@ -284,6 +297,7 @@ export default function OffersIndex({
     const clearAllFilters = () => {
         reloadOffers({
             brand: '',
+            domain: '',
             geo: '',
             lang: '',
             indexing: '',
@@ -309,6 +323,18 @@ export default function OffersIndex({
 
         return () => window.clearTimeout(timeout);
     }, [brandQuery, filters.brand]);
+
+    useEffect(() => {
+        if (domainQuery === (filters.domain ?? '')) {
+            return undefined;
+        }
+
+        const timeout = window.setTimeout(() => {
+            reloadOffers({ domain: domainQuery });
+        }, 350);
+
+        return () => window.clearTimeout(timeout);
+    }, [domainQuery, filters.domain]);
 
     const hasDeploying = useMemo(
         () => rows.some((offer) => offer.status === 'deploying' || offer.status === 'archiving'),
@@ -520,6 +546,14 @@ export default function OffersIndex({
                     value={brandQuery}
                     onChange={(event) => setBrandQuery(event.target.value)}
                     aria-label="Пошук за брендом"
+                />
+                <input
+                    type="search"
+                    className="filter-bar__search"
+                    placeholder="Домен…"
+                    value={domainQuery}
+                    onChange={(event) => setDomainQuery(event.target.value)}
+                    aria-label="Пошук за доменом"
                 />
                 <select
                     aria-label="GEO"
