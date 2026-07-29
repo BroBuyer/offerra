@@ -35,8 +35,9 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'screenshot' => $platform_image,
         'aggregateRating' => [
             '@type' => 'AggregateRating',
-            'értékelésValue' => '4.7',
-            'értékelésCount' => '1842',
+            // Google expects standard schema.org field names (not localized keys).
+            'ratingValue' => '4.7',
+            'ratingCount' => '1842',
             'bestRating' => '5',
         ],
         'offers' => [
