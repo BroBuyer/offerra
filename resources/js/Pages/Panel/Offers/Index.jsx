@@ -475,9 +475,17 @@ export default function OffersIndex({
     return (
         <PanelLayout title="Оффери" fullWidth>
             <div className="offers-page">
-            <header className="page-header">
-                <h2>Оффери</h2>
-                <p>Каталог згенерованих лендів — деплой на Hestia через SFTP</p>
+            <header className="page-header offers-page-header">
+                <div>
+                    <h2>Оффери</h2>
+                    <p>Каталог згенерованих лендів — деплой на Hestia через SFTP</p>
+                </div>
+                <Link
+                    href={route('offers.create', { fresh: 1 })}
+                    className="btn btn-primary"
+                >
+                    + Новий оффер
+                </Link>
             </header>
 
             {errors?.edit && (
@@ -658,12 +666,6 @@ export default function OffersIndex({
                             : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
                     </span>
                 )}
-                <Link
-                    href={route('offers.create', { fresh: 1 })}
-                    className="btn btn-primary filter-bar__create"
-                >
-                    + Новий оффер
-                </Link>
             </div>
 
             <div className="table-wrap">
