@@ -481,6 +481,7 @@ final class LeadProcessor
             'KT_CLICK_NOT_FOUND',
             'KT_CAMPAIGN_MISMATCH',
             'FORM_TOKEN_INVALID',
+            'FORM_TOKEN_MISSING',
         ], true);
     }
 
