@@ -56,6 +56,8 @@ class OfferController extends Controller
             'canDeploy' => app(DeployService::class)->settingsReady($settings),
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'geoPresets' => config('offerra.geo_presets'),
+            'currencies' => config('offerra.currencies'),
+            'templates' => app(TemplateCatalog::class)->forWizard(),
             'showUserColumn' => $user->isAdmin(),
             'users' => $user->isAdmin()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
@@ -360,16 +362,21 @@ class OfferController extends Controller
         DeployService $deploy,
     ): RedirectResponse {
         $createKeitaro = $request->boolean('create_keitaro');
-        $vitalsEnabled = $request->boolean('vitals_enabled');
-        $shouldAutoDeploy = $createKeitaro && ! $offer->keitaro_campaign_id;
-        $vitalsChanged = $vitalsEnabled !== (bool) $offer->vitals_enabled;
+        $autoRedeploy = $request->boolean('auto_redeploy', true);
+        $hadKeitaro = (bool) $offer->keitaro_campaign_id;
 
         try {
             $offer = $generator->updateSettings($offer, [
+                'brand' => $request->string('brand')->toString(),
+                'geo' => $request->string('geo')->toString(),
+                'lang' => $request->string('lang')->toString(),
+                'template' => $request->string('template')->toString(),
+                'min_deposit' => $request->string('min_deposit')->toString(),
+                'currency' => $request->string('currency')->toString(),
                 'phone' => $request->string('phone')->toString(),
                 'phone_countries' => $request->input('phone_countries', []),
                 'create_keitaro' => $createKeitaro,
-                'vitals_enabled' => $vitalsEnabled,
+                'vitals_enabled' => $request->boolean('vitals_enabled'),
             ]);
         } catch (\Throwable $e) {
             return redirect()
@@ -379,29 +386,16 @@ class OfferController extends Controller
 
         $message = 'Оффер оновлено.';
 
-        if ($createKeitaro && $offer->keitaro_campaign_id) {
+        if ($createKeitaro && ! $hadKeitaro && $offer->keitaro_campaign_id) {
             $message .= " Keitaro #{$offer->keitaro_campaign_id}.";
+        }
 
-            if ($shouldAutoDeploy) {
-                try {
-                    $deploy->enqueueDeploy($offer->user, $offer->fresh());
-                    $message .= ' Деплой з токеном Keitaro запущено у фоні.';
-                } catch (\InvalidArgumentException|\RuntimeException $e) {
-                    $message .= ' Натисніть «Деплой», щоб застосувати токен на сервері.';
-                }
-            } else {
-                $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';
-            }
-        } elseif ($vitalsChanged) {
+        if ($autoRedeploy) {
             try {
                 $deploy->enqueueDeploy($offer->user, $offer->fresh());
-                $message .= $vitalsEnabled
-                    ? ' CWV-колектор увімкнено — деплой запущено у фоні.'
-                    : ' CWV-колектор вимкнено — деплой запущено у фоні.';
+                $message .= ' Деплой запущено у фоні.';
             } catch (\InvalidArgumentException|\RuntimeException $e) {
-                $message .= $vitalsEnabled
-                    ? ' CWV-колектор увімкнено — натисни «Деплой».'
-                    : ' CWV-колектор вимкнено — натисни «Деплой».';
+                $message .= ' Натисніть «Деплой», щоб застосувати на сервері. ('.$e->getMessage().')';
             }
         } else {
             $message .= ' Натисніть «Деплой», щоб застосувати на сервері.';

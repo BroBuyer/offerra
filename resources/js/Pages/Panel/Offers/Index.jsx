@@ -246,6 +246,8 @@ export default function OffersIndex({
     canDeploy,
     hasKeitaroApiKey = false,
     geoPresets = [],
+    currencies = [],
+    templates = [],
     showUserColumn = false,
     users = [],
     dateFilters = {},
@@ -842,7 +844,8 @@ export default function OffersIndex({
                                                     type="button"
                                                     className="btn btn-ghost btn-sm"
                                                     onClick={() => setEditingOffer(offer)}
-                                                    title="Редагувати phone GEO / Keitaro / CWV"
+                                                    title="Редагувати оффер (GEO / мова / шаблон / phone / CWV)"
+                                                    aria-label="Редагувати оффер"
                                                 >
                                                     ✎
                                                 </button>
@@ -954,6 +957,8 @@ export default function OffersIndex({
                 <OfferEditModal
                     offer={editingOffer}
                     geoPresets={geoPresets}
+                    currencies={currencies}
+                    templates={templates}
                     hasKeitaroApiKey={hasKeitaroApiKey}
                     onClose={() => setEditingOffer(null)}
                 />

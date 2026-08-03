@@ -423,13 +423,51 @@ class OfferGenerator
             throw new InvalidArgumentException('Налаштування користувача не знайдено.');
         }
 
+        if (in_array($offer->status, ['archived', 'archiving', 'deploying'], true)) {
+            throw new InvalidArgumentException(
+                $offer->status === 'deploying'
+                    ? 'Оффер зараз деплоїться — зачекайте і спробуйте знову.'
+                    : 'Архівний оффер не можна редагувати.',
+            );
+        }
+
         $phone = strtolower((string) $input['phone']);
         $phoneCountriesCsv = $this->configBuilder->phoneCountriesCsv([
             'phone' => $phone,
             'phone_countries' => $input['phone_countries'] ?? [],
         ]);
 
+        $brand = trim((string) ($input['brand'] ?? $offer->brand));
+        $geo = strtoupper(trim((string) ($input['geo'] ?? $offer->geo)));
+        $lang = strtolower(trim((string) ($input['lang'] ?? $offer->lang)));
+        $template = trim((string) ($input['template'] ?? $offer->template));
+        $minDeposit = trim((string) ($input['min_deposit'] ?? $offer->min_deposit ?: '250'));
+        $currency = strtoupper(trim((string) ($input['currency'] ?? $offer->currency ?: 'EUR')));
+
+        if ($brand === '') {
+            throw new InvalidArgumentException('Бренд не може бути порожнім.');
+        }
+
+        $allowedTemplates = $this->templateCatalog->ids();
+        if (! in_array($template, $allowedTemplates, true)) {
+            throw new InvalidArgumentException("Шаблон «{$template}» недоступний.");
+        }
+
+        $allowedLangs = $this->templateCatalog->languageCodesFor($template);
+        if (! in_array($lang, $allowedLangs, true)) {
+            throw new InvalidArgumentException("Мова «{$lang}» недоступна для шаблону «{$template}».");
+        }
+
+        $needsRebuild = $lang !== strtolower((string) $offer->lang)
+            || $template !== (string) $offer->template;
+
         $updates = [
+            'brand' => $brand,
+            'geo' => $geo,
+            'lang' => $lang,
+            'template' => $template,
+            'min_deposit' => $minDeposit,
+            'currency' => $currency,
             'phone' => $phone,
             'phone_countries' => $phoneCountriesCsv,
         ];
@@ -440,10 +478,10 @@ class OfferGenerator
 
         if (! empty($input['create_keitaro']) && ! $offer->keitaro_campaign_id) {
             $keitaro = $this->keitaroClient->createCampaign($settings, [
-                'brand' => $offer->brand,
+                'brand' => $brand,
                 'domain' => $offer->domain,
-                'geo' => $offer->geo,
-                'lang' => $offer->lang,
+                'geo' => $geo,
+                'lang' => $lang,
                 'affiliate_tag' => $settings->affiliate_tag,
                 'created_at' => $offer->created_at,
             ]);
@@ -456,7 +494,11 @@ class OfferGenerator
         $offer->update($updates);
         $offer->refresh();
 
-        $this->refreshConfig($offer);
+        if ($needsRebuild) {
+            $this->rebuildLocalFolder($offer);
+        } else {
+            $this->refreshConfig($offer);
+        }
 
         return $offer->fresh();
     }
@@ -475,10 +517,19 @@ class OfferGenerator
             return;
         }
 
+        $manifest['brand'] = $offer->brand;
+        $manifest['domain'] = $offer->domain;
+        $manifest['geo'] = strtoupper((string) $offer->geo);
+        $manifest['lang'] = strtolower((string) $offer->lang);
         $manifest['phone'] = strtolower($offer->phone ?? '');
         $manifest['phone_countries'] = $offer->phone_countries ?? strtolower($offer->phone ?? '');
+        $manifest['min_deposit'] = $offer->min_deposit ?: '250';
+        $manifest['currency'] = strtoupper($offer->currency ?: 'EUR');
+        $manifest['template'] = $offer->template;
         $manifest['keitaro_campaign_id'] = $offer->keitaro_campaign_id;
         $manifest['keitaro_alias'] = $offer->keitaro_alias;
+        $manifest['vitals_enabled'] = (bool) $offer->vitals_enabled;
+        $manifest['folder'] = $offer->folder;
 
         File::put(
             $manifestPath,

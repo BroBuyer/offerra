@@ -2,20 +2,47 @@ import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/C
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
 
+function resolveMarket(geo, geoPresets, availableLanguages) {
+    const code = String(geo || '').toUpperCase();
+    const preset = geoPresets.find((item) => item.code === code);
+    const preferredLang = (preset?.lang || '').toLowerCase();
+    const langCodes = availableLanguages.map((item) => item.code);
+    const lang = langCodes.includes(preferredLang)
+        ? preferredLang
+        : (langCodes[0] || preferredLang || '');
+
+    return {
+        geo: code,
+        lang,
+        currency: preset?.currency || '',
+        phone: (preset?.phone || lang || '').toLowerCase(),
+    };
+}
+
 export default function OfferEditModal({
     offer,
-    geoPresets,
+    geoPresets = [],
+    currencies = [],
+    templates = [],
     hasKeitaroApiKey,
     onClose,
 }) {
     const phoneCountries = normalizePhoneCountries(offer.phone_countries, offer.phone);
+    const initialTemplate = offer.template_id || 'default';
 
     const { errors: pageErrors } = usePage().props;
     const { data, setData, patch, processing, errors, reset, clearErrors } = useForm({
+        brand: offer.brand || '',
+        geo: String(offer.geo || '').toUpperCase(),
+        lang: String(offer.lang || '').toLowerCase(),
+        template: initialTemplate,
+        min_deposit: offer.min_deposit || '250',
+        currency: String(offer.currency || 'EUR').toUpperCase(),
         phone: offer.phone || phoneCountries[0] || '',
         phone_countries: phoneCountries,
         create_keitaro: false,
         vitals_enabled: Boolean(offer.vitals_enabled),
+        auto_redeploy: true,
     });
 
     useEffect(() => {
@@ -30,8 +57,48 @@ export default function OfferEditModal({
         return () => document.removeEventListener('keydown', onKey);
     }, [onClose, processing]);
 
+    const selectedTemplate = useMemo(
+        () => templates.find((item) => item.id === data.template) ?? templates[0] ?? null,
+        [templates, data.template],
+    );
+    const availableLanguages = selectedTemplate?.languages ?? [];
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
     const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
+
+    const onTemplateChange = (templateId) => {
+        const template = templates.find((item) => item.id === templateId);
+        const langs = template?.languages ?? [];
+        const langCodes = langs.map((item) => item.code);
+        const nextLang = langCodes.includes(data.lang) ? data.lang : (langCodes[0] || data.lang);
+
+        setData((prev) => ({
+            ...prev,
+            template: templateId,
+            lang: nextLang,
+        }));
+    };
+
+    const onGeoChange = (code) => {
+        const resolved = resolveMarket(code, geoPresets, availableLanguages);
+        setData((prev) => {
+            const phones = normalizePhoneCountries(prev.phone_countries, prev.phone);
+            const phoneSet = new Set(phones);
+            if (resolved.phone) {
+                phoneSet.add(resolved.phone);
+            }
+            const list = [...phoneSet];
+            const phone = list.includes(resolved.phone) ? resolved.phone : (list.includes(prev.phone) ? prev.phone : list[0]);
+
+            return {
+                ...prev,
+                geo: resolved.geo,
+                lang: resolved.lang || prev.lang,
+                currency: resolved.currency || prev.currency,
+                phone_countries: list,
+                phone,
+            };
+        });
+    };
 
     const togglePhoneCountry = (code) => {
         const normalized = code.toLowerCase();
@@ -68,10 +135,24 @@ export default function OfferEditModal({
         });
     };
 
+    const fieldError =
+        pageErrors?.edit
+        || errors.edit
+        || errors.brand
+        || errors.geo
+        || errors.lang
+        || errors.template
+        || errors.min_deposit
+        || errors.currency
+        || errors.phone
+        || errors.phone_countries
+        || errors.create_keitaro
+        || errors.vitals_enabled;
+
     return (
         <div className="modal-backdrop" onClick={() => !processing && onClose()}>
             <div
-                className="modal-card"
+                className="modal-card modal-card--wide"
                 role="dialog"
                 aria-labelledby="offer-edit-title"
                 onClick={(event) => event.stopPropagation()}
@@ -79,7 +160,7 @@ export default function OfferEditModal({
                 <div className="modal-card__header">
                     <div>
                         <h3 id="offer-edit-title">Редагувати оффер</h3>
-                        <p className="card-desc">{offer.brand} · {offer.domain}</p>
+                        <p className="card-desc">{offer.domain} · домен не змінюється</p>
                     </div>
                     <button
                         type="button"
@@ -93,6 +174,89 @@ export default function OfferEditModal({
                 </div>
 
                 <form onSubmit={submit}>
+                    <div className="field">
+                        <label htmlFor="edit-brand">Бренд</label>
+                        <input
+                            id="edit-brand"
+                            type="text"
+                            value={data.brand}
+                            onChange={(event) => setData('brand', event.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="field-row">
+                        <div className="field">
+                            <label htmlFor="edit-template">Шаблон</label>
+                            <select
+                                id="edit-template"
+                                value={data.template}
+                                onChange={(event) => onTemplateChange(event.target.value)}
+                            >
+                                {templates.map((item) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name || item.id}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="edit-geo">GEO (CRM)</label>
+                            <select
+                                id="edit-geo"
+                                value={data.geo}
+                                onChange={(event) => onGeoChange(event.target.value)}
+                            >
+                                {geoPresets.map((item) => (
+                                    <option key={item.code} value={item.code}>
+                                        {item.code}{item.name ? ` — ${item.name}` : ''}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="edit-lang">Мова</label>
+                            <select
+                                id="edit-lang"
+                                value={data.lang}
+                                onChange={(event) => setData('lang', event.target.value.toLowerCase())}
+                            >
+                                {availableLanguages.map((item) => (
+                                    <option key={item.code} value={item.code}>
+                                        {item.code}{item.name ? ` — ${item.name}` : ''}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="field-row">
+                        <div className="field">
+                            <label htmlFor="edit-min-deposit">Мін. депозит</label>
+                            <input
+                                id="edit-min-deposit"
+                                type="text"
+                                value={data.min_deposit}
+                                onChange={(event) => setData('min_deposit', event.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="edit-currency">Валюта</label>
+                            <select
+                                id="edit-currency"
+                                value={data.currency}
+                                onChange={(event) => setData('currency', event.target.value.toUpperCase())}
+                            >
+                                {currencies.map(({ code, name }) => (
+                                    <option key={code} value={code}>
+                                        {code}{name ? ` — ${name}` : ''}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="field">
                         <label>Phone GEO (форма)</label>
                         <PhoneGeoSelect
@@ -137,9 +301,6 @@ export default function OfferEditModal({
                                     <Link href={route('settings.index')}>налаштуваннях</Link>.
                                 </p>
                             )}
-                            <p className="field-hint">
-                                Після збереження токен Keitaro автоматично задеплоїться на ленд.
-                            </p>
                         </div>
                     )}
 
@@ -161,20 +322,28 @@ export default function OfferEditModal({
                                 CWV-collector (дзеркала / редірект з копій)
                             </span>
                         </label>
+                    </div>
+
+                    <div className="field">
+                        <label className="field-check" htmlFor="edit-auto-redeploy">
+                            <input
+                                id="edit-auto-redeploy"
+                                type="checkbox"
+                                checked={data.auto_redeploy}
+                                onChange={(event) => setData('auto_redeploy', event.target.checked)}
+                            />
+                            <span>Одразу передеплоїти після збереження</span>
+                        </label>
                         <p className="field-hint">
-                            Після «Зберегти» деплой з CDN-скриптом запуститься автоматично.
+                            Зміна мови/шаблону перезбирає ленд з нуля. Домен і Cloudflare/Dynadot не чіпаються.
                         </p>
                     </div>
 
-                    {(errors.phone || errors.phone_countries || errors.create_keitaro || errors.vitals_enabled || errors.edit || pageErrors?.edit) && (
+                    {fieldError && (
                         <p className="field-hint" style={{ color: '#f87171' }}>
-                            {pageErrors?.edit || errors.edit || errors.phone || errors.phone_countries || errors.create_keitaro || errors.vitals_enabled}
+                            {fieldError}
                         </p>
                     )}
-
-                    <p className="field-hint">
-                        Зміни phone GEO застосуються на ленді після «Деплой».
-                    </p>
 
                     <div className="btn-row">
                         <button
