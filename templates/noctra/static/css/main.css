@@ -871,10 +871,8 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
   max-height: 560px;
   object-fit: contain;
   background: transparent;
-  /* Yaw the regenerated front mockup so the phone faces left toward the copy */
-  filter: drop-shadow(18px 22px 36px rgba(0, 0, 0, 0.55));
-  transform: perspective(1200px) rotateY(28deg);
-  transform-origin: center center;
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.55));
+  transform: none;
 }
 
 .platform-figure-caption {
