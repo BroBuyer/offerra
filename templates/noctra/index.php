@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title('Market Terminal');
-$page_description = 'Execute crypto, forex, and multi-asset trades on ' . SITE_NAME . ' — live order flow, AI-assisted signals, and a dark terminal built for speed.';
+$page_title = page_title('AI Trading Platform');
+$page_description = 'Trade crypto and multi-asset markets on ' . SITE_NAME . ' — secure SSL access, AI-driven analytics, transparent pricing, and fast execution.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -27,29 +27,28 @@ require_once __DIR__ . '/includes/header.php';
   <section class="hero-terminal">
     <div class="container hero-terminal-grid">
       <div>
-        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> Live market desk</div>
-        <h1>Trade the book.<br><span class="text-accent">Stay in control.</span></h1>
+        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> AI-powered trading platform</div>
+        <h1>Trade crypto and other markets.<br><span class="text-accent">Optimize performance with <?= e(SITE_NAME) ?></span></h1>
         <p class="lead">
-          <?= e(SITE_NAME) ?> is built like an exchange terminal — tight spreads, clear risk tools,
-          and AI context when you need it. Less noise. More execution.
+          An innovative desk for crypto and multi-asset trading — stronger security, transparent pricing,
+          AI-driven analytics, and an interface that stays clear under pressure.
         </p>
-        <div class="hero-actions">
-          <a href="sign.php" class="btn btn-primary">Open terminal — <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
-          <a href="#markets" class="btn btn-outline">View live pairs</a>
+        <div class="hero-badges" aria-label="Platform highlights">
+          <span class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Secure connection with full SSL protocol
+          </span>
+          <span class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Customer support available 24/7
+          </span>
+          <span class="hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Extremely fast order execution
+          </span>
         </div>
-        <div class="hero-meta" aria-label="Platform highlights">
-          <div class="hero-meta-item">
-            <div class="label">Assets</div>
-            <div class="value">70+</div>
-          </div>
-          <div class="hero-meta-item">
-            <div class="label">Volume</div>
-            <div class="value">$440m</div>
-          </div>
-          <div class="hero-meta-item">
-            <div class="label">Countries</div>
-            <div class="value">100+</div>
-          </div>
+        <div class="hero-actions">
+          <a href="sign.php" class="btn btn-primary">Start today — min. deposit <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
         </div>
       </div>
 
@@ -113,7 +112,8 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 
   <section class="platform-section" id="platform" aria-label="Trading platform preview">
-    <div class="container platform-layout">
+    <div class="container platform-layout platform-layout--media-first">
+      <?php require __DIR__ . '/includes/platform-image.php'; ?>
       <div class="platform-copy">
         <p class="eyebrow">Workspace</p>
         <h2>Charts first.<br>Execution ready.</h2>
@@ -128,7 +128,6 @@ require_once __DIR__ . '/includes/header.php';
         </ul>
         <a href="sign.php" class="btn btn-primary">Launch workspace</a>
       </div>
-      <?php require __DIR__ . '/includes/platform-image.php'; ?>
     </div>
   </section>
 
