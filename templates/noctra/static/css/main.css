@@ -256,7 +256,7 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
 @media (min-width: 960px) {
   .hero-terminal-grid {
     grid-template-columns: 1.15fr 0.85fr;
-    align-items: stretch;
+    align-items: start;
     gap: 2.5rem;
   }
 }
@@ -318,6 +318,8 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: auto;
+  align-self: start;
 }
 .board-card-head {
   display: flex;
@@ -350,7 +352,7 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
   border-radius: 50%;
   background: var(--emerald);
 }
-.board-card-body { padding: 1.15rem; flex: 1; }
+.board-card-body { padding: 1.15rem; }
 
 /* Sections */
 .section { padding: 4.5rem 0; }
