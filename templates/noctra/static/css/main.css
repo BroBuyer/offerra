@@ -876,9 +876,10 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
   background: transparent;
   border: 0;
   border-radius: 0;
+  /* no CSS filter — drop-shadow filter re-rasterizes PNG alpha and can crush
+     light UI text to near-black on dark page backgrounds */
+  filter: none;
   box-shadow: none;
-  /* soft lift without a hard rectangular plate */
-  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
   transform: none;
 }
 
