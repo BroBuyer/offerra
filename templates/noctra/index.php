@@ -112,8 +112,7 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 
   <section class="platform-section" id="platform" aria-label="Trading platform preview">
-    <div class="container platform-layout platform-layout--media-first">
-      <?php require __DIR__ . '/includes/platform-image.php'; ?>
+    <div class="container platform-layout">
       <div class="platform-copy">
         <p class="eyebrow">Workspace</p>
         <h2>Charts first.<br>Execution ready.</h2>
@@ -128,6 +127,7 @@ require_once __DIR__ . '/includes/header.php';
         </ul>
         <a href="sign.php" class="btn btn-primary">Launch workspace</a>
       </div>
+      <?php require __DIR__ . '/includes/platform-image.php'; ?>
     </div>
   </section>
 

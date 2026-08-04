@@ -429,7 +429,6 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
 }
 @media (min-width: 960px) {
   .platform-layout { grid-template-columns: 0.95fr 1.05fr; }
-  .platform-layout--media-first { grid-template-columns: 1.05fr 0.95fr; }
 }
 .platform-points {
   margin: 1.25rem 0 1.75rem;
@@ -867,12 +866,15 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
 .platform-figure-img {
   display: block;
   width: auto;
-  max-width: min(100%, 320px);
+  max-width: min(100%, 340px);
   height: auto;
   max-height: 560px;
   object-fit: contain;
   background: transparent;
-  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.55));
+  /* Yaw the regenerated front mockup so the phone faces left toward the copy */
+  filter: drop-shadow(18px 22px 36px rgba(0, 0, 0, 0.55));
+  transform: perspective(1200px) rotateY(28deg);
+  transform-origin: center center;
 }
 
 .platform-figure-caption {
@@ -955,4 +957,23 @@ h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
   .form-grid { grid-template-columns: 1fr; }
   .hero-actions { margin-bottom: 0; }
 }
-.partners-grid img { opacity: 0.7; margin-inline: auto; filter: grayscale(1) brightness(1.2); }
+.partners-grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  background: #f3f6fb;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.partners-grid-item img {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  margin-inline: auto;
+  opacity: 1;
+  filter: none;
+  border-radius: 8px;
+}
