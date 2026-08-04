@@ -68,24 +68,46 @@ class OfferTeardownService
             }
         }
 
+        $cloudflareOk = false;
+        $cloudflareHardErrors = [];
+
         foreach ($this->cloudflareCandidates($offer) as $label => $settings) {
             try {
-                $zoneId = $this->resolveZoneId($settings, $offer);
-                if ($zoneId !== '') {
-                    $this->cloudflare->deleteZone($settings, $zoneId);
-                    $steps['cloudflare_'.$label] = 'deleted';
-                } else {
-                    $steps['cloudflare_'.$label] = 'skipped_not_found';
+                $outcome = $this->removeCloudflareZone($settings, $offer);
+                $steps['cloudflare_'.$label] = $outcome;
+
+                if (in_array($outcome, ['deleted', 'already_gone', 'skipped_not_found'], true)) {
+                    $cloudflareOk = true;
+                    $this->forgetCloudflareZoneId($offer);
                 }
             } catch (\Throwable $e) {
+                if ($this->cloudflare->isUnauthorizedError($e)) {
+                    $steps['cloudflare_'.$label] = 'skipped_unauthorized';
+                    Log::warning('Offer teardown Cloudflare unauthorized (ignored if zone already gone)', [
+                        'offer_id' => $offer->id,
+                        'domain' => $domain,
+                        'host' => $label,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    continue;
+                }
+
                 $steps['cloudflare_'.$label] = 'error: '.$e->getMessage();
-                $errors[] = 'Cloudflare ('.$label.'): '.$e->getMessage();
+                $cloudflareHardErrors[] = 'Cloudflare ('.$label.'): '.$e->getMessage();
                 Log::warning('Offer teardown Cloudflare failed', [
                     'offer_id' => $offer->id,
                     'domain' => $domain,
                     'host' => $label,
                     'error' => $e->getMessage(),
                 ]);
+            }
+        }
+
+        // Zone deleted / already missing for at least one account → do not fail on admin 403 etc.
+        if (! $cloudflareOk) {
+            foreach ($cloudflareHardErrors as $error) {
+                $errors[] = $error;
             }
         }
 
@@ -195,17 +217,58 @@ class OfferTeardownService
         return $admin?->settings;
     }
 
-    private function resolveZoneId(UserSetting $settings, Offer $offer): string
+    /**
+     * @return 'deleted'|'already_gone'|'skipped_not_found'
+     */
+    private function removeCloudflareZone(UserSetting $settings, Offer $offer): string
     {
-        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        $zoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
+        $domain = strtolower(trim($offer->domain));
+        $storedZoneId = $this->storedCloudflareZoneId($offer);
+        $hadStoredId = $storedZoneId !== '';
 
-        if ($zoneId !== '') {
-            return $zoneId;
+        if ($storedZoneId !== '') {
+            try {
+                $result = $this->cloudflare->deleteZone($settings, $storedZoneId);
+                if ($result === 'deleted') {
+                    return 'deleted';
+                }
+            } catch (\Throwable $e) {
+                if (! $this->cloudflare->isUnauthorizedError($e) && ! $this->cloudflare->isZoneAbsentError($e)) {
+                    throw $e;
+                }
+                // Stale ID or token cannot see this zone → resolve by domain for this account.
+            }
         }
 
-        $found = $this->cloudflare->findZone($settings, strtolower(trim($offer->domain)));
+        $found = $this->cloudflare->findZone($settings, $domain);
+        $foundZoneId = trim((string) ($found['zone_id'] ?? ''));
 
-        return trim((string) ($found['zone_id'] ?? ''));
+        if ($foundZoneId === '') {
+            return $hadStoredId ? 'already_gone' : 'skipped_not_found';
+        }
+
+        $result = $this->cloudflare->deleteZone($settings, $foundZoneId);
+
+        return $result === 'deleted' ? 'deleted' : 'already_gone';
+    }
+
+    private function storedCloudflareZoneId(Offer $offer): string
+    {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+
+        return trim((string) ($meta['cloudflare_zone_id'] ?? ''));
+    }
+
+    private function forgetCloudflareZoneId(Offer $offer): void
+    {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+
+        if (! array_key_exists('cloudflare_zone_id', $meta)) {
+            return;
+        }
+
+        unset($meta['cloudflare_zone_id']);
+        $offer->infra_meta = $meta;
+        $offer->save();
     }
 }

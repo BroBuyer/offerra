@@ -139,19 +139,63 @@ class CloudflareClient
         return $this->findZoneByName($settings, $domain);
     }
 
-    public function deleteZone(UserSetting $settings, string $zoneId): void
+    /**
+     * @return 'deleted'|'already_missing'
+     */
+    public function deleteZone(UserSetting $settings, string $zoneId): string
     {
         $zoneId = trim($zoneId);
 
         if ($zoneId === '') {
-            return;
+            return 'already_missing';
         }
 
-        $response = $this->request($settings, 'DELETE', '/zones/'.$zoneId);
+        try {
+            $response = $this->request($settings, 'DELETE', '/zones/'.$zoneId);
+        } catch (RuntimeException $e) {
+            if ($this->isZoneAbsentError($e)) {
+                return 'already_missing';
+            }
+
+            throw $e;
+        }
 
         if (! ($response['success'] ?? false)) {
-            throw new RuntimeException('Cloudflare delete zone: '.$this->extractError($response));
+            $message = $this->extractError($response);
+            if ($this->isZoneAbsentMessage($message)) {
+                return 'already_missing';
+            }
+
+            throw new RuntimeException('Cloudflare delete zone: '.$message);
         }
+
+        return 'deleted';
+    }
+
+    public function isZoneAbsentError(\Throwable $e): bool
+    {
+        $message = $e->getMessage();
+
+        if (preg_match('/Cloudflare HTTP (400|404)\b/i', $message) === 1) {
+            return true;
+        }
+
+        return $this->isZoneAbsentMessage($message);
+    }
+
+    public function isUnauthorizedError(\Throwable $e): bool
+    {
+        return preg_match('/Cloudflare HTTP 403\b/i', $e->getMessage()) === 1;
+    }
+
+    public function isZoneAbsentMessage(string $message): bool
+    {
+        $lower = strtolower($message);
+
+        return str_contains($lower, 'invalid zone identifier')
+            || str_contains($lower, 'zone could not be found')
+            || str_contains($lower, 'could not find zone')
+            || str_contains($lower, 'zone not found');
     }
 
     private function setZoneSetting(UserSetting $settings, string $zoneId, string $setting, string $value): void

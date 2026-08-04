@@ -95,4 +95,42 @@ class CloudflareClientTest extends TestCase
                 && ($request->data()['phase'] ?? '') === 'http_request_dynamic_redirect';
         });
     }
+
+    public function test_delete_zone_treats_invalid_identifier_as_already_missing(): void
+    {
+        Http::fake([
+            'https://api.cloudflare.com/client/v4/zones/stale-zone' => Http::response([
+                'success' => false,
+                'errors' => [['message' => 'Invalid zone identifier']],
+            ], 400),
+        ]);
+
+        $settings = new UserSetting([
+            'cloudflare_api_token' => 'cf-token',
+            'cloudflare_account_id' => 'acct',
+        ]);
+
+        $result = (new CloudflareClient)->deleteZone($settings, 'stale-zone');
+
+        $this->assertSame('already_missing', $result);
+    }
+
+    public function test_delete_zone_returns_deleted_on_success(): void
+    {
+        Http::fake([
+            'https://api.cloudflare.com/client/v4/zones/zone123' => Http::response([
+                'success' => true,
+                'result' => ['id' => 'zone123'],
+            ], 200),
+        ]);
+
+        $settings = new UserSetting([
+            'cloudflare_api_token' => 'cf-token',
+            'cloudflare_account_id' => 'acct',
+        ]);
+
+        $result = (new CloudflareClient)->deleteZone($settings, 'zone123');
+
+        $this->assertSame('deleted', $result);
+    }
 }
