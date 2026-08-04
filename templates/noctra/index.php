@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('AI Trading Platform');
-$page_description = 'Trade crypto and multi-asset markets on ' . SITE_NAME . ' — secure SSL access, AI-driven analytics, transparent pricing, and fast execution.';
+$page_description = 'Trade crypto and other markets on ' . SITE_NAME . ' — secure account, clear pricing, helpful AI tools, and fast order execution.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -18,9 +18,9 @@ require_once __DIR__ . '/includes/header.php';
       <span class="tape-item"><strong>ETH</strong> <span class="tape-up" data-change="eth">—</span></span>
       <span class="tape-item"><strong>SOL</strong> <span class="tape-down" data-change="sol">—</span></span>
       <span class="tape-item"><strong>XRP</strong> <span class="tape-up" data-change="xrp">—</span></span>
-      <span class="tape-item"><strong>Spread</strong> from 0.1 pip</span>
-      <span class="tape-item"><strong>Latency</strong> &lt; 40ms</span>
-      <span class="tape-item"><strong>Session</strong> 24/7</span>
+      <span class="tape-item"><strong>Spreads</strong> from 0.1</span>
+      <span class="tape-item"><strong>Speed</strong> under 40ms</span>
+      <span class="tape-item"><strong>Markets</strong> 24/7</span>
     </div>
   </div>
 
@@ -28,15 +28,15 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-terminal-grid">
       <div>
         <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> AI-powered trading platform</div>
-        <h1>Trade crypto and other markets.<br><span class="text-accent">Optimize performance with <?= e(SITE_NAME) ?></span></h1>
+        <h1>Trade crypto and other markets.<br><span class="text-accent">Get started with <?= e(SITE_NAME) ?></span></h1>
         <p class="lead">
-          An innovative desk for crypto and multi-asset trading — stronger security, transparent pricing,
-          AI-driven analytics, and an interface that stays clear under pressure.
+          A simple platform for crypto and multi-asset trading — strong security, clear pricing,
+          helpful AI insights, and an interface that stays easy to follow.
         </p>
         <div class="hero-badges" aria-label="Platform highlights">
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Secure connection with full SSL protocol
+            Secure encrypted connection (SSL)
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -44,7 +44,7 @@ require_once __DIR__ . '/includes/header.php';
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Extremely fast order execution
+            Fast order execution
           </span>
         </div>
         <div class="hero-actions">
@@ -54,13 +54,13 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="board-card">
         <div class="board-card-head">
-          <span>Account desk</span>
+          <span>Create account</span>
           <span class="live-pill">Secure</span>
         </div>
         <div class="board-card-body">
           <?php
           $form_id = 'hero-form';
-          $form_heading = 'Create access in under 2 minutes';
+          $form_heading = 'Sign up in under 2 minutes';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>
@@ -71,13 +71,13 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section markets-block" id="markets">
     <div class="container split">
       <div>
-        <p class="eyebrow">Order book view</p>
-        <h2>Watch the tape. Enter with intent.</h2>
+        <p class="eyebrow">Live markets</p>
+        <h2>See prices in real time. Start when you are ready.</h2>
         <p class="lead" style="margin: 1rem 0 1.75rem;">
-          Live BTC, ETH, and major pairs with a terminal-style panel — prices, direction, and
-          a path straight into your first funded session.
+          Follow Bitcoin, Ethereum, and other major pairs in a clear market panel —
+          then open your account and place your first trade.
         </p>
-        <a href="sign.php" class="btn btn-primary">Unlock market access</a>
+        <a href="sign.php" class="btn btn-primary">Open market access</a>
       </div>
 
       <div class="exchange-panel" data-ticker-panel aria-label="Live market prices">
@@ -114,18 +114,18 @@ require_once __DIR__ . '/includes/header.php';
   <section class="platform-section" id="platform" aria-label="Trading platform preview">
     <div class="container platform-layout">
       <div class="platform-copy">
-        <p class="eyebrow">Workspace</p>
-        <h2>Charts first.<br>Execution ready.</h2>
+        <p class="eyebrow">Platform</p>
+        <h2>Clear charts.<br>Ready to trade.</h2>
         <p class="lead">
-          A mobile-ready desk with candlesticks, portfolio P/L, and one-tap orders —
-          designed so your first login already feels familiar.
+          A mobile-friendly trading screen with live charts, profit &amp; loss,
+          and simple one-tap orders — easy to understand from your first login.
         </p>
         <ul class="platform-points">
-          <li>Real-time candles and pair depth</li>
-          <li>Portfolio &amp; exposure at a glance</li>
-          <li>Hardened account panel with 2FA</li>
+          <li>Live charts and market prices</li>
+          <li>Portfolio balance at a glance</li>
+          <li>Secure account panel with 2FA</li>
         </ul>
-        <a href="sign.php" class="btn btn-primary">Launch workspace</a>
+        <a href="sign.php" class="btn btn-primary">Open the platform</a>
       </div>
       <?php require __DIR__ . '/includes/platform-image.php'; ?>
     </div>
@@ -134,52 +134,52 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="features">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow">Desk capabilities</p>
-        <h2>What the terminal is built for</h2>
-        <p class="lead">Security, speed, and signal clarity — without burying you in clutter.</p>
+        <p class="eyebrow">Features</p>
+        <h2>What you get with <?= e(SITE_NAME) ?></h2>
+        <p class="lead">Security, speed, and clear tools — without a crowded screen.</p>
       </div>
 
       <div class="feature-rail">
         <article class="feature-rail-item">
           <div class="idx">01</div>
           <div>
-            <h3>Hardened account layer</h3>
-            <p>SSL, 2FA, and controlled fund flows so capital and credentials stay protected.</p>
+            <h3>Strong account security</h3>
+            <p>SSL encryption, two-factor login, and protected fund flows keep your money and data safer.</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">02</div>
           <div>
-            <h3>AI market context</h3>
-            <p>Signals that highlight timing and structure — useful when the tape moves fast.</p>
+            <h3>AI market insights</h3>
+            <p>Helpful signals that point out timing and trends — useful when prices move quickly.</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">03</div>
           <div>
             <h3>Automation when you want it</h3>
-            <p>Bots can run rules around the clock while you keep override control.</p>
+            <p>Optional trading bots can follow your rules around the clock — you stay in control.</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">04</div>
           <div>
-            <h3>Multi-market book</h3>
-            <p>Crypto, forex, equities, and commodities from one continuous workspace.</p>
+            <h3>Several markets in one place</h3>
+            <p>Crypto, forex, stocks, and commodities from one simple platform.</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">05</div>
           <div>
-            <h3>Low-latency routing</h3>
-            <p>Infrastructure tuned for stable fills when volatility spikes.</p>
+            <h3>Fast order handling</h3>
+            <p>Built for reliable order placement even when markets are busy.</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">06</div>
           <div>
-            <h3>Minimal UI chrome</h3>
-            <p>Fewer panels fighting for attention — more room for the chart and the order.</p>
+            <h3>Clean, simple layout</h3>
+            <p>Less visual noise — more space for the chart and your next order.</p>
           </div>
         </article>
       </div>
@@ -189,9 +189,9 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header centered">
-        <p class="eyebrow">Onboarding</p>
-        <h2>Five steps to your first fill</h2>
-        <p class="lead">A straight path from signup to live markets.</p>
+        <p class="eyebrow">Getting started</p>
+        <h2>Five steps to your first trade</h2>
+        <p class="lead">A clear path from signup to live markets.</p>
       </div>
 
       <div class="timeline">
@@ -199,7 +199,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="num">01</div>
           <div>
             <h3>Open an account</h3>
-            <p>Submit your details and receive secure access to the desk.</p>
+            <p>Submit your details and get secure access to the platform.</p>
           </div>
         </article>
         <article class="timeline-step">
@@ -212,36 +212,36 @@ require_once __DIR__ . '/includes/header.php';
         <article class="timeline-step">
           <div class="num">03</div>
           <div>
-            <h3>Fund the book</h3>
-            <p>Deposit from <?= MIN_DEPOSIT ?> <?= CURRENCY ?> via card, transfer, or e-wallet.</p>
+            <h3>Add funds</h3>
+            <p>Deposit from <?= MIN_DEPOSIT ?> <?= CURRENCY ?> via card, bank transfer, or e-wallet.</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">04</div>
           <div>
-            <h3>Set risk &amp; mode</h3>
-            <p>Choose manual control or AI-assisted automation with clear limits.</p>
+            <h3>Choose how you trade</h3>
+            <p>Trade manually or use AI-assisted tools with clear limits you set.</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">05</div>
           <div>
             <h3>Trade live</h3>
-            <p>Enter with charts, tools, and 24/7 support on stand-by.</p>
+            <p>Use charts, tools, and 24/7 support whenever you need help.</p>
           </div>
         </article>
       </div>
 
       <div style="text-align: center; margin-top: 2rem;">
-        <a href="sign.php" class="btn btn-primary">Start onboarding</a>
+        <a href="sign.php" class="btn btn-primary">Start now</a>
       </div>
     </div>
   </section>
 
   <section class="section-sm payment-section">
     <div class="container" style="max-width: 720px; margin-inline: auto; text-align: center;">
-      <p class="eyebrow" style="justify-content: center;">Funding rails</p>
-      <h2 style="margin-bottom: 0.75rem;">Deposit through rails you already trust</h2>
+      <p class="eyebrow" style="justify-content: center;">Payments</p>
+      <h2 style="margin-bottom: 0.75rem;">Deposit with methods you already know</h2>
       <p class="lead" style="margin-bottom: 1.75rem;">Cards, wallets, and bank transfers — encrypted end to end.</p>
       <?php
       $payment_context = 'account funding and deposits';
@@ -255,7 +255,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header centered" style="margin-bottom: 2rem;">
         <p class="eyebrow">Infrastructure</p>
-        <h2>Partners behind the desk</h2>
+        <h2>Infrastructure partners</h2>
       </div>
       <?php require __DIR__ . '/includes/partners.php'; ?>
     </div>
@@ -264,14 +264,14 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" style="background: var(--bg-elevated); border-block: 1px solid var(--border);">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow">Trader notes</p>
-        <h2>Feedback from the floor</h2>
+        <p class="eyebrow">Reviews</p>
+        <h2>What traders say</h2>
       </div>
 
       <div class="reviews-grid">
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Onboarding was quick, fees were spelled out, and support answered. Feels like a desk I can stick with.</p>
+          <p class="review-text">Signup was quick, fees were clear, and support answered. Feels like a platform I can stick with.</p>
           <div class="review-author">
             <div class="review-avatar">OR</div>
             <div>
@@ -293,12 +293,12 @@ require_once __DIR__ . '/includes/header.php';
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Stable fills, plain-language terms, and a team that knows the product. Quietly solid desk.</p>
+          <p class="review-text">Orders go through reliably, terms are in plain language, and the team knows the product. A solid platform.</p>
           <div class="review-author">
             <div class="review-avatar">DK</div>
             <div>
               <div class="review-name">Daniel Kim</div>
-              <div class="review-role">Digital assets desk</div>
+              <div class="review-role">Digital assets trader</div>
             </div>
           </div>
         </article>
@@ -321,7 +321,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 800px; margin-inline: auto;">
       <div class="section-header centered">
         <p class="eyebrow">FAQ</p>
-        <h2>Before you fund</h2>
+        <h2>Before you fund your account</h2>
       </div>
 
       <div class="faq-list" data-faq>
@@ -339,12 +339,12 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How is capital and data protected?
+            How is my money and data protected?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              We use SSL, two-factor authentication, and processing through trusted providers under strict data policies.
+              We use SSL encryption, two-factor authentication, and trusted payment providers under strict data policies.
             </div>
           </div>
         </div>
@@ -366,7 +366,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              No. Guided flows and AI-assisted tools help you learn at your pace, with 24/7 support available.
+              No. Guided steps and AI-assisted tools help you learn at your pace, with 24/7 support available.
             </div>
           </div>
         </div>
@@ -377,7 +377,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Cryptocurrencies, forex, global equities, and commodities — manual or automated — from one interface.
+              Cryptocurrencies, forex, global stocks, and commodities — manual or automated — from one interface.
             </div>
           </div>
         </div>
@@ -388,14 +388,14 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container">
       <div class="section-header" style="margin-bottom: 2rem;">
-        <p class="eyebrow">Spec sheet</p>
-        <h2>Core stack at a glance</h2>
+        <p class="eyebrow">Overview</p>
+        <h2>Platform at a glance</h2>
       </div>
 
       <div class="specs-table">
         <div class="specs-row">
-          <div class="specs-label">AI engine</div>
-          <div class="specs-value">Market analysis with machine-learning context</div>
+          <div class="specs-label">AI tools</div>
+          <div class="specs-value">Market analysis with machine-learning insights</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Funding</div>
@@ -406,8 +406,8 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Web, tablet, mobile — fully responsive</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Signal quality</div>
-          <div class="specs-value">Up to 85% on supported AI strategies</div>
+          <div class="specs-label">AI signal quality</div>
+          <div class="specs-value">Up to 85% on supported strategies*</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Markets</div>
@@ -419,7 +419,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="specs-row specs-row-highlight">
           <div class="specs-label">Support</div>
-          <div class="specs-value">24/7 desk — <a href="contacts.php" style="color: var(--accent); font-weight: 600;">Contact us</a></div>
+          <div class="specs-value">24/7 support — <a href="contacts.php" style="color: var(--accent); font-weight: 600;">Contact us</a></div>
         </div>
       </div>
     </div>
@@ -444,18 +444,18 @@ require_once __DIR__ . '/includes/header.php';
   <section class="cta-band">
     <div class="container cta-band-grid">
       <div>
-        <h2>Ready for a cleaner trading desk?</h2>
-        <p class="lead">Join traders who want live markets, clear fees, and execution without the clutter.</p>
+        <h2>Ready for a clearer way to trade?</h2>
+        <p class="lead">Join traders who want live markets, clear fees, and a platform that stays easy to use.</p>
       </div>
       <div class="board-card">
         <div class="board-card-head">
-          <span>Open access</span>
+          <span>Open account</span>
           <span class="live-pill">Free</span>
         </div>
         <div class="board-card-body">
           <?php
           $form_id = 'bottom-form';
-          $form_heading = 'Register your terminal login';
+          $form_heading = 'Create your free account';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>

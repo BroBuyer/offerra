@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Offer');
-$page_description = 'Open ' . SITE_NAME . ' with a ' . MIN_DEPOSIT . ' ' . CURRENCY . ' minimum — full terminal access, AI context, and 24/7 support.';
+$page_description = 'Open ' . SITE_NAME . ' with a ' . MIN_DEPOSIT . ' ' . CURRENCY . ' minimum — full platform access, AI insights, and 24/7 support.';
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 $schema_extra = ['breadcrumb' => [
@@ -18,8 +18,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Offer</p>
-      <h1>Terminal access from <?= MIN_DEPOSIT ?> <?= CURRENCY ?></h1>
-      <p class="lead">Full desk features from day one — charts, signals, and support included.</p>
+      <h1>Platform access from <?= MIN_DEPOSIT ?> <?= CURRENCY ?></h1>
+      <p class="lead">Full features from day one — charts, signals, and support included.</p>
     </div>
   </section>
 
@@ -27,12 +27,12 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 900px; margin-inline: auto;">
       <div class="specs-table" style="margin-bottom: 2rem;">
         <div class="specs-row specs-row-highlight">
-          <div class="specs-label">Starter desk</div>
-          <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full platform · AI context · 24/7 support</div>
+          <div class="specs-label">Starter plan</div>
+          <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full platform · AI insights · 24/7 support</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Included</div>
-          <div class="specs-value">Live markets, multi-asset book, portfolio lens, guided onboarding</div>
+          <div class="specs-value">Live markets, multi-asset trading, portfolio view, guided onboarding</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Funding</div>
@@ -50,7 +50,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="board-card" style="max-width: 480px; margin-inline: auto;">
         <div class="board-card-head">
-          <span>Claim access</span>
+          <span>Get started</span>
           <span class="live-pill">Open</span>
         </div>
         <div class="board-card-body">

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Sign Up');
-$page_description = 'Create your ' . SITE_NAME . ' terminal login and start trading crypto, forex, and multi-asset markets.';
+$page_description = 'Create your ' . SITE_NAME . ' account and start trading crypto, forex, and other markets.';
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 $schema_extra = ['breadcrumb' => [
@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Get started</p>
-      <h1>Open your market desk</h1>
+      <h1>Open your trading account</h1>
       <p class="lead">Minimum deposit <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Live markets after verification.</p>
     </div>
   </section>
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 480px; margin-inline: auto;">
       <div class="board-card">
         <div class="board-card-head">
-          <span>Account desk</span>
+          <span>Create account</span>
           <span class="live-pill">Secure</span>
         </div>
         <div class="board-card-body">

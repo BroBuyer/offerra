@@ -19,10 +19,10 @@ require_once __DIR__ . '/includes/header.php';
   <section class="not-found">
     <div class="container">
       <div class="not-found-code" aria-hidden="true">404</div>
-      <p class="eyebrow" style="justify-content: center;">Missing route</p>
-      <h1>This desk path does not exist</h1>
+      <p class="eyebrow" style="justify-content: center;">Page not found</p>
+      <h1>This page does not exist</h1>
       <p class="lead">
-        The URL may be outdated or mistyped. Head back to the terminal home — markets and account access are still live.
+        The link may be outdated or mistyped. Go back to the home page to continue.
       </p>
       <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
         <a href="<?= page_url() ?>" class="btn btn-primary">Back to home</a>
