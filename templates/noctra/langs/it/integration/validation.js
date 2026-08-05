@@ -1,11 +1,11 @@
 const forms = document.querySelectorAll('.leadform');
 
 const phoneErrorMap = {
-  0: 'Enter a valid phone number',
-  1: 'Invalid country code',
-  2: 'The phone number is too short',
-  3: 'The phone number is too long',
-  4: 'Enter a valid phone number',
+  0: 'Inserisci un numero di telefono valido',
+  1: 'Prefisso paese non valido',
+  2: 'Il numero di telefono è troppo corto',
+  3: 'Il numero di telefono è troppo lungo',
+  4: 'Inserisci un numero di telefono valido',
 };
 
 function getLeadCookieName(form) {
@@ -98,10 +98,10 @@ function validateNativeFields(form) {
 
 function validatePhone(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return 'Enter your phone number';
+  if (!trimmed) return 'Inserisci il tuo numero di telefono';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || 'Enter a valid phone number';
+    return phoneErrorMap[code] || 'Inserisci un numero di telefono valido';
   }
   return '';
 }
@@ -286,7 +286,7 @@ function setupFormValidation(form) {
 
     const tokenOk = await ensureFormToken(form);
     if (!tokenOk) {
-      showFormMessage(form, 'Session expired. Please reload the page and try again.');
+      showFormMessage(form, 'Sessione scaduta. Ricarica la pagina e riprova.');
       preloader?.classList.add('hidden');
       return;
     }
@@ -302,7 +302,7 @@ function setupFormValidation(form) {
       const data = await res.json();
 
       if (!data.ok) {
-        showFormMessage(form, data.error || 'Something went wrong. Please try again later.');
+        showFormMessage(form, data.error || 'Qualcosa è andato storto. Riprova più tardi.');
         return;
       }
 
@@ -313,7 +313,7 @@ function setupFormValidation(form) {
       window.location.href = thanks.href;
     } catch (err) {
       console.error(err);
-      showFormMessage(form, 'Connection error. Check your internet connection and try again.');
+      showFormMessage(form, 'Errore di connessione. Controlla la connessione internet e riprova.');
     } finally {
       preloader?.classList.add('hidden');
     }

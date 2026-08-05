@@ -1,11 +1,11 @@
 const forms = document.querySelectorAll('.leadform');
 
 const phoneErrorMap = {
-  0: 'Enter a valid phone number',
-  1: 'Invalid country code',
-  2: 'The phone number is too short',
-  3: 'The phone number is too long',
-  4: 'Enter a valid phone number',
+  0: 'Introduce un número de teléfono válido',
+  1: 'Prefijo de país no válido',
+  2: 'El número de teléfono es demasiado corto',
+  3: 'El número de teléfono es demasiado largo',
+  4: 'Introduce un número de teléfono válido',
 };
 
 function getLeadCookieName(form) {
@@ -98,10 +98,10 @@ function validateNativeFields(form) {
 
 function validatePhone(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return 'Enter your phone number';
+  if (!trimmed) return 'Introduce tu número de teléfono';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || 'Enter a valid phone number';
+    return phoneErrorMap[code] || 'Introduce un número de teléfono válido';
   }
   return '';
 }
@@ -286,7 +286,7 @@ function setupFormValidation(form) {
 
     const tokenOk = await ensureFormToken(form);
     if (!tokenOk) {
-      showFormMessage(form, 'Session expired. Please reload the page and try again.');
+      showFormMessage(form, 'Sesión caducada. Recarga la página e inténtalo de nuevo.');
       preloader?.classList.add('hidden');
       return;
     }
@@ -302,7 +302,7 @@ function setupFormValidation(form) {
       const data = await res.json();
 
       if (!data.ok) {
-        showFormMessage(form, data.error || 'Something went wrong. Please try again later.');
+        showFormMessage(form, data.error || 'Se ha producido un error. Inténtalo de nuevo más tarde.');
         return;
       }
 
@@ -313,7 +313,7 @@ function setupFormValidation(form) {
       window.location.href = thanks.href;
     } catch (err) {
       console.error(err);
-      showFormMessage(form, 'Connection error. Check your internet connection and try again.');
+      showFormMessage(form, 'Error de conexión. Comprueba tu conexión a internet e inténtalo de nuevo.');
     } finally {
       preloader?.classList.add('hidden');
     }
