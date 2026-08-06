@@ -46,6 +46,7 @@ function lang_flag_code(string $lang): string
         'da' => 'dk',
         'ro' => 'ro',
         'sv' => 'se',
+        'fi' => 'fi',
         'el' => 'gr',
     ];
 
@@ -93,6 +94,7 @@ function lang_display_name(string $lang): string
         'tr' => 'Türkçe',
         'ro' => 'Română',
         'sv' => 'Svenska',
+        'fi' => 'Suomi',
         'el' => 'Ελληνικά',
     ];
 
@@ -132,7 +134,7 @@ function site_locale(): string
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU', 'ro' => 'ro-RO',
-        'sv' => 'sv-SE', 'el' => 'el-GR', 'tr' => 'tr-TR',
+        'sv' => 'sv-SE', 'fi' => 'fi-FI', 'el' => 'el-GR', 'tr' => 'tr-TR',
     ];
     $lang = active_lang();
 
@@ -314,6 +316,7 @@ function ip_country_allowed_langs(string $ipCountry): array
         'CY' => ['el', 'tr', 'en'],
 
         'SE' => ['sv'],
+        'FI' => ['fi'],
         'NO' => ['no'],
         'DK' => ['da'],
         'NL' => ['nl'],

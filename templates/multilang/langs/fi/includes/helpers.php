@@ -15,15 +15,128 @@ function site_domain(): string
     return parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost';
 }
 
+function active_lang(): string
+{
+    if (defined('ACTIVE_LANG') && preg_match('/^[a-z]{2}$/', (string) ACTIVE_LANG)) {
+        return strtolower((string) ACTIVE_LANG);
+    }
+
+    return strtolower((string) (defined('SITE_LANG') ? SITE_LANG : 'en')) ?: 'en';
+}
+
+function lang_flag_code(string $lang): string
+{
+    // Country codes used for flag image filenames.
+    // Some language codes don't match country ISO2 (e.g. cs -> cz).
+    $map = [
+        'en' => 'gb',
+        'cs' => 'cz',
+        'sk' => 'sk',
+        'hu' => 'hu',
+        'de' => 'de',
+        'fr' => 'fr',
+        'es' => 'es',
+        'it' => 'it',
+        'pl' => 'pl',
+        'pt' => 'pt',
+        'nl' => 'nl',
+        'hr' => 'hr',
+        'tr' => 'tr',
+        'no' => 'no',
+        'da' => 'dk',
+        'ro' => 'ro',
+        'sv' => 'se',
+        'fi' => 'fi',
+        'el' => 'gr',
+    ];
+
+    return $map[strtolower($lang)] ?? strtolower($lang);
+}
+
+function lang_flag_src(string $lang): string
+{
+    $code = strtolower(lang_flag_code($lang));
+
+    return asset('static/img/flags/'.$code.'.png');
+}
+
+function lang_flag_emoji(string $lang): string
+{
+    $code = strtoupper(lang_flag_code($lang));
+
+    if (! preg_match('/^[A-Z]{2}$/', $code)) {
+        return '';
+    }
+
+    $first = 0x1F1E6 + ord($code[0]) - ord('A');
+    $second = 0x1F1E6 + ord($code[1]) - ord('A');
+
+    return mb_chr($first).mb_chr($second);
+}
+
+function lang_display_name(string $lang): string
+{
+    $names = [
+        'en' => 'English',
+        'cs' => 'Čeština',
+        'sk' => 'Slovenčina',
+        'hu' => 'Magyar',
+        'de' => 'Deutsch',
+        'es' => 'Español',
+        'fr' => 'Français',
+        'hr' => 'Hrvatski',
+        'it' => 'Italiano',
+        'nl' => 'Nederlands',
+        'no' => 'Norsk',
+        'da' => 'Dansk',
+        'pl' => 'Polski',
+        'pt' => 'Português',
+        'tr' => 'Türkçe',
+        'ro' => 'Română',
+        'sv' => 'Svenska',
+        'fi' => 'Suomi',
+        'el' => 'Ελληνικά',
+    ];
+
+    return $names[strtolower($lang)] ?? strtoupper($lang);
+}
+
+/**
+ * @return list<string>
+ */
+function multilang_supported_codes(): array
+{
+    $langsRoot = dirname(__DIR__).DIRECTORY_SEPARATOR.'langs';
+    $supported = [];
+
+    if (is_dir($langsRoot)) {
+        foreach (scandir($langsRoot) ?: [] as $entry) {
+            if (! is_dir($langsRoot.DIRECTORY_SEPARATOR.$entry)) {
+                continue;
+            }
+
+            $code = strtolower((string) $entry);
+            if (preg_match('/^[a-z]{2}$/', $code)) {
+                $supported[] = $code;
+            }
+        }
+    }
+
+    $supported = array_values(array_unique(array_merge(['en'], $supported)));
+    sort($supported);
+
+    return $supported;
+}
+
 function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
-        'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
-        'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
+        'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU', 'ro' => 'ro-RO',
+        'sv' => 'sv-SE', 'fi' => 'fi-FI', 'el' => 'el-GR', 'tr' => 'tr-TR',
     ];
-    $lang = strtolower(SITE_LANG);
+    $lang = active_lang();
 
     return $map[$lang] ?? ($lang . '-' . strtoupper($lang));
 }
@@ -113,6 +226,7 @@ function form_visitor_phone_country(): string
         return $allowed[0];
     }
 
+    // Multi-GEO без IP (кеш, prefetch): не брати перший preset (часто IT) — клієнт підтягне через visitor-geo.php.
     if (in_array('gb', $allowed, true)) {
         return 'gb';
     }
@@ -124,6 +238,7 @@ function form_visitor_phone_country(): string
     return $allowed[0];
 }
 
+/** HTML з phone_country по IP не кешувати (Cloudflare / браузер). */
 function offer_send_personalization_headers(): void
 {
     if (headers_sent() || PHP_SAPI === 'cli') {
@@ -140,6 +255,119 @@ function offer_send_personalization_headers(): void
     header('Cache-Control: private, no-store, no-cache, must-revalidate');
     header('Pragma: no-cache');
     header('Vary: CF-IPCountry');
+}
+
+/**
+ * Allowed UI languages for a visitor IP country (ISO2).
+ * Empty list = skip lang-spam check (unknown or unmapped IP).
+ *
+ * @return list<string>
+ */
+function ip_country_allowed_langs(string $ipCountry): array
+{
+    $ip = strtoupper(trim($ipCountry));
+    if ($ip === '' || $ip === 'XX') {
+        return [];
+    }
+
+    static $map = [
+        'FR' => ['fr'],
+        'MC' => ['fr'],
+        'LU' => ['fr', 'de'],
+
+        'DE' => ['de'],
+        'AT' => ['de'],
+        'CH' => ['de', 'fr', 'it'],
+
+        'ES' => ['es'],
+        'MX' => ['es'],
+        'AR' => ['es'],
+        'CL' => ['es'],
+        'CO' => ['es'],
+        'PE' => ['es'],
+        'VE' => ['es'],
+        'EC' => ['es'],
+        'UY' => ['es'],
+        'PY' => ['es'],
+        'BO' => ['es'],
+        'CR' => ['es'],
+        'PA' => ['es'],
+        'DO' => ['es'],
+        'GT' => ['es'],
+        'HN' => ['es'],
+        'NI' => ['es'],
+        'SV' => ['es'],
+        'PR' => ['es'],
+        'CU' => ['es'],
+
+        'IT' => ['it'],
+        'SM' => ['it'],
+        'VA' => ['it'],
+
+        'CZ' => ['cs'],
+        'SK' => ['sk'],
+        'HU' => ['hu'],
+        'RO' => ['ro'],
+        'MD' => ['ro'],
+        'PL' => ['pl'],
+        'HR' => ['hr'],
+        'TR' => ['tr'],
+        'GR' => ['el'],
+        'CY' => ['el', 'tr', 'en'],
+
+        'SE' => ['sv'],
+        'FI' => ['fi'],
+        'NO' => ['no'],
+        'DK' => ['da'],
+        'NL' => ['nl'],
+        'BE' => ['nl', 'fr'],
+
+        'PT' => ['pt'],
+        'BR' => ['pt'],
+        'AO' => ['pt'],
+        'MZ' => ['pt'],
+
+        'GB' => ['en'],
+        'IE' => ['en'],
+        'US' => ['en'],
+        'AU' => ['en'],
+        'NZ' => ['en'],
+        'CA' => ['en', 'fr'],
+        'ZA' => ['en'],
+        'IN' => ['en'],
+        'SG' => ['en'],
+        'PH' => ['en'],
+        'MY' => ['en'],
+        'HK' => ['en'],
+        'PK' => ['en'],
+        'NG' => ['en'],
+        'KE' => ['en'],
+        'GH' => ['en'],
+        'JM' => ['en'],
+        'TT' => ['en'],
+        'BB' => ['en'],
+        'MT' => ['en'],
+    ];
+
+    return $map[$ip] ?? [];
+}
+
+/**
+ * @return bool|null true = match, false = mismatch, null = skip check
+ */
+function lead_language_matches_ip(string $language, string $ipCountry): ?bool
+{
+    $allowed = ip_country_allowed_langs($ipCountry);
+    if ($allowed === []) {
+        return null;
+    }
+
+    $lang = strtolower(trim($language));
+    if ($lang === '') {
+        return false;
+    }
+
+    return in_array($lang, $allowed, true);
 }
 
 function platform_image_path(): string
@@ -185,12 +413,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' kaupankäyntialusta mobiilissa — live BTC/USDT-kaavio, order book ja osto-/myyntikäyttöliittymä';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — mobiilikaupankäynti reaaliaikaisilla kryptokaavioilla';
 }
 
 function offer_is_preview(): bool
@@ -214,66 +442,26 @@ function offer_preview_base(): ?string
 
 function page_url(string $path = ''): string
 {
-    $path = ltrim($path, '/');
-    if ($path === 'index.php') {
-        $path = '';
-    }
+    $lang = active_lang();
+    $prefix = $lang === 'en' ? '' : '/'.$lang;
 
     if (offer_is_preview() && ($previewBase = offer_preview_base())) {
         $base = rtrim($previewBase, '/');
 
-        if ($path === '') {
-            return $base.'/';
+        if ($path === '' || $path === '/') {
+            return $base.$prefix.'/';
         }
 
-        return $base.'/'.$path;
+        return $base.$prefix.'/'.ltrim($path, '/');
     }
 
-    return canonical_url($path === '' ? '/' : $path);
-}
+    $base = rtrim(SITE_URL, '/');
 
-/**
- * Apex https canonical — strips www / index.php and normalizes trailing slash for home.
- */
-function canonical_url(string $urlOrPath = '/'): string
-{
-    $raw = trim($urlOrPath);
-    if ($raw === '') {
-        $raw = '/';
-    }
-
-    if (! preg_match('#^https?://#i', $raw)) {
-        $base = rtrim(SITE_URL, '/');
-        $path = ltrim($raw, '/');
-        if ($path === 'index.php') {
-            $path = '';
-        }
-        $raw = $path === '' ? $base.'/' : $base.'/'.$path;
-    }
-
-    $parts = parse_url($raw);
-    if (! is_array($parts) || empty($parts['host'])) {
-        return rtrim(SITE_URL, '/').'/';
-    }
-
-    $host = strtolower((string) $parts['host']);
-    if (str_starts_with($host, 'www.')) {
-        $host = substr($host, 4);
-    }
-
-    $path = $parts['path'] ?? '/';
-    if ($path === '/index.php' || str_ends_with($path, '/index.php')) {
-        $path = preg_replace('#/index\.php$#', '/', $path) ?? '/';
-    }
     if ($path === '' || $path === '/') {
-        $path = '/';
-    } else {
-        $path = rtrim($path, '/');
+        return $base.$prefix.'/';
     }
 
-    $query = isset($parts['query']) && $parts['query'] !== '' ? '?'.$parts['query'] : '';
-
-    return 'https://'.$host.$path.$query;
+    return $base.$prefix.'/'.ltrim($path, '/');
 }
 
 function asset(string $path): string
@@ -282,7 +470,8 @@ function asset(string $path): string
         return rtrim($previewBase, '/').'/'.ltrim($path, '/');
     }
 
-    return './'.ltrim($path, '/');
+    // Root-relative so `/fr/...` pages still load `/static/*` and `/integration/*`.
+    return '/'.ltrim($path, '/');
 }
 
 function asset_version(string $path): string

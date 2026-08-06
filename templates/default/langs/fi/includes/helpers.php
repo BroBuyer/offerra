@@ -185,12 +185,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' kaupankäyntialusta mobiilissa — live BTC/USDT-kaavio, order book ja osto-/myyntikäyttöliittymä';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — mobiilikaupankäynti reaaliaikaisilla kryptokaavioilla';
 }
 
 function offer_is_preview(): bool
@@ -214,66 +214,19 @@ function offer_preview_base(): ?string
 
 function page_url(string $path = ''): string
 {
-    $path = ltrim($path, '/');
-    if ($path === 'index.php') {
-        $path = '';
-    }
-
     if (offer_is_preview() && ($previewBase = offer_preview_base())) {
         $base = rtrim($previewBase, '/');
 
-        if ($path === '') {
+        if ($path === '' || $path === '/') {
             return $base.'/';
         }
 
-        return $base.'/'.$path;
+        return $base.'/'.ltrim($path, '/');
     }
 
-    return canonical_url($path === '' ? '/' : $path);
-}
+    $base = rtrim(SITE_URL, '/');
 
-/**
- * Apex https canonical — strips www / index.php and normalizes trailing slash for home.
- */
-function canonical_url(string $urlOrPath = '/'): string
-{
-    $raw = trim($urlOrPath);
-    if ($raw === '') {
-        $raw = '/';
-    }
-
-    if (! preg_match('#^https?://#i', $raw)) {
-        $base = rtrim(SITE_URL, '/');
-        $path = ltrim($raw, '/');
-        if ($path === 'index.php') {
-            $path = '';
-        }
-        $raw = $path === '' ? $base.'/' : $base.'/'.$path;
-    }
-
-    $parts = parse_url($raw);
-    if (! is_array($parts) || empty($parts['host'])) {
-        return rtrim(SITE_URL, '/').'/';
-    }
-
-    $host = strtolower((string) $parts['host']);
-    if (str_starts_with($host, 'www.')) {
-        $host = substr($host, 4);
-    }
-
-    $path = $parts['path'] ?? '/';
-    if ($path === '/index.php' || str_ends_with($path, '/index.php')) {
-        $path = preg_replace('#/index\.php$#', '/', $path) ?? '/';
-    }
-    if ($path === '' || $path === '/') {
-        $path = '/';
-    } else {
-        $path = rtrim($path, '/');
-    }
-
-    $query = isset($parts['query']) && $parts['query'] !== '' ? '?'.$parts['query'] : '';
-
-    return 'https://'.$host.$path.$query;
+    return $path ? $base.'/'.ltrim($path, '/') : $base.'/';
 }
 
 function asset(string $path): string

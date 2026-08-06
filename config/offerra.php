@@ -35,6 +35,7 @@ return [
         ['code' => 'nl', 'name' => 'Nederlands'],
         ['code' => 'no', 'name' => 'Norsk'],
         ['code' => 'sv', 'name' => 'Svenska'],
+        ['code' => 'fi', 'name' => 'Suomi'],
         ['code' => 'el', 'name' => 'Ελληνικά'],
     ],
 
@@ -104,7 +105,7 @@ return [
         ['code' => 'DK', 'name' => 'Данія', 'lang' => 'da', 'phone' => 'dk'],
         ['code' => 'SE', 'name' => 'Швеція', 'lang' => 'sv', 'phone' => 'se', 'currency' => 'SEK'],
         ['code' => 'NO', 'name' => 'Норвегія', 'lang' => 'no', 'phone' => 'no'],
-        ['code' => 'FI', 'name' => 'Фінляндія', 'lang' => 'en', 'phone' => 'fi'],
+        ['code' => 'FI', 'name' => 'Фінляндія', 'lang' => 'fi', 'phone' => 'fi'],
         ['code' => 'ZA', 'name' => 'ПАР', 'lang' => 'en', 'phone' => 'za'],
         ['code' => 'NG', 'name' => 'Нігерія', 'lang' => 'en', 'phone' => 'ng', 'currency' => 'NGN'],
         ['code' => 'AR', 'name' => 'Аргентина', 'lang' => 'es', 'phone' => 'ar'],
