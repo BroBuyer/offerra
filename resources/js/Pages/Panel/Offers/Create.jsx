@@ -521,12 +521,20 @@ export default function OffersCreate({
 
             <nav className="wizard-steps" aria-label="Кроки">
                 {steps.map((label, index) => (
-                    <div
+                    <button
                         key={label}
+                        type="button"
                         className={`wizard-step${index === step ? ' is-active' : ''}${index < step ? ' is-done' : ''}`}
+                        onClick={() => {
+                            if (index <= step) {
+                                goToStep(index);
+                            }
+                        }}
+                        disabled={index > step}
                     >
-                        <span className="num">{index + 1}</span> {label}
-                    </div>
+                        <span className="num">{index + 1}</span>
+                        <span className="wizard-step__label">{label}</span>
+                    </button>
                 ))}
             </nav>
 
@@ -984,7 +992,7 @@ export default function OffersCreate({
                 </section>
             )}
 
-            <div className="btn-row">
+            <div className="btn-row wizard-actions">
                 {step > 0 ? (
                     <button type="button" className="btn btn-ghost" onClick={() => goToStep(step - 1)}>← Назад</button>
                 ) : (

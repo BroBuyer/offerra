@@ -474,6 +474,88 @@ export default function OffersIndex({
 
     const hasActiveFilters = activeFilterChips.length > 0;
 
+    const renderOfferActions = (offer) => {
+        const isDeploying = offer.status === 'deploying' || deployingId === offer.id;
+
+        return (
+            <div className="offer-actions">
+                {canManageOffer(offer) && (
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => setEditingOffer(offer)}
+                        title="Редагувати оффер (GEO / мова / шаблон / phone / CWV)"
+                        aria-label="Редагувати оффер"
+                    >
+                        ✎
+                    </button>
+                )}
+                {canManageOffer(offer) && offer.provision_infrastructure && offer.dns_status === 'pending' && (
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={provisioningId === offer.id}
+                        onClick={() => provisionOffer(offer)}
+                        title="Перевірити DNS зараз"
+                    >
+                        {provisioningId === offer.id ? '…' : 'DNS'}
+                    </button>
+                )}
+                {canManageOffer(offer) && offer.provision_infrastructure && ['failed', 'pending', 'provisioning'].includes(offer.infra_status) && (
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={provisioningId === offer.id}
+                        onClick={() => provisionOffer(offer)}
+                        title="Повторити налаштування інфраструктури"
+                    >
+                        {provisioningId === offer.id ? '…' : 'Інфра'}
+                    </button>
+                )}
+                {canDeployOffer(offer) ? (
+                    <button
+                        type="button"
+                        className={`btn btn-ghost btn-sm btn-deploy${isDeploying ? ' is-loading' : ''}`}
+                        disabled={isDeploying}
+                        aria-busy={isDeploying}
+                        onClick={() => deployOffer(offer)}
+                    >
+                        {isDeploying ? (
+                            <>
+                                <span className="btn-spinner" aria-hidden="true" />
+                                <span>Деплой…</span>
+                            </>
+                        ) : offer.status === 'deployed' ? (
+                            '↻'
+                        ) : offer.status === 'failed' ? (
+                            'Повтор'
+                        ) : (
+                            'Деплой'
+                        )}
+                    </button>
+                ) : (
+                    <span className="field-hint">—</span>
+                )}
+                {canManageOffer(offer) && !['archiving', 'archived'].includes(offer.status) && (
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm btn-archive"
+                        disabled={archivingId === offer.id || offer.status === 'deploying'}
+                        onClick={() => archiveOffer(offer)}
+                        title="Архівувати: зняти з Hestia/Cloudflare (домен лишиться в Dynadot)"
+                        aria-label={`Архівувати ${offer.domain}`}
+                    >
+                        {archivingId === offer.id ? (
+                            <span className="btn-spinner" aria-hidden="true" />
+                        ) : (
+                            <TrashIcon />
+                        )}
+                    </button>
+                )}
+            </div>
+        );
+    };
+
     return (
         <PanelLayout title="Оффери" fullWidth>
             <div className="offers-page">
@@ -484,7 +566,7 @@ export default function OffersIndex({
                 </div>
                 <Link
                     href={route('offers.create', { fresh: 1 })}
-                    className="btn btn-primary"
+                    className="btn btn-primary offers-page-header__create"
                 >
                     + Новий оффер
                 </Link>
@@ -670,7 +752,7 @@ export default function OffersIndex({
                 )}
             </div>
 
-            <div className="table-wrap">
+            <div className="table-wrap offers-table-desktop">
                 <table>
                     <thead>
                         <tr>
@@ -701,7 +783,6 @@ export default function OffersIndex({
                     </thead>
                     <tbody>
                         {rows.map((offer, index) => {
-                            const isDeploying = offer.status === 'deploying' || deployingId === offer.id;
                             const rowNumber = (currentPage - 1) * perPage + index + 1;
 
                             return (
@@ -838,81 +919,7 @@ export default function OffersIndex({
                                         </div>
                                     </td>
                                     <td>
-                                        <div className="offer-actions">
-                                            {canManageOffer(offer) && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-ghost btn-sm"
-                                                    onClick={() => setEditingOffer(offer)}
-                                                    title="Редагувати оффер (GEO / мова / шаблон / phone / CWV)"
-                                                    aria-label="Редагувати оффер"
-                                                >
-                                                    ✎
-                                                </button>
-                                            )}
-                                            {canManageOffer(offer) && offer.provision_infrastructure && offer.dns_status === 'pending' && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-ghost btn-sm"
-                                                    disabled={provisioningId === offer.id}
-                                                    onClick={() => provisionOffer(offer)}
-                                                    title="Перевірити DNS зараз"
-                                                >
-                                                    {provisioningId === offer.id ? '…' : 'DNS'}
-                                                </button>
-                                            )}
-                                            {canManageOffer(offer) && offer.provision_infrastructure && ['failed', 'pending', 'provisioning'].includes(offer.infra_status) && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-ghost btn-sm"
-                                                    disabled={provisioningId === offer.id}
-                                                    onClick={() => provisionOffer(offer)}
-                                                    title="Повторити налаштування інфраструктури"
-                                                >
-                                                    {provisioningId === offer.id ? '…' : 'Інфра'}
-                                                </button>
-                                            )}
-                                            {canDeployOffer(offer) ? (
-                                                <button
-                                                    type="button"
-                                                    className={`btn btn-ghost btn-sm btn-deploy${isDeploying ? ' is-loading' : ''}`}
-                                                    disabled={isDeploying}
-                                                    aria-busy={isDeploying}
-                                                    onClick={() => deployOffer(offer)}
-                                                >
-                                                    {isDeploying ? (
-                                                        <>
-                                                            <span className="btn-spinner" aria-hidden="true" />
-                                                            <span>Деплой…</span>
-                                                        </>
-                                                    ) : offer.status === 'deployed' ? (
-                                                        '↻'
-                                                    ) : offer.status === 'failed' ? (
-                                                        'Повтор'
-                                                    ) : (
-                                                        'Деплой'
-                                                    )}
-                                                </button>
-                                            ) : (
-                                                <span className="field-hint">—</span>
-                                            )}
-                                            {canManageOffer(offer) && !['archiving', 'archived'].includes(offer.status) && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-ghost btn-sm btn-archive"
-                                                    disabled={archivingId === offer.id || offer.status === 'deploying'}
-                                                    onClick={() => archiveOffer(offer)}
-                                                    title="Архівувати: зняти з Hestia/Cloudflare (домен лишиться в Dynadot)"
-                                                    aria-label={`Архівувати ${offer.domain}`}
-                                                >
-                                                    {archivingId === offer.id ? (
-                                                        <span className="btn-spinner" aria-hidden="true" />
-                                                    ) : (
-                                                        <TrashIcon />
-                                                    )}
-                                                </button>
-                                            )}
-                                        </div>
+                                        {renderOfferActions(offer)}
                                     </td>
                                 </tr>
                             );
@@ -926,6 +933,91 @@ export default function OffersIndex({
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            <div className="offers-mobile-list" aria-label="Список офферів">
+                {rows.map((offer) => (
+                    <article key={`m-${offer.folder}`} className="offer-mobile-card">
+                        <div className="offer-mobile-card__top">
+                            <div className="offer-mobile-card__title">
+                                <strong>{offer.brand}</strong>
+                                <div className="domain-cell">
+                                    <a href={`https://${offer.domain}`} target="_blank" rel="noreferrer">
+                                        {offer.domain}
+                                    </a>
+                                    <button
+                                        type="button"
+                                        className={`domain-copy${copiedDomainId === offer.id ? ' is-copied' : ''}`}
+                                        onClick={() => copyDomainUrl(offer)}
+                                        aria-label={`Копіювати https://${offer.domain}`}
+                                    >
+                                        {copiedDomainId === offer.id ? '✓' : '⧉'}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="offer-mobile-card__badges">
+                                {statusBadge(offer.status)}
+                                {infraBadge(offer)}
+                                {dnsBadge(offer)}
+                            </div>
+                        </div>
+
+                        <dl className="offer-mobile-card__meta">
+                            {showUserColumn && (
+                                <div>
+                                    <dt>User</dt>
+                                    <dd>{offer.user_name ?? offer.user_email ?? '—'}</dd>
+                                </div>
+                            )}
+                            <div>
+                                <dt>GEO</dt>
+                                <dd>{offer.geo} / {offer.lang}</dd>
+                            </div>
+                            <div>
+                                <dt>Шаблон</dt>
+                                <dd>{offer.template}</dd>
+                            </div>
+                            <div>
+                                <dt>Keitaro</dt>
+                                <dd>{offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}</dd>
+                            </div>
+                            <div>
+                                <dt>Створено</dt>
+                                <dd>{formatCreatedDate(offer.date)}</dd>
+                            </div>
+                        </dl>
+
+                        {(offer.infra_error || offer.deploy_error || offer.dns_error) && (
+                            <p className="field-hint" style={{ color: '#f87171', marginBottom: '0.65rem' }}>
+                                {offer.infra_error || offer.deploy_error || offer.dns_error}
+                            </p>
+                        )}
+
+                        <div className="offer-mobile-card__footer">
+                            {canManageOffer(offer) ? (
+                                <label className="indexing-check">
+                                    <input
+                                        type="checkbox"
+                                        checked={Boolean(offer.submitted_for_indexing)}
+                                        disabled={indexingId === offer.id}
+                                        onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                    />
+                                    <span className="indexing-check__label">
+                                        Індексація: {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                    </span>
+                                </label>
+                            ) : (
+                                <span className="field-hint">
+                                    Індексація: {offer.submitted_for_indexing ? 'Так' : '—'}
+                                </span>
+                            )}
+                            {renderOfferActions(offer)}
+                        </div>
+                    </article>
+                ))}
+                {rows.length === 0 && (
+                    <p className="field-hint" style={{ padding: '1rem 0' }}>Офферів не знайдено</p>
+                )}
             </div>
 
             {lastPage > 1 && (
