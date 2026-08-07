@@ -130,25 +130,46 @@ class KeitaroClient
 
         /** @var array<string, mixed> $campaign */
         $campaign = $response->json() ?? [];
-        $existing = $campaign['s2s_postbacks'] ?? $campaign['postbacks'] ?? [];
 
-        if (! is_array($existing)) {
-            $existing = [];
+        // This Keitaro build stores campaign S2S under "postbacks" (not "s2s_postbacks").
+        $existingRaw = $campaign['postbacks'] ?? [];
+
+        if (! is_array($existingRaw)) {
+            $existingRaw = [];
         }
 
         $token = $this->salesPostbacks->ensureToken($settings);
         $marker = '/api/v1/postback/'.$token;
 
-        foreach ($existing as $row) {
+        $existing = [];
+
+        foreach ($existingRaw as $row) {
             if (! is_array($row)) {
                 continue;
             }
 
-            $rowUrl = (string) ($row['url'] ?? '');
+            $rowUrl = trim((string) ($row['url'] ?? ''));
+
+            if ($rowUrl === '') {
+                continue;
+            }
 
             if (str_contains($rowUrl, $marker)) {
                 return;
             }
+
+            $method = strtoupper(trim((string) ($row['method'] ?? 'GET')));
+            $statuses = $row['statuses'] ?? ['sale'];
+
+            if (! is_array($statuses) || $statuses === []) {
+                $statuses = ['sale'];
+            }
+
+            $existing[] = [
+                'url' => $rowUrl,
+                'method' => $method !== '' ? $method : 'GET',
+                'statuses' => array_values($statuses),
+            ];
         }
 
         $existing[] = [
@@ -164,26 +185,45 @@ class KeitaroClient
         ])
             ->timeout(30)
             ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
-                's2s_postbacks' => $existing,
+                'postbacks' => $existing,
             ]);
-
-        if ($put->failed()) {
-            // Older Keitaro builds may use "postbacks"
-            $put = Http::withHeaders([
-                'Api-Key' => $apiKey,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])
-                ->timeout(30)
-                ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
-                    'postbacks' => $existing,
-                ]);
-        }
 
         if ($put->failed()) {
             Log::warning('Keitaro S2S: failed to attach sales postback', [
                 'campaign_id' => $campaignId,
                 'body' => Str::limit($put->body(), 300),
+            ]);
+
+            return;
+        }
+
+        // Verify — Keitaro may return 200 while ignoring unknown fields.
+        try {
+            $verify = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+            ])
+                ->timeout(30)
+                ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+        } catch (\Throwable) {
+            return;
+        }
+
+        $verified = false;
+        $postbacks = $verify->json('postbacks') ?? [];
+
+        if (is_array($postbacks)) {
+            foreach ($postbacks as $row) {
+                if (is_array($row) && str_contains((string) ($row['url'] ?? ''), $marker)) {
+                    $verified = true;
+                    break;
+                }
+            }
+        }
+
+        if (! $verified) {
+            Log::warning('Keitaro S2S: postback not present after PUT', [
+                'campaign_id' => $campaignId,
             ]);
         }
     }
