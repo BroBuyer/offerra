@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class TelegramNotifier
 {
-    public function send(UserSetting $settings, string $text): bool
+    public function send(UserSetting $settings, string $text, ?string $parseMode = null): bool
     {
         $token = trim((string) ($settings->tg_bot_token ?? ''));
         $chatId = trim((string) ($settings->tg_chat_id ?? ''));
@@ -24,13 +24,19 @@ class TelegramNotifier
 
         foreach ($targets as $target) {
             try {
+                $payload = [
+                    'chat_id' => $target,
+                    'text' => $text,
+                    'disable_web_page_preview' => true,
+                ];
+
+                if ($parseMode !== null && $parseMode !== '') {
+                    $payload['parse_mode'] = $parseMode;
+                }
+
                 $response = Http::timeout(12)->asForm()->post(
                     "https://api.telegram.org/bot{$token}/sendMessage",
-                    [
-                        'chat_id' => $target,
-                        'text' => $text,
-                        'disable_web_page_preview' => true,
-                    ],
+                    $payload,
                 );
 
                 if ($response->successful()) {

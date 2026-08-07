@@ -71,13 +71,15 @@ class SalesPostbackService
             return ['ok' => true, 'ignored' => true, 'reason' => 'status_'.$status];
         }
 
-        $lines = ['💰 DEP', 'subid: '.$subid];
+        $safeSubid = htmlspecialchars($subid, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $lines = ['💰 DEP', 'subid: <code>'.$safeSubid.'</code>'];
 
         if ($payout !== '') {
-            $lines[] = 'payout: '.$payout;
+            $amount = ltrim($payout, '$');
+            $lines[] = 'payout: $'.htmlspecialchars($amount, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
 
-        $sent = $this->telegram->send($settings, implode("\n", $lines));
+        $sent = $this->telegram->send($settings, implode("\n", $lines), 'HTML');
 
         if (! $sent) {
             Log::warning('SalesPostback: telegram send failed', [
