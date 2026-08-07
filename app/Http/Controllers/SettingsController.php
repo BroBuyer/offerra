@@ -9,6 +9,7 @@ use App\Services\DeployConnection;
 use App\Services\DynadotClient;
 use App\Services\HestiaClient;
 use App\Services\OfferVerificationFileService;
+use App\Services\SalesPostbackService;
 use App\Support\SecretValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -17,16 +18,19 @@ use Inertia\Response;
 
 class SettingsController extends Controller
 {
-    public function index(): Response
+    public function index(SalesPostbackService $postbacks): Response
     {
         $authUser = auth()->user();
         $targetUser = $this->resolveSettingsUser($authUser);
-        $settings = $targetUser->settings;
+        $settings = $targetUser->settings()->firstOrCreate([]);
+
+        $salesPostbackUrl = $postbacks->postbackUrl($settings);
+        $settings->refresh();
 
         return Inertia::render('Panel/Settings/Index', [
-            'settings' => $settings
-                ? $settings->toEditArray()
-                : (new UserSetting)->toEditArray(),
+            'settings' => array_merge($settings->toEditArray(), [
+                'sales_postback_url' => $salesPostbackUrl,
+            ]),
             'settingsUser' => [
                 'id' => $targetUser->id,
                 'name' => $targetUser->name,

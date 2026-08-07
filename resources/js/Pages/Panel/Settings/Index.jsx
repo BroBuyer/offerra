@@ -244,6 +244,23 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             onChange={(e) => setData('keitaro_group', e.target.value)}
                         />
                     </div>
+                    {settings.sales_postback_url && (
+                        <div className="field">
+                            <label htmlFor="kt-s2s">S2S postback (деп → Telegram)</label>
+                            <input
+                                type="text"
+                                id="kt-s2s"
+                                readOnly
+                                value={settings.sales_postback_url}
+                                onFocus={(e) => e.target.select()}
+                            />
+                            <p className="field-hint">
+                                Встав у Keitaro → кампанія → S2S Postbacks (GET, статус sale).
+                                Нові кампанії з панелі підхоплюють це автоматично.
+                                CRM шле payout → у TG прийде subid + сума.
+                            </p>
+                        </div>
+                    )}
                 </section>
 
                 <section className="card">

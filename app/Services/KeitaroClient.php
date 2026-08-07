@@ -4,11 +4,16 @@ namespace App\Services;
 
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class KeitaroClient
 {
+    public function __construct(
+        private readonly SalesPostbackService $salesPostbacks,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $input
      * @return array{id: int, token: string, alias: string, name: string, reused: bool}
@@ -26,6 +31,8 @@ class KeitaroClient
         $existing = $this->findCampaignByName($settings, $name);
 
         if ($existing) {
+            $this->ensureSalesS2sPostback($settings, (int) $existing['id']);
+
             return array_merge($existing, ['reused' => true]);
         }
 
@@ -55,6 +62,8 @@ class KeitaroClient
                 $existing = $this->findCampaignByName($settings, $name);
 
                 if ($existing) {
+                    $this->ensureSalesS2sPostback($settings, (int) $existing['id']);
+
                     return array_merge($existing, ['reused' => true]);
                 }
             }
@@ -75,6 +84,7 @@ class KeitaroClient
         }
 
         $this->ensureDefaultStream($settings, $campaignId);
+        $this->ensureSalesS2sPostback($settings, $campaignId);
 
         return [
             'id' => $campaignId,
@@ -83,6 +93,99 @@ class KeitaroClient
             'name' => (string) ($data['name'] ?? $name),
             'reused' => false,
         ];
+    }
+
+    /**
+     * Attach panel sales S2S postback (sale → Telegram) if missing.
+     */
+    public function ensureSalesS2sPostback(UserSetting $settings, int $campaignId): void
+    {
+        if ($campaignId <= 0 || ! $settings->keitaro_api_key) {
+            return;
+        }
+
+        $url = $this->salesPostbacks->postbackUrl($settings);
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+        $apiKey = $settings->keitaro_api_key;
+
+        try {
+            $response = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+            ])
+                ->timeout(30)
+                ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+        } catch (\Throwable $e) {
+            Log::warning('Keitaro S2S: failed to load campaign', [
+                'campaign_id' => $campaignId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return;
+        }
+
+        if ($response->failed()) {
+            return;
+        }
+
+        /** @var array<string, mixed> $campaign */
+        $campaign = $response->json() ?? [];
+        $existing = $campaign['s2s_postbacks'] ?? $campaign['postbacks'] ?? [];
+
+        if (! is_array($existing)) {
+            $existing = [];
+        }
+
+        $token = $this->salesPostbacks->ensureToken($settings);
+        $marker = '/api/v1/postback/'.$token;
+
+        foreach ($existing as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $rowUrl = (string) ($row['url'] ?? '');
+
+            if (str_contains($rowUrl, $marker)) {
+                return;
+            }
+        }
+
+        $existing[] = [
+            'url' => $url,
+            'method' => 'GET',
+            'statuses' => ['sale'],
+        ];
+
+        $put = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])
+            ->timeout(30)
+            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
+                's2s_postbacks' => $existing,
+            ]);
+
+        if ($put->failed()) {
+            // Older Keitaro builds may use "postbacks"
+            $put = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ])
+                ->timeout(30)
+                ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
+                    'postbacks' => $existing,
+                ]);
+        }
+
+        if ($put->failed()) {
+            Log::warning('Keitaro S2S: failed to attach sales postback', [
+                'campaign_id' => $campaignId,
+                'body' => Str::limit($put->body(), 300),
+            ]);
+        }
     }
 
     /**
@@ -268,17 +371,70 @@ class KeitaroClient
      */
     public function buildCampaignName(array $input, ?string $affiliateTag = null): string
     {
-        $date = now()->format('d.m.Y');
+        $date = $this->resolveCampaignDate($input);
         $affiliate = $this->normalizeAffiliateTag($affiliateTag ?? $input['affiliate_tag'] ?? null);
 
         return sprintf(
             'SEO %s %s %s (%s) %s',
-            strtoupper($input['geo']),
+            strtoupper((string) $input['geo']),
             $affiliate,
             $input['brand'],
             $date,
             $input['domain'],
         );
+    }
+
+    /**
+     * Prefer offer created_at from DB; fall back to today for brand-new offers.
+     *
+     * @param  array<string, mixed>  $input
+     */
+    private function resolveCampaignDate(array $input): string
+    {
+        $raw = $input['created_at'] ?? $input['date'] ?? null;
+
+        if ($raw !== null && $raw !== '') {
+            try {
+                return \Carbon\Carbon::parse((string) $raw)
+                    ->timezone((string) config('app.timezone', 'UTC'))
+                    ->format('d.m.Y');
+            } catch (\Throwable) {
+                // fall through
+            }
+        }
+
+        return now()->format('d.m.Y');
+    }
+
+    public function updateCampaignName(UserSetting $settings, int $campaignId, string $name): void
+    {
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey) {
+            throw new RuntimeException('Збережіть Keitaro Admin API key у налаштуваннях.');
+        }
+
+        if ($campaignId <= 0 || trim($name) === '') {
+            throw new RuntimeException('Keitaro: некоректні дані для перейменування кампанії.');
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        $response = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])
+            ->timeout(30)
+            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
+                'name' => $name,
+            ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException(
+                'Keitaro: не вдалося перейменувати кампанію — '.$this->formatError($response->body()),
+            );
+        }
     }
 
     private function normalizeAffiliateTag(?string $tag): string
