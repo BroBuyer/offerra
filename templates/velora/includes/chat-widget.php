@@ -31,6 +31,7 @@ $chat_lead_cookie = site_slug() . '_lead';
       </button>
     </div>
 
+    <div class="lisa-body">
     <div class="lisa-messages" id="chat-messages" role="log" aria-live="polite"></div>
 
     <div class="lisa-typing" id="typing-indicator" hidden>Lisa is typing…</div>
@@ -88,6 +89,7 @@ $chat_lead_cookie = site_slug() . '_lead';
           <p class="form-legal">By submitting you agree to our <a href="conditions.php">Terms</a>.</p>
         </div>
       </form>
+    </div>
     </div>
   </div>
 </div>

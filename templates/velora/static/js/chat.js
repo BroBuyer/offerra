@@ -52,12 +52,19 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  const body = root.querySelector('.lisa-body');
+
+  function scrollChat() {
+    const scroller = body || messages;
+    scroller.scrollTop = scroller.scrollHeight;
+  }
+
   function addBubble(text, who) {
     const el = document.createElement('div');
     el.className = 'lisa-bubble lisa-bubble--' + who;
     el.textContent = text;
     messages.appendChild(el);
-    messages.scrollTop = messages.scrollHeight;
+    scrollChat();
   }
 
   async function showTyping(ms = 700) {
@@ -119,7 +126,7 @@
     addBubble('Please enter your details below and submit — I’ll stay here if you need anything.', 'bot');
     clearChoices();
     formWrap.hidden = false;
-    formWrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    requestAnimationFrame(scrollChat);
   }
 
   function setOpen(next) {

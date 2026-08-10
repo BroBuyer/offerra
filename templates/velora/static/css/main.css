@@ -927,14 +927,39 @@ h3 { font-size: 1.15rem; margin-bottom: 8px; }
 body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main) !important; }
 
 .payment-icons {
+  margin-top: 12px;
+  text-align: center;
+}
+.payment-icons-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+.payment-icons-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
   justify-content: center;
-  margin-top: 12px;
-  opacity: 0.85;
 }
-.payment-icons img { height: 18px; width: auto; }
+.payment-icons-list li {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+.payment-icons-list img {
+  height: 22px;
+  width: auto;
+  max-width: 56px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+.payment-icons--compact .payment-icons-list img {
+  height: 20px;
+}
 
 /* ── Page chrome ── */
 .page-hero { padding: 48px 0 20px; }
@@ -1066,6 +1091,7 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
   right: 0;
   bottom: 0;
   width: 100%;
+  height: min(640px, 85vh);
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -1095,6 +1121,7 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
   padding: 16px 20px;
   border-bottom: 1px solid var(--color-border);
   background: color-mix(in srgb, var(--color-bg-soft) 50%, transparent);
+  flex-shrink: 0;
 }
 .lisa-panel__identity {
   display: flex;
@@ -1142,15 +1169,21 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
 }
 .lisa-panel__close:hover { color: var(--color-text-main); }
 
-.lisa-messages {
-  flex: 1;
+.lisa-body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  scroll-behavior: smooth;
+}
+.lisa-messages {
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: 320px;
-  scroll-behavior: smooth;
+  flex: 0 0 auto;
 }
 .lisa-bubble {
   max-width: 88%;
@@ -1176,6 +1209,7 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
   font-size: 0.8rem;
   color: var(--color-text-muted);
   font-style: italic;
+  flex-shrink: 0;
 }
 .lisa-controls {
   padding: 12px 16px 16px;
@@ -1183,8 +1217,12 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: var(--color-card);
 }
-.lisa-controls:empty { display: none; }
+.lisa-controls:empty { display: none; border: 0; padding: 0; }
 .lisa-choice {
   border: 1px solid var(--color-border);
   background: var(--color-bg-soft);
@@ -1205,11 +1243,15 @@ body[data-theme="dark"] .iti__selected-dial-code { color: var(--color-text-main)
 .lisa-form-wrap {
   padding: 12px 16px 16px;
   border-top: 1px solid var(--color-border);
-  max-height: 360px;
-  overflow-y: auto;
+  overflow: visible;
+  flex-shrink: 0;
 }
 .lisa-form-wrap[hidden] { display: none !important; }
-.lisa-leadform .form-grid,
+.lisa-leadform .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 .lisa-leadform .field {
   display: flex;
   flex-direction: column;
