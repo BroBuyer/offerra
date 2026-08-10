@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="hero-lumen" aria-label="Introduction">
     <div class="hero-lumen__atmosphere" aria-hidden="true"></div>
     <div class="container hero-lumen__grid">
-      <div class="hero-lumen__copy" data-reveal>
+      <div class="hero-lumen__copy">
         <p class="brand-lockup"><?= e(SITE_NAME) ?></p>
         <h1>Invest with clarity.<br><span class="text-accent">Let AI keep it simple.</span></h1>
         <p class="lead">
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <div class="hero-lumen__visual" data-reveal>
+      <div class="hero-lumen__visual">
         <?php require __DIR__ . '/includes/platform-image.php'; ?>
       </div>
     </div>
