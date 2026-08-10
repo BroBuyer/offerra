@@ -1449,16 +1449,21 @@ body[data-theme="dark"] .header {
     color: var(--color-text-muted);
     line-height: 1.7;
     margin-bottom: 28px;
+    text-align: center;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .footer-meta-links {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     font-size: 14px;
     color: var(--color-text-muted);
     flex-wrap: wrap;
     gap: 20px;
+    text-align: center;
 }
 
 body[data-theme="dark"] .stats-bar { background-color: rgba(17, 24, 39, 0.4); }
@@ -1939,29 +1944,6 @@ padding: 28px 20px;
   background: var(--color-accent-glow); color: var(--color-accent);
   display: grid; place-items: center; font-size: 1.8rem; font-weight: 800;
 }
-.site-footer {
-  border-top: 1px solid var(--color-border); padding: 64px 0 36px; margin-top: 0;
-}
-.footer-grid { display: grid; gap: 28px; margin-bottom: 32px; }
-@media (min-width: 800px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
-.footer-brand p { margin-top: 12px; color: var(--color-text-secondary); font-size: 0.92rem; max-width: 280px; }
-.site-footer h4 { font-size: 0.85rem; margin-bottom: 12px; }
-.footer-nav { display: flex; flex-direction: column; gap: 8px; }
-.footer-nav a { color: var(--color-text-secondary); font-size: 0.9rem; text-decoration: none; }
-.footer-nav a:hover { color: var(--color-text-main); }
-.footer-risk {
-  padding: 16px; border-radius: 16px;
-  background: color-mix(in srgb, var(--color-warning) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
-  margin-bottom: 20px;
-}
-.footer-risk p { color: var(--color-text-secondary); font-size: 0.82rem; }
-.footer-bottom {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
-  color: var(--color-text-muted); font-size: 0.85rem;
-}
-.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--color-text-main); text-decoration: none; font-weight: 700; }
-.logo-mark { width: 28px; height: 28px; border-radius: 8px; }
 .nav-mobile {
   display: flex; flex-direction: column; gap: 4px; padding: 8px 24px 20px;
   border-top: 1px solid var(--color-border); background: var(--color-bg);

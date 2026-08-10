@@ -1,54 +1,63 @@
 <?php require_once __DIR__ . '/config.php'; ?>
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a href="<?= page_url() ?>" class="logo logo-footer">
-        <img class="logo-mark" src="<?= asset('static/img/logo.svg') ?>" width="28" height="28" alt="">
-        <span class="logo-text"><?= e(SITE_NAME) ?></span>
-      </a>
-      <p>A modern analytics environment with clear data-tracking across global assets.</p>
-    </div>
-
-    <div>
-      <h4>Platform</h4>
-      <nav class="footer-nav" aria-label="Platform links">
-        <a href="<?= e(page_url()) ?>#platform">Interface</a>
-        <a href="<?= e(page_url()) ?>#features">Features</a>
-        <a href="<?= e(page_url()) ?>#markets">Markets overview</a>
-      </nav>
-    </div>
-
-    <div>
-      <h4>Pages</h4>
-      <nav class="footer-nav" aria-label="Pages">
-        <a href="product.php">About</a>
-        <a href="contacts.php">Contact</a>
-        <a href="faq.php">FAQ</a>
-        <a href="sign.php">Sign up</a>
-      </nav>
-    </div>
-
-    <div>
-      <h4>Legal</h4>
-      <nav class="footer-nav" aria-label="Legal">
-        <a href="conditions.php">Terms of Use</a>
-        <a href="privacy.php">Privacy Policy</a>
-      </nav>
-    </div>
-  </div>
-
   <div class="container">
-    <div class="footer-risk">
-      <p>
-        <strong>Risk warning:</strong>
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> home">
+            <div class="logo-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
+                <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="26" cy="32" r="4.5" fill="#FFFFFF"/>
+                <circle cx="38" cy="38" r="4.5" fill="#FFFFFF"/>
+                <circle cx="50" cy="16" r="6.5" fill="#0B0F19"/>
+                <circle cx="50" cy="16" r="3.5" fill="#FFFFFF"/>
+              </svg>
+            </div>
+            <span><?= e(SITE_NAME) ?></span>
+          </a>
+          <p>A modern analytics environment with clear data-tracking across global assets.</p>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="<?= e(page_url()) ?>#platform">Interface</a></li>
+            <li><a href="<?= e(page_url()) ?>#features">Features</a></li>
+            <li><a href="<?= e(page_url()) ?>#markets">Markets overview</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="product.php">About</a></li>
+            <li><a href="contacts.php">Contact</a></li>
+            <li><a href="faq.php">FAQ</a></li>
+            <li><a href="sign.php">Sign up</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="conditions.php">Terms of Use</a></li>
+            <li><a href="privacy.php">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="disclaimer">
+        <strong>⚠️ Risk warning:</strong>
         Trading digital assets and global instruments involves high market volatility.
         Keep full control of your strategy settings. Automated metrics on <?= e(SITE_NAME) ?>
-        are analytical aids only — not financial advice.
+        work strictly as analytical aids.
       </p>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. All rights reserved.</p>
-      <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a>
+      <div class="footer-meta-links">
+        <span>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. All rights reserved.</span>
+      </div>
     </div>
   </div>
 </footer>
