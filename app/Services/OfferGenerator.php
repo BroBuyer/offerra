@@ -604,7 +604,15 @@ class OfferGenerator
         File::ensureDirectoryExists($destination);
 
         foreach (File::files($source) as $file) {
-            File::copy($file->getPathname(), $destination.DIRECTORY_SEPARATOR.$file->getFilename());
+            $name = $file->getFilename();
+            $dest = $destination.DIRECTORY_SEPARATOR.$name;
+
+            // Keep localized form strings from the lang pack / existing offer.
+            if ($name === 'validation.js' && File::isFile($dest)) {
+                continue;
+            }
+
+            File::copy($file->getPathname(), $dest);
         }
 
         $tokensDeny = $source.DIRECTORY_SEPARATOR.'tokens'.DIRECTORY_SEPARATOR.'.htaccess';

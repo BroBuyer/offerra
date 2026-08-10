@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
           You always confirm every trade yourself.
         </p>
         <ul class="feature-list">
-          <li>Market summaries in plain English</li>
+          <li>Market summaries in plain language</li>
           <li>Suggested watchlists for beginners</li>
           <li>Reminders before you size a position</li>
         </ul>

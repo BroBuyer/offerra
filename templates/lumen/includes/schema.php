@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => 'Dark market terminal for crypto, forex, and multi-asset trading with AI-assisted signals.',
+        'description' => 'A clear AI-assisted investing platform for crypto and multi-asset markets.',
     ];
 
     $website = [
@@ -30,7 +30,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => 'Exchange-style trading terminal with live markets, portfolio tools, and AI-assisted execution context.',
+        'description' => 'Simple AI investing platform with live markets, guided insights, and a calm trading workspace.',
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
