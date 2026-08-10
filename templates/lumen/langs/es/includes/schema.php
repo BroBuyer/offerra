@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => '¿Cómo empiezo?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Crea una cuenta en minutos, completa una verificación breve y financia con un mínimo de \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Desbloquearás gráficos y herramientas.',
+                    'text' => 'Crea una cuenta en minutos, completa una verificación breve y financia con un mínimo de ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Desbloquearás gráficos y herramientas.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Abre tu cuenta', 'text' => 'Regístrate con tus datos básicos y obtén acceso seguro.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verifica tu email', 'text' => 'Confirma tu email para desbloquear el acceso completo.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financia tu cuenta', 'text' => 'Deposita un mínimo de \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' por transferencia, tarjeta o monedero electrónico.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financia tu cuenta', 'text' => 'Deposita un mínimo de ' . MIN_DEPOSIT . ' ' . CURRENCY . ' por transferencia, tarjeta o monedero electrónico.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Define tu estrategia', 'text' => 'Elige riesgo y preferencias — manual o asistida.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Empieza a operar', 'text' => 'Entra al mercado con datos en tiempo real e ideas de IA, controlando cada orden.'],
         ],

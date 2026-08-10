@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('İletişim');
-$page_description = '' . SITE_NAME . ' desteğiyle iletişime geçin — fonlama, doğrulama ve başlangıçta yardımcı oluruz.';
+$page_description = SITE_NAME . ' desteğiyle iletişime geçin — fonlama, doğrulama ve başlangıçta yardımcı oluruz.';
 $page_canonical = page_url('contacts.php');
 $active_page = 'contacts';
 

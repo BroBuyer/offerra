@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-lumen__grid">
       <div class="hero-lumen__copy">
         <p class="brand-lockup"><?= e(SITE_NAME) ?></p>
-        <h1>Επενδύστε με σαφήνεια.<br><span class="text-accent">Αφήστε την ΤΝ να το κρατά απλό.</span></h1>
+        <h1>Επενδύστε με σαφήνεια.<br><span class="text-accent">Αφήστε το AI να το κρατά απλό.</span></h1>
         <p class="lead">
           Μια σύγχρονη επενδυτική πλατφόρμα που εξηγεί τις αγορές με απλή γλώσσα, αναδεικνύει χρήσιμες πληροφορίες ΤΝ και σας βοηθά να τοποθετείτε εντολές χωρίς περιττό θόρυβο.
         </p>

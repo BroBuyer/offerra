@@ -3,7 +3,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
 $page_title = $page_title ?? SITE_NAME . ' | Yapay zekâ yatırım platformu';
-$page_description = $page_description ?? '' . SITE_NAME . ' ile yatırım yapın ve işlem gerçekleştirin — piyasaları basit tutmak için tasarlanmış, net bir yapay zekâ destekli platform.';
+$page_description = $page_description ?? SITE_NAME . ' ile yatırım yapın ve işlem gerçekleştirin — piyasaları basit tutmak için tasarlanmış, net bir yapay zekâ destekli platform.';
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

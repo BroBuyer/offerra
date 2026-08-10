@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Jak začít?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Vytvořte účet během minut, dokončete krátké ověření a financujte účet minimálním vkladem \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Odemknete celou platformu včetně živých grafů a nástrojů.',
+                    'text' => 'Vytvořte účet během minut, dokončete krátké ověření a financujte účet minimálním vkladem ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Odemknete celou platformu včetně živých grafů a nástrojů.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Otevřete účet', 'text' => 'Zaregistrujte se základními údaji a získejte bezpečný přístup k platformě.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Ověřte e-mail', 'text' => 'Potvrďte e-mail a odemkněte plný přístup.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financujte účet', 'text' => 'Vložte minimálně \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' převodem, kartou nebo e-walletem.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financujte účet', 'text' => 'Vložte minimálně ' . MIN_DEPOSIT . ' ' . CURRENCY . ' převodem, kartou nebo e-walletem.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Nastavte strategii', 'text' => 'Zvolte úroveň rizika a preference — ručně nebo automaticky.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Začněte obchodovat', 'text' => 'Vstupte na trh s důvěrou díky datům v reálném čase a AI poznatkům.'],
         ],

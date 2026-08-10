@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Hur kommer jag igång?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Skapa ett konto på några minuter, slutför ett kort verifieringssteg och finansiera kontot med minst \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Du låser upp hela plattformen inklusive livediagram och handelsverktyg.',
+                    'text' => 'Skapa ett konto på några minuter, slutför ett kort verifieringssteg och finansiera kontot med minst ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Du låser upp hela plattformen inklusive livediagram och handelsverktyg.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Öppna ditt konto', 'text' => 'Registrera dig med grundläggande uppgifter och få säker åtkomst till plattformen.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verifiera din e-post', 'text' => 'Bekräfta din e-post för att låsa upp full åtkomst.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Finansiera ditt konto', 'text' => 'Sätt in minst \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' via banköverföring, kort eller e-plånbok.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Finansiera ditt konto', 'text' => 'Sätt in minst ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via banköverföring, kort eller e-plånbok.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Ställ in din strategi', 'text' => 'Välj risknivå och preferenser — manuellt eller automatiserat.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Börja handla', 'text' => 'Gå in på marknaden med självförtroende med realtidsdata och AI-insikter.'],
         ],

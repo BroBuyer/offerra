@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Hogyan kezdjek?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Hozzon létre számlát percek alatt, végezze el a rövid ellenőrzést, és töltse fel a számlát legalább \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' összeggel. Ezután a teljes platform megnyílik, élő chartokkal és eszközökkel.',
+                    'text' => 'Hozzon létre számlát percek alatt, végezze el a rövid ellenőrzést, és töltse fel a számlát legalább ' . MIN_DEPOSIT . ' ' . CURRENCY . ' összeggel. Ezután a teljes platform megnyílik, élő chartokkal és eszközökkel.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Nyissa meg számláját', 'text' => 'Regisztráljon alapadataival, és kapjon biztonságos hozzáférést a platformhoz.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Erősítse meg e-mailjét', 'text' => 'Erősítse meg e-mailjét a teljes hozzáféréshez.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Töltse fel számláját', 'text' => 'Helyezzen el legalább \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' összeget átutalással, kártyával vagy e-pénztárcával.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Töltse fel számláját', 'text' => 'Helyezzen el legalább ' . MIN_DEPOSIT . ' ' . CURRENCY . ' összeget átutalással, kártyával vagy e-pénztárcával.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Állítsa be stratégiáját', 'text' => 'Válassza ki a kockázati szintet és a preferenciákat — manuálisan vagy automatizálva.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Kezdjen kereskedni', 'text' => 'Lépjen a piacra valós idejű adatokkal és MI-elemzésekkel.'],
         ],

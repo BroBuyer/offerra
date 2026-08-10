@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Kayıt');
-$page_description = '' . SITE_NAME . ' hesabınızı oluşturun ve net yapay zekâ rehberliğiyle yatırıma başlayın.';
+$page_description = SITE_NAME . ' hesabınızı oluşturun ve net yapay zekâ rehberliğiyle yatırıma başlayın.';
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 

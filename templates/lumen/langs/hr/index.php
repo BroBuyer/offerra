@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-lumen__grid">
       <div class="hero-lumen__copy">
         <p class="brand-lockup"><?= e(SITE_NAME) ?></p>
-        <h1>Ulažite s jasnoćom.<br><span class="text-accent">Neka AI zadrži jednostavnost.</span></h1>
+        <h1>Ulažite jasno i jednostavno.<br><span class="text-accent">Neka AI zadrži jednostavnost.</span></h1>
         <p class="lead">
           Moderna investicijska platforma koja objašnjava tržišta jednostavnim jezikom, ističe korisne AI uvide i pomaže vam postavljati naloge bez nepotrebne buke.
         </p>

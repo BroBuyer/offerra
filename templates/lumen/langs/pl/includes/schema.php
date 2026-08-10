@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Jak zacząć?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Utwórz konto w kilka minut, przejdź krótką weryfikację i zasil konto minimalną wpłatą \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Odblokujesz pełną platformę, w tym wykresy na żywo i narzędzia.',
+                    'text' => 'Utwórz konto w kilka minut, przejdź krótką weryfikację i zasil konto minimalną wpłatą ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Odblokujesz pełną platformę, w tym wykresy na żywo i narzędzia.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Otwórz konto', 'text' => 'Zarejestruj się podstawowymi danymi i uzyskaj bezpieczny dostęp do platformy.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Potwierdź e-mail', 'text' => 'Potwierdź adres e-mail, aby odblokować pełny dostęp.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Zasil konto', 'text' => 'Wpłać minimum \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' przelewem, kartą lub e-portfelem.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Zasil konto', 'text' => 'Wpłać minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . ' przelewem, kartą lub e-portfelem.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Ustaw strategię', 'text' => 'Wybierz poziom ryzyka i preferencje — ręcznie lub automatycznie.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Zacznij handlować', 'text' => 'Wejdź na rynek z pewnością dzięki danym w czasie rzeczywistym i wnioskom AI.'],
         ],

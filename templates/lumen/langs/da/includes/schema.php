@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Hvordan kommer jeg i gang?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Opret en konto på få minutter, gennemfør et kort verifikationstrin, og finansier kontoen med mindst \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Du låser den fulde platform op, inklusive live-diagrammer og handelsværktøjer.',
+                    'text' => 'Opret en konto på få minutter, gennemfør et kort verifikationstrin, og finansier kontoen med mindst ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Du låser den fulde platform op, inklusive live-diagrammer og handelsværktøjer.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Åbn din konto', 'text' => 'Tilmeld dig med grundlæggende oplysninger, og få sikker adgang til platformen.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Bekræft din e-mail', 'text' => 'Bekræft din e-mail for at låse fuld adgang op.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Finansier din konto', 'text' => 'Indbetal mindst \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' via bankoverførsel, kort eller e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Finansier din konto', 'text' => 'Indbetal mindst ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bankoverførsel, kort eller e-wallet.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Indstil din strategi', 'text' => 'Vælg risikoniveau og præferencer — manuelt eller automatiseret.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Begynd at handle', 'text' => 'Gå ind på markedet med tillid ved hjælp af realtidsdata og AI-indsigter.'],
         ],

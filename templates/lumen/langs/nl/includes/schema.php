@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Hoe begin ik?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Maak in minuten een account, rond een korte verificatie af en stort minimaal \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Daarna ontgrendelt u het volledige platform, inclusief live grafieken en tools.',
+                    'text' => 'Maak in minuten een account, rond een korte verificatie af en stort minimaal ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Daarna ontgrendelt u het volledige platform, inclusief live grafieken en tools.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Open uw account', 'text' => 'Meld u aan met basisgegevens en krijg veilige toegang tot het platform.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Bevestig uw e-mail', 'text' => 'Bevestig uw e-mail om volledige toegang te ontgrendelen.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financier uw account', 'text' => 'Stort minimaal \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' via overschrijving, kaart of e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financier uw account', 'text' => 'Stort minimaal ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via overschrijving, kaart of e-wallet.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Stel uw strategie in', 'text' => 'Kies risiconiveau en voorkeuren — handmatig of geautomatiseerd.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Begin met handelen', 'text' => 'Betreed de markt met realtime data en AI-inzichten.'],
         ],

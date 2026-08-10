@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Platform');
-$page_description = '' . SITE_NAME . '’in yapay zekâ içgörüleri, net fiyatlandırma ve sakin bir işlem alanı ile yatırımı nasıl basit tuttuğunu görün.';
+$page_description = SITE_NAME . '’in yapay zekâ içgörüleri, net fiyatlandırma ve sakin bir işlem alanı ile yatırımı nasıl basit tuttuğunu görün.';
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 

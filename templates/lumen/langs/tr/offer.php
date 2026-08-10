@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Fiyatlandırma');
-$page_description = '' . SITE_NAME . ' üzerinde ' . MIN_DEPOSIT . ' ' . CURRENCY . ' tutarından başlayın — şeffaf fonlama ve tam platform erişimi.';
+$page_description = SITE_NAME . ' üzerinde ' . MIN_DEPOSIT . ' ' . CURRENCY . ' tutarından başlayın — şeffaf fonlama ve tam platform erişimi.';
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 

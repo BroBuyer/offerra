@@ -33,17 +33,21 @@ function phpSite(s) {
 }
 
 function metaSite(s) {
-  return s
-    .replaceAll('{SITE}', "' . SITE_NAME . '")
-    .replaceAll('{MIN}', "' . MIN_DEPOSIT . '")
-    .replaceAll('{CUR}', "' . CURRENCY . '");
+  return phpExpr(s, { siteVar: 'SITE_NAME' });
 }
 
-function schemaJoin(s) {
-  return s
-    .replaceAll('{MIN}', "' . MIN_DEPOSIT . '")
-    .replaceAll('{CUR}', "' . CURRENCY . '")
-    .replaceAll('{SITE}', "' . $site . '");
+/** Build a safe PHP expression from text that may contain {MIN}/{CUR}/{SITE}. */
+function phpExpr(s, { siteVar = '$site' } = {}) {
+  const parts = String(s).split(/(\{MIN\}|\{CUR\}|\{SITE\})/);
+  const chunks = [];
+  for (const part of parts) {
+    if (!part) continue;
+    if (part === '{MIN}') chunks.push('MIN_DEPOSIT');
+    else if (part === '{CUR}') chunks.push('CURRENCY');
+    else if (part === '{SITE}') chunks.push(siteVar);
+    else chunks.push(`'${part.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`);
+  }
+  return chunks.length ? chunks.join(' . ') : "''";
 }
 
 function write(lang, rel, content) {
@@ -149,7 +153,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
 $page_title = $page_title ?? SITE_NAME . ' | ${t.headTitle}';
-$page_description = $page_description ?? '${metaSite(t.headDesc)}';
+$page_description = $page_description ?? ${metaSite(t.headDesc)};
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());
@@ -201,7 +205,7 @@ $og_image = page_url($og_image_path ?? og_image_path());
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('${t.homeSeo}');
-$page_description = '${metaSite(t.homeDesc)}';
+$page_description = ${metaSite(t.homeDesc)};
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -372,7 +376,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.prodSeo}');
-$page_description = '${metaSite(t.prodDesc)}';
+$page_description = ${metaSite(t.prodDesc)};
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 
@@ -417,7 +421,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.offerSeo}');
-$page_description = '${metaSite(t.offerDesc)}';
+$page_description = ${metaSite(t.offerDesc)};
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 
@@ -459,7 +463,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.faqSeo}');
-$page_description = '${metaSite(t.faqDesc)}';
+$page_description = ${metaSite(t.faqDesc)};
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 
@@ -535,7 +539,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.contactSeo}');
-$page_description = '${metaSite(t.contactDesc)}';
+$page_description = ${metaSite(t.contactDesc)};
 $page_canonical = page_url('contacts.php');
 $active_page = 'contacts';
 
@@ -570,7 +574,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.signSeo}');
-$page_description = '${metaSite(t.signDesc)}';
+$page_description = ${metaSite(t.signDesc)};
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 
@@ -607,7 +611,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.thanksSeo}');
-$page_description = '${metaSite(t.thanksDesc)}';
+$page_description = ${metaSite(t.thanksDesc)};
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;
@@ -635,7 +639,7 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('${t.nfSeo}');
-$page_description = '${metaSite(t.nfDesc)}';
+$page_description = ${metaSite(t.nfDesc)};
 $page_canonical = page_url('404.php');
 $active_page = '404';
 $noindex = true;
@@ -672,7 +676,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => '${t.schemaOrg.replace(/'/g, "\\\\'")}',
+        'description' => ${phpExpr(t.schemaOrg)},
     ];
 
     $website = [
@@ -689,7 +693,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => '${t.schemaApp.replace(/'/g, "\\\\'")}',
+        'description' => ${phpExpr(t.schemaApp)},
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
@@ -711,34 +715,34 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => '${t.faqP1q.replace(/'/g, "\\\\'")}',
+                'name' => ${phpExpr(t.faqP1q)},
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => '${schemaJoin(t.schemaFaq1a).replace(/'/g, "\\\\'")}',
+                    'text' => ${phpExpr(t.schemaFaq1a)},
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => '${t.schemaFaq2q.replace(/'/g, "\\\\'")}',
+                'name' => ${phpExpr(t.schemaFaq2q)},
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => '${t.schemaFaq2a.replace(/'/g, "\\\\'")}',
+                    'text' => ${phpExpr(t.schemaFaq2a)},
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => '${t.schemaFaq3q.replace(/'/g, "\\\\'")}',
+                'name' => ${phpExpr(t.schemaFaq3q)},
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => '${t.schemaFaq3a.replace(/'/g, "\\\\'")}',
+                    'text' => ${phpExpr(t.schemaFaq3a)},
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => '${t.faq1q.replace(/'/g, "\\\\'")}',
+                'name' => ${phpExpr(t.faq1q)},
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => '${t.schemaFaq4a.replace(/'/g, "\\\\'")}',
+                    'text' => ${phpExpr(t.schemaFaq4a)},
                 ],
             ],
         ],
@@ -747,13 +751,13 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $howto = [
         '@context' => 'https://schema.org',
         '@type' => 'HowTo',
-        'name' => '${t.schemaHow.replace(/'/g, "\\\\'")}' . $site,
+        'name' => ${phpExpr(t.schemaHow)} . $site,
         'step' => [
-            ['@type' => 'HowToStep', 'position' => 1, 'name' => '${t.s1t.replace(/'/g, "\\\\'")}', 'text' => '${t.schemaS1t.replace(/'/g, "\\\\'")}'],
-            ['@type' => 'HowToStep', 'position' => 2, 'name' => '${t.schemaS2.replace(/'/g, "\\\\'")}', 'text' => '${t.schemaS2t.replace(/'/g, "\\\\'")}'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => '${t.schemaS3.replace(/'/g, "\\\\'")}', 'text' => '${schemaJoin(t.schemaS3t).replace(/'/g, "\\\\'")}'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => '${t.schemaS4.replace(/'/g, "\\\\'")}', 'text' => '${t.schemaS4t.replace(/'/g, "\\\\'")}'],
-            ['@type' => 'HowToStep', 'position' => 5, 'name' => '${t.schemaS5.replace(/'/g, "\\\\'")}', 'text' => '${t.schemaS5t.replace(/'/g, "\\\\'")}'],
+            ['@type' => 'HowToStep', 'position' => 1, 'name' => ${phpExpr(t.s1t)}, 'text' => ${phpExpr(t.schemaS1t)}],
+            ['@type' => 'HowToStep', 'position' => 2, 'name' => ${phpExpr(t.schemaS2)}, 'text' => ${phpExpr(t.schemaS2t)}],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => ${phpExpr(t.schemaS3)}, 'text' => ${phpExpr(t.schemaS3t)}],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => ${phpExpr(t.schemaS4)}, 'text' => ${phpExpr(t.schemaS4t)}],
+            ['@type' => 'HowToStep', 'position' => 5, 'name' => ${phpExpr(t.schemaS5)}, 'text' => ${phpExpr(t.schemaS5t)}],
         ],
     ];
 
@@ -767,10 +771,10 @@ function render_schema(string $page = 'home', array $extra = []): void {
             '@context' => 'https://schema.org',
             '@type' => 'ImageObject',
             'name' => $site . ' AI Trading Platform',
-            'description' => $site . '${t.schemaImgDesc.replace(/'/g, "\\\\'")}',
+            'description' => $site . ${phpExpr(t.schemaImgDesc)},
             'contentUrl' => $platform_image,
             'thumbnailUrl' => $platform_image,
-            'caption' => $site . '${t.schemaCap.replace(/'/g, "\\\\'")}',
+            'caption' => $site . ${phpExpr(t.schemaCap)},
             'representativeOfPage' => true,
         ];
     }

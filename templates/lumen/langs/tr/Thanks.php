@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Teşekkürler');
-$page_description = '' . SITE_NAME . ' hesap talebiniz alındı.';
+$page_description = SITE_NAME . ' hesap talebiniz alındı.';
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;

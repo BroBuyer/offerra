@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('SSS');
-$page_description = '' . SITE_NAME . ' üzerinde fonlama, güvenlik, yapay zekâ içgörüleri ve başlangıç hakkında yanıtlar.';
+$page_description = SITE_NAME . ' üzerinde fonlama, güvenlik, yapay zekâ içgörüleri ve başlangıç hakkında yanıtlar.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 

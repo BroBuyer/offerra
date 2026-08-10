@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-lumen__grid">
       <div class="hero-lumen__copy">
         <p class="brand-lockup"><?= e(SITE_NAME) ?></p>
-        <h1>Investujte s jasností.<br><span class="text-accent">Nechte AI udržet věci jednoduché.</span></h1>
+        <h1>Investujte přehledně.<br><span class="text-accent">Nechte AI udržet věci jednoduché.</span></h1>
         <p class="lead">
           Moderní investiční platforma, která vysvětluje trhy srozumitelně, zvýrazňuje užitečné AI poznatky a pomáhá zadávat obchody bez zbytečného šumu.
         </p>

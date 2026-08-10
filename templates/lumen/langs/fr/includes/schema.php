@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Comment démarrer ?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Créez un compte en quelques minutes, complétez une courte vérification et alimentez votre compte avec un dépôt minimum de \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Vous débloquez alors toute la plateforme, graphiques et outils inclus.',
+                    'text' => 'Créez un compte en quelques minutes, complétez une courte vérification et alimentez votre compte avec un dépôt minimum de ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Vous débloquez alors toute la plateforme, graphiques et outils inclus.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Ouvrez votre compte', 'text' => 'Inscrivez-vous avec vos informations de base et obtenez un accès sécurisé à la plateforme.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Vérifiez votre e-mail', 'text' => 'Confirmez votre e-mail pour débloquer l’accès complet.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Alimentez votre compte', 'text' => 'Déposez au minimum \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' par virement, carte ou portefeuille électronique.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Alimentez votre compte', 'text' => 'Déposez au minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . ' par virement, carte ou portefeuille électronique.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Définissez votre stratégie', 'text' => 'Choisissez le niveau de risque et vos préférences — manuel ou automatisé.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Commencez à trader', 'text' => 'Entrez sur le marché en toute confiance grâce aux données en temps réel et aux insights IA.'],
         ],

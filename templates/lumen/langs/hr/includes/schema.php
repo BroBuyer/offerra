@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Kako započeti?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Izradite račun u nekoliko minuta, dovršite kratku provjeru i financirajte račun minimalnim depozitom od \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\'. Otključat ćete cijelu platformu, uključujući grafikone uživo i alate.',
+                    'text' => 'Izradite račun u nekoliko minuta, dovršite kratku provjeru i financirajte račun minimalnim depozitom od ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Otključat ćete cijelu platformu, uključujući grafikone uživo i alate.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Otvorite račun', 'text' => 'Registrirajte se osnovnim podacima i ostvarite siguran pristup platformi.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Potvrdite e-poštu', 'text' => 'Potvrdite e-poštu kako biste otključali potpuni pristup.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte račun', 'text' => 'Uplatite najmanje \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' bankovnim transferom, karticom ili e-novčanikom.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte račun', 'text' => 'Uplatite najmanje ' . MIN_DEPOSIT . ' ' . CURRENCY . ' bankovnim transferom, karticom ili e-novčanikom.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Postavite strategiju', 'text' => 'Odaberite razinu rizika i preferencije — ručno ili automatizirano.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Počnite trgovati', 'text' => 'Uđite na tržište uz podatke u stvarnom vremenu i AI uvide.'],
         ],

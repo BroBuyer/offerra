@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Nasıl başlarım?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Dakikalar içinde hesap oluşturun, kısa bir doğrulamayı tamamlayın ve en az \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' yatırarak hesabınızı fonlayın. Canlı grafikler ve işlem araçları dahil tam platformu açarsınız.',
+                    'text' => 'Dakikalar içinde hesap oluşturun, kısa bir doğrulamayı tamamlayın ve en az ' . MIN_DEPOSIT . ' ' . CURRENCY . ' yatırarak hesabınızı fonlayın. Canlı grafikler ve işlem araçları dahil tam platformu açarsınız.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Hesabınızı açın', 'text' => 'Temel bilgilerinizle kaydolun ve platforma güvenli erişim kazanın.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'E-postanızı doğrulayın', 'text' => 'Tam erişimi açmak için e-postanızı onaylayın.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Hesabınızı fonlayın', 'text' => 'Banka havalesi, kart veya e-cüzdan ile en az \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' yatırın.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Hesabınızı fonlayın', 'text' => 'Banka havalesi, kart veya e-cüzdan ile en az ' . MIN_DEPOSIT . ' ' . CURRENCY . ' yatırın.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Stratejinizi belirleyin', 'text' => 'Risk düzeyini ve tercihleri seçin — manuel veya otomatik.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'İşleme başlayın', 'text' => 'Gerçek zamanlı veriler ve yapay zekâ içgörüleriyle piyasaya güvenle girin.'],
         ],

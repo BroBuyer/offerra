@@ -52,7 +52,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Miten aloitan?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Luo tili minuuteissa, suorita lyhyt vahvistusvaihe ja rahoita tili vähintään \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' talletuksella. Saat käyttöön koko alustan, mukaan lukien live-kaaviot ja kaupankäyntityökalut.',
+                    'text' => 'Luo tili minuuteissa, suorita lyhyt vahvistusvaihe ja rahoita tili vähintään ' . MIN_DEPOSIT . ' ' . CURRENCY . ' talletuksella. Saat käyttöön koko alustan, mukaan lukien live-kaaviot ja kaupankäyntityökalut.',
                 ],
             ],
             [
@@ -89,7 +89,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Avaa tilisi', 'text' => 'Rekisteröidy perustiedoilla ja saat turvallisen pääsyn alustaan.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Vahvista sähköpostisi', 'text' => 'Vahvista sähköpostisi avataksesi täyden pääsyn.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Rahoita tilisi', 'text' => 'Talleta vähintään \\' . MIN_DEPOSIT . \\' \\' . CURRENCY . \\' tilisiirrolla, kortilla tai e-lompakolla.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Rahoita tilisi', 'text' => 'Talleta vähintään ' . MIN_DEPOSIT . ' ' . CURRENCY . ' tilisiirrolla, kortilla tai e-lompakolla.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Aseta strategiasi', 'text' => 'Valitse riskitaso ja mieltymykset — manuaalisesti tai automatisoidusti.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Aloita kaupankäynti', 'text' => 'Astu markkinoille luottavaisin mielin reaaliaikaisen datan ja tekoälynäkemyksien avulla.'],
         ],
