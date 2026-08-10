@@ -137,6 +137,7 @@
       toggleBtn.setAttribute('aria-expanded', 'true');
       toggleBtn.style.opacity = '0';
       toggleBtn.style.pointerEvents = 'none';
+      notiDot?.classList.remove('is-visible');
       notiDot?.classList.add('is-hidden');
       if (!started) {
         started = true;
@@ -156,8 +157,11 @@
   toggleBtn?.addEventListener('click', () => setOpen(true));
   closeBtn?.addEventListener('click', () => setOpen(false));
 
-  // Soft auto-nudge after delay
+  // Soft auto-nudge after delay (sample scale-in)
   setTimeout(() => {
-    if (!open && notiDot) notiDot.classList.remove('is-hidden');
-  }, 4000);
+    if (!open && notiDot) {
+      notiDot.classList.remove('is-hidden');
+      notiDot.classList.add('is-visible');
+    }
+  }, 2500);
 })();
