@@ -185,6 +185,33 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .nav-mobile .btn { margin-top: 0.35rem; }
 
+/* Market tape under header */
+.market-tape {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+.market-tape-inner {
+  display: flex;
+  gap: 2rem;
+  padding: 0.55rem 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.market-tape-inner::-webkit-scrollbar { display: none; }
+.tape-item {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+.tape-item strong { color: var(--ink); font-weight: 600; }
+.tape-up { color: #0f9f6e; }
+.tape-down { color: #d14343; }
+
 /* Hero */
 .hero-lumen {
   position: relative;
@@ -419,6 +446,22 @@ ul { margin: 0; padding: 0; list-style: none; }
   outline: 2px solid var(--accent-soft);
   border-color: var(--accent);
 }
+
+/* intl-tel-input — dial code must stay dark on white inputs */
+.iti { width: 100%; color: var(--ink); }
+.iti__selected-dial-code,
+.iti__selected-country-primary {
+  color: var(--ink) !important;
+}
+.section-ink .iti__selected-dial-code,
+.section-ink .iti__selected-country-primary {
+  color: var(--ink) !important;
+}
+.iti input.input,
+.iti input.iti__tel-input {
+  color: var(--ink);
+}
+
 .form-legal {
   margin-top: 0.85rem;
   font-size: 0.78rem;

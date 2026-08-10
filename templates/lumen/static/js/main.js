@@ -68,3 +68,41 @@ if (header) {
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 }
+
+// Simulated live tape (same idea as noctra)
+const TICKERS = {
+  btc: { base: 95780, vol: 0.003 },
+  eth: { base: 3520, vol: 0.004 },
+  sol: { base: 148.5, vol: 0.006 },
+  xrp: { base: 0.62, vol: 0.005 },
+};
+
+function formatPrice(key, value) {
+  if (key === 'xrp') return '$' + value.toFixed(4);
+  if (key === 'sol') return '$' + value.toFixed(2);
+  return '$' + value.toLocaleString('en-US', { maximumFractionDigits: 0 });
+}
+
+function updateTickers() {
+  Object.entries(TICKERS).forEach(([key, cfg]) => {
+    const delta = (Math.random() - 0.48) * cfg.base * cfg.vol;
+    cfg.base = Math.max(cfg.base * 0.999, cfg.base + delta);
+    const pct = ((delta / cfg.base) * 100).toFixed(2);
+    const up = delta >= 0;
+
+    document.querySelectorAll(`[data-price="${key}"]`).forEach((priceEl) => {
+      priceEl.textContent = formatPrice(key, cfg.base);
+    });
+
+    document.querySelectorAll(`[data-change="${key}"]`).forEach((changeEl) => {
+      changeEl.textContent = (up ? '+' : '') + pct + '%';
+      changeEl.classList.toggle('tape-up', up);
+      changeEl.classList.toggle('tape-down', !up);
+    });
+  });
+}
+
+if (document.querySelector('.market-tape')) {
+  updateTickers();
+  setInterval(updateTickers, 3200);
+}

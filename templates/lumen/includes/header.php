@@ -31,3 +31,15 @@
     <a href="sign.php" class="btn btn-primary">Open account</a>
   </nav>
 </header>
+
+<div class="market-tape" aria-hidden="true">
+  <div class="container market-tape-inner">
+    <span class="tape-item"><strong>BTC</strong> <span data-price="btc">—</span> <span class="tape-up" data-change="btc">—</span></span>
+    <span class="tape-item"><strong>ETH</strong> <span data-price="eth">—</span> <span class="tape-up" data-change="eth">—</span></span>
+    <span class="tape-item"><strong>SOL</strong> <span data-price="sol">—</span> <span class="tape-down" data-change="sol">—</span></span>
+    <span class="tape-item"><strong>XRP</strong> <span data-price="xrp">—</span> <span class="tape-up" data-change="xrp">—</span></span>
+    <span class="tape-item"><strong>EUR/USD</strong> <span class="tape-up">+0.12%</span></span>
+    <span class="tape-item"><strong>GBP/USD</strong> <span class="tape-down">-0.08%</span></span>
+    <span class="tape-item"><strong>Markets</strong> 24/7</span>
+  </div>
+</div>
