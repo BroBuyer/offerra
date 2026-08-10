@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Ευχαριστούμε');
-$page_description = 'Η ' . SITE_NAME . ' αίτηση λογαριασμού σας έχει ληφθεί.';
+$page_description = 'Το αίτημα λογαριασμού σας στο ' . SITE_NAME . ' έχει ληφθεί.';
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;

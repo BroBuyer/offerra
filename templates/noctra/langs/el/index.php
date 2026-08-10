@@ -287,7 +287,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="review-avatar">AM</div>
             <div>
               <div class="review-name">Anna Mitchell</div>
-              <div class="review-role">Crypto trader</div>
+              <div class="review-role">Crypto-trader</div>
             </div>
           </div>
         </article>
