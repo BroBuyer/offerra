@@ -82,19 +82,21 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="mockup-price" id="mockupPrice">$67,420.50</div>
         <div class="mockup-change" id="mockupChange">+0.15% Today</div>
-        <div class="mockup-chart" id="mockupChartTrack" aria-hidden="true">
-          <div class="chart-bar" style="height:40%"></div>
-          <div class="chart-bar" style="height:55%"></div>
-          <div class="chart-bar" style="height:48%"></div>
-          <div class="chart-bar" style="height:62%"></div>
-          <div class="chart-bar" style="height:58%"></div>
-          <div class="chart-bar" style="height:70%"></div>
-          <div class="chart-bar" style="height:65%"></div>
-          <div class="chart-bar" style="height:78%"></div>
-          <div class="chart-bar" style="height:72%"></div>
-          <div class="chart-bar" style="height:85%"></div>
-          <div class="chart-bar" style="height:80%"></div>
-          <div class="chart-bar" style="height:90%"></div>
+        <div class="mockup-chart" aria-hidden="true">
+          <div class="chart-track" id="mockupChartTrack">
+            <div class="chart-bar" style="height:40%"></div>
+            <div class="chart-bar" style="height:55%"></div>
+            <div class="chart-bar" style="height:48%"></div>
+            <div class="chart-bar" style="height:62%"></div>
+            <div class="chart-bar" style="height:58%"></div>
+            <div class="chart-bar" style="height:70%"></div>
+            <div class="chart-bar" style="height:65%"></div>
+            <div class="chart-bar" style="height:78%"></div>
+            <div class="chart-bar" style="height:72%"></div>
+            <div class="chart-bar" style="height:85%"></div>
+            <div class="chart-bar" style="height:80%"></div>
+            <div class="chart-bar" style="height:90%"></div>
+          </div>
         </div>
         <div class="mockup-actions">
           <button type="button" class="btn btn-danger-soft" data-mock-action="sell">Sell</button>
@@ -149,37 +151,37 @@ require_once __DIR__ . '/includes/header.php';
             <tr><th>Asset</th><th>Price</th><th>24h change</th></tr>
           </thead>
           <tbody>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">₿</span> BTC Bitcoin</div></td>
               <td id="t-btc-p">$67,420.50</td>
               <td id="t-btc-c" class="chg-up">+0.15%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">Ξ</span> ETH Ethereum</div></td>
               <td id="t-eth-p">$3,450.25</td>
               <td id="t-eth-c" class="chg-up">+2.10%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">S</span> SOL Solana</div></td>
               <td id="t-sol-p">$184.80</td>
               <td id="t-sol-c" class="chg-down">-0.65%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">B</span> BNB BNB Chain</div></td>
               <td id="t-bnb-p">$582.40</td>
               <td id="t-bnb-c" class="chg-up">+1.05%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">X</span> XRP Ripple</div></td>
               <td id="t-xrp-p">$0.5920</td>
               <td id="t-xrp-c" class="chg-down">-1.42%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">A</span> ADA Cardano</div></td>
               <td id="t-ada-p">$0.4850</td>
               <td id="t-ada-c" class="chg-up">+0.88%</td>
             </tr>
-            <tr>
+            <tr class="market-row">
               <td><div class="asset-cell"><span class="asset-dot">D</span> DOT Polkadot</div></td>
               <td id="t-dot-p">$6.75</td>
               <td id="t-dot-c" class="chg-down">-0.12%</td>
@@ -227,12 +229,8 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section" id="mobile-app" aria-label="Mobile access">
     <div class="container split-2">
-      <div class="phone-mock" data-reveal aria-hidden="true">
-        <div class="phone-mock__bar"></div>
-        <div class="phone-mock__row wide"></div>
-        <div class="phone-mock__row"></div>
-        <div class="phone-mock__row"></div>
-        <div class="phone-mock__row"></div>
+      <div class="phone-showcase" data-reveal>
+        <?php require __DIR__ . '/includes/platform-image.php'; ?>
       </div>
       <div data-reveal>
         <p class="eyebrow">Mobile access</p>

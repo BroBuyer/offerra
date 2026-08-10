@@ -87,11 +87,18 @@
   // Mockup overlay
   document.querySelectorAll('[data-mock-action]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.getElementById('mockupOverlay')?.classList.add('show');
+      const overlay = document.getElementById('mockupOverlay');
+      const headline = document.getElementById('overlayHeadline');
+      const type = btn.getAttribute('data-mock-action') || 'buy';
+      if (headline) {
+        headline.textContent =
+          type.charAt(0).toUpperCase() + type.slice(1) + ' ' + (lang.orderPendingAllocation || 'order pending allocation');
+      }
+      overlay?.classList.add('show');
     });
   });
 
-  // Simulated ticker
+  // Live ticker + sliding chart (sample-style)
   const prices = {
     btc: 67420.5,
     eth: 3450.25,
@@ -101,61 +108,102 @@
     ada: 0.485,
     dot: 6.75,
   };
-  const fmt = (key, value) => {
+
+  function formatPrice(key, value) {
     if (key === 'xrp' || key === 'ada') {
-      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+      return '$' + value.toFixed(4);
     }
-    if (key === 'dot' || key === 'sol') {
-      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+    return (
+      '$' +
+      value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
+  }
 
   function simulateMarketTicker() {
-    const tickers = ['btc', 'eth', 'sol', 'bnb', 'xrp', 'ada', 'dot'];
-    const chosen = tickers[Math.floor(Math.random() * tickers.length)];
-    const previousLast = prices[chosen];
-    const drift = (Math.random() - 0.48) * (chosen === 'btc' ? 120 : chosen === 'eth' ? 18 : 2.4);
-    const nextLast = Math.max(0.0001, previousLast + drift);
-    prices[chosen] = nextLast;
-    const isUp = nextLast >= previousLast;
-
-    const priceEl = document.getElementById('t-' + chosen + '-p');
-    const chgEl = document.getElementById('t-' + chosen + '-c');
-    if (priceEl) priceEl.textContent = fmt(chosen, nextLast);
-    if (chgEl) {
-      const pct = (isUp ? 1 : -1) * (0.05 + Math.abs(nextLast - previousLast) / Math.max(previousLast, 1) * 100);
-      chgEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-      chgEl.className = pct >= 0 ? 'chg-up' : 'chg-down';
-    }
-
     const chartTrack = document.getElementById('mockupChartTrack');
-    if (chartTrack && chosen === 'btc') {
-      const btcDrift = isUp ? Math.abs(nextLast - previousLast) * 1.85 : -Math.abs(nextLast - previousLast) * 1.85;
-      const height = Math.max(18, Math.min(95, 55 + btcDrift));
+    const chartBars = chartTrack ? Array.from(chartTrack.querySelectorAll('.chart-bar')) : [];
+
+    if (chartTrack && chartBars.length) {
+      const previousLast = parseInt(chartBars[chartBars.length - 1].style.height || '60', 10);
+      let nextLast = previousLast + (Math.random() > 0.54 ? 1 : -1) * (Math.floor(Math.random() * 14) + 4);
+      nextLast = Math.max(25, Math.min(95, nextLast));
+      const isMockUp = nextLast >= previousLast;
+      const btcDrift = isMockUp
+        ? Math.abs(nextLast - previousLast) * 1.85
+        : -Math.abs(nextLast - previousLast) * 1.85;
+      prices.btc += btcDrift;
+
       const newBar = document.createElement('div');
-      newBar.className = 'chart-bar ' + (isUp ? '' : 'down') + ' new-point';
-      newBar.style.height = height + '%';
+      newBar.className = 'chart-bar ' + (isMockUp ? '' : 'down') + ' new-point';
+      newBar.style.height = nextLast + '%';
       chartTrack.appendChild(newBar);
-      while (chartTrack.children.length > 14) chartTrack.removeChild(chartTrack.firstChild);
+
+      const firstBar = chartBars[0];
+      const gap = parseFloat(getComputedStyle(chartTrack).gap) || 8;
+      const shift = firstBar.getBoundingClientRect().width + gap;
+      chartTrack.classList.add('is-sliding');
+      chartTrack.style.transform = 'translateX(-' + shift + 'px)';
+
+      window.setTimeout(() => {
+        chartTrack.classList.remove('is-sliding');
+        chartTrack.style.transform = 'translateX(0)';
+        firstBar.remove();
+        newBar.classList.remove('new-point');
+      }, 920);
 
       const mockupPrice = document.getElementById('mockupPrice');
       const mockupChange = document.getElementById('mockupChange');
       if (mockupPrice) {
-        mockupPrice.textContent = fmt('btc', prices.btc);
-        mockupPrice.style.color = isUp ? 'var(--color-success)' : 'var(--color-danger)';
+        mockupPrice.textContent = formatPrice('btc', prices.btc);
+        mockupPrice.style.color = isMockUp ? 'var(--color-success)' : 'var(--color-danger)';
         setTimeout(() => {
           mockupPrice.style.color = 'var(--color-text-main)';
         }, 800);
       }
       if (mockupChange) {
-        const pct = isUp
+        const pct = isMockUp
           ? 0.15 + Math.abs(nextLast - previousLast) / 120
           : -(0.08 + Math.abs(nextLast - previousLast) / 140);
         mockupChange.textContent =
           (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% ' + (lang.mockupToday || 'Today');
         mockupChange.style.color = pct >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
       }
+    }
+
+    const tickers = ['btc', 'eth', 'sol', 'bnb', 'xrp', 'ada', 'dot'];
+    const chosen = tickers[Math.floor(Math.random() * tickers.length)];
+    const driftPercent = Math.random() * 0.1 - 0.05;
+    prices[chosen] += prices[chosen] * (driftPercent / 100);
+
+    const rowPrice = document.getElementById('t-' + chosen + '-p');
+    const rowChange = document.getElementById('t-' + chosen + '-c');
+    if (rowPrice && rowChange) {
+      rowPrice.textContent = formatPrice(chosen, prices[chosen]);
+      const isUp = driftPercent >= 0;
+      const flashColor = isUp ? 'var(--color-success)' : 'var(--color-danger)';
+      const rowEl = rowPrice.closest('.market-row');
+
+      rowPrice.style.color = flashColor;
+      rowChange.style.color = flashColor;
+
+      if (rowEl) {
+        rowEl.classList.remove('row-pulse-up', 'row-pulse-down');
+        void rowEl.offsetWidth;
+        rowEl.classList.add(isUp ? 'row-pulse-up' : 'row-pulse-down');
+      }
+
+      const activeChange = parseFloat(rowChange.textContent) + driftPercent;
+      rowChange.textContent = (activeChange >= 0 ? '+' : '') + activeChange.toFixed(2) + '%';
+      rowChange.className = activeChange >= 0 ? 'chg-up' : 'chg-down';
+
+      setTimeout(() => {
+        rowPrice.style.color = 'var(--color-text-main)';
+        rowChange.style.color = '';
+        if (rowEl) rowEl.classList.remove('row-pulse-up', 'row-pulse-down');
+      }, 600);
     }
   }
 

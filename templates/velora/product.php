@@ -21,7 +21,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section">
     <div class="container split-2">
-      <div>
+      <div data-reveal>
         <h2>AI that stays useful</h2>
         <p class="lead">
           Insights appear when they help — short, readable, and easy to act on.
@@ -34,16 +34,8 @@ require_once __DIR__ . '/includes/header.php';
         </ul>
         <a href="sign.php" class="btn btn-primary">Open account</a>
       </div>
-      <div class="mockup-shell">
-        <div class="mockup-head">
-          <h4>Live insight</h4>
-          <span class="live-pill">AI</span>
-        </div>
-        <p style="color:var(--color-text-secondary);margin-bottom:12px">BTC / USD · steady momentum</p>
-        <p style="color:var(--color-text-secondary);font-size:0.95rem">
-          Volatility is cooling. AI suggests watching the next session before sizing up —
-          you stay in control of every order.
-        </p>
+      <div class="phone-showcase" data-reveal>
+        <?php require __DIR__ . '/includes/platform-image.php'; ?>
       </div>
     </div>
   </section>

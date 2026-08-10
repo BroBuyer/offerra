@@ -35,6 +35,9 @@ $og_image = page_url($og_image_path ?? og_image_path());
   <meta name="twitter:image" content="<?= e($og_image) ?>">
 
   <link rel="icon" type="image/svg+xml" href="<?= asset('static/img/logo.svg') ?>">
+  <?php if (($active_page ?? '') === 'home' || ($active_page ?? '') === 'product'): ?>
+  <link rel="preload" as="image" href="<?= asset(platform_image_path()) ?>" type="image/png">
+  <?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
