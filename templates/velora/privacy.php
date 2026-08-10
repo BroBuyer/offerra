@@ -40,7 +40,7 @@ require_once __DIR__ . '/includes/header.php';
       <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
 
       <h2>Contact</h2>
-      <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--color-accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>

@@ -8,6 +8,8 @@ $active_page = 'faq';
 
 require_once __DIR__ . '/includes/head.php';
 require_once __DIR__ . '/includes/header.php';
+
+$faq_chevron = '<svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
 ?>
 
 <main>
@@ -22,10 +24,10 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container narrow">
       <div class="faq-list" data-faq>
-        <div class="faq-item is-open">
+        <div class="faq-item is-open active">
           <button class="faq-trigger" type="button" aria-expanded="true">
             How do I get started?
-            <span class="faq-icon" aria-hidden="true"></span>
+            <?= $faq_chevron ?>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
@@ -37,7 +39,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             How does AI help me trade?
-            <span class="faq-icon" aria-hidden="true"></span>
+            <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
@@ -48,7 +50,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             How is my account secured?
-            <span class="faq-icon" aria-hidden="true"></span>
+            <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
@@ -59,7 +61,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Are there hidden fees?
-            <span class="faq-icon" aria-hidden="true"></span>
+            <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
@@ -70,7 +72,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Who is Lisa in the chat widget?
-            <span class="faq-icon" aria-hidden="true"></span>
+            <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">

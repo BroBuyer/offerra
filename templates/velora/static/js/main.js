@@ -29,23 +29,16 @@
 
   const menuToggle = document.querySelector('[data-menu-toggle], #burgerBtn');
   const mobileNav = document.querySelector('[data-mobile-nav]');
-  const mainNav = document.getElementById('mainNav');
-  if (menuToggle) {
+  if (menuToggle && mobileNav) {
     menuToggle.addEventListener('click', () => {
-      if (mobileNav) {
-        const open = menuToggle.getAttribute('aria-expanded') === 'true';
-        menuToggle.setAttribute('aria-expanded', String(!open));
-        mobileNav.hidden = open;
-      }
-      mainNav?.classList.toggle('mobile-active');
+      const open = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!open));
+      mobileNav.hidden = open;
     });
-    document.querySelectorAll('.nav-link, .nav-mobile a').forEach((link) => {
+    mobileNav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
-        mainNav?.classList.remove('mobile-active');
-        if (mobileNav) {
-          menuToggle.setAttribute('aria-expanded', 'false');
-          mobileNav.hidden = true;
-        }
+        menuToggle.setAttribute('aria-expanded', 'false');
+        mobileNav.hidden = true;
       });
     });
   }

@@ -29,7 +29,7 @@
     </nav>
 
     <div style="display:flex;gap:14px;align-items:center;">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">Dark</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">☀️ Light</button>
       <a href="<?= e($sec('#signup')) ?>" class="btn btn-primary header-cta-btn">Start trading</a>
       <button class="burger menu-toggle" id="burgerBtn" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>

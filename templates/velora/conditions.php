@@ -38,7 +38,7 @@ require_once __DIR__ . '/includes/header.php';
       <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
 
       <h2>Contact</h2>
-      <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--color-accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>
