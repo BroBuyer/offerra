@@ -8,8 +8,9 @@ $platform_path = platform_image_path();
 $platform_img = asset($platform_path);
 $platform_alt = platform_image_alt();
 $platform_caption = platform_image_caption();
+$as_phone = $as_phone ?? false;
 ?>
-<figure class="platform-figure" itemscope itemtype="https://schema.org/ImageObject">
+<figure class="platform-figure<?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema.org/ImageObject">
   <meta itemprop="name" content="<?= e(SITE_NAME) ?> AI Trading Platform">
   <meta itemprop="description" content="<?= e($platform_alt) ?>">
   <meta itemprop="contentUrl" content="<?= e(page_url($platform_path)) ?>">
@@ -18,11 +19,11 @@ $platform_caption = platform_image_caption();
       src="<?= e($platform_img) ?>"
       alt="<?= e($platform_alt) ?>"
       title="<?= e(page_title('AI Trading Platform')) ?>"
-      width="494"
-      height="968"
-      class="platform-figure-img"
-      loading="eager"
-      fetchpriority="high"
+      width="320"
+      height="640"
+      class="platform-figure-img<?= $as_phone ? ' app-phone-image' : '' ?>"
+      loading="<?= $as_phone ? 'lazy' : 'eager' ?>"
+      <?= $as_phone ? '' : 'fetchpriority="high"' ?>
       decoding="async"
       itemprop="image"
     >
@@ -31,3 +32,4 @@ $platform_caption = platform_image_caption();
     <?= e($platform_caption) ?>
   </figcaption>
 </figure>
+<?php unset($as_phone); ?>

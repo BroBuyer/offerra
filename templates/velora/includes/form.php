@@ -5,6 +5,7 @@ $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
 $form_submit = $form_submit ?? 'Create free account';
 $form_class = $form_class ?? 'leadform lead-form';
+$form_subtitle = $form_subtitle ?? null;
 $phone_country = form_visitor_phone_country();
 $allowed_countries = form_allowed_countries();
 $lead_cookie = site_slug() . '_lead';
@@ -41,7 +42,10 @@ $lead_cookie = site_slug() . '_lead';
     </div>
 
     <?php if ($form_heading): ?>
-      <p class="form-heading"><?= e($form_heading) ?></p>
+      <h3 class="form-card-title"><?= e($form_heading) ?></h3>
+    <?php endif; ?>
+    <?php if ($form_subtitle): ?>
+      <p class="form-subtitle"><?= e($form_subtitle) ?></p>
     <?php endif; ?>
 
     <div class="form-grid">
@@ -84,5 +88,5 @@ $lead_cookie = site_slug() . '_lead';
   </div>
 </form>
 <?php
-unset($form_id, $form_heading, $form_submit, $form_class);
+unset($form_id, $form_heading, $form_submit, $form_class, $form_subtitle);
 ?>

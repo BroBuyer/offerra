@@ -1,17 +1,16 @@
 (() => {
   const lang = window.APP_LANG || {};
 
-  // Theme
   const themeToggle = document.getElementById('themeToggle');
   const applyTheme = (theme) => {
     document.body.dataset.theme = theme;
     document.documentElement.setAttribute('data-theme', theme);
     if (!themeToggle) return;
     if (theme === 'light') {
-      themeToggle.textContent = lang.themeToggleDarkText || 'Dark';
+      themeToggle.textContent = lang.themeToggleDarkText || '🌙 Dark';
       themeToggle.setAttribute('aria-label', lang.themeToggleDarkAria || 'Switch to dark theme');
     } else {
-      themeToggle.textContent = lang.themeToggleLightText || 'Light';
+      themeToggle.textContent = lang.themeToggleLightText || '☀️ Light';
       themeToggle.setAttribute('aria-label', lang.themeToggleLightAria || 'Switch to light theme');
     }
   };
@@ -28,44 +27,50 @@
     applyTheme(next);
   });
 
-  // Mobile menu
-  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const menuToggle = document.querySelector('[data-menu-toggle], #burgerBtn');
   const mobileNav = document.querySelector('[data-mobile-nav]');
-  if (menuToggle && mobileNav) {
+  const mainNav = document.getElementById('mainNav');
+  if (menuToggle) {
     menuToggle.addEventListener('click', () => {
-      const open = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!open));
-      mobileNav.hidden = open;
+      if (mobileNav) {
+        const open = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', String(!open));
+        mobileNav.hidden = open;
+      }
+      mainNav?.classList.toggle('mobile-active');
     });
-    mobileNav.querySelectorAll('a').forEach((link) => {
+    document.querySelectorAll('.nav-link, .nav-mobile a').forEach((link) => {
       link.addEventListener('click', () => {
-        menuToggle.setAttribute('aria-expanded', 'false');
-        mobileNav.hidden = true;
+        mainNav?.classList.remove('mobile-active');
+        if (mobileNav) {
+          menuToggle.setAttribute('aria-expanded', 'false');
+          mobileNav.hidden = true;
+        }
       });
     });
   }
 
-  // FAQ
-  document.querySelectorAll('[data-faq] .faq-item').forEach((item) => {
+  // FAQ (sample uses .active)
+  document.querySelectorAll('.faq-item').forEach((item) => {
     const trigger = item.querySelector('.faq-trigger');
     const content = item.querySelector('.faq-content');
     trigger?.addEventListener('click', () => {
-      const isOpen = item.classList.contains('is-open');
-      document.querySelectorAll('[data-faq] .faq-item').forEach((other) => {
-        other.classList.remove('is-open');
+      const isOpen = item.classList.contains('active') || item.classList.contains('is-open');
+      document.querySelectorAll('.faq-item').forEach((other) => {
+        other.classList.remove('active', 'is-open');
         other.querySelector('.faq-trigger')?.setAttribute('aria-expanded', 'false');
         const c = other.querySelector('.faq-content');
-        if (c) c.style.maxHeight = '0';
+        if (c) c.style.maxHeight = null;
       });
       if (!isOpen) {
-        item.classList.add('is-open');
+        item.classList.add('active', 'is-open');
         trigger.setAttribute('aria-expanded', 'true');
         if (content) content.style.maxHeight = content.scrollHeight + 'px';
       }
     });
   });
 
-  // Reveal
+  // Reveal generic
   const revealEls = document.querySelectorAll('[data-reveal]');
   if (revealEls.length && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(
@@ -84,21 +89,44 @@
     revealEls.forEach((el) => el.classList.add('is-in'));
   }
 
-  // Mockup overlay
-  document.querySelectorAll('[data-mock-action]').forEach((btn) => {
+  // Step cards staggered reveal (sample)
+  const stepCards = document.querySelectorAll('.step-card');
+  const revealCards = () => {
+    stepCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+      if (cardTop < window.innerHeight - 100) {
+        setTimeout(() => card.classList.add('revealed'), index * 150);
+      }
+    });
+  };
+  window.addEventListener('scroll', revealCards, { passive: true });
+  window.addEventListener('load', revealCards);
+  revealCards();
+
+  window.redirectToForm = function redirectToForm() {
+    document.getElementById('mockupOverlay')?.classList.remove('show');
+    const target = document.getElementById('signup-form-anchor') || document.getElementById('signup');
+    target?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      const formCard = document.getElementById('mainSignupCard');
+      formCard?.classList.add('highlight-flash');
+      setTimeout(() => formCard?.classList.remove('highlight-flash'), 2500);
+    }, 600);
+  };
+
+  document.querySelectorAll('[data-mock-action], .m-btn-sell, .m-btn-buy').forEach((btn) => {
     btn.addEventListener('click', () => {
       const overlay = document.getElementById('mockupOverlay');
       const headline = document.getElementById('overlayHeadline');
-      const type = btn.getAttribute('data-mock-action') || 'buy';
+      const type = (btn.getAttribute('data-mock-action') || btn.textContent || 'buy').trim().toLowerCase();
       if (headline) {
-        headline.textContent =
-          type.charAt(0).toUpperCase() + type.slice(1) + ' ' + (lang.orderPendingAllocation || 'order pending allocation');
+        const label = type.charAt(0).toUpperCase() + type.slice(1);
+        headline.textContent = label + ' ' + (lang.orderPendingAllocation || 'order pending allocation');
       }
       overlay?.classList.add('show');
     });
   });
 
-  // Live ticker + sliding chart (sample-style)
   const prices = {
     btc: 67420.5,
     eth: 3450.25,
@@ -110,9 +138,7 @@
   };
 
   function formatPrice(key, value) {
-    if (key === 'xrp' || key === 'ada') {
-      return '$' + value.toFixed(4);
-    }
+    if (key === 'xrp' || key === 'ada') return '$' + value.toFixed(4);
     return (
       '$' +
       value.toLocaleString('en-US', {
@@ -142,7 +168,7 @@
       chartTrack.appendChild(newBar);
 
       const firstBar = chartBars[0];
-      const gap = parseFloat(getComputedStyle(chartTrack).gap) || 8;
+      const gap = parseFloat(getComputedStyle(chartTrack).gap) || 10;
       const shift = firstBar.getBoundingClientRect().width + gap;
       chartTrack.classList.add('is-sliding');
       chartTrack.style.transform = 'translateX(-' + shift + 'px)';
@@ -195,9 +221,10 @@
         rowEl.classList.add(isUp ? 'row-pulse-up' : 'row-pulse-down');
       }
 
-      const activeChange = parseFloat(rowChange.textContent) + driftPercent;
+      const activeChange = parseFloat(String(rowChange.textContent).replace('%', '')) + driftPercent;
       rowChange.textContent = (activeChange >= 0 ? '+' : '') + activeChange.toFixed(2) + '%';
-      rowChange.className = activeChange >= 0 ? 'chg-up' : 'chg-down';
+      rowChange.className =
+        'asset-change ' + (activeChange >= 0 ? 'trend-up' : 'trend-down');
 
       setTimeout(() => {
         rowPrice.style.color = 'var(--color-text-main)';

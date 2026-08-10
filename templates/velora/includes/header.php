@@ -1,9 +1,17 @@
 <?php require_once __DIR__ . '/config.php'; ?>
-<header class="site-header" data-header>
-  <div class="container header-inner">
+<header class="header site-header" data-header>
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:94px;">
     <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> home">
-      <img class="logo-mark" src="<?= asset('static/img/logo.svg') ?>" width="28" height="28" alt="">
-      <span class="logo-text"><?= e(SITE_NAME) ?></span>
+      <div class="logo-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
+          <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="26" cy="32" r="4.5" fill="#FFFFFF"/>
+          <circle cx="38" cy="38" r="4.5" fill="#FFFFFF"/>
+          <circle cx="50" cy="16" r="6.5" fill="#0B0F19"/>
+          <circle cx="50" cy="16" r="3.5" fill="#FFFFFF"/>
+        </svg>
+      </div>
+      <span><?= e(SITE_NAME) ?></span>
     </a>
 
     <?php
@@ -12,19 +20,19 @@
     $sec = static fn (string $hash): string => $isHome ? $hash : $home . $hash;
     ?>
 
-    <nav class="nav-desktop" aria-label="Main navigation">
-      <a href="<?= e($sec('#security')) ?>">Security</a>
-      <a href="<?= e($sec('#reviews')) ?>">Reviews</a>
-      <a href="faq.php" class="<?= ($active_page ?? '') === 'faq' ? 'is-active' : '' ?>">FAQ</a>
-      <a href="product.php" class="<?= ($active_page ?? '') === 'product' ? 'is-active' : '' ?>">About</a>
-      <a href="contacts.php" class="<?= ($active_page ?? '') === 'contacts' ? 'is-active' : '' ?>">Contact</a>
+    <nav class="nav nav-desktop" id="mainNav" aria-label="Main navigation">
+      <a href="<?= e($sec('#security')) ?>" class="nav-link">Security</a>
+      <a href="<?= e($sec('#reviews')) ?>" class="nav-link">Reviews</a>
+      <a href="<?= e($sec('#faq')) ?>" class="nav-link">FAQ</a>
+      <a href="product.php" class="nav-link<?= ($active_page ?? '') === 'product' ? ' is-active' : '' ?>">About</a>
+      <a href="contacts.php" class="nav-link<?= ($active_page ?? '') === 'contacts' ? ' is-active' : '' ?>">Contact</a>
     </nav>
 
-    <div class="header-actions">
-      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch theme">Dark</button>
-      <a href="<?= e($sec('#signup')) ?>" class="btn btn-primary btn-sm">Start trading</a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span>
+    <div style="display:flex;gap:14px;align-items:center;">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">Dark</button>
+      <a href="<?= e($sec('#signup')) ?>" class="btn btn-primary header-cta-btn">Start trading</a>
+      <button class="burger menu-toggle" id="burgerBtn" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </div>
@@ -32,7 +40,7 @@
   <nav class="nav-mobile" data-mobile-nav aria-label="Mobile navigation" hidden>
     <a href="<?= e($sec('#security')) ?>">Security</a>
     <a href="<?= e($sec('#reviews')) ?>">Reviews</a>
-    <a href="faq.php">FAQ</a>
+    <a href="<?= e($sec('#faq')) ?>">FAQ</a>
     <a href="product.php">About</a>
     <a href="contacts.php">Contact</a>
     <a href="<?= e($sec('#signup')) ?>" class="btn btn-primary">Start trading</a>

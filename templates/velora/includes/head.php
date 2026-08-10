@@ -47,12 +47,12 @@ $og_image = page_url($og_image_path ?? og_image_path());
 
   <script>
     window.APP_LANG = {
-      themeToggleDarkText: 'Dark',
-      themeToggleLightText: 'Light',
+      themeToggleDarkText: '🌙 Dark',
+      themeToggleLightText: '☀️ Light',
       themeToggleDarkAria: 'Switch to dark theme',
       themeToggleLightAria: 'Switch to light theme',
       mockupToday: 'Today',
-      orderPendingAllocation: 'Order pending allocation'
+      orderPendingAllocation: 'order pending allocation'
     };
   </script>
   <script>
