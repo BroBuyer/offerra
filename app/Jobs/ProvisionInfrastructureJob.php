@@ -23,6 +23,11 @@ class ProvisionInfrastructureJob
 
         try {
             $provisioner->provision($offer);
+            $offer->refresh();
+
+            if ($offer->dnsStatus() === 'pending') {
+                RecheckInfrastructureDnsJob::dispatch($offer->id);
+            }
         } catch (\Throwable $e) {
             Log::error('Infrastructure provisioning failed', [
                 'offer' => $this->offerId,
