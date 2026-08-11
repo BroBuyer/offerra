@@ -20,7 +20,7 @@ $partners = [
     <li class="partner-chip" role="listitem">
       <img
         class="partner-logo"
-        src="<?= asset('static/img/partners/' . $partner['file']) ?>"
+        src="<?= asset_version('static/img/partners/' . $partner['file']) ?>"
         alt="<?= e($partner['alt']) ?>"
         title="<?= e($partner['name']) ?>"
         width="28"

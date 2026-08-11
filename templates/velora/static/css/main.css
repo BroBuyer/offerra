@@ -2061,6 +2061,29 @@ padding: 28px 20px;
   .form-grid { grid-template-columns: 1fr; }
 }
 
+/* Chat scroll styling (subtle, consistent with the template) */
+.lisa-body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.65) transparent;
+}
+.lisa-body::-webkit-scrollbar {
+  width: 8px;
+}
+.lisa-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.lisa-body::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.45);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Prevent sticky controls from covering the latest bubbles */
+.lisa-messages {
+  padding: 20px 20px 120px;
+}
+
 /* Compatibility aliases used by Offerra pages */
 .site-header.header { /* already .header from sample */ }
 .menu-toggle.burger span { display: block; }

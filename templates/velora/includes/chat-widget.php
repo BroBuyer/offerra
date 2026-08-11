@@ -16,7 +16,7 @@ $chat_lead_cookie = site_slug() . '_lead';
     <div class="lisa-panel__head">
       <div class="lisa-panel__identity">
         <div class="lisa-avatar">
-          <img src="<?= asset('static/img/lisa.svg') ?>" width="42" height="42" alt="">
+          <img src="<?= asset('static/img/lisa.png') ?>" width="42" height="42" alt="Lisa">
           <span class="lisa-avatar__online" aria-hidden="true"></span>
         </div>
         <div>

@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title('Premium AI Trading Engine for Global Markets');
-$page_description = SITE_NAME . ' — a smarter, cleaner way to access global markets with structured AI tools for crypto, forex, and equities.';
+$page_title = page_title("Moteur de trading IA premium pour les marchés mondiaux");
+$page_description = SITE_NAME . ' — une manière plus intelligente et plus claire d’accéder aux marchés mondiaux grâce à des outils IA structurés pour la crypto, le forex et les actions.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -16,16 +16,16 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="hero-grid">
         <div class="hero-content">
-          <h1><?= e(SITE_NAME) ?>: a smarter, cleaner way to access <span class="text-accent">global markets</span></h1>
+          <h1><?= e(SITE_NAME) ?>: un moyen plus intelligent et plus clair d’accéder aux <span class="text-accent">marchés mondiaux</span></h1>
 
           <p class="hero-desc">
-            New to trading? <?= e(SITE_NAME) ?> offers structured AI-assisted tools designed to keep your journey transparent.
-            Explore crypto, forex, and equities without the technical chaos.
+            Vous débutez dans le trading ? <?= e(SITE_NAME) ?> propose des outils structurés assistés par IA, conçus pour garder votre parcours clair et fluide.
+            Découvrez la crypto, le forex et les actions sans le chaos technique.
           </p>
 
           <div class="hero-actions">
-            <a href="#signup-form-anchor" class="btn btn-primary">Start trading — <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
-            <a href="#features" class="btn btn-secondary">Discover features</a>
+            <a href="#signup-form-anchor" class="btn btn-primary">Démarrer le trading — <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
+            <a href="#features" class="btn btn-secondary">Découvrir les fonctionnalités</a>
           </div>
 
           <div class="trust-badges">
@@ -33,24 +33,24 @@ require_once __DIR__ . '/includes/header.php';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              Protected by SSL protocol
+              Protégé par le protocole SSL
             </div>
             <div class="badge-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Guided path for beginners
+              Un parcours guidé pour les débutants
             </div>
           </div>
         </div>
 
         <div class="hero-form-container" id="signup-form-anchor">
           <div class="signup-card" id="mainSignupCard">
-            <h3 style="text-align:center;">Create your account</h3>
+            <h3 style="text-align:center;">Créez votre compte</h3>
             <?php
             $form_id = 'hero-form';
-            $form_subtitle = 'Takes less than 3 minutes. Zero setup fees.';
-            $form_submit = 'Create free account';
+            $form_subtitle = 'En moins de 3 minutes. Aucun frais de configuration.';
+            $form_submit = 'Créer un compte gratuit';
             require __DIR__ . '/includes/form.php';
             ?>
           </div>
@@ -71,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div>
             <div class="stat-value">80+</div>
-            <div class="stat-label">Tradable assets</div>
+            <div class="stat-label">Actifs négociables</div>
           </div>
         </div>
 
@@ -83,7 +83,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div>
             <div class="stat-value">Fast</div>
-            <div class="stat-label">Account setup</div>
+            <div class="stat-label">Mise en place du compte</div>
           </div>
         </div>
 
@@ -95,7 +95,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div>
             <div class="stat-value">24/7</div>
-            <div class="stat-label">Support</div>
+            <div class="stat-label">Assistance</div>
           </div>
         </div>
 
@@ -108,7 +108,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div>
             <div class="stat-value">Secure</div>
-            <div class="stat-label">Data processing</div>
+            <div class="stat-label">Traitement des données</div>
           </div>
         </div>
       </div>
@@ -119,15 +119,15 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="product-grid">
         <div>
-          <div class="section-label">Smart workspace</div>
+          <div class="section-label">Un espace de travail intelligent</div>
 
           <h2 class="section-title">
-            Professional charts.<br>
-            <span class="text-accent">Built for simple decisions.</span>
+            Des graphiques professionnels.<br>
+            <span class="text-accent">Conçus pour des décisions simples.</span>
           </h2>
 
           <p class="section-subtitle">
-            Watch live prices and act from a clean interface designed to reduce cognitive load and emotional trading.
+            Suivez les prix en direct et passez à l’action grâce à une interface claire, conçue pour réduire la charge cognitive et le trading émotionnel.
           </p>
 
           <ul class="check-list">
@@ -135,18 +135,18 @@ require_once __DIR__ . '/includes/header.php';
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              AI-enriched charts in real time
+              Des graphiques enrichis par l’IA en temps réel
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              One-tap market execution system
+              Un système d’exécution de marché en un clic
             </li>
           </ul>
 
           <div class="platform-cta-wrap">
-            <a href="#features" class="btn btn-primary">See platform features</a>
+            <a href="#features" class="btn btn-primary">Voir les fonctionnalités de la plateforme</a>
           </div>
         </div>
 
@@ -154,28 +154,28 @@ require_once __DIR__ . '/includes/header.php';
           <div class="mockup-container">
             <div class="mockup-cta-overlay" id="mockupOverlay">
               <div class="overlay-content">
-                <h4 id="overlayHeadline">Instant execution available</h4>
+                <h4 id="overlayHeadline">Exécution instantanée disponible</h4>
                 <p>
-                  To route this order immediately and capture the active price level, activate your secure <?= e(SITE_NAME) ?> terminal.
+                  Pour acheminer cette commande immédiatement et capturer le niveau de prix actif, activez votre terminal sécurisé <?= e(SITE_NAME) ?>.
                 </p>
                 <button type="button" class="btn btn-primary" onclick="window.redirectToForm && window.redirectToForm()">
-                  Create secure account
+                  Créer un compte sécurisé
                 </button>
               </div>
             </div>
 
             <div class="mockup-header">
-              <span class="mockup-title">BTC / USD dashboard</span>
+              <span class="mockup-title">Tableau BTC / USD</span>
               <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-success);">
                 <span style="width:6px; height:6px; background-color:var(--color-success); border-radius:50%;"></span>
-                LIVE
+                EN DIRECT
               </span>
             </div>
 
             <div class="mockup-asset-value" id="mockupPrice">$67,420.50</div>
 
             <div id="mockupChange" style="color: var(--color-success); font-weight: 700; font-size: 15px; margin-top: 4px;">
-              +0.15% Today
+              +0,15% Aujourd’hui
             </div>
 
             <div class="mockup-chart mockup-chart-placeholder" id="mockupChart">
@@ -191,8 +191,8 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="mockup-actions">
-              <button type="button" class="mockup-btn m-btn-sell" data-mock-action="sell">Sell</button>
-              <button type="button" class="mockup-btn m-btn-buy" data-mock-action="buy">Buy</button>
+              <button type="button" class="mockup-btn m-btn-sell" data-mock-action="sell">Vendre</button>
+              <button type="button" class="mockup-btn m-btn-buy" data-mock-action="buy">Acheter</button>
             </div>
           </div>
         </div>
@@ -204,8 +204,8 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Platform capabilities</div>
-        <h2 class="section-title">Everything you need to trade with confidence on <?= e(SITE_NAME) ?></h2>
-        <p class="section-subtitle">Security, speed, and neural market intelligence combined in a clear presentation</p>
+        <h2 class="section-title">Tout ce dont vous avez besoin pour trader en confiance sur <?= e(SITE_NAME) ?></h2>
+        <p class="section-subtitle">Sécurité, rapidité et intelligence de marché neuronale réunies dans une présentation claire</p>
       </div>
 
       <div class="features-grid">
@@ -215,8 +215,8 @@ require_once __DIR__ . '/includes/header.php';
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <h3>Bank-grade security</h3>
-          <p>SSL encryption, secure data processing, and a fully protected account architecture.</p>
+          <h3>Sécurité de niveau bancaire</h3>
+          <p>Chiffrement SSL, traitement des données sécurisé et architecture de compte entièrement protégée.</p>
         </div>
 
         <div class="card">
@@ -227,8 +227,8 @@ require_once __DIR__ . '/includes/header.php';
               <path d="M12 8h.01"/>
             </svg>
           </div>
-          <h3>AI market analysis</h3>
-          <p>Real-time machine-learning calculations focused on capturing marked market shifts.</p>
+          <h3>Analyse de marché par IA</h3>
+          <p>Calculs de machine learning en temps réel, axés sur la détection des changements de marché significatifs.</p>
         </div>
 
         <div class="card">
@@ -237,8 +237,8 @@ require_once __DIR__ . '/includes/header.php';
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
           </div>
-          <h3>Low-latency feeds</h3>
-          <p>Agile infrastructure focused on fast order processing during high-activity periods.</p>
+          <h3>Flux à faible latence</h3>
+          <p>Une infrastructure agile dédiée à un traitement rapide des ordres pendant les périodes à forte activité.</p>
         </div>
       </div>
     </div>
@@ -248,32 +248,32 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="markets-grid">
         <div>
-          <div class="section-label">Real-time assets</div>
-          <h2 class="section-title">Unified <?= e(SITE_NAME) ?> dashboard for global metrics</h2>
+          <div class="section-label">Actifs en temps réel</div>
+          <h2 class="section-title">Tableau de bord unifié <?= e(SITE_NAME) ?> pour les indicateurs mondiaux</h2>
           <p class="section-subtitle">
-            Track asset moves in real time, monitor momentum, and use automated AI analysis to map patterns quickly.
+            Suivez les variations des actifs en temps réel, surveillez l’élan et utilisez l’analyse IA automatisée pour identifier les schémas rapidement.
           </p>
 
           <div class="ai-explain-box">
             <p>
-              <strong>Operational efficiency:</strong>
-              Traditional trading means watching hundreds of indicators manually.
-              <?= e(SITE_NAME) ?> algorithms process thousands of price changes every millisecond,
-              producing clear mathematical models so you can catch moves early.
+              <strong>Efficacité opérationnelle :</strong>
+              Dans le trading traditionnel, il faut observer des centaines d’indicateurs manuellement.
+              Les algorithmes de <?= e(SITE_NAME) ?> traitent des milliers de variations de prix chaque milliseconde,
+              générant des modèles mathématiques clairs pour détecter les mouvements tôt.
             </p>
           </div>
 
           <div class="markets-cta-wrap">
-            <a href="#signup" class="btn btn-primary">Access the markets</a>
+            <a href="#signup" class="btn btn-primary">Accéder aux marchés</a>
           </div>
         </div>
 
         <div>
           <div class="market-widget">
             <div class="widget-header">
-              <span>Asset</span>
-              <span style="text-align:right; padding-right:16px;">Price</span>
-              <span style="text-align:right;">24h change</span>
+              <span>Actif</span>
+              <span style="text-align:right; padding-right:16px;">Prix</span>
+              <span style="text-align:right;">Variation 24h</span>
             </div>
 
             <div class="market-row">
@@ -347,9 +347,9 @@ require_once __DIR__ . '/includes/header.php';
   <section id="onboarding">
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">Onboarding process</div>
-        <h2 class="section-title"><?= e(SITE_NAME) ?> makes getting started stress-free</h2>
-        <p class="section-subtitle">No prior crypto experience? Our automated guide walks you through every step.</p>
+        <div class="section-label">Processus d’onboarding</div>
+        <h2 class="section-title"><?= e(SITE_NAME) ?> rend le démarrage sans stress</h2>
+        <p class="section-subtitle">Vous n’avez jamais négocié de crypto ? Notre guide automatisé vous accompagne à chaque étape.</p>
       </div>
 
       <div class="steps-container">
@@ -358,26 +358,26 @@ require_once __DIR__ . '/includes/header.php';
         <div class="steps-grid">
           <div class="step-card">
             <div class="step-number">1</div>
-            <h3>Secure signup</h3>
-            <p>Enter basic contact details through our highly encrypted form system.</p>
+            <h3>Inscription sécurisée</h3>
+            <p>Saisissez vos informations de contact de base via notre système de formulaire hautement chiffré.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">2</div>
-            <h3>AI-guided setup</h3>
-            <p>The platform presents interface options tailored to your preferences.</p>
+            <h3>Configuration guidée par IA</h3>
+            <p>La plateforme propose des options d’interface adaptées à vos préférences.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">3</div>
-            <h3>Secure funding</h3>
-            <p>Activate your trading range via standard, reliable payment rails.</p>
+            <h3>Financement sécurisé</h3>
+            <p>Activez votre plage de trading via des moyens de paiement standard et fiables.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">4</div>
-            <h3>Deploy signals</h3>
-            <p>Start interacting with global markets using live neural data feeds.</p>
+            <h3>Déployer les signaux</h3>
+            <p>Commencez à interagir avec les marchés mondiaux grâce à des flux de données neuronales en direct.</p>
           </div>
         </div>
       </div>
@@ -396,11 +396,11 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div>
-          <div class="section-label">Mobile access</div>
-          <h2 class="section-title">Your portfolio, in your pocket</h2>
+          <div class="section-label">Accès mobile</div>
+          <h2 class="section-title">Votre portefeuille, à portée de main</h2>
           <p class="section-subtitle">
-            The full <?= e(SITE_NAME) ?> engine compressed into a fast native-feel mobile experience.
-            Track assets, execute trades, and follow AI signals from anywhere.
+            Le moteur complet <?= e(SITE_NAME) ?>, compressé pour une expérience mobile rapide et fidèle au natif.
+            Suivez les actifs, exécutez les opérations et suivez les signaux IA depuis n’importe où.
           </p>
 
           <ul class="check-list">
@@ -408,24 +408,24 @@ require_once __DIR__ . '/includes/header.php';
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Push alerts for critical price moves
+              Recevoir des alertes pour les mouvements de prix critiques
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Biometric login with encrypted local storage
+              Connexion biométrique avec stockage local chiffré
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Full chart suite optimized for touch
+              Suite de graphiques complète, optimisée pour le tactile
             </li>
           </ul>
 
           <div class="app-cta-wrap">
-            <a href="#signup" class="btn btn-primary">Get the app experience</a>
+            <a href="#signup" class="btn btn-primary">Découvrir l’expérience de l’application</a>
           </div>
         </div>
       </div>
@@ -435,96 +435,96 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-soft" id="security">
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">Balanced framework</div>
-        <h2 class="section-title">Transparent operating parameters</h2>
-        <p class="section-subtitle">
-          We believe in absolute honesty. Here is what sets our system apart — and where industry limits usually sit.
+        <div class="section-label">Un cadre équilibré</div>
+        <h2 class="section-title">Des paramètres de fonctionnement transparents</h2>
+          <p class="section-subtitle">
+          Nous croyons à une totale transparence. Voici ce qui distingue notre système — et où se situent généralement les limites du secteur.
         </p>
       </div>
 
       <div class="comparison-grid">
         <div class="comp-card comp-card-our">
           <div class="comp-card-badge"><?= e(SITE_NAME) ?></div>
-          <h3>Key advantages</h3>
+          <h3>Avantages clés</h3>
           <ul class="comp-list">
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Minimalist dashboard tuned for institutional execution speed.
+              Un tableau de bord minimaliste optimisé pour la vitesse d’exécution institutionnelle.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Neural analytics running 24/7 across assets.
+              Une analyse neuronale en continu, 24/7, sur l’ensemble des actifs.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Zero hidden transaction margins or surprise management fees.
+              Zéro marge transactionnelle cachée ni frais de gestion surprises.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Direct SSL cryptographic account architecture.
+              Une architecture de compte cryptographique SSL directe.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Guided integration that takes minutes, not days.
+              Une intégration guidée en quelques minutes, pas en jours.
             </li>
           </ul>
         </div>
 
         <div class="comp-card comp-card-traditional">
           <div class="comp-card-badge comp-card-badge-muted">Other platforms</div>
-          <h3>Common industry limits</h3>
+          <h3>Limites courantes du secteur</h3>
           <ul class="comp-list">
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Cluttered, ad-heavy dashboards that slow decisions.
+              Des tableaux encombrés et saturés de publicités qui ralentissent les décisions.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Static end-of-day reports instead of continuous live analysis.
+              Des rapports statiques en fin de journée au lieu d’une analyse continue en direct.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Hidden spreads, withdrawal fees, and unclear pricing.
+              Des spreads cachés, des frais de retrait et une tarification peu claire.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Shared outdated infrastructure with uneven data protection.
+              Une infrastructure obsolète partagée avec une protection des données inégale.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Slow, paperwork-heavy verification that can take days.
+              Une vérification lente et lourde, pouvant prendre plusieurs jours.
             </li>
           </ul>
         </div>
       </div>
 
       <p class="comp-disclaimer">
-        Comparison reflects typical patterns in retail trading and is illustrative; competitor offers vary.
+        La comparaison reflète des schémas typiques du trading de détail et reste indicative ; les offres des concurrents peuvent varier.
       </p>
     </div>
   </section>
@@ -532,53 +532,53 @@ require_once __DIR__ . '/includes/header.php';
   <section>
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <h2 class="section-title">Core platform features at a glance</h2>
-        <p class="section-subtitle">Review the functional parameters built into your account access framework.</p>
+        <h2 class="section-title">Fonctionnalités essentielles de la plateforme en un coup d’œil</h2>
+        <p class="section-subtitle">Découvrez les paramètres fonctionnels intégrés à votre cadre d’accès au compte.</p>
       </div>
 
       <div class="table-wrapper">
         <table class="cap-table">
           <thead>
             <tr>
-              <th>Capability</th>
-              <th>Functional detail</th>
-              <th class="cap-table-center">Included</th>
+              <th>Fonction</th>
+              <th>Détail fonctionnel</th>
+              <th class="cap-table-center">Inclus</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>AI trading framework</strong></td>
-              <td>Algorithmic processing providing dynamic macro-structural calculations.</td>
+              <td><strong>Cadre de trading par IA</strong></td>
+              <td>Traitement algorithmique fournissant des calculs macro-structurels dynamiques.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr>
-              <td><strong>Aggregated feeds</strong></td>
-              <td>Real-time consolidated charts for modern global indices and tokens.</td>
+              <td><strong>Flux agrégés</strong></td>
+              <td>Graphiques consolidés en temps réel pour les indices mondiaux et les tokens modernes.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr>
-              <td><strong>Cross-platform stability</strong></td>
-              <td>Fully responsive rendering on mobile, desktop, and tablets.</td>
+              <td><strong>Stabilité multi-supports</strong></td>
+              <td>Rendu entièrement adaptatif sur mobile, desktop et tablettes.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr>
-              <td><strong>Multi-asset coverage</strong></td>
-              <td>Unified access to crypto, forex, and equity indices from one account layer.</td>
+              <td><strong>Couverture multi-actifs</strong></td>
+              <td>Accès unifié à la crypto, au forex et aux indices d’actions via une seule couche de compte.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr>
-              <td><strong>Automated risk alerts</strong></td>
-              <td>Configurable notifications flagging unusual volatility before it hits positions.</td>
+              <td><strong>Alertes de risque automatisées</strong></td>
+              <td>Notifications configurables signalant une volatilité inhabituelle avant qu’elle n’impacte les positions.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr>
-              <td><strong>Encrypted data vault</strong></td>
-              <td>Personal and account data isolated behind layered cryptographic access controls.</td>
+              <td><strong>Coffre de données chiffrées</strong></td>
+              <td>Données personnelles et du compte isolées derrière des contrôles d’accès cryptographiques en couches.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
             <tr class="highlighted-row">
-              <td><strong>24/7 human support</strong></td>
-              <td>Live technical operators ready to answer setup questions immediately.</td>
+              <td><strong>Assistance humaine 24/7</strong></td>
+              <td>Opérateurs techniques en direct prêts à répondre immédiatement aux questions de configuration.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Included">✓</span></td>
             </tr>
           </tbody>
@@ -589,13 +589,13 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-soft" id="payments">
     <div class="container payment-container">
-      <div class="section-label" style="justify-content: center;">Deposits</div>
-      <h2 class="section-title">Fund your account with methods you already know</h2>
+      <div class="section-label" style="justify-content: center;">Dépôts</div>
+      <h2 class="section-title">Financez votre compte avec les méthodes que vous connaissez déjà</h2>
       <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
-        Cards, e-wallets, and bank transfers — all protected by 256-bit SSL encryption.
+        Cartes, portefeuilles électroniques et virements bancaires — tous protégés par un chiffrement SSL 256 bits.
       </p>
 
-      <ul class="payment-icons-list" role="list" aria-label="Accepted deposit and funding methods">
+      <ul class="payment-icons-list" role="list" aria-label="Méthodes de dépôt et de financement acceptées">
         <li class="payment-chip">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="2" y="5" width="20" height="14" rx="2.5"/>
@@ -635,14 +635,14 @@ require_once __DIR__ . '/includes/header.php';
             <path d="M3 10 12 4l9 6"/>
             <path d="M7 10v9M12 10v9M17 10v9"/>
           </svg>
-          <span>Bank transfer</span>
+          <span>Virement bancaire</span>
         </li>
         <li class="payment-chip">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M12 2s8-4 8 5c0 6-8 10-8 10s-8-4-8-10c0-9 8-5 8-5z"/>
             <path d="M9.5 12l1.8 1.8L15 10"/>
           </svg>
-          <span>SSL protected</span>
+          <span>Protégé par SSL</span>
         </li>
       </ul>
     </div>
@@ -651,8 +651,8 @@ require_once __DIR__ . '/includes/header.php';
   <section id="partners">
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">Reliable infrastructure</div>
-        <h2 class="section-title">Built with industry-grade partners</h2>
+        <div class="section-label">Infrastructure fiable</div>
+        <h2 class="section-title">Conçu avec des partenaires de niveau industriel</h2>
       </div>
       <?php require __DIR__ . '/includes/partners.php'; ?>
     </div>
@@ -660,10 +660,10 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-soft" id="reviews">
     <div class="container">
-      <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">User feedback</div>
-        <h2 class="section-title">What traders say about <?= e(SITE_NAME) ?></h2>
-        <p class="section-subtitle">Honest feedback from our global multi-market community.</p>
+        <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="section-label">Avis des utilisateurs</div>
+          <h2 class="section-title">Ce que les traders disent sur <?= e(SITE_NAME) ?></h2>
+          <p class="section-subtitle">Des retours honnêtes de notre communauté mondiale multi-marchés.</p>
       </div>
 
       <div class="reviews-grid">
@@ -671,7 +671,7 @@ require_once __DIR__ . '/includes/header.php';
           <div>
             <div class="stars-container" aria-label="5 out of 5 stars">★★★★★</div>
             <p class="review-text">
-              As a beginner, crypto intimidated me. <?= e(SITE_NAME) ?> made the dashboard so intuitive I felt confident within minutes. The AI analysis is crystal clear.
+              En tant que débutant, la crypto me semblait intimidante. <?= e(SITE_NAME) ?> a rendu le tableau de bord tellement intuitif que je me suis senti confiant en quelques minutes. L’analyse IA est d’une clarté parfaite.
             </p>
           </div>
           <div class="reviewer-info">
@@ -687,7 +687,7 @@ require_once __DIR__ . '/includes/header.php';
           <div>
             <div class="stars-container" aria-label="5 out of 5 stars">★★★★★</div>
             <p class="review-text">
-              The clean interface saves me hours. AI filtering market noise down to main trends changed how I manage daily positions.
+              L’interface épurée me fait gagner des heures. Le filtrage de l’« informatif bruit du marché » par l’IA, ramené aux tendances principales, a changé la façon dont je gère mes positions au quotidien.
             </p>
           </div>
           <div class="reviewer-info">
@@ -703,7 +703,7 @@ require_once __DIR__ . '/includes/header.php';
           <div>
             <div class="stars-container" aria-label="5 out of 5 stars">★★★★★</div>
             <p class="review-text">
-              Low-latency execution plus smart alerts lets me adjust targets on the fly without launching multiple programs.
+              L’exécution à faible latence et les alertes intelligentes me permettent d’ajuster mes objectifs à la volée, sans lancer plusieurs programmes.
             </p>
           </div>
           <div class="reviewer-info">
@@ -719,7 +719,7 @@ require_once __DIR__ . '/includes/header.php';
           <div>
             <div class="stars-container" aria-label="5 out of 5 stars">★★★★★</div>
             <p class="review-text">
-              Support replied in two minutes while I was configuring verification. Exceptional institutional-grade service framework.
+              L’assistance m’a répondu en deux minutes pendant que je configurais la vérification. Un cadre de service exceptionnel, de niveau institutionnel.
             </p>
           </div>
           <div class="reviewer-info">
@@ -738,68 +738,69 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="seo-content">
         <h2 style="font-size: 38px; margin-bottom: 28px; font-weight: 800;">
-          <?= e(SITE_NAME) ?>: empowering traders with institutional AI architecture
+          <?= e(SITE_NAME) ?> : donner aux traders les moyens grâce à une architecture IA institutionnelle
         </h2>
 
         <p class="seo-intro">
-          Modern asset interaction demands absolute clarity. When data frameworks are cluttered with promotional banners
-          or heavy interface layers, user performance drops. <?= e(SITE_NAME) ?> solves systemic complexity by deploying
-          an elegant, responsive core environment optimized for long-term strategic execution. Every platform module,
-          from onboarding to live execution, is built around the same principle: remove the noise so the underlying data
-          can speak for itself — without sacrificing the depth experienced participants expect.
+          Les interactions avec les actifs exigent une clarté totale. Lorsque les structures de données sont encombrées par des bannières promotionnelles
+          ou par des couches d’interface lourdes, les performances de l’utilisateur chutent. <?= e(SITE_NAME) ?> réduit la complexité systémique en déployant
+          un environnement central élégant et réactif, optimisé pour une exécution stratégique à long terme. Chaque module de la plateforme,
+          de l’onboarding à l’exécution en direct, repose sur le même principe : supprimer le bruit pour laisser les données sous-jacentes
+          parler d’elles-mêmes — sans sacrifier la profondeur attendue par les participants expérimentés.
         </p>
 
         <div class="seo-text-grid">
           <div class="seo-block">
-            <h3>Advanced <span>crypto trading assets</span></h3>
+            <h3>Actifs avancés pour le <span>trading crypto</span></h3>
             <p>
-              Blockchain liquidity evolves quickly, making low-latency infrastructure critical.
-              <?= e(SITE_NAME) ?> connects custom nodes to major digital asset venues, providing live price feedback loops.
-              Clean visual metrics turn chaotic multi-chain structures into organized, readable data channels.
+              La liquidité des blockchains évolue rapidement, rendant une infrastructure à faible latence essentielle.
+              <?= e(SITE_NAME) ?> connecte des nœuds personnalisés aux principales plateformes d’actifs numériques, avec des boucles de feedback de prix en direct.
+              Des indicateurs visuels clairs transforment des structures multi-chaînes chaotiques en canaux de données organisés et lisibles.
             </p>
             <p>
-              Beyond raw price feeds, the platform contextualizes volume shifts and liquidity depth so sudden spikes are
-              easier to interpret — not just reactive signals. That consistency matters most in volatile sessions, when
-              fragmented tools slow decisions exactly when clarity is needed most.
-            </p>
-          </div>
-
-          <div class="seo-block">
-            <h3>Deep <span>neural market analysis</span></h3>
-            <p>
-              Automated algorithms analyze incoming market data to calculate structural shifts across forex and international commodities.
-              <?= e(SITE_NAME) ?> distills complex calculations into clear data trends that support independent judgment rather than replacing it.
-            </p>
-            <p>
-              Because models run continuously rather than on a fixed schedule, momentum changes appear as they happen
-              instead of in a delayed summary. The result is a research layer that supports independent judgment
-              while keeping the final decision in the user’s hands.
+              Au-delà des flux de prix bruts, la plateforme contextualise les variations de volume et la profondeur de liquidité afin que les pics
+              soudains soient plus faciles à interpréter — pas seulement des signaux réactifs. Cette cohérence compte surtout pendant les sessions volatiles,
+              lorsque des outils fragmentés ralentissent les décisions exactement quand la clarté est la plus nécessaire.
             </p>
           </div>
 
           <div class="seo-block">
-            <h3>Frictionless <span>account setup</span></h3>
+            <h3>Analyse de marché <span>neuronale approfondie</span></h3>
             <p>
-              Compliance does not have to be complicated. Our structured registration pipeline protects private settings
-              through secure verification processes designed to last under three minutes from start to terminal access.
+              Des algorithmes automatisés analysent les données de marché entrantes pour calculer les changements structurels sur le forex et les matières premières internationales.
+              <?= e(SITE_NAME) ?> distille des calculs complexes en tendances de données claires qui soutiennent le jugement indépendant, sans le remplacer.
             </p>
             <p>
-              Each field in the journey explains why it is asked, so beginners never have to guess the purpose of a
-              verification step. Once submitted, encrypted identity checks run in the background while the rest of the
-              dashboard remains fully browsable.
+              Comme les modèles fonctionnent en continu plutôt que selon un calendrier fixe, les changements d’élan apparaissent au moment où ils se produisent,
+              plutôt que dans un résumé retardé. Le résultat : une couche de recherche qui soutient le jugement indépendant,
+              tout en conservant la décision finale entre les mains de l’utilisateur.
             </p>
           </div>
 
           <div class="seo-block">
-            <h3>Institutional-quality <span>risk controls</span></h3>
+            <h3><span>Création de compte</span> sans friction</h3>
             <p>
-              Position sizing, exposure limits, and automatic volatility indicators condense historically professional desk tools
-              into simple toggles — so newer participants inherit daily discipline from experienced traders.
+              La conformité ne doit pas être compliquée. Notre pipeline d’inscription structuré protège les paramètres privés
+              grâce à des processus de vérification sécurisés, conçus pour durer moins de trois minutes entre le début et l’accès au terminal.
             </p>
             <p>
-              Alerts are configurable by asset, so attention is drawn only to markets that truly warrant it.
-              This focused approach helps prevent alert fatigue that often leads people to ignore notifications
-              on less selective platforms.
+              Chaque champ du parcours explique pourquoi il est demandé, pour que les débutants n’aient jamais à deviner
+              le but d’une étape de vérification. Une fois soumis, les contrôles d’identité chiffrés s’exécutent en arrière-plan,
+              pendant que le reste du tableau de bord reste entièrement consultable.
+            </p>
+          </div>
+
+          <div class="seo-block">
+            <h3>Des <span>contrôles de risque</span> de qualité institutionnelle</h3>
+            <p>
+              Le dimensionnement des positions, les limites d’exposition et les indicateurs automatiques de volatilité condensent
+              des outils historiquement utilisés par des desks professionnels en de simples interrupteurs — pour que les nouveaux participants héritent de la discipline quotidienne
+              des traders expérimentés.
+            </p>
+            <p>
+              Les alertes sont configurables par actif, de sorte que l’attention ne se porte que sur les marchés qui en valent vraiment la peine.
+              Cette approche ciblée aide à éviter la lassitude face aux alertes, qui pousse souvent les gens à ignorer les notifications
+              sur des plateformes moins sélectives.
             </p>
           </div>
         </div>
@@ -810,86 +811,86 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-soft" id="faq">
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">Support center</div>
-        <h2 class="section-title">Frequently asked questions</h2>
-        <p class="section-subtitle">Immediate procedural answers about registration and platform access.</p>
+        <div class="section-label">Centre d’assistance</div>
+        <h2 class="section-title">Questions fréquentes</h2>
+        <p class="section-subtitle">Réponses immédiates sur l’inscription et l’accès à la plateforme.</p>
       </div>
 
       <div class="faq-max-width" data-faq>
         <div class="faq-item active is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            <span>How do I get started with <?= e(SITE_NAME) ?>?</span>
+            <span>Comment démarrer avec <?= e(SITE_NAME) ?> ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content" style="max-height: 200px;">
             <p>
-              Fill in the registration form above, follow our secure step-by-step onboarding,
-              and activate your account settings through our structured payment processing system.
+              Remplissez le formulaire d’inscription ci-dessus, suivez notre onboarding sécurisé étape par étape,
+              puis activez les paramètres de votre compte via notre système structuré de traitement des paiements.
             </p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            <span>Do I need advanced crypto experience?</span>
+            <span>Faut-il une expérience crypto avancée ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              No. <?= e(SITE_NAME) ?> offers a beginner dashboard mode, automated analytical explanations,
-              and simplified workspaces to help new traders navigate safely.
+              Non. <?= e(SITE_NAME) ?> propose un mode tableau de bord débutant, des explications analytiques automatisées,
+              et des espaces de travail simplifiés pour aider les nouveaux traders à évoluer en toute sécurité.
             </p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            <span>What is the minimum requirement to trade?</span>
+            <span>Quel est le minimum requis pour trader ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              The standard base activation is <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
-              This serves as operational trading capital and remains under your manual control.
+              L’activation de base standard est de <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
+              Elle sert de capital opérationnel de trading et reste sous votre contrôle manuel.
             </p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            <span>Are there hidden operational fees?</span>
+            <span>Y a-t-il des frais opérationnels cachés ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              No. <?= e(SITE_NAME) ?> operates with absolute pricing transparency.
-              We do not apply unexpected platform access margins or hidden withdrawal calculations.
+              Non. <?= e(SITE_NAME) ?> fonctionne avec une transparence totale des prix.
+              Nous n’appliquons aucune marge d’accès à la plateforme inattendue et aucun calcul de retrait caché.
             </p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            <span>How does the AI intelligence component work?</span>
+            <span>Comment fonctionne le module d’intelligence IA ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Neural systems evaluate deep statistical volatility markers across multiple market layers,
-              converting raw telemetry into simplified trend lines for easier assessment.
+              Les systèmes neuronaux évaluent des marqueurs statistiques de volatilité approfondis sur plusieurs couches de marché,
+              puis convertissent les données brutes en tendances simplifiées pour une évaluation plus facile.
             </p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            <span>Is my personal data fully protected?</span>
+            <span>Mes données personnelles sont-elles totalement protégées ?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Yes. Every account pipeline is masked using secure SSL protection plus robust cryptographic protocols
-              to fully isolate private data ranges.
+              Oui. Chaque pipeline de compte est masquée grâce à une protection SSL sécurisée et des protocoles cryptographiques robustes,
+              afin d’isoler totalement les plages de données privées.
             </p>
           </div>
         </div>
@@ -901,17 +902,17 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="final-cta-grid">
         <div class="final-cta-content">
-          <h2>Ready to experience <?= e(SITE_NAME) ?> clarity?</h2>
+          <h2>Prêt à découvrir la clarté de <?= e(SITE_NAME) ?> ?</h2>
           <p class="section-subtitle" style="color: var(--color-text-secondary);">
-            Join a modern system optimized for fast operations, data protection, and transparent access.
+            Rejoignez un système moderne optimisé pour des opérations rapides, la protection des données et un accès transparent.
           </p>
         </div>
         <div>
           <div class="signup-card">
-            <h3 style="text-align:center;">Create your account</h3>
+            <h3 style="text-align:center;">Créez votre compte</h3>
             <?php
             $form_id = 'final-cta-form';
-            $form_submit = 'Create free account';
+            $form_submit = 'Créer un compte gratuit';
             require __DIR__ . '/includes/form.php';
             ?>
           </div>

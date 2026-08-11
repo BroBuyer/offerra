@@ -66,7 +66,9 @@
   const body = root.querySelector('.lisa-body');
 
   function scrollChat() {
+    // Keep the newest messages visible (accounting for sticky controls overlay).
     const scroller = body || messages;
+    if (!scroller) return;
     scroller.scrollTop = scroller.scrollHeight;
   }
 
@@ -75,7 +77,8 @@
     el.className = 'lisa-bubble lisa-bubble--' + who;
     el.textContent = text;
     messages.appendChild(el);
-    scrollChat();
+    // Wait for layout so scrollHeight is up-to-date.
+    requestAnimationFrame(scrollChat);
   }
 
   async function showTyping(ms = 700) {

@@ -5,7 +5,7 @@
 require_once __DIR__ . '/config.php';
 
 $platform_path = platform_image_path();
-$platform_img = asset($platform_path);
+$platform_img = asset_version($platform_path);
 $platform_alt = platform_image_alt();
 $platform_caption = platform_image_caption();
 $as_phone = $as_phone ?? false;

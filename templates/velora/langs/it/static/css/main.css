@@ -2039,7 +2039,7 @@ padding: 28px 20px;
 .lisa-panel__identity p { margin: 2px 0 0; font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 500; }
 .lisa-panel__close { border: 0; background: transparent; color: var(--color-text-muted); cursor: pointer; padding: 6px; display: flex; }
 .lisa-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; overscroll-behavior: contain; }
-.lisa-messages { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.lisa-messages { padding: 20px 20px 120px; display: flex; flex-direction: column; gap: 14px; }
 .lisa-bubble { max-width: 88%; padding: 10px 14px; border-radius: 16px; font-size: 0.9rem; line-height: 1.45; }
 .lisa-bubble--bot { align-self: flex-start; background: var(--color-bg-muted); border-bottom-left-radius: 6px; }
 .lisa-bubble--user { align-self: flex-end; background: var(--color-accent); color: #fff; border-bottom-right-radius: 6px; }
@@ -2059,6 +2059,20 @@ padding: 28px 20px;
 @media (max-width: 420px) {
   .lisa-chat { right: 12px; bottom: 12px; width: calc(100vw - 24px); }
   .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Chat scroll styling (subtle) */
+.lisa-body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.65) transparent;
+}
+.lisa-body::-webkit-scrollbar { width: 8px; }
+.lisa-body::-webkit-scrollbar-track { background: transparent; }
+.lisa-body::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.45);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 /* Compatibility aliases used by Offerra pages */
