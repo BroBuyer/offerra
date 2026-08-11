@@ -22,7 +22,7 @@ final class LeadProcessor
         return is_array($decoded) ? $decoded : [];
     }
 
-    public static function normalizeTelefon(string $phoneRaw): string
+    public static function normalizePhone(string $phoneRaw): string
     {
         $phone = trim($phoneRaw);
         if ($phone === '') {
@@ -53,6 +53,43 @@ final class LeadProcessor
         return '';
     }
 
+    /** Чи збігається країна IP з GEO оффера або дозволеними phone GEO. */
+    public static function ipCountryMatchesOffer(): bool
+    {
+        $ipCountry = self::detectIpCountry();
+
+        if ($ipCountry === '') {
+            return false;
+        }
+
+        $offerCountry = self::crmCountryCode();
+
+        if ($offerCountry !== '' && $ipCountry === $offerCountry) {
+            return true;
+        }
+
+        if (! function_exists('form_allowed_countries')) {
+            return false;
+        }
+
+        $allowed = form_allowed_countries();
+
+        if ($allowed === []) {
+            return $offerCountry === '';
+        }
+
+        $ipPhoneCode = self::ipToPhoneCountryCode($ipCountry);
+
+        return $ipPhoneCode !== '' && in_array($ipPhoneCode, $allowed, true);
+    }
+
+    private static function ipToPhoneCountryCode(string $ipCountry): string
+    {
+        $code = strtolower(trim($ipCountry));
+
+        return $code === 'uk' ? 'gb' : $code;
+    }
+
     public static function clientIp(): string
     {
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
@@ -64,7 +101,7 @@ final class LeadProcessor
         $password = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $password .= $chars[rés aom_int(0, strlen($chars) - 1)];
+            $password .= $chars[random_int(0, strlen($chars) - 1)];
         }
 
         return $password;
@@ -97,7 +134,7 @@ final class LeadProcessor
             'first_name' => trim((string) ($lead['first_name'] ?? $lead['fname'] ?? '')),
             'last_name' => trim((string) ($lead['last_name'] ?? $lead['lname'] ?? '')),
             'password' => self::generatePassword(10),
-            'phone' => self::normalizeTelefon((string) ($lead['phone'] ?? $lead['fullphone'] ?? '')),
+            'phone' => self::normalizePhone((string) ($lead['phone'] ?? $lead['fullphone'] ?? '')),
             'affiliate_id' => (string) CRM_AFFILIATE_ID,
             'offer_id' => crm_funnel(),
         ];
@@ -113,6 +150,71 @@ final class LeadProcessor
         return array_merge($payload, crm_aff_subs_resolved($lead));
     }
 
+    private static function detectContentSpamReason(array $lead): ?string
+    {
+        if (self::ipCountryMatchesOffer()) {
+            return null;
+        }
+
+        return 'GEO_MISMATCH';
+    }
+
+    /** @return array<string, string> */
+    private static function applySpamMarkers(array $crmData, string $reason): array
+    {
+        $crmData['aff_sub12'] = 'SPAM';
+        $crmData['aff_sub13'] = $reason;
+
+        return $crmData;
+    }
+
+    public static function resolveSpamReason(array $lead, ?string $preflightReason = null): ?string
+    {
+        if ($preflightReason !== null && $preflightReason !== '') {
+            return $preflightReason;
+        }
+
+        require_once __DIR__ . '/KeitaroClickVerifier.php';
+        $ktReason = KeitaroClickVerifier::verifyLead($lead);
+
+        if ($ktReason !== null) {
+            return $ktReason;
+        }
+
+        return self::detectContentSpamReason($lead);
+    }
+
+    private static function formatKeitaroDetail(string $spamReason): string
+    {
+        if ($spamReason === '' || ! str_starts_with($spamReason, 'KT_')) {
+            return '—';
+        }
+
+        if (! class_exists('KeitaroClickVerifier', false)) {
+            require_once __DIR__ . '/KeitaroClickVerifier.php';
+        }
+
+        $detail = KeitaroClickVerifier::lastDetail();
+        if (! is_array($detail) || $detail === []) {
+            return '—';
+        }
+
+        $parts = [];
+        if (isset($detail['http'])) {
+            $parts[] = 'http='.(string) $detail['http'];
+        }
+        if (! empty($detail['error'])) {
+            $parts[] = (string) $detail['error'];
+        }
+        if (! empty($detail['body'])) {
+            $parts[] = (string) $detail['body'];
+        }
+
+        $text = trim(implode(' | ', $parts));
+
+        return $text !== '' ? substr($text, 0, 280) : '—';
+    }
+
     public static function sendToCrm(array $crmData): array
     {
         if (!function_exists('curl_init')) {
@@ -120,7 +222,7 @@ final class LeadProcessor
                 'success' => false,
                 'http_code' => 0,
                 'curl_error' => 'PHP curl extension is not enabled',
-                'response' => ['error' => 'Enable extension=curl in php.ini és a restart the server'],
+                'response' => ['error' => 'Enable extension=curl in php.ini and restart the server'],
             ];
         }
 
@@ -252,7 +354,13 @@ final class LeadProcessor
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return $result !== false && $httpCode >= 200 && $httpCode < 300;
+        if ($result === false || $httpCode < 200 || $httpCode >= 300) {
+            return false;
+        }
+
+        $decoded = json_decode((string) $result, true);
+
+        return is_array($decoded) && ($decoded['ok'] ?? false);
     }
 
     private static function escapeTelegramHtml(string $text): string
@@ -299,21 +407,31 @@ final class LeadProcessor
         $ipCountry = self::detectIpCountry();
         $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
+        $spamReason = trim((string) ($crmData['aff_sub13'] ?? ''));
+        $isSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
+
+        if ($crmSuccess && $isSpam && $spamReason !== '') {
+            $status = '⚠️ LEAD ACCEPTED (' . self::escapeTelegramHtml($spamReason) . ')';
+        } elseif ($crmSuccess && $isSpam) {
+            $status = '⚠️ LEAD ACCEPTED (SPAM)';
+        }
 
         $lines = [
             '<b>' . $status . '</b>',
             '━━━━━━━━━━━━━━━━━━',
             '',
             '<b>Name:</b> ' . self::escapeTelegramHtml(trim(($crmData['first_name'] ?? '') . ' ' . ($crmData['last_name'] ?? ''))),
-            '<b>E-mail:</b> ' . self::escapeTelegramHtml((string) ($crmData['email'] ?? '')),
-            '<b>Telefon:</b> ' . self::escapeTelegramHtml((string) ($crmData['phone'] ?? '')),
+            '<b>Email:</b> ' . self::escapeTelegramHtml((string) ($crmData['email'] ?? '')),
+            '<b>Phone:</b> ' . self::escapeTelegramHtml((string) ($crmData['phone'] ?? '')),
             '',
             '<b>Affiliate:</b> ' . self::escapeTelegramHtml((string) ($crmData['affiliate_id'] ?? '')),
             '<b>Funnel:</b> ' . self::escapeTelegramHtml((string) ($crmData['offer_id'] ?? '')),
-            '<b>Ajánlat:</b> ' . self::escapeTelegramHtml(SITE_NAME),
+            '<b>Offer:</b> ' . self::escapeTelegramHtml(SITE_NAME),
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
             '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::crmCountryCode()),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
+            '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
+            '<b>KT detail:</b> ' . self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
             '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
             '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
             '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
@@ -334,12 +452,27 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
-    public static function process(array $lead): array
+    /** Clear fake-click spam — no CRM / Telegram noise. */
+    private static function shouldSilentDrop(?string $spamReason): bool
+    {
+        return in_array($spamReason, [
+            'ORIGIN_MISMATCH',
+            'BOT_UA',
+            'GEO_MISMATCH',
+            'NO_SUBID',
+            'KT_CLICK_NOT_FOUND',
+            'KT_CAMPAIGN_MISMATCH',
+            'FORM_TOKEN_INVALID',
+            'FORM_TOKEN_MISSING',
+        ], true);
+    }
+
+    public static function process(array $lead, ?string $preflightSpamReason = null): array
     {
         $firstName = trim((string) ($lead['first_name'] ?? $lead['fname'] ?? ''));
         $lastName = trim((string) ($lead['last_name'] ?? $lead['lname'] ?? ''));
         $email = trim((string) ($lead['email'] ?? ''));
-        $phone = self::normalizeTelefon((string) ($lead['phone'] ?? $lead['fullphone'] ?? ''));
+        $phone = self::normalizePhone((string) ($lead['phone'] ?? $lead['fullphone'] ?? ''));
 
         if ($firstName === '' || $lastName === '' || $email === '' || $phone === '') {
             return [
@@ -349,7 +482,28 @@ final class LeadProcessor
             ];
         }
 
+        $spamReason = self::resolveSpamReason($lead, $preflightSpamReason);
+
+        // Definitive fake-subid spam: look like success, skip CRM/TG.
+        if (self::shouldSilentDrop($spamReason)) {
+            return [
+                'ok' => true,
+                'http_status' => 200,
+                'crm_success' => true,
+                'lead_uuid' => null,
+                'telegram_sent' => false,
+                'thank_you_url' => FORM_THANK_YOU,
+                'lead_language' => strtolower(trim((string) ($lead['language'] ?? SITE_LANG))) ?: SITE_LANG,
+                'fullphone' => $phone,
+                'spam_silent' => $spamReason,
+            ];
+        }
+
         $crmData = self::buildCrmPayload($lead);
+        if ($spamReason !== null) {
+            $crmData = self::applySpamMarkers($crmData, $spamReason);
+        }
+
         $crmResult = self::sendToCrm($crmData);
         $crmSuccess = (bool) ($crmResult['success'] ?? false);
         $crmResponse = is_array($crmResult['response'] ?? null) ? $crmResult['response'] : [];

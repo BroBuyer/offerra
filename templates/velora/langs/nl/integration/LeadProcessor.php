@@ -457,6 +457,7 @@ final class LeadProcessor
     {
         return in_array($spamReason, [
             'ORIGIN_MISMATCH',
+            'BOT_UA',
             'GEO_MISMATCH',
             'NO_SUBID',
             'KT_CLICK_NOT_FOUND',
