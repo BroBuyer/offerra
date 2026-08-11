@@ -96,7 +96,11 @@ class InfrastructureProvisioner
         try {
             $this->runSteps($settings, $domain, $options, $meta);
 
-            if (! InfrastructureOptions::needsDnsWait($options) || $this->dnsLooksReady($domain, $this->hestia->serverIp($settings))) {
+            if (! InfrastructureOptions::needsDnsWait($options) || $this->dnsLooksReady(
+                $domain,
+                $this->hestia->serverIp($settings),
+                is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [],
+            )) {
                 $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : 'skipped';
                 unset($meta['dns_error']);
             } else {
@@ -148,7 +152,9 @@ class InfrastructureProvisioner
             return;
         }
 
-        if ($this->dnsLooksReady($domain, $serverIp)) {
+        $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+
+        if ($this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
             $meta['dns'] = 'done';
             unset($meta['dns_error']);
             $offer->update([
@@ -162,11 +168,12 @@ class InfrastructureProvisioner
 
         try {
             $this->runSteps($settings, $domain, $options, $meta);
+            $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : $expectedNs;
         } catch (\Throwable $e) {
             $meta['dns_error'] = $e->getMessage();
 
-            // Якщо сайт уже відповідає — не блокуємо статус через збій повторного provision.
-            if ($this->dnsLooksReady($domain, $serverIp)) {
+            // Якщо DNS уже реально встав — не блокуємо статус через збій повторного provision.
+            if ($this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
                 $meta['dns'] = 'done';
                 unset($meta['dns_error']);
                 $offer->update([
@@ -187,7 +194,7 @@ class InfrastructureProvisioner
             return;
         }
 
-        if (! $this->dnsLooksReady($domain, $serverIp)) {
+        if (! $this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
             unset($meta['dns_error']);
             $offer->update([
                 'infra_status' => 'ready',
@@ -290,24 +297,91 @@ class InfrastructureProvisioner
         $meta['ssl_hsts'] = 'skipped';
     }
 
-    private function dnsLooksReady(string $domain, string $serverIp): bool
+    /**
+     * Fact-based DNS readiness: public NS must match Cloudflare (when known),
+     * and A must point at the origin or a Cloudflare proxy IP.
+     * Dynadot parking responses must never count as "ready".
+     *
+     * @param  list<string>  $expectedNameservers
+     */
+    private function dnsLooksReady(string $domain, string $serverIp, array $expectedNameservers = []): bool
     {
-        $records = @dns_get_record($domain, DNS_A);
-        $hasRecords = is_array($records) && $records !== [];
+        $expectedNameservers = array_values(array_unique(array_filter(array_map(
+            static fn ($ns) => strtolower(rtrim(trim((string) $ns), '.')),
+            $expectedNameservers,
+        ))));
 
-        if ($hasRecords) {
-            foreach ($records as $record) {
-                $ip = (string) ($record['ip'] ?? '');
+        if ($expectedNameservers !== []) {
+            $liveNs = $this->resolveNameservers($domain);
+            if ($liveNs === []) {
+                return false;
+            }
 
-                if ($ip === $serverIp || $this->isCloudflareProxyIp($ip)) {
-                    return $this->siteResponds($domain) || $ip === $serverIp;
+            $liveSet = array_fill_keys($liveNs, true);
+            $matched = 0;
+            foreach ($expectedNameservers as $ns) {
+                if (isset($liveSet[$ns])) {
+                    $matched++;
                 }
             }
 
-            return $this->siteResponds($domain);
+            // Need the Cloudflare NS set to be visible publicly (usually 2).
+            if ($matched < min(2, count($expectedNameservers))) {
+                return false;
+            }
         }
 
-        return $this->siteResponds($domain);
+        return $this->aRecordPointsToTarget($domain, $serverIp);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function resolveNameservers(string $domain): array
+    {
+        $records = @dns_get_record($domain, DNS_NS);
+        if (! is_array($records) || $records === []) {
+            return [];
+        }
+
+        $out = [];
+        foreach ($records as $record) {
+            $ns = strtolower(rtrim(trim((string) ($record['target'] ?? '')), '.'));
+            if ($ns !== '') {
+                $out[] = $ns;
+            }
+        }
+
+        return array_values(array_unique($out));
+    }
+
+    private function aRecordPointsToTarget(string $domain, string $serverIp): bool
+    {
+        $records = @dns_get_record($domain, DNS_A);
+        if (! is_array($records) || $records === []) {
+            return false;
+        }
+
+        foreach ($records as $record) {
+            $ip = (string) ($record['ip'] ?? '');
+            if ($ip === '' || $this->isLikelyParkingIp($ip)) {
+                continue;
+            }
+
+            if ($ip === $serverIp || $this->isCloudflareProxyIp($ip)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isLikelyParkingIp(string $ip): bool
+    {
+        // Common Dynadot / Sedo / aftermarket parking anycast ranges we have seen.
+        return str_starts_with($ip, '185.53.')
+            || str_starts_with($ip, '207.244.')
+            || str_starts_with($ip, '173.236.');
     }
 
     private function isCloudflareProxyIp(string $ip): bool
@@ -347,7 +421,8 @@ class InfrastructureProvisioner
                 return false;
             }
 
-            return $status >= 200 && $status < 500;
+            // 4xx (incl. Dynadot parking 410 Gone) must not count as live.
+            return $status >= 200 && $status < 400;
         } catch (\Throwable) {
             return false;
         }
