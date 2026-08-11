@@ -15,6 +15,7 @@
   "themeLightText": "☀️ Licht",
   "themeDarkAria": "Overschakelen naar donker thema",
   "mockupToday": "Vandaag",
+  "mockupLive": "DIRECT",
   "orderPendingAllocation": "order in afwachting van toewijzing",
 
   "headTitleSuffix": "Premium AI-handelsengine voor wereldwijde markten",
@@ -38,7 +39,7 @@
   "statTradable": "Verhandelbare activa",
   "statFast": "Snel",
   "statAccountSetup": "Accountinstelling",
-  "statSupport": "Support",
+  "statSupport": "Ondersteuning",
   "statSecure": "Veilig",
   "statDataProcessing": "Gegevensverwerking",
 
@@ -277,7 +278,7 @@
   "payAltGoogle": "Google Pay — geaccepteerde betaalmethode op ",
   "payAltBank": "Bankoverschrijving en SEPA — geaccepteerd op ",
   "payAltSsl": "256-bits SSL-encryptie — veilige gegevensoverdracht op ",
-  "sslSecuredTitle": "SSL Secured",
+  "sslSecuredTitle": "SSL beveiligd",
 
   "chatOpenAria": "Chat openen met Lisa",
   "chatCloseAria": "Chat sluiten",
@@ -346,7 +347,7 @@
   "contactDescAfter": " support — we helpen met financiering, verificatie en starten.",
   "contactH1": "We zijn er om te helpen",
   "contactLead": "Vragen over uw account, stortingen of AI-tools — neem gerust contact op.",
-  "supportHeading": "Support",
+  "supportHeading": "Ondersteuning",
   "supportEmailBefore": "Mail ons op ",
   "supportEmailAfter": ". Typische responstijd is binnen enkele uren.",
   "contactFormHeading": "Of laat uw gegevens achter",

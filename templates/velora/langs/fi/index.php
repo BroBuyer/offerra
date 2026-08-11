@@ -168,7 +168,7 @@ require_once __DIR__ . '/includes/header.php';
               <span class="mockup-title">BTC / USD -kojelauda</span>
               <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-success);">
                 <span style="width:6px; height:6px; background-color:var(--color-success); border-radius:50%;"></span>
-                LIVE
+                SUORA
               </span>
             </div>
 

@@ -15,6 +15,7 @@
   "themeLightText": "☀️ Claro",
   "themeDarkAria": "Mudar para o tema escuro",
   "mockupToday": "Hoje",
+  "mockupLive": "AO VIVO",
   "orderPendingAllocation": "ordem pendente de alocação",
 
   "headTitleSuffix": "Motor de trading premium com IA para mercados globais",
@@ -277,7 +278,7 @@
   "payAltGoogle": "Google Pay — método de pagamento aceite em ",
   "payAltBank": "Transferência bancária e SEPA — aceites em ",
   "payAltSsl": "Encriptação SSL de 256 bits — transferência segura de dados em ",
-  "sslSecuredTitle": "SSL Secured",
+  "sslSecuredTitle": "SSL seguro",
 
   "chatOpenAria": "Abrir chat com Lisa",
   "chatCloseAria": "Fechar chat",

@@ -95,7 +95,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div>
             <div class="stat-value">24/7</div>
-            <div class="stat-label">Support</div>
+            <div class="stat-label">Hilfe</div>
           </div>
         </div>
 
@@ -165,10 +165,10 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="mockup-header">
-              <span class="mockup-title">BTC / USD Dashboard</span>
+              <span class="mockup-title">BTC / USD-Dashboard</span>
               <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-success);">
                 <span style="width:6px; height:6px; background-color:var(--color-success); border-radius:50%;"></span>
-                LIVE
+                DIREKT
               </span>
             </div>
 

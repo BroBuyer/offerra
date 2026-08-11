@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container" style="max-width: 560px;">
       <div class="page-panel">
-        <h2 style="font-size: 1.3rem; margin-bottom: 10px;">Support</h2>
+        <h2 style="font-size: 1.3rem; margin-bottom: 10px;">Ondersteuning</h2>
         <p class="prose">Mail ons op <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a>. Typische responstijd is binnen enkele uren.</p>
         <div style="margin-top: 18px;">
           <?php

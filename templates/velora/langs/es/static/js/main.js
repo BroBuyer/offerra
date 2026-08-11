@@ -7,11 +7,11 @@
     document.documentElement.setAttribute('data-theme', theme);
     if (!themeToggle) return;
     if (theme === 'light') {
-      themeToggle.textContent = lang.themeToggleDarkText || '🌙 Dark';
-      themeToggle.setAttribute('aria-label', lang.themeToggleDarkAria || 'Switch to dark theme');
+      themeToggle.textContent = lang.themeToggleDarkText || '🌙 Modo oscuro';
+      themeToggle.setAttribute('aria-label', lang.themeToggleDarkAria || 'Cambiar al modo oscuro');
     } else {
-      themeToggle.textContent = lang.themeToggleLightText || '☀️ Light';
-      themeToggle.setAttribute('aria-label', lang.themeToggleLightAria || 'Switch to light theme');
+      themeToggle.textContent = lang.themeToggleLightText || '☀️ Modo claro';
+      themeToggle.setAttribute('aria-label', lang.themeToggleLightAria || 'Cambiar al modo claro');
     }
   };
   let initialTheme = 'dark';
@@ -114,7 +114,7 @@
       const type = (btn.getAttribute('data-mock-action') || btn.textContent || 'buy').trim().toLowerCase();
       if (headline) {
         const label = type.charAt(0).toUpperCase() + type.slice(1);
-        headline.textContent = label + ' ' + (lang.orderPendingAllocation || 'order pending allocation');
+        headline.textContent = label + ' ' + (lang.orderPendingAllocation || 'orden pendiente de asignación');
       }
       overlay?.classList.add('show');
     });

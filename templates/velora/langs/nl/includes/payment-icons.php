@@ -39,7 +39,7 @@ $methods = [
       <img
         src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
         alt="256-bits SSL-encryptie — veilige gegevensoverdracht op <?= e(SITE_NAME) ?>"
-        title="SSL Secured"
+        title="SSL beveiligd"
         width="32"
         height="32"
         loading="lazy"
