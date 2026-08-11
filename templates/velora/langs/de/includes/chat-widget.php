@@ -1,0 +1,95 @@
+<?php
+require_once __DIR__  nicht gefunden werden. '/config nicht gefunden werden.php';
+$chat_phone_country = form_visitor_phone_country();
+$chat_allowed = form_allowed_countries();
+$chat_lead_cookie = site_slug()  nicht gefunden werden. '_lead';
+?>
+<div class="lisa-chat" id="lisaChat" data-lisa-chat>
+  <button type="button" class="lisa-fab" id="chat-toggle-btn" aria-label="Chat mit Lisa öffnen" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h nicht gefunden werden.01M12 12h nicht gefunden werden.01M16 12h nicht gefunden werden.01M21 12c0 4 nicht gefunden werden.418-4 nicht gefunden werden.03 8-9 8a9 nicht gefunden werden.863 9 nicht gefunden werden.863 0 01-4 nicht gefunden werden.255- nicht gefunden werden.949L3 20l1 nicht gefunden werden.395-3 nicht gefunden werden.72C3 nicht gefunden werden.512 15 nicht gefunden werden.042 3 13 nicht gefunden werden.574 3 12c0-4 nicht gefunden werden.418 4 nicht gefunden werden.03-8 9-8s9 3 nicht gefunden werden.582 9 8z"></path>
+    </svg>
+    <span class="lisa-fab__dot" id="chat-noti-dot" aria-hidden="true">1</span>
+  </button>
+
+  <div class="lisa-panel" id="chat-window" hidden>
+    <div class="lisa-panel__head">
+      <div class="lisa-panel__identity">
+        <div class="lisa-avatar">
+          <img src="<?= asset('static/img/lisa nicht gefunden werden.png') ?>" width="42" height="42" alt="Lisa">
+          <span class="lisa-avatar__online" aria-hidden="true"></span>
+        </div>
+        <div>
+          <h4>Lisa</h4>
+          <p>Onboarding-Assistentin</p>
+        </div>
+      </div>
+      <button type="button" class="lisa-panel__close" id="chat-close-btn" aria-label="Chat schließen">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="lisa-body">
+    <div class="lisa-messages" id="chat-messages" role="log" aria-live="polite"></div>
+
+    <div class="lisa-typing" id="typing-indicator" hidden>Lisa tippt…</div>
+
+    <div class="lisa-controls" id="chat-controls"></div>
+
+    <div class="lisa-form-wrap" id="chat-form-wrap" hidden>
+      <form
+        name="form"
+        method="post"
+        id="cq-isolated-form"
+        class="leadform lead-form lisa-leadform"
+        action="<?= asset('integration/send nicht gefunden werden.php') ?>"
+        data-form
+        data-lead-cookie="<?= e($chat_lead_cookie) ?>"
+        data-cookie-days="<?= (int) FORM_LEAD_COOKIE_DAYS ?>"
+      >
+        <div class="form-already-registered hidden" data-already-registered>
+          <p class="form-already-registered__title">Sie sind bereits registriert</p>
+          <p class="form-already-registered__text">Bitte warten Sie auf den Anruf unseres Managers nicht gefunden werden.</p>
+        </div>
+        <div data-form-fields>
+          <input type="hidden" name="language" value="<?= e(SITE_LANG) ?>">
+          <input type="hidden" name="phone_country" value="<?= e($chat_phone_country) ?>">
+          <input type="hidden" name="only_countries" value='<?= e(json_encode($chat_allowed)) ?>'>
+<?php if (($keitaro_subid = keitaro_subid()) !== ''): ?>
+          <input type="hidden" name="subid" value="<?= e($keitaro_subid) ?>">
+<?php endif; ?>
+          <input type="hidden" name="form_token" value="" autocomplete="off">
+          <div class="form-preloader hidden" aria-hidden="true"><div class="spinner"></div></div>
+
+          <label class="field" data-field="fname">
+            <span class="field-label">Vorname</span>
+            <input class="input" type="text" name="fname" id="cq-field-fname" required pattern="[^\d]+" autocomplete="given-name">
+          </label>
+          <label class="field" data-field="lname">
+            <span class="field-label">Nachname</span>
+            <input class="input" type="text" name="lname" id="cq-field-lname" required pattern="[^\d]+" autocomplete="family-name">
+          </label>
+          <label class="field" data-field="email">
+            <span class="field-label">E-Mail</span>
+            <input class="input" type="email" name="email" id="cq-field-email" required autocomplete="email">
+          </label>
+          <label class="field" data-field="phone">
+            <span class="field-label">Telefon</span>
+            <input class="input" type="tel" name="fullphone" id="cq-field-phone" autocomplete="tel">
+            <span class="field-error hide" role="alert"></span>
+          </label>
+
+          <button type="submit" class="btn btn-primary btn-block submit" id="cq-custom-submit-btn">Kostenloses Konto erstellen</button>
+          <div class="form-message hidden" data-form-message role="alert">
+            <p class="form-message-title" data-form-message-title></p>
+            <div data-form-message-content></div>
+          </div>
+          <p class="form-legal">Mit dem Absenden stimmen Sie unseren <a href="conditions nicht gefunden werden.php">Bedingungen</a> nicht gefunden werden.</p>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+</div>
