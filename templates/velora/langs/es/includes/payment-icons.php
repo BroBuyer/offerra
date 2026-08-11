@@ -1,25 +1,25 @@
 <?php
 /**
  * Payment method icons — reusable block with SEO-friendly alt text.
- * @param string $context Optional context label for aria (e.g. "account registration form")
+ * @param string $context Optional context label for aria (e.g. "registro de cuenta")
  */
 require_once __DIR__ . '/config.php';
 
-$payment_context = $payment_context ?? 'secure checkout';
+$payment_context = $payment_context ?? 'pago seguro';
 $payment_compact = $payment_compact ?? false;
 
 $methods = [
-    ['file' => 'visa.svg',        'alt' => 'Visa — accepted payment method on ' . SITE_NAME],
-    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — accepted payment method on ' . SITE_NAME],
-    ['file' => 'paypal.svg',      'alt' => 'PayPal — accepted payment method on ' . SITE_NAME],
-    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — accepted payment method on ' . SITE_NAME],
-    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — accepted payment method on ' . SITE_NAME],
-    ['file' => 'banktransfer.svg','alt' => 'Bank transfer and SEPA — accepted on ' . SITE_NAME],
+    ['file' => 'visa.svg',        'alt' => 'Visa — método de pago aceptado en ' . SITE_NAME],
+    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — método de pago aceptado en ' . SITE_NAME],
+    ['file' => 'paypal.svg',      'alt' => 'PayPal — método de pago aceptado en ' . SITE_NAME],
+    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — método de pago aceptado en ' . SITE_NAME],
+    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — método de pago aceptado en ' . SITE_NAME],
+    ['file' => 'banktransfer.svg','alt' => 'Transferencia bancaria y SEPA — aceptadas en ' . SITE_NAME],
 ];
 ?>
-<div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Accepted payment methods for <?= e($payment_context) ?>">
+<div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Métodos de pago aceptados para <?= e($payment_context) ?>">
   <?php if (!$payment_compact): ?>
-    <p class="payment-icons-label">Secure payments accepted</p>
+    <p class="payment-icons-label">Pagos seguros aceptados</p>
   <?php endif; ?>
   <ul class="payment-icons-list">
     <?php foreach ($methods as $method): ?>
@@ -38,7 +38,7 @@ $methods = [
     <li>
       <img
         src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
-        alt="256-bit SSL encryption — secure data transfer on <?= e(SITE_NAME) ?>"
+        alt="Cifrado SSL de 256 bits — transferencia segura de datos en <?= e(SITE_NAME) ?>"
         title="SSL Secured"
         width="32"
         height="32"

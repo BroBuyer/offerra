@@ -47,10 +47,10 @@ $og_image = page_url($og_image_path ?? og_image_path());
 
   <script>
     window.APP_LANG = {
-      themeToggleDarkText: '🌙 Oscuro',
-      themeToggleLightText: '☀️ Claro',
-      themeToggleDarkAria: 'Cambiar al tema oscuro',
-      themeToggleLightAria: 'Cambiar al tema claro',
+      themeToggleDarkText: '🌙 Modo oscuro',
+      themeToggleLightText: '☀️ Modo claro',
+      themeToggleDarkAria: 'Cambiar al modo oscuro',
+      themeToggleLightAria: 'Cambiar al modo claro',
       mockupToday: 'Hoy',
       orderPendingAllocation: 'orden pendiente de asignación',
       chatStep1Bot: "¡Hola! Soy Lisa, tu asistente de onboarding. ¿Listo para abrir una cuenta de trading en pocos pasos?",

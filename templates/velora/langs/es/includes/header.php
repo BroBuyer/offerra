@@ -1,7 +1,7 @@
 <?php require_once __DIR__ . '/config.php'; ?>
 <header class="header site-header" data-header>
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:94px;">
-    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> home">
+    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> inicio">
       <div class="logo-icon" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
           <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -29,7 +29,7 @@
     </nav>
 
     <div style="display:flex;gap:14px;align-items:center;">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar al tema claro">☀️ Claro</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar al modo claro">☀️ Modo claro</button>
       <a href="<?= e($sec('#signup')) ?>" class="btn btn-primary header-cta-btn">Empezar a operar</a>
       <button class="burger menu-toggle" id="burgerBtn" type="button" data-menu-toggle aria-label="Abrir el menú" aria-expanded="false">
         <span></span><span></span><span></span>

@@ -185,12 +185,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface';
+    return SITE_NAME . ' plataforma de trading en el móvil — gráfico BTC/USDT en vivo, libro de órdenes e interfaz comprar/vender';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
+    return SITE_NAME . ' — trading móvil con gráficos de criptomonedas en tiempo real';
 }
 
 function offer_is_preview(): bool
