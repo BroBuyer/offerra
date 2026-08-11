@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <div>
-            <div class="stat-value">Fast</div>
+            <div class="stat-value">Veloce</div>
             <div class="stat-label">Configurazione account</div>
           </div>
         </div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <div>
-            <div class="stat-value">Secure</div>
+            <div class="stat-value">Sicuro</div>
             <div class="stat-label">Elaborazione dati</div>
           </div>
         </div>
@@ -165,10 +165,10 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="mockup-header">
-              <span class="mockup-title">Dashboard BTC / USD</span>
+              <span class="mockup-title">Pannello BTC / USD</span>
               <span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-success);">
                 <span style="width:6px; height:6px; background-color:var(--color-success); border-radius:50%;"></span>
-                LIVE
+                IN DIRETTA
               </span>
             </div>
 

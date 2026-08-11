@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <div>
-            <div class="stat-value">Fast</div>
+            <div class="stat-value">Rapide</div>
             <div class="stat-label">Mise en place du compte</div>
           </div>
         </div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <div>
-            <div class="stat-value">Secure</div>
+            <div class="stat-value">Sécurisé</div>
             <div class="stat-label">Traitement des données</div>
           </div>
         </div>
