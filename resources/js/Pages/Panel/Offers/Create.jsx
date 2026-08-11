@@ -1,6 +1,7 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
+import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -231,6 +232,7 @@ export default function OffersCreate({
         }
 
         const resolved = resolveMarket(code, geoPresets, availableLanguages);
+        const remembered = getGeoDepositPref(resolved.geo);
         setData((prev) => {
             const countries = new Set([
                 ...normalizePhoneCountries(prev.phone_countries, prev.phone),
@@ -241,7 +243,8 @@ export default function OffersCreate({
             return {
                 ...prev,
                 geo: resolved.geo,
-                ...(resolved.currency ? { currency: resolved.currency } : {}),
+                min_deposit: remembered?.min_deposit || prev.min_deposit,
+                currency: remembered?.currency || resolved.currency || prev.currency,
                 phone_countries: list.length > 0 ? list : (resolved.phone ? [resolved.phone] : []),
                 phone: resolved.phone,
                 lang: resolved.lang,
@@ -273,6 +276,17 @@ export default function OffersCreate({
     };
 
     const update = (field, value) => {
+        if (field === 'min_deposit' || field === 'currency') {
+            setData((prev) => {
+                const next = { ...prev, [field]: value };
+                if (next.geo.length === 2) {
+                    saveGeoDepositPref(next.geo, next.min_deposit, next.currency);
+                }
+                return next;
+            });
+            return;
+        }
+
         setData(field, value);
     };
 
@@ -476,6 +490,9 @@ export default function OffersCreate({
         post(route('offers.store'), {
             preserveScroll: true,
             onSuccess: () => {
+                if (data.geo.length === 2) {
+                    saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
+                }
                 skipPersist.current = true;
                 clearWizardState();
                 setStep(0);
@@ -826,6 +843,9 @@ export default function OffersCreate({
                                     value={data.min_deposit}
                                     onChange={(e) => update('min_deposit', e.target.value)}
                                 />
+                                <p className="field-hint">
+                                    Запам’ятовується для GEO в цьому браузері (останній вибір).
+                                </p>
                             </div>
                             <div className="field">
                                 <label htmlFor="currency">Валюта</label>

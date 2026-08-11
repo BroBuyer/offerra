@@ -1,4 +1,5 @@
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
 
@@ -80,6 +81,7 @@ export default function OfferEditModal({
 
     const onGeoChange = (code) => {
         const resolved = resolveMarket(code, geoPresets, availableLanguages);
+        const remembered = getGeoDepositPref(resolved.geo);
         setData((prev) => {
             const phones = normalizePhoneCountries(prev.phone_countries, prev.phone);
             const phoneSet = new Set(phones);
@@ -93,10 +95,21 @@ export default function OfferEditModal({
                 ...prev,
                 geo: resolved.geo,
                 lang: resolved.lang || prev.lang,
-                currency: resolved.currency || prev.currency,
+                min_deposit: remembered?.min_deposit || prev.min_deposit,
+                currency: remembered?.currency || resolved.currency || prev.currency,
                 phone_countries: list,
                 phone,
             };
+        });
+    };
+
+    const updateDepositField = (field, value) => {
+        setData((prev) => {
+            const next = { ...prev, [field]: value };
+            if (String(next.geo || '').length === 2) {
+                saveGeoDepositPref(next.geo, next.min_deposit, next.currency);
+            }
+            return next;
         });
     };
 
@@ -129,6 +142,9 @@ export default function OfferEditModal({
         patch(route('offers.update', offer.id), {
             preserveScroll: true,
             onSuccess: () => {
+                if (String(data.geo || '').length === 2) {
+                    saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
+                }
                 reset();
                 onClose();
             },
@@ -237,7 +253,7 @@ export default function OfferEditModal({
                                 id="edit-min-deposit"
                                 type="text"
                                 value={data.min_deposit}
-                                onChange={(event) => setData('min_deposit', event.target.value)}
+                                onChange={(event) => updateDepositField('min_deposit', event.target.value)}
                                 required
                             />
                         </div>
@@ -246,7 +262,7 @@ export default function OfferEditModal({
                             <select
                                 id="edit-currency"
                                 value={data.currency}
-                                onChange={(event) => setData('currency', event.target.value.toUpperCase())}
+                                onChange={(event) => updateDepositField('currency', event.target.value.toUpperCase())}
                             >
                                 {currencies.map(({ code, name }) => (
                                     <option key={code} value={code}>
