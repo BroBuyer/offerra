@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * CRM + Telegram lead processor nicht gefunden werden.
- * Shared across all offers — do not edit per funnel nicht gefunden werden.
+ * CRM + Telegram lead processor.
+ * Shared across all offers — do not edit per funnel.
  */
 final class LeadProcessor
 {
@@ -30,19 +30,19 @@ final class LeadProcessor
         }
 
         if ($phone[0] === '+') {
-            return '+'  nicht gefunden werden. preg_replace('/\D/', '', substr($phone, 1));
+            return '+' . preg_replace('/\D/', '', substr($phone, 1));
         }
 
         return preg_replace('/\D/', '', $phone);
     }
 
-    /** Статична країна оффера — завжди йде в CRM nicht gefunden werden. */
+    /** Статична країна оффера — завжди йде в CRM. */
     public static function crmCountryCode(): string
     {
         return strtoupper(trim((string) CRM_COUNTRY));
     }
 
-    /** Країна по IP (Cloudflare CF-IPCountry), без fallback nicht gefunden werden. */
+    /** Країна по IP (Cloudflare CF-IPCountry), без fallback. */
     public static function detectIpCountry(): string
     {
         $cf = strtoupper(trim((string) ($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
@@ -53,7 +53,7 @@ final class LeadProcessor
         return '';
     }
 
-    /** Чи збігається країна IP з GEO оффера або дозволеними phone GEO nicht gefunden werden. */
+    /** Чи збігається країна IP з GEO оффера або дозволеними phone GEO. */
     public static function ipCountryMatchesOffer(): bool
     {
         $ipCountry = self::detectIpCountry();
@@ -92,7 +92,7 @@ final class LeadProcessor
 
     public static function clientIp(): string
     {
-        return (string) ($_SERVER['REMOTE_ADDR'] ?? '0 nicht gefunden werden.0 nicht gefunden werden.0 nicht gefunden werden.0');
+        return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
     }
 
     public static function generatePassword(int $length = 10): string
@@ -101,7 +101,7 @@ final class LeadProcessor
         $password = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $password  nicht gefunden werden.= $chars[random_int(0, strlen($chars) - 1)];
+            $password .= $chars[random_int(0, strlen($chars) - 1)];
         }
 
         return $password;
@@ -174,7 +174,7 @@ final class LeadProcessor
             return $preflightReason;
         }
 
-        require_once __DIR__  nicht gefunden werden. '/KeitaroClickVerifier nicht gefunden werden.php';
+        require_once __DIR__ . '/KeitaroClickVerifier.php';
         $ktReason = KeitaroClickVerifier::verifyLead($lead);
 
         if ($ktReason !== null) {
@@ -191,7 +191,7 @@ final class LeadProcessor
         }
 
         if (! class_exists('KeitaroClickVerifier', false)) {
-            require_once __DIR__  nicht gefunden werden. '/KeitaroClickVerifier nicht gefunden werden.php';
+            require_once __DIR__ . '/KeitaroClickVerifier.php';
         }
 
         $detail = KeitaroClickVerifier::lastDetail();
@@ -201,7 +201,7 @@ final class LeadProcessor
 
         $parts = [];
         if (isset($detail['http'])) {
-            $parts[] = 'http=' nicht gefunden werden.(string) $detail['http'];
+            $parts[] = 'http='.(string) $detail['http'];
         }
         if (! empty($detail['error'])) {
             $parts[] = (string) $detail['error'];
@@ -222,7 +222,7 @@ final class LeadProcessor
                 'success' => false,
                 'http_code' => 0,
                 'curl_error' => 'PHP curl extension is not enabled',
-                'response' => ['error' => 'Enable extension=curl in php nicht gefunden werden.ini and restart the server'],
+                'response' => ['error' => 'Enable extension=curl in php.ini and restart the server'],
             ];
         }
 
@@ -248,7 +248,7 @@ final class LeadProcessor
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_POST => true,
                 CURLOPT_HTTPHEADER => [
-                    'Authorization: '  nicht gefunden werden. $apiKey,
+                    'Authorization: ' . $apiKey,
                     'Content-Type: application/json',
                 ],
                 CURLOPT_POSTFIELDS => json_encode($crmData, JSON_UNESCAPED_UNICODE),
@@ -335,7 +335,7 @@ final class LeadProcessor
             return false;
         }
 
-        $ch = curl_init("https://api nicht gefunden werden.telegram nicht gefunden werden.org/bot{$botToken}/sendMessage");
+        $ch = curl_init("https://api.telegram.org/bot{$botToken}/sendMessage");
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
@@ -386,10 +386,10 @@ final class LeadProcessor
 
         $maxLen = 2800;
         if (strlen($json) > $maxLen) {
-            $json = substr($json, 0, $maxLen)  nicht gefunden werden. "\n nicht gefunden werden. nicht gefunden werden. nicht gefunden werden. (truncated)";
+            $json = substr($json, 0, $maxLen) . "\n... (truncated)";
         }
 
-        return '<pre>'  nicht gefunden werden. self::escapeTelegramHtml($json)  nicht gefunden werden. '</pre>';
+        return '<pre>' . self::escapeTelegramHtml($json) . '</pre>';
     }
 
     public static function buildTelegramMessage(
@@ -411,34 +411,34 @@ final class LeadProcessor
         $isSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
 
         if ($crmSuccess && $isSpam && $spamReason !== '') {
-            $status = '⚠️ LEAD ACCEPTED ('  nicht gefunden werden. self::escapeTelegramHtml($spamReason)  nicht gefunden werden. ')';
+            $status = '⚠️ LEAD ACCEPTED (' . self::escapeTelegramHtml($spamReason) . ')';
         } elseif ($crmSuccess && $isSpam) {
             $status = '⚠️ LEAD ACCEPTED (SPAM)';
         }
 
         $lines = [
-            '<b>'  nicht gefunden werden. $status  nicht gefunden werden. '</b>',
+            '<b>' . $status . '</b>',
             '━━━━━━━━━━━━━━━━━━',
             '',
-            '<b>Name:</b> '  nicht gefunden werden. self::escapeTelegramHtml(trim(($crmData['first_name'] ?? '')  nicht gefunden werden. ' '  nicht gefunden werden. ($crmData['last_name'] ?? ''))),
-            '<b>E-Mail:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) ($crmData['email'] ?? '')),
-            '<b>Telefon:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) ($crmData['phone'] ?? '')),
+            '<b>Name:</b> ' . self::escapeTelegramHtml(trim(($crmData['first_name'] ?? '') . ' ' . ($crmData['last_name'] ?? ''))),
+            '<b>E-Mail:</b> ' . self::escapeTelegramHtml((string) ($crmData['email'] ?? '')),
+            '<b>Telefon:</b> ' . self::escapeTelegramHtml((string) ($crmData['phone'] ?? '')),
             '',
-            '<b>Affiliate:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) ($crmData['affiliate_id'] ?? '')),
-            '<b>Funnel:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) ($crmData['offer_id'] ?? '')),
-            '<b>Offer:</b> '  nicht gefunden werden. self::escapeTelegramHtml(SITE_NAME),
-            '<b>Domain:</b> <a href="'  nicht gefunden werden. self::escapeTelegramHtml(rtrim(SITE_URL, '/'))  nicht gefunden werden. '">'  nicht gefunden werden. self::escapeTelegramHtml(site_domain())  nicht gefunden werden. '</a>',
-            '<b>Country (offer):</b> '  nicht gefunden werden. self::escapeTelegramHtml(self::crmCountryCode()),
-            '<b>Country (IP):</b> '  nicht gefunden werden. self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
-            '<b>Spam reason:</b> '  nicht gefunden werden. ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
-            '<b>KT detail:</b> '  nicht gefunden werden. self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
-            '<b>IP:</b> '  nicht gefunden werden. self::escapeTelegramHtml(self::clientIp()),
-            '<b>Language:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
-            '<b>SubID:</b> '  nicht gefunden werden. self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
+            '<b>Affiliate:</b> ' . self::escapeTelegramHtml((string) ($crmData['affiliate_id'] ?? '')),
+            '<b>Funnel:</b> ' . self::escapeTelegramHtml((string) ($crmData['offer_id'] ?? '')),
+            '<b>Offer:</b> ' . self::escapeTelegramHtml(SITE_NAME),
+            '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
+            '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::crmCountryCode()),
+            '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
+            '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
+            '<b>KT detail:</b> ' . self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
+            '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
+            '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
+            '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),
             '',
-            '<b>UUID:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) $leadUuid),
-            '<b>Status:</b> '  nicht gefunden werden. self::escapeTelegramHtml((string) $crmStatus),
-            '<b>HTTP:</b> '  nicht gefunden werden. (int) ($crmResult['http_code'] ?? 0),
+            '<b>UUID:</b> ' . self::escapeTelegramHtml((string) $leadUuid),
+            '<b>Status:</b> ' . self::escapeTelegramHtml((string) $crmStatus),
+            '<b>HTTP:</b> ' . (int) ($crmResult['http_code'] ?? 0),
         ];
 
         $lines[] = '';
@@ -452,7 +452,7 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
-    /** Clear fake-click spam — no CRM / Telegram noise nicht gefunden werden. */
+    /** Clear fake-click spam — no CRM / Telegram noise. */
     private static function shouldSilentDrop(?string $spamReason): bool
     {
         return in_array($spamReason, [
@@ -483,7 +483,7 @@ final class LeadProcessor
 
         $spamReason = self::resolveSpamReason($lead, $preflightSpamReason);
 
-        // Definitive fake-subid spam: look like success, skip CRM/TG nicht gefunden werden.
+        // Definitive fake-subid spam: look like success, skip CRM/TG.
         if (self::shouldSilentDrop($spamReason)) {
             return [
                 'ok' => true,

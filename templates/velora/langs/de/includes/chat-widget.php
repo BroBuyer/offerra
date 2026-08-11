@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__  nicht gefunden werden. '/config nicht gefunden werden.php';
+require_once __DIR__ . '/config.php';
 $chat_phone_country = form_visitor_phone_country();
 $chat_allowed = form_allowed_countries();
-$chat_lead_cookie = site_slug()  nicht gefunden werden. '_lead';
+$chat_lead_cookie = site_slug() . '_lead';
 ?>
 <div class="lisa-chat" id="lisaChat" data-lisa-chat>
   <button type="button" class="lisa-fab" id="chat-toggle-btn" aria-label="Chat mit Lisa öffnen" aria-expanded="false">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h nicht gefunden werden.01M12 12h nicht gefunden werden.01M16 12h nicht gefunden werden.01M21 12c0 4 nicht gefunden werden.418-4 nicht gefunden werden.03 8-9 8a9 nicht gefunden werden.863 9 nicht gefunden werden.863 0 01-4 nicht gefunden werden.255- nicht gefunden werden.949L3 20l1 nicht gefunden werden.395-3 nicht gefunden werden.72C3 nicht gefunden werden.512 15 nicht gefunden werden.042 3 13 nicht gefunden werden.574 3 12c0-4 nicht gefunden werden.418 4 nicht gefunden werden.03-8 9-8s9 3 nicht gefunden werden.582 9 8z"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
     </svg>
     <span class="lisa-fab__dot" id="chat-noti-dot" aria-hidden="true">1</span>
   </button>
@@ -16,7 +16,7 @@ $chat_lead_cookie = site_slug()  nicht gefunden werden. '_lead';
     <div class="lisa-panel__head">
       <div class="lisa-panel__identity">
         <div class="lisa-avatar">
-          <img src="<?= asset('static/img/lisa nicht gefunden werden.png') ?>" width="42" height="42" alt="Lisa">
+          <img src="<?= asset('static/img/lisa.png') ?>" width="42" height="42" alt="Lisa">
           <span class="lisa-avatar__online" aria-hidden="true"></span>
         </div>
         <div>
@@ -44,14 +44,14 @@ $chat_lead_cookie = site_slug()  nicht gefunden werden. '_lead';
         method="post"
         id="cq-isolated-form"
         class="leadform lead-form lisa-leadform"
-        action="<?= asset('integration/send nicht gefunden werden.php') ?>"
+        action="<?= asset('integration/send.php') ?>"
         data-form
         data-lead-cookie="<?= e($chat_lead_cookie) ?>"
         data-cookie-days="<?= (int) FORM_LEAD_COOKIE_DAYS ?>"
       >
         <div class="form-already-registered hidden" data-already-registered>
           <p class="form-already-registered__title">Sie sind bereits registriert</p>
-          <p class="form-already-registered__text">Bitte warten Sie auf den Anruf unseres Managers nicht gefunden werden.</p>
+          <p class="form-already-registered__text">Bitte warten Sie auf den Anruf unseres Managers.</p>
         </div>
         <div data-form-fields>
           <input type="hidden" name="language" value="<?= e(SITE_LANG) ?>">
@@ -86,7 +86,7 @@ $chat_lead_cookie = site_slug()  nicht gefunden werden. '_lead';
             <p class="form-message-title" data-form-message-title></p>
             <div data-form-message-content></div>
           </div>
-          <p class="form-legal">Mit dem Absenden stimmen Sie unseren <a href="conditions nicht gefunden werden.php">Bedingungen</a> nicht gefunden werden.</p>
+          <p class="form-legal">Mit dem Absenden stimmen Sie unseren <a href="conditions.php">Bedingungen</a>.</p>
         </div>
       </form>
     </div>

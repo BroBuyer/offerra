@@ -7,9 +7,9 @@ header('Content-Type: application/json; charset=UTF-8');
 
 date_default_timezone_set('Europe/Kyiv');
 
-require_once __DIR__  nicht gefunden werden. '/ nicht gefunden werden. nicht gefunden werden./includes/config nicht gefunden werden.php';
-require_once __DIR__  nicht gefunden werden. '/FormToken nicht gefunden werden.php';
-require_once __DIR__  nicht gefunden werden. '/LeadProcessor nicht gefunden werden.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/FormToken.php';
+require_once __DIR__ . '/LeadProcessor.php';
 
 function resolve_preflight_spam_reason(): ?string
 {

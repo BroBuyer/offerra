@@ -1,7 +1,7 @@
 <?php
 /**
- * Keitaro KClient PHP — server-side click tracking (URL трекера не світиться у фронті) nicht gefunden werden.
- * Потрібен офіційний integration/kclient nicht gefunden werden.php з панелі Keitaro (Campaign → Integration → KClient PHP) nicht gefunden werden.
+ * Keitaro KClient PHP — server-side click tracking (URL трекера не світиться у фронті).
+ * Потрібен офіційний integration/kclient.php з панелі Keitaro (Campaign → Integration → KClient PHP).
  */
 
 function keitaro_is_enabled(): bool
@@ -34,7 +34,7 @@ function keitaro_should_track(): bool
         return false;
     }
 
-    if (str_contains($uri, 'sitemap') || str_contains($uri, 'robots nicht gefunden werden.php')) {
+    if (str_contains($uri, 'sitemap') || str_contains($uri, 'robots.php')) {
         return false;
     }
 
@@ -43,7 +43,7 @@ function keitaro_should_track(): bool
 
 function keitaro_session_key(): string
 {
-    return site_slug()  nicht gefunden werden. '_keitaro_subid';
+    return site_slug() . '_keitaro_subid';
 }
 
 function keitaro_subid(): string
@@ -72,7 +72,7 @@ function keitaro_subid(): string
 
 function keitaro_create_client()
 {
-    $trackerUrl = rtrim((string) KEITARO_TRACKER_URL, '/')  nicht gefunden werden. '/';
+    $trackerUrl = rtrim((string) KEITARO_TRACKER_URL, '/') . '/';
     $token = (string) KEITARO_CAMPAIGN_TOKEN;
 
     if (class_exists('KClient')) {
@@ -105,7 +105,7 @@ function keitaro_client_subid(object $client): string
     return keitaro_client_subid_from_result($client);
 }
 
-/** KClient 4 nicht gefunden werden.x часто віддає subid лише в cookies відповіді API, не в info nicht gefunden werden.subId nicht gefunden werden. */
+/** KClient 4.x часто віддає subid лише в cookies відповіді API, не в info.subId. */
 function keitaro_client_subid_from_result(object $client): string
 {
     if (!method_exists($client, 'performRequest')) {
@@ -167,7 +167,7 @@ function keitaro_bootstrap(): void
         return;
     }
 
-    $kclientPath = dirname(__DIR__)  nicht gefunden werden. '/integration/kclient nicht gefunden werden.php';
+    $kclientPath = dirname(__DIR__) . '/integration/kclient.php';
     if (!is_file($kclientPath)) {
         return;
     }
@@ -177,7 +177,7 @@ function keitaro_bootstrap(): void
     }
 
     // KClient може писати в output навіть коли execute(print=false),
-    // тому глушимо будь-який output, щоб не ламати шапку/верстку nicht gefunden werden.
+    // тому глушимо будь-який output, щоб не ламати шапку/верстку.
     $obLevel = ob_get_level();
     ob_start();
 
@@ -193,7 +193,7 @@ function keitaro_bootstrap(): void
             return;
         }
 
-        $sessionFlag = site_slug()  nicht gefunden werden. '_keitaro_tracked';
+        $sessionFlag = site_slug() . '_keitaro_tracked';
 
         try {
             if (!empty($_SESSION[$sessionFlag])) {
@@ -234,7 +234,7 @@ function keitaro_bootstrap(): void
             $_SESSION[$sessionFlag] = true;
         } catch (Throwable $e) {
             if (defined('KEITARO_DEBUG') && KEITARO_DEBUG) {
-                error_log('[Keitaro] '  nicht gefunden werden. $e->getMessage());
+                error_log('[Keitaro] ' . $e->getMessage());
             }
         }
     } finally {

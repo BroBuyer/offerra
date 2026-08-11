@@ -1,8 +1,8 @@
 <?php
 /**
- * Plattform showcase image — optimized for Google Images indexing nicht gefunden werden.
+ * Plattform showcase image — optimized for Google Images indexing.
  */
-require_once __DIR__  nicht gefunden werden. '/config nicht gefunden werden.php';
+require_once __DIR__ . '/config.php';
 
 $platform_path = platform_image_path();
 $platform_img = asset_version($platform_path);
@@ -10,7 +10,7 @@ $platform_alt = platform_image_alt();
 $platform_caption = platform_image_caption();
 $as_phone = $as_phone ?? false;
 ?>
-<figure class="platform-figure<?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema nicht gefunden werden.org/ImageObject">
+<figure class="platform-figure<?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema.org/ImageObject">
   <meta itemprop="name" content="<?= e(SITE_NAME) ?> KI-Handelsplattform">
   <meta itemprop="description" content="<?= e($platform_alt) ?>">
   <meta itemprop="contentUrl" content="<?= e(page_url($platform_path)) ?>">

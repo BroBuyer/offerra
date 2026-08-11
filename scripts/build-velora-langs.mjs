@@ -78,6 +78,10 @@ function escapeRegExp(s) {
 /** Replace EN→lang without touching identifiers like mockupToday / valPhoneRequired. */
 function replaceSafe(text, from, to) {
   if (!from || from === to || !text.includes(from)) return { text, count: 0 };
+  // Never replace ultra-short tokens (e.g. "." alone would corrupt every file).
+  if (from.trim().length < 2 && from.length < 3) {
+    return { text, count: 0 };
+  }
   // Prefer whole-token match when `from` is a single word / short label.
   const looksLikeToken = /^[\p{L}\p{N}'’]+$/u.test(from) && from.length <= 48;
   if (looksLikeToken) {

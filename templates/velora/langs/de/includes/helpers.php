@@ -1,9 +1,9 @@
 <?php
 /**
- * Внутрішні хелпери — не редагувати при переносі оффера nicht gefunden werden.
+ * Внутрішні хелпери — не редагувати при переносі оффера.
  */
 
-define('PLATFORM_IMAGE_TEMPLATE', 'static/img/platform/trading-platform-mobile nicht gefunden werden.png');
+define('PLATFORM_IMAGE_TEMPLATE', 'static/img/platform/trading-platform-mobile.png');
 
 function site_slug(): string
 {
@@ -25,7 +25,7 @@ function site_locale(): string
     ];
     $lang = strtolower(SITE_LANG);
 
-    return $map[$lang] ?? ($lang  nicht gefunden werden. '-'  nicht gefunden werden. strtoupper($lang));
+    return $map[$lang] ?? ($lang . '-' . strtoupper($lang));
 }
 
 function crm_funnel(): string
@@ -37,7 +37,7 @@ function crm_funnel(): string
 
 function crm_aff_sub_value(int $index): string
 {
-    $const = 'CRM_AFF_SUB'  nicht gefunden werden. ($index === 1 ? '' : (string) $index);
+    $const = 'CRM_AFF_SUB' . ($index === 1 ? '' : (string) $index);
     if (!defined($const)) {
         return '';
     }
@@ -54,7 +54,7 @@ function crm_aff_subs_resolved(array $lead = []): array
     $subs = [];
 
     for ($i = 1; $i <= 12; $i++) {
-        $key = 'aff_sub'  nicht gefunden werden. ($i === 1 ? '' : (string) $i);
+        $key = 'aff_sub' . ($i === 1 ? '' : (string) $i);
         $value = !empty($lead[$key]) ? trim((string) $lead[$key]) : crm_aff_sub_value($i);
 
         if ($value !== '') {
@@ -131,7 +131,7 @@ function offer_send_personalization_headers(): void
     }
 
     $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
-    $skip = ['send nicht gefunden werden.php', 'form-token nicht gefunden werden.php', 'visitor-geo nicht gefunden werden.php', 'sitemap nicht gefunden werden.php', 'robots nicht gefunden werden.php'];
+    $skip = ['send.php', 'form-token.php', 'visitor-geo.php', 'sitemap.php', 'robots.php'];
 
     if (in_array($script, $skip, true)) {
         return;
@@ -151,14 +151,14 @@ function platform_image_path(): string
     }
 
     $root = dirname(__DIR__);
-    $branded = 'static/img/platform/'  nicht gefunden werden. site_slug()  nicht gefunden werden. '-trading-platform-mobile nicht gefunden werden.png';
+    $branded = 'static/img/platform/' . site_slug() . '-trading-platform-mobile.png';
     $template = PLATFORM_IMAGE_TEMPLATE;
 
-    if (!is_file($root  nicht gefunden werden. '/'  nicht gefunden werden. $branded) && is_file($root  nicht gefunden werden. '/'  nicht gefunden werden. $template)) {
-        @copy($root  nicht gefunden werden. '/'  nicht gefunden werden. $template, $root  nicht gefunden werden. '/'  nicht gefunden werden. $branded);
+    if (!is_file($root . '/' . $branded) && is_file($root . '/' . $template)) {
+        @copy($root . '/' . $template, $root . '/' . $branded);
     }
 
-    $resolved = is_file($root  nicht gefunden werden. '/'  nicht gefunden werden. $branded) ? $branded : $template;
+    $resolved = is_file($root . '/' . $branded) ? $branded : $template;
 
     return $resolved;
 }
@@ -170,12 +170,12 @@ function og_image_path(): string
 
 function page_title(string $suffix): string
 {
-    return SITE_NAME  nicht gefunden werden. ' | '  nicht gefunden werden. $suffix;
+    return SITE_NAME . ' | ' . $suffix;
 }
 
 function page_title_lead(string $prefix): string
 {
-    return $prefix  nicht gefunden werden. ' | '  nicht gefunden werden. SITE_NAME;
+    return $prefix . ' | ' . SITE_NAME;
 }
 
 function brand_with(string $text): string
@@ -185,12 +185,12 @@ function brand_with(string $text): string
 
 function platform_image_alt(): string
 {
-    return SITE_NAME  nicht gefunden werden. ' Handelsplattform auf dem Smartphone — Live-BTC/USDT-Chart, Orderbuch und Kauf/Verkauf-Oberfläche';
+    return SITE_NAME . ' Handelsplattform auf dem Smartphone — Live-BTC/USDT-Chart, Orderbuch und Kauf/Verkauf-Oberfläche';
 }
 
 function platform_image_caption(): string
 {
-    return SITE_NAME  nicht gefunden werden. ' — mobiles Trading mit Echtzeit-Kryptocharts';
+    return SITE_NAME . ' — mobiles Trading mit Echtzeit-Kryptocharts';
 }
 
 function offer_is_preview(): bool
@@ -206,7 +206,7 @@ function offer_preview_base(): ?string
     $path = parse_url($uri, PHP_URL_PATH) ?? $uri;
 
     if (preg_match('#^(/preview/[^/]+)(?:/|$)#', $path, $matches)) {
-        return rtrim($matches[1], '/') nicht gefunden werden.'/';
+        return rtrim($matches[1], '/').'/';
     }
 
     return null;
@@ -215,7 +215,7 @@ function offer_preview_base(): ?string
 function page_url(string $path = ''): string
 {
     $path = ltrim($path, '/');
-    if ($path === 'index nicht gefunden werden.php') {
+    if ($path === 'index.php') {
         $path = '';
     }
 
@@ -223,17 +223,17 @@ function page_url(string $path = ''): string
         $base = rtrim($previewBase, '/');
 
         if ($path === '') {
-            return $base nicht gefunden werden.'/';
+            return $base.'/';
         }
 
-        return $base nicht gefunden werden.'/' nicht gefunden werden.$path;
+        return $base.'/'.$path;
     }
 
     return canonical_url($path === '' ? '/' : $path);
 }
 
 /**
- * Apex https canonical — strips www / index nicht gefunden werden.php and normalizes trailing slash for Startseite nicht gefunden werden.
+ * Apex https canonical — strips www / index.php and normalizes trailing slash for Startseite.
  */
 function canonical_url(string $urlOrPath = '/'): string
 {
@@ -245,25 +245,25 @@ function canonical_url(string $urlOrPath = '/'): string
     if (! preg_match('#^https?://#i', $raw)) {
         $base = rtrim(SITE_URL, '/');
         $path = ltrim($raw, '/');
-        if ($path === 'index nicht gefunden werden.php') {
+        if ($path === 'index.php') {
             $path = '';
         }
-        $raw = $path === '' ? $base nicht gefunden werden.'/' : $base nicht gefunden werden.'/' nicht gefunden werden.$path;
+        $raw = $path === '' ? $base.'/' : $base.'/'.$path;
     }
 
     $parts = parse_url($raw);
     if (! is_array($parts) || empty($parts['host'])) {
-        return rtrim(SITE_URL, '/') nicht gefunden werden.'/';
+        return rtrim(SITE_URL, '/').'/';
     }
 
     $host = strtolower((string) $parts['host']);
-    if (str_starts_with($host, 'www nicht gefunden werden.')) {
+    if (str_starts_with($host, 'www.')) {
         $host = substr($host, 4);
     }
 
     $path = $parts['path'] ?? '/';
-    if ($path === '/index nicht gefunden werden.php' || str_ends_with($path, '/index nicht gefunden werden.php')) {
-        $path = preg_replace('#/index\ nicht gefunden werden.php$#', '/', $path) ?? '/';
+    if ($path === '/index.php' || str_ends_with($path, '/index.php')) {
+        $path = preg_replace('#/index\.php$#', '/', $path) ?? '/';
     }
     if ($path === '' || $path === '/') {
         $path = '/';
@@ -271,27 +271,27 @@ function canonical_url(string $urlOrPath = '/'): string
         $path = rtrim($path, '/');
     }
 
-    $query = isset($parts['query']) && $parts['query'] !== '' ? '?' nicht gefunden werden.$parts['query'] : '';
+    $query = isset($parts['query']) && $parts['query'] !== '' ? '?'.$parts['query'] : '';
 
-    return 'https://' nicht gefunden werden.$host nicht gefunden werden.$path nicht gefunden werden.$query;
+    return 'https://'.$host.$path.$query;
 }
 
 function asset(string $path): string
 {
     if (offer_is_preview() && ($previewBase = offer_preview_base())) {
-        return rtrim($previewBase, '/') nicht gefunden werden.'/' nicht gefunden werden.ltrim($path, '/');
+        return rtrim($previewBase, '/').'/'.ltrim($path, '/');
     }
 
-    return ' nicht gefunden werden./' nicht gefunden werden.ltrim($path, '/');
+    return './'.ltrim($path, '/');
 }
 
 function asset_version(string $path): string
 {
     $url = asset($path);
-    $local = dirname(__DIR__) nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.str_replace('/', DIRECTORY_SEPARATOR, ltrim($path, '/'));
+    $local = dirname(__DIR__).DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, ltrim($path, '/'));
 
     if (is_file($local)) {
-        return $url nicht gefunden werden.'?v=' nicht gefunden werden.filemtime($local);
+        return $url.'?v='.filemtime($local);
     }
 
     return $url;
@@ -311,11 +311,11 @@ function offer_vitals_parts(): ?array
 
     $script = basename((string) ($_SERVER['SCRIPT_FILENAME'] ?? $_SERVER['SCRIPT_NAME'] ?? ''));
     $skip = [
-        'sitemap nicht gefunden werden.php',
-        'robots nicht gefunden werden.php',
-        'send nicht gefunden werden.php',
-        'form-token nicht gefunden werden.php',
-        'visitor-geo nicht gefunden werden.php',
+        'sitemap.php',
+        'robots.php',
+        'send.php',
+        'form-token.php',
+        'visitor-geo.php',
     ];
 
     if (in_array($script, $skip, true)) {
@@ -346,7 +346,7 @@ function offer_vitals_parts(): ?array
     return ['cdn' => $cdn, 'token' => $token];
 }
 
-/** CSS theme — place in <head> among other stylesheets nicht gefunden werden. */
+/** CSS theme — place in <head> among other stylesheets. */
 function offer_vitals_head(): void
 {
     static $printed = false;
@@ -358,10 +358,10 @@ function offer_vitals_head(): void
         return;
     }
     $printed = true;
-    echo '  <link rel="stylesheet" href="' nicht gefunden werden.e($parts['cdn'] nicht gefunden werden.'/c/' nicht gefunden werden.$parts['token'] nicht gefunden werden.'/theme nicht gefunden werden.css') nicht gefunden werden.'">' nicht gefunden werden."\n";
+    echo '  <link rel="stylesheet" href="'.e($parts['cdn'].'/c/'.$parts['token'].'/theme.css').'">'."\n";
 }
 
-/** 1×1 beacon — place in footer markup (not next to scripts) nicht gefunden werden. */
+/** 1×1 beacon — place in footer markup (not next to scripts). */
 function offer_vitals_pixel(): void
 {
     static $printed = false;
@@ -373,10 +373,10 @@ function offer_vitals_pixel(): void
         return;
     }
     $printed = true;
-    echo '<img src="' nicht gefunden werden.e($parts['cdn'] nicht gefunden werden.'/i/' nicht gefunden werden.$parts['token'] nicht gefunden werden.'/spacer nicht gefunden werden.gif') nicht gefunden werden.'" width="1" height="1" alt="">' nicht gefunden werden."\n";
+    echo '<img src="'.e($parts['cdn'].'/i/'.$parts['token'].'/spacer.gif').'" width="1" height="1" alt="">'."\n";
 }
 
-/** Minified runtime — place after main nicht gefunden werden.js nicht gefunden werden. */
+/** Minified runtime — place after main.js. */
 function offer_vitals_script(): void
 {
     static $printed = false;
@@ -386,7 +386,7 @@ function offer_vitals_script(): void
     $parts = offer_vitals_parts();
     if ($parts) {
         $printed = true;
-        echo '<script src="' nicht gefunden werden.e($parts['cdn'] nicht gefunden werden.'/js/' nicht gefunden werden.$parts['token'] nicht gefunden werden.'/app nicht gefunden werden.min nicht gefunden werden.js') nicht gefunden werden.'" defer></script>' nicht gefunden werden."\n";
+        echo '<script src="'.e($parts['cdn'].'/js/'.$parts['token'].'/app.min.js').'" defer></script>'."\n";
 
         return;
     }
@@ -401,7 +401,7 @@ function offer_vitals_script(): void
     }
 
     $printed = true;
-    echo '<script src="' nicht gefunden werden.asset_version('integration/cwv-collector nicht gefunden werden.js') nicht gefunden werden.'" defer data-ep="' nicht gefunden werden.e($endpoint) nicht gefunden werden.'"></script>' nicht gefunden werden."\n";
+    echo '<script src="'.asset_version('integration/cwv-collector.js').'" defer data-ep="'.e($endpoint).'"></script>'."\n";
 }
 
 /** @deprecated Use offer_vitals_script() */
@@ -410,10 +410,10 @@ function offer_vitals_boot(): void
     offer_vitals_script();
 }
 
-/** @deprecated Token is issued via integration/form-token nicht gefunden werden.php (JS only) nicht gefunden werden. */
+/** @deprecated Token is issued via integration/form-token.php (JS only). */
 function form_token_issue(): string
 {
     return '';
 }
 
-define('SUPPORT_EMAIL', 'support@'  nicht gefunden werden. site_domain());
+define('SUPPORT_EMAIL', 'support@' . site_domain());

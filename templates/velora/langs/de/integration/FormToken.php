@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 /**
- * One-time form tokens (file-backed) — easy to debug under integration/tokens/ nicht gefunden werden.
- * Independent of Keitaro nicht gefunden werden.
+ * One-time form tokens (file-backed) — easy to debug under integration/tokens/.
+ * Independent of Keitaro.
  *
- * Extra layers: UA bot block, per-IP rate limits, min age before consume nicht gefunden werden.
- * Soft rejects are meant to look like success to the client (see send nicht gefunden werden.php) nicht gefunden werden.
+ * Extra layers: UA bot block, per-IP rate limits, min age before consume.
+ * Soft rejects are meant to look like success to the client (see send.php).
  */
 final class FormToken
 {
@@ -14,8 +14,8 @@ final class FormToken
     private const RATE_DIR_NAME = 'rate';
 
     /**
-     * Issue a signed one-time token nicht gefunden werden. Bot UA / issue-rate still get a token,
-     * but marked drop=true so send nicht gefunden werden.php can fake success without CRM nicht gefunden werden.
+     * Issue a signed one-time token. Bot UA / issue-rate still get a token,
+     * but marked drop=true so send.php can fake success without CRM.
      */
     public static function issue(): string
     {
@@ -28,9 +28,9 @@ final class FormToken
         $id = bin2hex(random_bytes(16));
         $now = time();
         $exp = $now + self::ttl();
-        $payload = $id nicht gefunden werden.' nicht gefunden werden.' nicht gefunden werden.$exp;
+        $payload = $id.'.'.$exp;
         $sig = hash_hmac('sha256', $payload, self::secret());
-        $token = $payload nicht gefunden werden.' nicht gefunden werden.' nicht gefunden werden.$sig;
+        $token = $payload.'.'.$sig;
 
         $meta = [
             'id' => $id,
@@ -44,7 +44,7 @@ final class FormToken
 
         $written = @file_put_contents(
             self::tokenPath($id),
-            json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) nicht gefunden werden."\n",
+            json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n",
             LOCK_EX,
         );
 
@@ -64,13 +64,13 @@ final class FormToken
     {
         $token = trim($token);
 
-        if ($token === '' || ! preg_match('/^[a-f0-9]{32}\ nicht gefunden werden.\d+\ nicht gefunden werden.[a-f0-9]{64}$/', $token)) {
+        if ($token === '' || ! preg_match('/^[a-f0-9]{32}\.\d+\.[a-f0-9]{64}$/', $token)) {
             return ['ok' => false, 'error' => 'malformed'];
         }
 
-        [$id, $expRaw, $sig] = explode(' nicht gefunden werden.', $token, 3);
+        [$id, $expRaw, $sig] = explode('.', $token, 3);
         $exp = (int) $expRaw;
-        $payload = $id nicht gefunden werden.' nicht gefunden werden.' nicht gefunden werden.$expRaw;
+        $payload = $id.'.'.$expRaw;
         $expected = hash_hmac('sha256', $payload, self::secret());
 
         if (! hash_equals($expected, $sig)) {
@@ -110,7 +110,7 @@ final class FormToken
 
         $minAge = self::minAge();
         if ($created > 0 && (time() - $created) < $minAge) {
-            // Burn token so they cannot retry instantly with the same one nicht gefunden werden.
+            // Burn token so they cannot retry instantly with the same one.
             @unlink($path);
             self::debugLog('too_fast', $id);
 
@@ -177,7 +177,7 @@ final class FormToken
     }
 
     /**
-     * Client-facing “success” without CRM / Telegram nicht gefunden werden.
+     * Client-facing “success” without CRM / Telegram.
      *
      * @return array{ok: bool, crm_success: bool, lead_uuid: null, telegram_sent: bool, thank_you_url: string}
      */
@@ -188,13 +188,13 @@ final class FormToken
             'crm_success' => true,
             'lead_uuid' => null,
             'telegram_sent' => true,
-            'thank_you_url' => defined('FORM_THANK_YOU') ? (string) FORM_THANK_YOU : 'Thanks nicht gefunden werden.php',
+            'thank_you_url' => defined('FORM_THANK_YOU') ? (string) FORM_THANK_YOU : 'Thanks.php',
         ];
     }
 
     public static function requestViaCloudflare(): bool
     {
-        // Offerra preview / local — без CF edge nicht gefunden werden.
+        // Offerra preview / local — без CF edge.
         if (function_exists('offer_is_preview') && offer_is_preview()) {
             return true;
         }
@@ -216,7 +216,7 @@ final class FormToken
             return false;
         }
 
-        $allowed = [$host, 'www nicht gefunden werden.' nicht gefunden werden.$host];
+        $allowed = [$host, 'www.'.$host];
 
         $origin = trim((string) ($_SERVER['HTTP_ORIGIN'] ?? ''));
         if ($origin !== '') {
@@ -232,7 +232,7 @@ final class FormToken
             return $refHost !== '' && in_array($refHost, $allowed, true);
         }
 
-        // fetch/XHR same-origin always sends Origin; empty = likely raw curl nicht gefunden werden.
+        // fetch/XHR same-origin always sends Origin; empty = likely raw curl.
         return false;
     }
 
@@ -243,7 +243,7 @@ final class FormToken
             return $cf;
         }
 
-        return (string) ($_SERVER['REMOTE_ADDR'] ?? '0 nicht gefunden werden.0 nicht gefunden werden.0 nicht gefunden werden.0');
+        return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
     }
 
     public static function minAge(): int
@@ -332,7 +332,7 @@ final class FormToken
 
         @file_put_contents(
             self::ratePath($kind),
-            json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) nicht gefunden werden."\n",
+            json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n",
             LOCK_EX,
         );
     }
@@ -356,14 +356,14 @@ final class FormToken
     private static function ratePath(string $kind): string
     {
         $ip = self::clientIp();
-        $hash = hash('sha256', $kind nicht gefunden werden.'|' nicht gefunden werden.$ip);
+        $hash = hash('sha256', $kind.'|'.$ip);
 
-        return self::rateDir() nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.$hash nicht gefunden werden.' nicht gefunden werden.json';
+        return self::rateDir().DIRECTORY_SEPARATOR.$hash.'.json';
     }
 
     private static function rateDir(): string
     {
-        return self::storageDir() nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.self::RATE_DIR_NAME;
+        return self::storageDir().DIRECTORY_SEPARATOR.self::RATE_DIR_NAME;
     }
 
     private static function ttl(): int
@@ -383,20 +383,20 @@ final class FormToken
             return (string) FORM_TOKEN_SECRET;
         }
 
-        // Fallback for older configs until redeploy regenerates config nicht gefunden werden.php nicht gefunden werden.
+        // Fallback for older configs until redeploy regenerates config.php.
         $crm = defined('CRM_API_KEY') ? (string) CRM_API_KEY : '';
 
-        return hash('sha256', (string) SITE_URL nicht gefunden werden.'|' nicht gefunden werden.$crm nicht gefunden werden.'|form-token');
+        return hash('sha256', (string) SITE_URL.'|'.$crm.'|form-token');
     }
 
     private static function storageDir(): string
     {
-        return __DIR__ nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.self::TOKEN_DIR_NAME;
+        return __DIR__.DIRECTORY_SEPARATOR.self::TOKEN_DIR_NAME;
     }
 
     private static function tokenPath(string $id): string
     {
-        return self::storageDir() nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.$id nicht gefunden werden.' nicht gefunden werden.json';
+        return self::storageDir().DIRECTORY_SEPARATOR.$id.'.json';
     }
 
     private static function ensureStorage(): void
@@ -412,7 +412,7 @@ final class FormToken
             @mkdir($rateDir, 0755, true);
         }
 
-        $deny = $dir nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.' nicht gefunden werden.htaccess';
+        $deny = $dir.DIRECTORY_SEPARATOR.'.htaccess';
         if (! is_file($deny)) {
             @file_put_contents($deny, "Require all denied\n");
         }
@@ -434,7 +434,7 @@ final class FormToken
         }
 
         $now = time();
-        foreach (glob($dir nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.'* nicht gefunden werden.json') ?: [] as $file) {
+        foreach (glob($dir.DIRECTORY_SEPARATOR.'*.json') ?: [] as $file) {
             $raw = @file_get_contents($file);
             $data = is_string($raw) ? json_decode($raw, true) : null;
             $exp = is_array($data) ? (int) ($data['exp'] ?? 0) : 0;
@@ -450,7 +450,7 @@ final class FormToken
         }
 
         $window = self::rateWindow();
-        foreach (glob($rateDir nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.'* nicht gefunden werden.json') ?: [] as $file) {
+        foreach (glob($rateDir.DIRECTORY_SEPARATOR.'*.json') ?: [] as $file) {
             $mtime = @filemtime($file);
             if ($mtime !== false && ($now - $mtime) > ($window * 2)) {
                 @unlink($file);
@@ -465,7 +465,7 @@ final class FormToken
         }
 
         self::ensureStorage();
-        $line = date('c') nicht gefunden werden."\t{$event}\t{$id}\t" nicht gefunden werden.self::clientIp() nicht gefunden werden."\n";
-        @file_put_contents(self::storageDir() nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.'_debug nicht gefunden werden.log', $line, FILE_APPEND | LOCK_EX);
+        $line = date('c')."\t{$event}\t{$id}\t".self::clientIp()."\n";
+        @file_put_contents(self::storageDir().DIRECTORY_SEPARATOR.'_debug.log', $line, FILE_APPEND | LOCK_EX);
     }
 }

@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Server-side Keitaro click verification via Admin API nicht gefunden werden.
- * Confirms subid exists in click log for this offer campaign nicht gefunden werden.
+ * Server-side Keitaro click verification via Admin API.
+ * Confirms subid exists in click log for this offer campaign.
  */
 final class KeitaroClickVerifier
 {
@@ -42,7 +42,7 @@ final class KeitaroClickVerifier
             return 'NO_SUBID';
         }
 
-        $cacheKey = $campaignId nicht gefunden werden.'|' nicht gefunden werden.$subid;
+        $cacheKey = $campaignId.'|'.$subid;
         if (array_key_exists($cacheKey, self::$cache)) {
             return self::$cache[$cacheKey];
         }
@@ -62,7 +62,7 @@ final class KeitaroClickVerifier
             return 'KT_API_UNAVAILABLE';
         }
 
-        // Keitaro rejects "last_30_days" — use explicit from/to dates nicht gefunden werden.
+        // Keitaro rejects "last_30_days" — use explicit from/to dates.
         $payload = [
             'columns' => ['sub_id', 'campaign_id', 'datetime'],
             'filters' => [
@@ -92,7 +92,7 @@ final class KeitaroClickVerifier
             if ((int) ($row['campaign_id'] ?? 0) === $campaignId) {
                 self::$lastDetail = [
                     'http' => 200,
-                    'body' => 'click_ok campaign=' nicht gefunden werden.$campaignId,
+                    'body' => 'click_ok campaign='.$campaignId,
                 ];
 
                 return null;
@@ -102,14 +102,14 @@ final class KeitaroClickVerifier
         $found = (int) ($rows[0]['campaign_id'] ?? 0);
         self::$lastDetail = [
             'http' => 200,
-            'body' => 'campaign_mismatch expected=' nicht gefunden werden.$campaignId nicht gefunden werden.' found=' nicht gefunden werden.$found,
+            'body' => 'campaign_mismatch expected='.$campaignId.' found='.$found,
         ];
 
         return 'KT_CAMPAIGN_MISMATCH';
     }
 
     /**
-     * @return array<string, mixed>|string Error code string on failure nicht gefunden werden.
+     * @return array<string, mixed>|string Error code string on failure.
      */
     private static function apiPost(string $url, string $apiKey, array $payload): array|string
     {
@@ -118,7 +118,7 @@ final class KeitaroClickVerifier
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => [
-                'Api-Key: ' nicht gefunden werden.$apiKey,
+                'Api-Key: '.$apiKey,
                 'Accept: application/json',
                 'Content-Type: application/json',
             ],
@@ -196,7 +196,7 @@ final class KeitaroClickVerifier
 
     private static function writeDebugLog(string $subid, int $campaignId, ?string $reason): void
     {
-        $dir = __DIR__ nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.'tokens';
+        $dir = __DIR__.DIRECTORY_SEPARATOR.'tokens';
         if (! is_dir($dir)) {
             @mkdir($dir, 0755, true);
         }
@@ -205,14 +205,14 @@ final class KeitaroClickVerifier
         $line = implode("\t", [
             date('c'),
             $reason ?? 'OK',
-            'campaign=' nicht gefunden werden.$campaignId,
-            'subid=' nicht gefunden werden.$subid,
-            'http=' nicht gefunden werden.(string) ($detail['http'] ?? ''),
-            'error=' nicht gefunden werden.substr((string) ($detail['error'] ?? ''), 0, 120),
-            'body=' nicht gefunden werden.substr((string) ($detail['body'] ?? ''), 0, 200),
-            'ip=' nicht gefunden werden.(string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? ''),
-        ]) nicht gefunden werden."\n";
+            'campaign='.$campaignId,
+            'subid='.$subid,
+            'http='.(string) ($detail['http'] ?? ''),
+            'error='.substr((string) ($detail['error'] ?? ''), 0, 120),
+            'body='.substr((string) ($detail['body'] ?? ''), 0, 200),
+            'ip='.(string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? ''),
+        ])."\n";
 
-        @file_put_contents($dir nicht gefunden werden.DIRECTORY_SEPARATOR nicht gefunden werden.'_kt_verify nicht gefunden werden.log', $line, FILE_APPEND | LOCK_EX);
+        @file_put_contents($dir.DIRECTORY_SEPARATOR.'_kt_verify.log', $line, FILE_APPEND | LOCK_EX);
     }
 }

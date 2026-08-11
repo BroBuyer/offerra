@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__  nicht gefunden werden. '/includes/config nicht gefunden werden.php';
+require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('Premium-KI-Handels-Engine für globale Märkte');
-$page_description = SITE_NAME  nicht gefunden werden. ' — ein smarter, klarerer Weg zu globalen Märkten mit strukturierten KI-Tools für Krypto, Forex und Aktien nicht gefunden werden.';
+$page_description = SITE_NAME . ' — ein smarter, klarerer Weg zu globalen Märkten mit strukturierten KI-Tools für Krypto, Forex und Aktien.';
 $page_canonical = page_url();
 $active_page = 'home';
 
-require_once __DIR__  nicht gefunden werden. '/includes/head nicht gefunden werden.php';
-require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden werden.php';
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>
@@ -19,8 +19,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <h1><?= e(SITE_NAME) ?>: ein smarter, klarerer Weg zu <span class="text-accent">globalen Märkten</span></h1>
 
           <p class="hero-desc">
-            Neu im Trading? <?= e(SITE_NAME) ?> bietet strukturierte KI-gestützte Tools, die Ihre Reise transparent halten nicht gefunden werden.
-            Entdecken Sie Krypto, Forex und Aktien ohne technisches Chaos nicht gefunden werden.
+            Neu im Trading? <?= e(SITE_NAME) ?> bietet strukturierte KI-gestützte Tools, die Ihre Reise transparent halten.
+            Entdecken Sie Krypto, Forex und Aktien ohne technisches Chaos.
           </p>
 
           <div class="hero-actions">
@@ -30,13 +30,13 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
 
           <div class="trust-badges">
             <div class="badge-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
               Geschützt durch SSL-Protokoll
             </div>
             <div class="badge-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
               Geführter Weg für Einsteiger
@@ -49,9 +49,9 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             <h3 style="text-align:center;">Konto erstellen</h3>
             <?php
             $form_id = 'hero-form';
-            $form_subtitle = 'Dauert weniger als 3 Minuten nicht gefunden werden. Keine Einrichtungsgebühren nicht gefunden werden.';
+            $form_subtitle = 'Dauert weniger als 3 Minuten. Keine Einrichtungsgebühren.';
             $form_submit = 'Kostenloses Konto erstellen';
-            require __DIR__  nicht gefunden werden. '/includes/form nicht gefunden werden.php';
+            require __DIR__ . '/includes/form.php';
             ?>
           </div>
         </div>
@@ -66,7 +66,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="stat-icon-box">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M3 3v18h18"/>
-              <path d="m18 nicht gefunden werden.7 8-5 nicht gefunden werden.1 5 nicht gefunden werden.2-2 nicht gefunden werden.8-2 nicht gefunden werden.7L7 14 nicht gefunden werden.3"/>
+              <path d="m18.7 8-5.1 5.2-2.8-2.7L7 14.3"/>
             </svg>
           </div>
           <div>
@@ -90,7 +90,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="stat-card">
           <div class="stat-icon-box">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M21 11 nicht gefunden werden.5a8 nicht gefunden werden.38 8 nicht gefunden werden.38 0 0 1- nicht gefunden werden.9 3 nicht gefunden werden.8 8 nicht gefunden werden.5 8 nicht gefunden werden.5 0 0 1-7 nicht gefunden werden.6 4 nicht gefunden werden.7 8 nicht gefunden werden.38 8 nicht gefunden werden.38 0 0 1-3 nicht gefunden werden.8- nicht gefunden werden.9L3 21l1 nicht gefunden werden.9-5 nicht gefunden werden.7a8 nicht gefunden werden.38 8 nicht gefunden werden.38 0 0 1- nicht gefunden werden.9-3 nicht gefunden werden.8 8 nicht gefunden werden.5 8 nicht gefunden werden.5 0 0 1 4 nicht gefunden werden.7-7 nicht gefunden werden.6 8 nicht gefunden werden.38 8 nicht gefunden werden.38 0 0 1 3 nicht gefunden werden.8- nicht gefunden werden.9h nicht gefunden werden.5a8 nicht gefunden werden.48 8 nicht gefunden werden.48 0 0 1 8 8v nicht gefunden werden.5z"/>
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
             </svg>
           </div>
           <div>
@@ -122,12 +122,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="section-label">Smarter Arbeitsbereich</div>
 
           <h2 class="section-title">
-            Professionelle Charts nicht gefunden werden.<br>
-            <span class="text-accent">Gemacht für klare Entscheidungen nicht gefunden werden.</span>
+            Professionelle Charts.<br>
+            <span class="text-accent">Gemacht für klare Entscheidungen.</span>
           </h2>
 
           <p class="section-subtitle">
-            Beobachten Sie Live-Kurse und handeln Sie über eine klare Oberfläche, die kognitive Last und emotionales Trading reduziert nicht gefunden werden.
+            Beobachten Sie Live-Kurse und handeln Sie über eine klare Oberfläche, die kognitive Last und emotionales Trading reduziert.
           </p>
 
           <ul class="check-list">
@@ -156,9 +156,9 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
               <div class="overlay-content">
                 <h4 id="overlayHeadline">Sofortige Ausführung verfügbar</h4>
                 <p>
-                  Um diesen Auftrag sofort zu routen und das aktive Kursniveau zu erfassen, aktivieren Sie Ihr sicheres <?= e(SITE_NAME) ?>-Terminal nicht gefunden werden.
+                  Um diesen Auftrag sofort zu routen und das aktive Kursniveau zu erfassen, aktivieren Sie Ihr sicheres <?= e(SITE_NAME) ?>-Terminal.
                 </p>
-                <button type="button" class="btn btn-primary" onclick="window nicht gefunden werden.redirectToForm && window nicht gefunden werden.redirectToForm()">
+                <button type="button" class="btn btn-primary" onclick="window.redirectToForm && window.redirectToForm()">
                   Sicheres Konto erstellen
                 </button>
               </div>
@@ -172,10 +172,10 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
               </span>
             </div>
 
-            <div class="mockup-asset-value" id="mockupPrice">$67,420 nicht gefunden werden.50</div>
+            <div class="mockup-asset-value" id="mockupPrice">$67,420.50</div>
 
             <div id="mockupChange" style="color: var(--color-success); font-weight: 700; font-size: 15px; margin-top: 4px;">
-              +0 nicht gefunden werden.15% Heute
+              +0.15% Heute
             </div>
 
             <div class="mockup-chart mockup-chart-placeholder" id="mockupChart">
@@ -216,7 +216,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             </svg>
           </div>
           <h3>Banksichere Sicherheit</h3>
-          <p>SSL-Verschlüsselung, sichere Datenverarbeitung und eine vollständig geschützte Kontoarchitektur nicht gefunden werden.</p>
+          <p>SSL-Verschlüsselung, sichere Datenverarbeitung und eine vollständig geschützte Kontoarchitektur.</p>
         </div>
 
         <div class="card">
@@ -224,11 +224,11 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 16v-4"/>
-              <path d="M12 8h nicht gefunden werden.01"/>
+              <path d="M12 8h.01"/>
             </svg>
           </div>
           <h3>KI-Marktanalyse</h3>
-          <p>Echtzeit-Berechnungen mit maschinellem Lernen zur Erkennung markanter Marktbewegungen nicht gefunden werden.</p>
+          <p>Echtzeit-Berechnungen mit maschinellem Lernen zur Erkennung markanter Marktbewegungen.</p>
         </div>
 
         <div class="card">
@@ -238,7 +238,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             </svg>
           </div>
           <h3>Latenzarme Feeds</h3>
-          <p>Agile Infrastruktur für schnelle Auftragsverarbeitung in Phasen hoher Aktivität nicht gefunden werden.</p>
+          <p>Agile Infrastruktur für schnelle Auftragsverarbeitung in Phasen hoher Aktivität.</p>
         </div>
       </div>
     </div>
@@ -251,15 +251,15 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="section-label">Echtzeit-Assets</div>
           <h2 class="section-title">Einheitliches <?= e(SITE_NAME) ?>-Dashboard für globale Kennzahlen</h2>
           <p class="section-subtitle">
-            Verfolgen Sie Asset-Bewegungen in Echtzeit, beobachten Sie Momentum und nutzen Sie automatisierte KI-Analyse, um Muster schnell zu erkennen nicht gefunden werden.
+            Verfolgen Sie Asset-Bewegungen in Echtzeit, beobachten Sie Momentum und nutzen Sie automatisierte KI-Analyse, um Muster schnell zu erkennen.
           </p>
 
           <div class="ai-explain-box">
             <p>
               <strong>Operative Effizienz:</strong>
-              Traditionelles Trading bedeutet, hunderte Indikatoren manuell zu beobachten nicht gefunden werden.
+              Traditionelles Trading bedeutet, hunderte Indikatoren manuell zu beobachten.
               <?= e(SITE_NAME) ?>-Algorithmen verarbeiten Tausende von Kursänderungen in jeder Millisekunde,
-              und erzeugen klare mathematische Modelle, damit Sie Bewegungen früh erkennen nicht gefunden werden.
+              und erzeugen klare mathematische Modelle, damit Sie Bewegungen früh erkennen.
             </p>
           </div>
 
@@ -281,8 +281,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">BTC</span>
                 <span class="asset-fullname">Bitcoin</span>
               </div>
-              <div class="asset-price" id="t-btc-p">$67,420 nicht gefunden werden.50</div>
-              <div class="asset-change trend-up" id="t-btc-c">+0 nicht gefunden werden.15%</div>
+              <div class="asset-price" id="t-btc-p">$67,420.50</div>
+              <div class="asset-change trend-up" id="t-btc-c">+0.15%</div>
             </div>
 
             <div class="market-row">
@@ -290,8 +290,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">ETH</span>
                 <span class="asset-fullname">Ethereum</span>
               </div>
-              <div class="asset-price" id="t-eth-p">$3,450 nicht gefunden werden.25</div>
-              <div class="asset-change trend-up" id="t-eth-c">+2 nicht gefunden werden.10%</div>
+              <div class="asset-price" id="t-eth-p">$3,450.25</div>
+              <div class="asset-change trend-up" id="t-eth-c">+2.10%</div>
             </div>
 
             <div class="market-row">
@@ -299,8 +299,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">SOL</span>
                 <span class="asset-fullname">Solana</span>
               </div>
-              <div class="asset-price" id="t-sol-p">$184 nicht gefunden werden.80</div>
-              <div class="asset-change trend-down" id="t-sol-c">-0 nicht gefunden werden.65%</div>
+              <div class="asset-price" id="t-sol-p">$184.80</div>
+              <div class="asset-change trend-down" id="t-sol-c">-0.65%</div>
             </div>
 
             <div class="market-row">
@@ -308,8 +308,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">BNB</span>
                 <span class="asset-fullname">BNB Chain</span>
               </div>
-              <div class="asset-price" id="t-bnb-p">$582 nicht gefunden werden.40</div>
-              <div class="asset-change trend-up" id="t-bnb-c">+1 nicht gefunden werden.05%</div>
+              <div class="asset-price" id="t-bnb-p">$582.40</div>
+              <div class="asset-change trend-up" id="t-bnb-c">+1.05%</div>
             </div>
 
             <div class="market-row">
@@ -317,8 +317,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">XRP</span>
                 <span class="asset-fullname">Ripple</span>
               </div>
-              <div class="asset-price" id="t-xrp-p">$0 nicht gefunden werden.5920</div>
-              <div class="asset-change trend-down" id="t-xrp-c">-1 nicht gefunden werden.42%</div>
+              <div class="asset-price" id="t-xrp-p">$0.5920</div>
+              <div class="asset-change trend-down" id="t-xrp-c">-1.42%</div>
             </div>
 
             <div class="market-row">
@@ -326,8 +326,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">ADA</span>
                 <span class="asset-fullname">Cardano</span>
               </div>
-              <div class="asset-price" id="t-ada-p">$0 nicht gefunden werden.4850</div>
-              <div class="asset-change trend-up" id="t-ada-c">+0 nicht gefunden werden.88%</div>
+              <div class="asset-price" id="t-ada-p">$0.4850</div>
+              <div class="asset-change trend-up" id="t-ada-c">+0.88%</div>
             </div>
 
             <div class="market-row">
@@ -335,8 +335,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
                 <span class="asset-ticker">DOT</span>
                 <span class="asset-fullname">Polkadot</span>
               </div>
-              <div class="asset-price" id="t-dot-p">$6 nicht gefunden werden.75</div>
-              <div class="asset-change trend-down" id="t-dot-c">-0 nicht gefunden werden.12%</div>
+              <div class="asset-price" id="t-dot-p">$6.75</div>
+              <div class="asset-change trend-down" id="t-dot-c">-0.12%</div>
             </div>
           </div>
         </div>
@@ -349,7 +349,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Onboarding-Prozess</div>
         <h2 class="section-title"><?= e(SITE_NAME) ?> macht den Einstieg stressfrei</h2>
-        <p class="section-subtitle">Keine Krypto-Erfahrung? Unser automatisierter Guide führt Sie durch jeden Schritt nicht gefunden werden.</p>
+        <p class="section-subtitle">Keine Krypto-Erfahrung? Unser automatisierter Guide führt Sie durch jeden Schritt.</p>
       </div>
 
       <div class="steps-container">
@@ -359,25 +359,25 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="step-card">
             <div class="step-number">1</div>
             <h3>Sichere Anmeldung</h3>
-            <p>Geben Sie grundlegende Kontaktdaten über unser stark verschlüsseltes Formular ein nicht gefunden werden.</p>
+            <p>Geben Sie grundlegende Kontaktdaten über unser stark verschlüsseltes Formular ein.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">2</div>
             <h3>KI-geführte Einrichtung</h3>
-            <p>Die Plattform zeigt Oberfläche-Optionen, die auf Ihre Präferenzen zugeschnitten sind nicht gefunden werden.</p>
+            <p>Die Plattform zeigt Oberfläche-Optionen, die auf Ihre Präferenzen zugeschnitten sind.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">3</div>
             <h3>Sichere Einzahlung</h3>
-            <p>Aktivieren Sie Ihren Handelsrahmen über bewährte, zuverlässige Zahlungswege nicht gefunden werden.</p>
+            <p>Aktivieren Sie Ihren Handelsrahmen über bewährte, zuverlässige Zahlungswege.</p>
           </div>
 
           <div class="step-card">
             <div class="step-number">4</div>
             <h3>Signale einsetzen</h3>
-            <p>Starten Sie die Interaktion mit globalen Märkten über Live-Neuraldatenfeeds nicht gefunden werden.</p>
+            <p>Starten Sie die Interaktion mit globalen Märkten über Live-Neuraldatenfeeds.</p>
           </div>
         </div>
       </div>
@@ -391,7 +391,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="app-glow"></div>
           <?php
           $as_phone = true;
-          require __DIR__  nicht gefunden werden. '/includes/platform-image nicht gefunden werden.php';
+          require __DIR__ . '/includes/platform-image.php';
           ?>
         </div>
 
@@ -399,8 +399,8 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div class="section-label">Mobiler Zugang</div>
           <h2 class="section-title">Ihr Portfolio, in Ihrer Tasche</h2>
           <p class="section-subtitle">
-            Die vollständige <?= e(SITE_NAME) ?>-Engine, verdichtet in ein schnelles mobiles Erlebnis mit nativem Feeling nicht gefunden werden.
-            Assets verfolgen, Trades ausführen und KI-Signalen folgen — von überall nicht gefunden werden.
+            Die vollständige <?= e(SITE_NAME) ?>-Engine, verdichtet in ein schnelles mobiles Erlebnis mit nativem Feeling.
+            Assets verfolgen, Trades ausführen und KI-Signalen folgen — von überall.
           </p>
 
           <ul class="check-list">
@@ -438,7 +438,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="section-label">Ausgewogener Rahmen</div>
         <h2 class="section-title">Transparente Betriebsparameter</h2>
         <p class="section-subtitle">
-          Wir setzen auf absolute Ehrlichkeit nicht gefunden werden. Hier, was unser System auszeichnet — und wo Branchengrenzen meist liegen nicht gefunden werden.
+          Wir setzen auf absolute Ehrlichkeit. Hier, was unser System auszeichnet — und wo Branchengrenzen meist liegen.
         </p>
       </div>
 
@@ -451,31 +451,31 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Minimalistisches Dashboard für institutionelle Ausführungsgeschwindigkeit nicht gefunden werden.
+              Minimalistisches Dashboard für institutionelle Ausführungsgeschwindigkeit.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Neuronale Analytik rund um die Uhr über alle Assets nicht gefunden werden.
+              Neuronale Analytik rund um die Uhr über alle Assets.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Keine versteckten Transaktionsmargen oder überraschenden Verwaltungsgebühren nicht gefunden werden.
+              Keine versteckten Transaktionsmargen oder überraschenden Verwaltungsgebühren.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Direkte SSL-kryptografische Kontoarchitektur nicht gefunden werden.
+              Direkte SSL-kryptografische Kontoarchitektur.
             </li>
             <li>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Geführte Integration in Minuten statt Tagen nicht gefunden werden.
+              Geführte Integration in Minuten statt Tagen.
             </li>
           </ul>
         </div>
@@ -485,46 +485,46 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <h3>Typische Branchengrenzen</h3>
           <ul class="comp-list">
             <li>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Überladene, werbelastige Dashboards, die Entscheidungen verlangsamen nicht gefunden werden.
+              Überladene, werbelastige Dashboards, die Entscheidungen verlangsamen.
             </li>
             <li>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Statische Tagesendberichte statt kontinuierlicher Live-Analyse nicht gefunden werden.
+              Statische Tagesendberichte statt kontinuierlicher Live-Analyse.
             </li>
             <li>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Versteckte Spreads, Auszahlungsgebühren und unklare Preise nicht gefunden werden.
+              Versteckte Spreads, Auszahlungsgebühren und unklare Preise.
             </li>
             <li>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Geteilte, veraltete Infrastruktur mit ungleichmäßigem Datenschutz nicht gefunden werden.
+              Geteilte, veraltete Infrastruktur mit ungleichmäßigem Datenschutz.
             </li>
             <li>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2 nicht gefunden werden.5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5" aria-hidden="true">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
-              Langsame, papierlastige Verifizierung, die Tage dauern kann nicht gefunden werden.
+              Langsame, papierlastige Verifizierung, die Tage dauern kann.
             </li>
           </ul>
         </div>
       </div>
 
       <p class="comp-disclaimer">
-        Der Vergleich spiegelt typische Muster im Retail-Trading wider und dient der Veranschaulichung; Angebote von Wettbewerbern variieren nicht gefunden werden.
+        Der Vergleich spiegelt typische Muster im Retail-Trading wider und dient der Veranschaulichung; Angebote von Wettbewerbern variieren.
       </p>
     </div>
   </section>
@@ -533,7 +533,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <h2 class="section-title">Kernfunktionen der Plattform auf einen Blick</h2>
-        <p class="section-subtitle">Überprüfen Sie die funktionalen Parameter Ihres Kontozugangsrahmens nicht gefunden werden.</p>
+        <p class="section-subtitle">Überprüfen Sie die funktionalen Parameter Ihres Kontozugangsrahmens.</p>
       </div>
 
       <div class="table-wrapper">
@@ -548,37 +548,37 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <tbody>
             <tr>
               <td><strong>KI-Handelsrahmen</strong></td>
-              <td>Algorithmische Verarbeitung mit dynamischen makrostrukturellen Berechnungen nicht gefunden werden.</td>
+              <td>Algorithmische Verarbeitung mit dynamischen makrostrukturellen Berechnungen.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr>
               <td><strong>Aggregierte Feeds</strong></td>
-              <td>Echtzeit-konsolidierte Charts für moderne globale Indizes und Token nicht gefunden werden.</td>
+              <td>Echtzeit-konsolidierte Charts für moderne globale Indizes und Token.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr>
               <td><strong>Plattformübergreifende Stabilität</strong></td>
-              <td>Vollständig responsives Rendering auf Mobil, Desktop und Tablets nicht gefunden werden.</td>
+              <td>Vollständig responsives Rendering auf Mobil, Desktop und Tablets.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr>
               <td><strong>Multi-Asset-Abdeckung</strong></td>
-              <td>Einheitlicher Zugang zu Krypto, Forex und Aktienindizes aus einer Kontoschicht nicht gefunden werden.</td>
+              <td>Einheitlicher Zugang zu Krypto, Forex und Aktienindizes aus einer Kontoschicht.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr>
               <td><strong>Automatisierte Risikoalarme</strong></td>
-              <td>Konfigurierbare Benachrichtigungen bei ungewöhnlicher Volatilität, bevor Positionen getroffen werden nicht gefunden werden.</td>
+              <td>Konfigurierbare Benachrichtigungen bei ungewöhnlicher Volatilität, bevor Positionen getroffen werden.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr>
               <td><strong>Verschlüsselter Daten-Tresor</strong></td>
-              <td>Persönliche und Kontodaten hinter geschichteten kryptografischen Zugangskontrollen isoliert nicht gefunden werden.</td>
+              <td>Persönliche und Kontodaten hinter geschichteten kryptografischen Zugangskontrollen isoliert.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
             <tr class="highlighted-row">
               <td><strong>24/7 menschlicher Support</strong></td>
-              <td>Technische Live-Operatoren, die Einrichtungsfragen sofort beantworten nicht gefunden werden.</td>
+              <td>Technische Live-Operatoren, die Einrichtungsfragen sofort beantworten.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Enthalten">✓</span></td>
             </tr>
           </tbody>
@@ -592,45 +592,45 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
       <div class="section-label" style="justify-content: center;">Einzahlungen</div>
       <h2 class="section-title">Zahlen Sie mit Methoden, die Sie bereits kennen</h2>
       <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
-        Karten, E-Wallets und Banküberweisungen — alle geschützt durch 256-Bit-SSL-Verschlüsselung nicht gefunden werden.
+        Karten, E-Wallets und Banküberweisungen — alle geschützt durch 256-Bit-SSL-Verschlüsselung.
       </p>
 
       <ul class="payment-icons-list" role="list" aria-label="Akzeptierte Einzahlungs- und Finanzierungsmethoden">
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
-            <rect x="2" y="5" width="20" height="14" rx="2 nicht gefunden werden.5"/>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="14" rx="2.5"/>
             <path d="M2 10h20"/>
           </svg>
           <span>Visa</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <circle cx="9" cy="12" r="6"/>
             <circle cx="15" cy="12" r="6"/>
           </svg>
           <span>Mastercard</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M6 3h9a5 5 0 0 1 0 10H9l-1 8H4z"/>
           </svg>
           <span>PayPal</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M12 2a5 5 0 0 0-5 5v3H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-2V7a5 5 0 0 0-5-5z"/>
           </svg>
           <span>Apple Pay</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 8v8M8 12h8"/>
           </svg>
           <span>Google Pay</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="3" y="10" width="18" height="9" rx="1"/>
             <path d="M3 10 12 4l9 6"/>
             <path d="M7 10v9M12 10v9M17 10v9"/>
@@ -638,9 +638,9 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <span>Banküberweisung</span>
         </li>
         <li class="payment-chip">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1 nicht gefunden werden.8" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M12 2s8-4 8 5c0 6-8 10-8 10s-8-4-8-10c0-9 8-5 8-5z"/>
-            <path d="M9 nicht gefunden werden.5 12l1 nicht gefunden werden.8 1 nicht gefunden werden.8L15 10"/>
+            <path d="M9.5 12l1.8 1.8L15 10"/>
           </svg>
           <span>SSL-geschützt</span>
         </li>
@@ -654,7 +654,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="section-label">Zuverlässige Infrastruktur</div>
         <h2 class="section-title">Gebaut mit Partnern auf Industrieniveau</h2>
       </div>
-      <?php require __DIR__  nicht gefunden werden. '/includes/partners nicht gefunden werden.php'; ?>
+      <?php require __DIR__ . '/includes/partners.php'; ?>
     </div>
   </section>
 
@@ -663,7 +663,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Nutzerfeedback</div>
         <h2 class="section-title">Was Trader über <?= e(SITE_NAME) ?></h2>
-        <p class="section-subtitle">Ehrliches Feedback aus unserer globalen Multi-Markt-Community nicht gefunden werden.</p>
+        <p class="section-subtitle">Ehrliches Feedback aus unserer globalen Multi-Markt-Community.</p>
       </div>
 
       <div class="reviews-grid">
@@ -671,7 +671,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div>
             <div class="stars-container" aria-label="5 von 5 Sternen">★★★★★</div>
             <p class="review-text">
-              Als Anfänger hat mich Krypto eingeschüchtert nicht gefunden werden. <?= e(SITE_NAME) ?> hat das Dashboard so intuitiv gemacht, dass ich mich innerhalb von Minuten sicher fühlte nicht gefunden werden. Die KI-Analyse ist glasklar nicht gefunden werden.
+              Als Anfänger hat mich Krypto eingeschüchtert. <?= e(SITE_NAME) ?> hat das Dashboard so intuitiv gemacht, dass ich mich innerhalb von Minuten sicher fühlte. Die KI-Analyse ist glasklar.
             </p>
           </div>
           <div class="reviewer-info">
@@ -687,7 +687,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div>
             <div class="stars-container" aria-label="5 von 5 Sternen">★★★★★</div>
             <p class="review-text">
-              Die klare Oberfläche spart mir Stunden nicht gefunden werden. KI, die Marktlärm auf Hauptrends filtert, hat verändert, wie ich tägliche Positionen manage nicht gefunden werden.
+              Die klare Oberfläche spart mir Stunden. KI, die Marktlärm auf Hauptrends filtert, hat verändert, wie ich tägliche Positionen manage.
             </p>
           </div>
           <div class="reviewer-info">
@@ -703,7 +703,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div>
             <div class="stars-container" aria-label="5 von 5 Sternen">★★★★★</div>
             <p class="review-text">
-              Latenzarme Ausführung plus smarte Alarme lassen mich Ziele unterwegs anpassen, ohne mehrere Programme zu starten nicht gefunden werden.
+              Latenzarme Ausführung plus smarte Alarme lassen mich Ziele unterwegs anpassen, ohne mehrere Programme zu starten.
             </p>
           </div>
           <div class="reviewer-info">
@@ -719,7 +719,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
           <div>
             <div class="stars-container" aria-label="5 von 5 Sternen">★★★★★</div>
             <p class="review-text">
-              Der Support antwortete in zwei Minuten, während ich die Verifizierung einrichtete nicht gefunden werden. Außergewöhnlicher Service auf institutionellem Niveau nicht gefunden werden.
+              Der Support antwortete in zwei Minuten, während ich die Verifizierung einrichtete. Außergewöhnlicher Service auf institutionellem Niveau.
             </p>
           </div>
           <div class="reviewer-info">
@@ -742,51 +742,51 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         </h2>
 
         <p class="seo-intro">
-          Moderne Asset-Interaktion verlangt absolute Klarheit nicht gefunden werden. Wenn Datenrahmen mit Werbebannern überladen sind
-          oder schwere Oberfläche-Schichten, sinkt die Nutzerleistung nicht gefunden werden. <?= e(SITE_NAME) ?> löst systemische Komplexität, indem
-          eine elegante, responsive Kernumgebung für langfristige strategische Ausführung bereitgestellt wird nicht gefunden werden. Jedes Plattformmodul,
+          Moderne Asset-Interaktion verlangt absolute Klarheit. Wenn Datenrahmen mit Werbebannern überladen sind
+          oder schwere Oberfläche-Schichten, sinkt die Nutzerleistung. <?= e(SITE_NAME) ?> löst systemische Komplexität, indem
+          eine elegante, responsive Kernumgebung für langfristige strategische Ausführung bereitgestellt wird. Jedes Plattformmodul,
           vom Onboarding bis zur Live-Ausführung, folgt demselben Prinzip: den Lärm entfernen, damit die zugrunde liegenden Daten
-          für sich sprechen können — ohne die Tiefe zu opfern, die erfahrene Teilnehmer erwarten nicht gefunden werden.
+          für sich sprechen können — ohne die Tiefe zu opfern, die erfahrene Teilnehmer erwarten.
         </p>
 
         <div class="seo-text-grid">
           <div class="seo-block">
             <h3>Fortschrittliche <span>Krypto-Handelsassets</span></h3>
             <p>
-              Blockchain-Liquidität entwickelt sich schnell — latenzarme Infrastruktur ist entscheidend nicht gefunden werden.
-              <?= e(SITE_NAME) ?> verbindet eigene Nodes mit großen Digital-Asset-Venues und liefert Live-Preis-Feedbackschleifen nicht gefunden werden.
-              Klare visuelle Kennzahlen verwandeln chaotische Multi-Chain-Strukturen in geordnete, lesbare Datenkanäle nicht gefunden werden.
+              Blockchain-Liquidität entwickelt sich schnell — latenzarme Infrastruktur ist entscheidend.
+              <?= e(SITE_NAME) ?> verbindet eigene Nodes mit großen Digital-Asset-Venues und liefert Live-Preis-Feedbackschleifen.
+              Klare visuelle Kennzahlen verwandeln chaotische Multi-Chain-Strukturen in geordnete, lesbare Datenkanäle.
             </p>
             <p>
               Über Rohpreis-Feeds hinaus kontextualisiert die Plattform Volumenverschiebungen und Liquiditätstiefe, sodass plötzliche Spitzen
-              leichter zu interpretieren sind — nicht nur reaktive Signale nicht gefunden werden. Diese Konsistenz zählt besonders in volatilen Sessions, wenn
-              fragmentierte Tools Entscheidungen genau dann verlangsamen, wenn Klarheit am meisten gebraucht wird nicht gefunden werden.
+              leichter zu interpretieren sind — nicht nur reaktive Signale. Diese Konsistenz zählt besonders in volatilen Sessions, wenn
+              fragmentierte Tools Entscheidungen genau dann verlangsamen, wenn Klarheit am meisten gebraucht wird.
             </p>
           </div>
 
           <div class="seo-block">
             <h3>Tiefe <span>neuronale Marktanalyse</span></h3>
             <p>
-              Automatisierte Algorithmen analysieren eingehende Marktdaten, um strukturelle Verschiebungen in Forex und internationalen Rohstoffen zu berechnen nicht gefunden werden.
-              <?= e(SITE_NAME) ?> verdichtet komplexe Berechnungen zu klaren Datentrends, die unabhängiges Urteilsvermögen unterstützen statt es zu ersetzen nicht gefunden werden.
+              Automatisierte Algorithmen analysieren eingehende Marktdaten, um strukturelle Verschiebungen in Forex und internationalen Rohstoffen zu berechnen.
+              <?= e(SITE_NAME) ?> verdichtet komplexe Berechnungen zu klaren Datentrends, die unabhängiges Urteilsvermögen unterstützen statt es zu ersetzen.
             </p>
             <p>
               Weil Modelle kontinuierlich statt nach festem Zeitplan laufen, erscheinen Momentum-Änderungen, während sie geschehen
-              statt in einer verzögerten Zusammenfassung nicht gefunden werden. Das Ergebnis ist eine Research-Schicht, die unabhängiges Urteil stützt
-              und die endgültige Entscheidung in den Händen des Nutzers lässt nicht gefunden werden.
+              statt in einer verzögerten Zusammenfassung. Das Ergebnis ist eine Research-Schicht, die unabhängiges Urteil stützt
+              und die endgültige Entscheidung in den Händen des Nutzers lässt.
             </p>
           </div>
 
           <div class="seo-block">
             <h3>Reibungslose <span>Kontoeinrichtung</span></h3>
             <p>
-              Compliance muss nicht kompliziert sein nicht gefunden werden. Unsere strukturierte Registrierungspipeline schützt private Einstellungen
-              durch sichere Verifizierungsprozesse, die von Start bis Terminalzugang unter drei Minuten dauern sollen nicht gefunden werden.
+              Compliance muss nicht kompliziert sein. Unsere strukturierte Registrierungspipeline schützt private Einstellungen
+              durch sichere Verifizierungsprozesse, die von Start bis Terminalzugang unter drei Minuten dauern sollen.
             </p>
             <p>
               Jedes Feld im Ablauf erklärt, warum es abgefragt wird, damit Einsteiger den Zweck eines
-              Verifizierungsschritts nie raten müssen nicht gefunden werden. Nach dem Absenden laufen verschlüsselte Identitätsprüfungen im Hintergrund, während der Rest des
-              Dashboards weiterhin vollständig browsbar bleibt nicht gefunden werden.
+              Verifizierungsschritts nie raten müssen. Nach dem Absenden laufen verschlüsselte Identitätsprüfungen im Hintergrund, während der Rest des
+              Dashboards weiterhin vollständig browsbar bleibt.
             </p>
           </div>
 
@@ -794,12 +794,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             <h3>Institutionelle <span>Risikokontrollen</span></h3>
             <p>
               Positionsgröße, Exposure-Limits und automatische Volatilitätsindikatoren verdichten historisch professionelle Desk-Tools
-              zu einfachen Schaltern — damit neue Teilnehmer die tägliche Disziplin erfahrener Trader übernehmen nicht gefunden werden.
+              zu einfachen Schaltern — damit neue Teilnehmer die tägliche Disziplin erfahrener Trader übernehmen.
             </p>
             <p>
-              Alarme sind pro Asset konfigurierbar, sodass die Aufmerksamkeit nur auf Märkte gelenkt wird, die es wirklich verdienen nicht gefunden werden.
+              Alarme sind pro Asset konfigurierbar, sodass die Aufmerksamkeit nur auf Märkte gelenkt wird, die es wirklich verdienen.
               Dieser fokussierte Ansatz hilft, Alarmmüdigkeit zu vermeiden, die oft dazu führt, dass Menschen Benachrichtigungen ignorieren
-              auf weniger selektiven Plattformen nicht gefunden werden.
+              auf weniger selektiven Plattformen.
             </p>
           </div>
         </div>
@@ -812,19 +812,19 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Support-Center</div>
         <h2 class="section-title">Häufig gestellte Fragen</h2>
-        <p class="section-subtitle">Sofortige Verfahrensantworten zu Registrierung und Plattformzugang nicht gefunden werden.</p>
+        <p class="section-subtitle">Sofortige Verfahrensantworten zu Registrierung und Plattformzugang.</p>
       </div>
 
       <div class="faq-max-width" data-faq>
         <div class="faq-item active is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
             <span>Wie starte ich mit <?= e(SITE_NAME) ?>?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content" style="max-height: 200px;">
             <p>
               Füllen Sie das Registrierungsformular oben aus, folgen Sie unserem sicheren Schritt-für-Schritt-Onboarding,
-              und aktivieren Sie Ihre Kontoeinstellungen über unser strukturiertes Zahlungsverarbeitungssystem nicht gefunden werden.
+              und aktivieren Sie Ihre Kontoeinstellungen über unser strukturiertes Zahlungsverarbeitungssystem.
             </p>
           </div>
         </div>
@@ -832,12 +832,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             <span>Brauche ich fortgeschrittene Krypto-Erfahrung?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Nein nicht gefunden werden. <?= e(SITE_NAME) ?> bietet einen Einsteiger-Dashboard-Modus, automatisierte analytische Erklärungen,
-              und vereinfachte Arbeitsbereiche, damit neue Trader sicher navigieren nicht gefunden werden.
+              Nein. <?= e(SITE_NAME) ?> bietet einen Einsteiger-Dashboard-Modus, automatisierte analytische Erklärungen,
+              und vereinfachte Arbeitsbereiche, damit neue Trader sicher navigieren.
             </p>
           </div>
         </div>
@@ -845,12 +845,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             <span>Was ist die Mindestanforderung zum Handeln?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Die Standard-Basisaktivierung beträgt <?= MIN_DEPOSIT ?> <?= CURRENCY ?> nicht gefunden werden.
-              Das dient als operatives Handelskapital und bleibt unter Ihrer manuellen Kontrolle nicht gefunden werden.
+              Die Standard-Basisaktivierung beträgt <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
+              Das dient als operatives Handelskapital und bleibt unter Ihrer manuellen Kontrolle.
             </p>
           </div>
         </div>
@@ -858,12 +858,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             <span>Gibt es versteckte Betriebsgebühren?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Nein nicht gefunden werden. <?= e(SITE_NAME) ?> arbeitet mit absoluter Preistransparenz nicht gefunden werden.
-              Wir erheben keine unerwarteten Plattformzugangsmargen oder versteckten Auszahlungsberechnungen nicht gefunden werden.
+              Nein. <?= e(SITE_NAME) ?> arbeitet mit absoluter Preistransparenz.
+              Wir erheben keine unerwarteten Plattformzugangsmargen oder versteckten Auszahlungsberechnungen.
             </p>
           </div>
         </div>
@@ -871,12 +871,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             <span>Wie funktioniert die KI-Intelligenzkomponente?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
               Neuronale Systeme bewerten tiefe statistische Volatilitätsmarker über mehrere Marktschichten,
-              und wandeln Rohtelemetrie in vereinfachte Trendlinien zur leichteren Bewertung um nicht gefunden werden.
+              und wandeln Rohtelemetrie in vereinfachte Trendlinien zur leichteren Bewertung um.
             </p>
           </div>
         </div>
@@ -884,12 +884,12 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             <span>Sind meine personenbezogenen Daten vollständig geschützt?</span>
-            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2 nicht gefunden werden.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content">
             <p>
-              Ja nicht gefunden werden. Jede Konto-Pipeline ist durch sicheren SSL-Schutz und robuste kryptografische Protokolle maskiert,
-              um private Datenbereiche vollständig zu isolieren nicht gefunden werden.
+              Ja. Jede Konto-Pipeline ist durch sicheren SSL-Schutz und robuste kryptografische Protokolle maskiert,
+              um private Datenbereiche vollständig zu isolieren.
             </p>
           </div>
         </div>
@@ -903,7 +903,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <div class="final-cta-content">
           <h2>Bereit für die Klarheit von <?= e(SITE_NAME) ?>?</h2>
           <p class="section-subtitle" style="color: var(--color-text-secondary);">
-            Treten Sie einem modernen System bei, optimiert für schnelle Abläufe, Datenschutz und transparenten Zugang nicht gefunden werden.
+            Treten Sie einem modernen System bei, optimiert für schnelle Abläufe, Datenschutz und transparenten Zugang.
           </p>
         </div>
         <div>
@@ -912,7 +912,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
             <?php
             $form_id = 'final-cta-form';
             $form_submit = 'Kostenloses Konto erstellen';
-            require __DIR__  nicht gefunden werden. '/includes/form nicht gefunden werden.php';
+            require __DIR__ . '/includes/form.php';
             ?>
           </div>
         </div>
@@ -922,4 +922,4 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
 
 </main>
 
-<?php require_once __DIR__  nicht gefunden werden. '/includes/footer nicht gefunden werden.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

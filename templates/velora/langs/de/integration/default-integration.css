@@ -1,29 +1,29 @@
- nicht gefunden werden.iti nicht gefunden werden.iti--allow-dropdown { width: 100%; }
+.iti.iti--allow-dropdown { width: 100%; }
 
- nicht gefunden werden.iti--single-country  nicht gefunden werden.iti__selected-country,
- nicht gefunden werden.iti--single-country  nicht gefunden werden.iti__selected-country-primary {
+.iti--single-country .iti__selected-country,
+.iti--single-country .iti__selected-country-primary {
   pointer-events: none;
   cursor: default;
 }
 
- nicht gefunden werden.iti--single-country  nicht gefunden werden.iti__arrow {
+.iti--single-country .iti__arrow {
   display: none;
 }
 
- nicht gefunden werden.iti--single-country  nicht gefunden werden.iti__country-container {
+.iti--single-country .iti__country-container {
   pointer-events: none;
 }
 
- nicht gefunden werden.iti--single-country  nicht gefunden werden.iti__dropdown-content {
+.iti--single-country .iti__dropdown-content {
   display: none !important;
 }
 
- nicht gefunden werden.leadform { position: relative; }
+.leadform { position: relative; }
 
- nicht gefunden werden.form-preloader {
+.form-preloader {
   position: absolute;
   inset: 0;
-  background: rgba(7, 10, 15, 0 nicht gefunden werden.88);
+  background: rgba(7, 10, 15, 0.88);
   z-index: 10;
   display: flex;
   align-items: center;
@@ -31,59 +31,59 @@
   border-radius: inherit;
 }
 
- nicht gefunden werden.form-preloader  nicht gefunden werden.spinner {
+.form-preloader .spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid rgba(148, 163, 184, 0 nicht gefunden werden.25);
+  border: 3px solid rgba(148, 163, 184, 0.25);
   border-top-color: #f59e0b;
   border-radius: 50%;
-  animation: spin 0 nicht gefunden werden.8s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
- nicht gefunden werden.field-error nicht gefunden werden.hide { display: none; }
- nicht gefunden werden.field-error { color: #f87171; font-size: 0 nicht gefunden werden.8rem; margin-top: 0 nicht gefunden werden.25rem; }
+.field-error.hide { display: none; }
+.field-error { color: #f87171; font-size: 0.8rem; margin-top: 0.25rem; }
 
- nicht gefunden werden.hide,  nicht gefunden werden.hidden { display: none !important; }
+.hide, .hidden { display: none !important; }
 
- nicht gefunden werden.form-message {
-  padding: 0 nicht gefunden werden.75rem 1rem;
+.form-message {
+  padding: 0.75rem 1rem;
   border-radius: 8px;
-  background: rgba(248, 113, 113, 0 nicht gefunden werden.12);
+  background: rgba(248, 113, 113, 0.12);
   color: #fca5a5;
-  font-size: 0 nicht gefunden werden.875rem;
-  margin-top: 0 nicht gefunden werden.75rem;
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
 }
 
- nicht gefunden werden.form-message nicht gefunden werden.hidden { display: none; }
+.form-message.hidden { display: none; }
 
- nicht gefunden werden.form-already-registered {
+.form-already-registered {
   text-align: center;
-  padding: 1 nicht gefunden werden.5rem 1rem;
+  padding: 1.5rem 1rem;
 }
 
- nicht gefunden werden.form-already-registered__icon {
+.form-already-registered__icon {
   width: 48px;
   height: 48px;
   margin: 0 auto 1rem;
   border-radius: 50%;
-  background: rgba(16, 185, 129, 0 nicht gefunden werden.16);
+  background: rgba(16, 185, 129, 0.16);
   color: #10b981;
-  font-size: 1 nicht gefunden werden.5rem;
+  font-size: 1.5rem;
   line-height: 48px;
   font-weight: 700;
 }
 
- nicht gefunden werden.form-already-registered__title {
-  margin: 0 0 0 nicht gefunden werden.5rem;
-  font-size: 1 nicht gefunden werden.125rem;
+.form-already-registered__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
   font-weight: 600;
   color: #e8edf5;
 }
 
- nicht gefunden werden.form-already-registered__text {
+.form-already-registered__text {
   margin: 0;
   color: #94a3b8;
-  font-size: 0 nicht gefunden werden.95rem;
+  font-size: 0.95rem;
 }

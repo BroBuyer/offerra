@@ -10,8 +10,8 @@
 
 /**
  * Usage:
- *  require_once 'kclient nicht gefunden werden.php';
- *  $client = new KClient('http://tds nicht gefunden werden.com/', 'CAMPAIGN_TOKEN');
+ *  require_once 'kclient.php';
+ *  $client = new KClient('http://tds.com/', 'CAMPAIGN_TOKEN');
  *  $client->sendUtmLabels(); # send only utm labels
  *  $client->sendAllParams(); # send all params
  *  $client
@@ -22,7 +22,7 @@
  * @psalm-suppress MissingPropertyType
  */
 
-define('KCLIENT_VERSION', '4 nicht gefunden werden.0 nicht gefunden werden.0');
+define('KCLIENT_VERSION', '4.0.0');
 define('KCLIENT_API_VERSION', '4');
 
 class KClient
@@ -53,7 +53,7 @@ class KClient
     const HEADERS = 'headers';
     const SERVER = 'server';
     const METHOD = 'method';
-    const DEFAULT_ERROR = '[KClient] Something is wrong nicht gefunden werden. Use $client->debug() to see the debug output nicht gefunden werden.';
+    const DEFAULT_ERROR = '[KClient] Something is wrong. Use $client->debug() to see the debug output.';
     const GET = 'GET';
     const UA = 'KHttpClient';
     public $tokenVariations = array('_token', 'token');
@@ -435,8 +435,8 @@ class KClient
         $request = $this->buildRequestUrl();
         $params = $this->getParams();
 
-        $this->log('Request: '  nicht gefunden werden. $request);
-        $this->log('Params: '  nicht gefunden werden. json_encode(KHelper::secureParams($params)));
+        $this->log('Request: ' . $request);
+        $this->log('Params: ' . json_encode(KHelper::secureParams($params)));
 
         try {
             $options = array(
@@ -444,7 +444,7 @@ class KClient
                 CURLOPT_TIMEOUT => 10,
                 CURLOPT_USERAGENT => $this->generateUserAgent(),
                 CURLOPT_HEADER => [
-                    'Host:'  nicht gefunden werden. $this->getCurrentPage()
+                    'Host:' . $this->getCurrentPage()
                 ],
             );
 
@@ -453,14 +453,14 @@ class KClient
             }
 
             $response = $this->httpClient->request(KHttpClient::POST, $request, $params, $options);
-            $this->log('Response: status: '  nicht gefunden werden. $response->status  nicht gefunden werden. ', size '  nicht gefunden werden. mb_strlen($response->body)  nicht gefunden werden. ' bytes');
+            $this->log('Response: status: ' . $response->status . ', size ' . mb_strlen($response->body) . ' bytes');
         } catch (KClientError $e) {
             if ($this->debug) {
                 throw $e;
             } else {
                 $errorCode = $e->getHumanCode();
-                $errorCode = $errorCode ? $errorCode  nicht gefunden werden. ' ' : '';
-                $this->dispatcher->sendBody($errorCode  nicht gefunden werden. self::DEFAULT_ERROR);
+                $errorCode = $errorCode ? $errorCode . ' ' : '';
+                $this->dispatcher->sendBody($errorCode . self::DEFAULT_ERROR);
                 return null;
             }
         }
@@ -546,7 +546,7 @@ class KClient
 
     public function showLog($separator = '<br />')
     {
-        echo '<hr>'  nicht gefunden werden. implode($separator, $this->logEntries)  nicht gefunden werden. '<hr>';
+        echo '<hr>' . implode($separator, $this->logEntries) . '<hr>';
     }
 
     public function log($msg)
@@ -593,7 +593,7 @@ class KClient
         if (headers_sent($file, $line)) {
             $msg = "Headers already sent in ";
             if (!empty($file)) {
-                $msg  nicht gefunden werden.= " {$file} line {$line})";
+                $msg .= " {$file} line {$line})";
             }
             $this->dispatcher->sendBody($msg);
         }
@@ -706,12 +706,12 @@ class KClient
         } else {
             $scheme = 'http';
         }
-        return $scheme  nicht gefunden werden. '://'  nicht gefunden werden. $_SERVER['HTTP_HOST']  nicht gefunden werden. $_SERVER[self::REQUEST_URI];
+        return $scheme . '://' . $_SERVER['HTTP_HOST'] . $_SERVER[self::REQUEST_URI];
     }
 
     private function buildRequestUrl()
     {
-        return $this->apiUrl  nicht gefunden werden. "/click_api/v"  nicht gefunden werden. KCLIENT_API_VERSION;
+        return $this->apiUrl . "/click_api/v" . KCLIENT_API_VERSION;
     }
 
     public function addToServe($extension)
@@ -758,7 +758,7 @@ class KClient
     {
         KHelper::removeHeaders($this->filterServingHeaders);
 
-        $externalUrl = $this->apiUrl  nicht gefunden werden. $path;
+        $externalUrl = $this->apiUrl . $path;
 
         $cookie = KHelper::filterCookies(isset($_SERVER['HTTP_COOKIE']) ? $_SERVER['HTTP_COOKIE'] : '');
 
@@ -782,7 +782,7 @@ class KClient
         try {
             $response = $this->httpClient->request($method, $externalUrl, $params, $opts);
         } catch (KClientError $e) {
-            $this->log('Response error: '  nicht gefunden werden. $e->getCode()  nicht gefunden werden. ': '  nicht gefunden werden. $e->getMessage());
+            $this->log('Response error: ' . $e->getCode() . ': ' . $e->getMessage());
             $response = new KResponse($e->getCode(), array(), '');
         }
 
@@ -801,7 +801,7 @@ class KClient
 
     public function generateUserAgent()
     {
-        return self::UA  nicht gefunden werden. ' v'  nicht gefunden werden. KCLIENT_VERSION  nicht gefunden werden. ', PHP v'  nicht gefunden werden. phpversion();
+        return self::UA . ' v' . KCLIENT_VERSION . ', PHP v' . phpversion();
     }
 }
 
@@ -833,14 +833,14 @@ class KHelper
     {
         $content = '';
         if (!empty($error)) {
-            $content  nicht gefunden werden.= $error;
+            $content .= $error;
         }
 
         if (!empty($body)) {
             if (isset($contentType) && (strstr($contentType, 'image') || strstr($contentType, 'application/pdf'))) {
                 $content = base64_decode($body);
             } else {
-                $content  nicht gefunden werden.= $body;
+                $content .= $body;
             }
         }
 
@@ -858,7 +858,7 @@ class KHelper
             $url = "{$request['scheme']}://{$request['host']}";
 
             if (isset($request['port'])) {
-                $url  nicht gefunden werden.= ':'  nicht gefunden werden. $request['port'];
+                $url .= ':' . $request['port'];
             }
         }
         return $url;
@@ -906,9 +906,9 @@ class KHelper
 
     public static function filterCookies($cookiesString)
     {
-        $cookiesString = preg_replace('/PHPSESSID= nicht gefunden werden.*?;/si', '', $cookiesString);
-        $cookiesString = preg_replace('/[_]?subid= nicht gefunden werden.*?;/si', '', $cookiesString);
-        $cookiesString = preg_replace('/[_]?token= nicht gefunden werden.*?;/si', '', $cookiesString);
+        $cookiesString = preg_replace('/PHPSESSID=.*?;/si', '', $cookiesString);
+        $cookiesString = preg_replace('/[_]?subid=.*?;/si', '', $cookiesString);
+        $cookiesString = preg_replace('/[_]?token=.*?;/si', '', $cookiesString);
         return trim($cookiesString);
     }
 
@@ -930,8 +930,8 @@ class KHelper
 
     public static function findCookieDomain()
     {
-        if (isset($_SERVER['HTTP_HOST']) && substr_count($_SERVER['HTTP_HOST'], ' nicht gefunden werden.') < 3) {
-            $host = ' nicht gefunden werden.'  nicht gefunden werden. str_replace('www nicht gefunden werden.', '', $_SERVER['HTTP_HOST']);
+        if (isset($_SERVER['HTTP_HOST']) && substr_count($_SERVER['HTTP_HOST'], '.') < 3) {
+            $host = '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']);
         } else {
             $host = null;
         }
@@ -946,7 +946,7 @@ class KHelper
     {
         $result = array();
         foreach ($headers as $name => $value) {
-            $result[] = $name  nicht gefunden werden. ': '  nicht gefunden werden. $value;
+            $result[] = $name . ': ' . $value;
         }
         return $result;
     }
@@ -1070,7 +1070,7 @@ class KDispatcher implements KDispatcherInterface
         if (!empty($headers)) {
             foreach ($headers as $headerName => $header) {
                 if (is_string($headerName)) {
-                    $header = $headerName  nicht gefunden werden. ': '  nicht gefunden werden. $header;
+                    $header = $headerName . ': ' . $header;
                 }
                 header($header);
             }
@@ -1080,7 +1080,7 @@ class KDispatcher implements KDispatcherInterface
     //public function sendContentType($contentType)
     /*{
         if (!empty($contentType)) {
-            $header = 'content-type: '  nicht gefunden werden. $contentType;
+            $header = 'content-type: ' . $contentType;
             header($header);
         }
     }*/
@@ -1179,7 +1179,7 @@ class KHttpClient implements KHttpClientInterface
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
         } else {
             $queryString = http_build_query($params);
-            $requestUrl = $url  nicht gefunden werden. '?'  nicht gefunden werden. $queryString;
+            $requestUrl = $url . '?' . $queryString;
             curl_setopt($ch, CURLOPT_HTTPGET, true);
             curl_setopt($ch, CURLOPT_URL, $requestUrl);
         }
@@ -1378,7 +1378,7 @@ class KApiResultInfo
     public $uniqueness;
 
     /**
-     * KApiResponseInfo constructor nicht gefunden werden.
+     * KApiResponseInfo constructor.
      *
      * @param int $campaignId
      * @param int $streamId
@@ -1445,7 +1445,7 @@ class KCookie
     public $sameSite;
 
     /**
-     * KCookie constructor nicht gefunden werden.
+     * KCookie constructor.
      *
      * @param string $name
      * @param mixed $value
@@ -1483,12 +1483,12 @@ class KClientError extends Exception
         switch ($this->getCode()) {
             case CURLE_HTTP_RETURNED_ERROR:
                 preg_match(
-                    "/The requested URL returned error: (?'errorCode'\d+) nicht gefunden werden.*$/",
+                    "/The requested URL returned error: (?'errorCode'\d+).*$/",
                     $this->getMessage(),
                     $matches
                 );
 
-                $errorCode = isset($matches['errorCode']) ? $matches['errorCode'] : 'HTTP_ERROR_'  nicht gefunden werden. self::ERROR_UNKNOWN;
+                $errorCode = isset($matches['errorCode']) ? $matches['errorCode'] : 'HTTP_ERROR_' . self::ERROR_UNKNOWN;
                 return "[REQ_ERR: {$errorCode}]";
             case CURLE_UNSUPPORTED_PROTOCOL:
                 return "[REQ_ERR: UNSUPPORTED_PROTOCOL]";
@@ -1537,7 +1537,7 @@ class KClientError extends Exception
             case CURLE_OK:
                 return '';
             default:
-                return "[REQ_ERR: "  nicht gefunden werden. self::ERROR_UNKNOWN  nicht gefunden werden. "]";
+                return "[REQ_ERR: " . self::ERROR_UNKNOWN . "]";
         }
     }
 

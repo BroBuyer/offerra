@@ -8,8 +8,8 @@ header('Cache-Control: no-store');
 
 date_default_timezone_set('Europe/Kyiv');
 
-require_once __DIR__  nicht gefunden werden. '/ nicht gefunden werden. nicht gefunden werden./includes/config nicht gefunden werden.php';
-require_once __DIR__  nicht gefunden werden. '/FormToken nicht gefunden werden.php';
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/FormToken.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-// Always return a token nicht gefunden werden. Soft blocks (bot UA / rate) mark drop server-side;
-// send nicht gefunden werden.php then fakes thank-you success without CRM nicht gefunden werden.
+// Always return a token. Soft blocks (bot UA / rate) mark drop server-side;
+// send.php then fakes thank-you success without CRM.
 echo json_encode([
     'ok' => true,
     'token' => FormToken::issue(),

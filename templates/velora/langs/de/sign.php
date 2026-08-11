@@ -1,13 +1,13 @@
 <?php
-require_once __DIR__  nicht gefunden werden. '/includes/config nicht gefunden werden.php';
+require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Registrierung');
-$page_description = 'Erstellen Sie Ihr '  nicht gefunden werden. SITE_NAME  nicht gefunden werden. '-Konto und starten Sie mit klarer KI-Führung nicht gefunden werden.';
-$page_canonical = page_url('sign nicht gefunden werden.php');
+$page_description = 'Erstellen Sie Ihr ' . SITE_NAME . '-Konto und starten Sie mit klarer KI-Führung.';
+$page_canonical = page_url('sign.php');
 $active_page = 'sign';
 
-require_once __DIR__  nicht gefunden werden. '/includes/head nicht gefunden werden.php';
-require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden werden.php';
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>
@@ -15,7 +15,7 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
     <div class="container">
       <p class="eyebrow">Loslegen</p>
       <h1>Konto erstellen</h1>
-      <p class="lead">Mindesteinzahlung <?= MIN_DEPOSIT ?> <?= CURRENCY ?> nicht gefunden werden. Dauert weniger als 3 Minuten nicht gefunden werden.</p>
+      <p class="lead">Mindesteinzahlung <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Dauert weniger als 3 Minuten.</p>
     </div>
   </section>
 
@@ -25,11 +25,11 @@ require_once __DIR__  nicht gefunden werden. '/includes/header nicht gefunden we
         <?php
         $form_id = 'signup-form';
         $form_heading = 'Geben Sie Ihre Daten ein';
-        require __DIR__  nicht gefunden werden. '/includes/form nicht gefunden werden.php';
+        require __DIR__ . '/includes/form.php';
         ?>
       </div>
     </div>
   </section>
 </main>
 
-<?php require_once __DIR__  nicht gefunden werden. '/includes/footer nicht gefunden werden.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

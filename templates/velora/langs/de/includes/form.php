@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__  nicht gefunden werden. '/config nicht gefunden werden.php';
+require_once __DIR__ . '/config.php';
 
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
@@ -8,14 +8,14 @@ $form_class = $form_class ?? 'leadform lead-form';
 $form_subtitle = $form_subtitle ?? null;
 $phone_country = form_visitor_phone_country();
 $allowed_countries = form_allowed_countries();
-$lead_cookie = site_slug()  nicht gefunden werden. '_lead';
+$lead_cookie = site_slug() . '_lead';
 ?>
 <form
   name="form"
   method="post"
   id="<?= e($form_id) ?>"
   class="<?= e($form_class) ?>"
-  action="<?= asset('integration/send nicht gefunden werden.php') ?>"
+  action="<?= asset('integration/send.php') ?>"
   data-form
   data-lead-cookie="<?= e($lead_cookie) ?>"
   data-cookie-days="<?= (int) FORM_LEAD_COOKIE_DAYS ?>"
@@ -24,7 +24,7 @@ $lead_cookie = site_slug()  nicht gefunden werden. '_lead';
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
     <p class="form-already-registered__title">Sie sind bereits registriert</p>
     <p class="form-already-registered__text">
-      Ihre Anfrage bei <?= e(SITE_NAME) ?> wurde empfangen nicht gefunden werden. Bitte warten Sie auf den Anruf unseres Managers nicht gefunden werden.
+      Ihre Anfrage bei <?= e(SITE_NAME) ?> wurde empfangen. Bitte warten Sie auf den Anruf unseres Managers.
     </p>
   </div>
 
@@ -59,7 +59,7 @@ $lead_cookie = site_slug()  nicht gefunden werden. '_lead';
       </label>
       <label class="field field-full" data-field="email">
         <span class="field-label">E-Mail</span>
-        <input class="input" type="email" name="email" placeholder="sie@email nicht gefunden werden.com" required autocomplete="email" inputmode="email">
+        <input class="input" type="email" name="email" placeholder="sie@email.com" required autocomplete="email" inputmode="email">
       </label>
       <label class="field field-full" data-field="phone">
         <span class="field-label">Telefon</span>
@@ -73,7 +73,7 @@ $lead_cookie = site_slug()  nicht gefunden werden. '_lead';
     <?php
     $payment_context = 'Kontoregistrierung';
     $payment_compact = true;
-    require __DIR__  nicht gefunden werden. '/payment-icons nicht gefunden werden.php';
+    require __DIR__ . '/payment-icons.php';
     ?>
 
     <div class="form-message hidden" data-form-message role="alert">
@@ -83,7 +83,7 @@ $lead_cookie = site_slug()  nicht gefunden werden. '_lead';
 
     <p class="form-legal">
       Mit dem Absenden Ihrer Daten stimmen Sie unseren
-      <a href="conditions nicht gefunden werden.php">Nutzungsbedingungen</a> nicht gefunden werden.
+      <a href="conditions.php">Nutzungsbedingungen</a>.
     </p>
   </div>
 </form>

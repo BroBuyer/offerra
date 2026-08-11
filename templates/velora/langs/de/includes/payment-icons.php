@@ -1,20 +1,20 @@
 <?php
 /**
- * Payment method icons — reusable block with SEO-friendly alt text nicht gefunden werden.
- * @param string $context Optional context label for aria (e nicht gefunden werden.g nicht gefunden werden. "Kontoregistrierung form")
+ * Payment method icons — reusable block with SEO-friendly alt text.
+ * @param string $context Optional context label for aria (e.g. "Kontoregistrierung form")
  */
-require_once __DIR__  nicht gefunden werden. '/config nicht gefunden werden.php';
+require_once __DIR__ . '/config.php';
 
 $payment_context = $payment_context ?? 'sicheren Checkout';
 $payment_compact = $payment_compact ?? false;
 
 $methods = [
-    ['file' => 'visa nicht gefunden werden.svg',        'alt' => 'Visa — akzeptierte Zahlungsmethode auf '  nicht gefunden werden. SITE_NAME],
-    ['file' => 'mastercard nicht gefunden werden.svg',  'alt' => 'Mastercard — akzeptierte Zahlungsmethode auf '  nicht gefunden werden. SITE_NAME],
-    ['file' => 'paypal nicht gefunden werden.svg',      'alt' => 'PayPal — akzeptierte Zahlungsmethode auf '  nicht gefunden werden. SITE_NAME],
-    ['file' => 'applepay nicht gefunden werden.svg',    'alt' => 'Apple Pay — akzeptierte Zahlungsmethode auf '  nicht gefunden werden. SITE_NAME],
-    ['file' => 'googlepay nicht gefunden werden.svg',   'alt' => 'Google Pay — akzeptierte Zahlungsmethode auf '  nicht gefunden werden. SITE_NAME],
-    ['file' => 'banktransfer nicht gefunden werden.svg','alt' => 'Banküberweisung und SEPA — akzeptiert auf '  nicht gefunden werden. SITE_NAME],
+    ['file' => 'visa.svg',        'alt' => 'Visa — akzeptierte Zahlungsmethode auf ' . SITE_NAME],
+    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — akzeptierte Zahlungsmethode auf ' . SITE_NAME],
+    ['file' => 'paypal.svg',      'alt' => 'PayPal — akzeptierte Zahlungsmethode auf ' . SITE_NAME],
+    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — akzeptierte Zahlungsmethode auf ' . SITE_NAME],
+    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — akzeptierte Zahlungsmethode auf ' . SITE_NAME],
+    ['file' => 'banktransfer.svg','alt' => 'Banküberweisung und SEPA — akzeptiert auf ' . SITE_NAME],
 ];
 ?>
 <div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Akzeptierte Zahlungsmethoden für <?= e($payment_context) ?>">
@@ -25,7 +25,7 @@ $methods = [
     <?php foreach ($methods as $method): ?>
       <li>
         <img
-          src="<?= asset('static/img/payments/'  nicht gefunden werden. $method['file']) ?>"
+          src="<?= asset('static/img/payments/' . $method['file']) ?>"
           alt="<?= e($method['alt']) ?>"
           title="<?= e(strtok($method['alt'], ' —')) ?>"
           width="48"
@@ -37,7 +37,7 @@ $methods = [
     <?php endforeach; ?>
     <li>
       <img
-        src="<?= asset('static/img/payments/ssl-secured nicht gefunden werden.svg') ?>"
+        src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
         alt="256-Bit-SSL-Verschlüsselung — sichere Datenübertragung auf <?= e(SITE_NAME) ?>"
         title="SSL-gesichert"
         width="32"

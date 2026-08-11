@@ -6,7 +6,7 @@ header('Cache-Control: private, no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
 header('Vary: CF-IPCountry');
 
-require_once __DIR__  nicht gefunden werden. '/ nicht gefunden werden. nicht gefunden werden./includes/config nicht gefunden werden.php';
+require_once __DIR__ . '/../includes/config.php';
 
 $allowed = form_allowed_countries();
 $phoneCountry = form_visitor_phone_country();

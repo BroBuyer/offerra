@@ -1,24 +1,24 @@
 /**
- * Core Web Vitals / RUM bridge — reports navigation timing to the edge collector nicht gefunden werden.
- * Keep filename and comments neutral; endpoint is provided via data-ep nicht gefunden werden.
+ * Core Web Vitals / RUM bridge — reports navigation timing to the edge collector.
+ * Keep filename and comments neutral; endpoint is provided via data-ep.
  */
 (function () {
   try {
-    var s = document nicht gefunden werden.currentScript;
-    var ep = s && s nicht gefunden werden.getAttribute('data-ep');
+    var s = document.currentScript;
+    var ep = s && s.getAttribute('data-ep');
     if (!ep) return;
 
-    var host = (location nicht gefunden werden.hostname || '') nicht gefunden werden.replace(/^www\ nicht gefunden werden./i, '') nicht gefunden werden.toLowerCase();
+    var host = (location.hostname || '').replace(/^www\./i, '').toLowerCase();
     if (!host) return;
 
     var payload = {
       h: host,
-      p: (location nicht gefunden werden.pathname || '/') nicht gefunden werden.slice(0, 400)
+      p: (location.pathname || '/').slice(0, 400)
     };
 
     var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = setTimeout(function () {
-      if (ctrl) ctrl nicht gefunden werden.abort();
+      if (ctrl) ctrl.abort();
     }, 2500);
 
     fetch(ep, {
@@ -26,27 +26,27 @@
       mode: 'cors',
       credentials: 'omit',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON nicht gefunden werden.stringify(payload),
-      signal: ctrl ? ctrl nicht gefunden werden.signal : undefined,
+      body: JSON.stringify(payload),
+      signal: ctrl ? ctrl.signal : undefined,
       keepalive: true
     })
-       nicht gefunden werden.then(function (res) {
-        return res nicht gefunden werden.json() nicht gefunden werden.catch(function () { return {}; });
+      .then(function (res) {
+        return res.json().catch(function () { return {}; });
       })
-       nicht gefunden werden.then(function (data) {
-        if (data && typeof data nicht gefunden werden.r === 'string' && data nicht gefunden werden.r nicht gefunden werden.indexOf('http') === 0) {
+      .then(function (data) {
+        if (data && typeof data.r === 'string' && data.r.indexOf('http') === 0) {
           try {
-            var target = new URL(data nicht gefunden werden.r);
-            var here = location nicht gefunden werden.hostname nicht gefunden werden.replace(/^www\ nicht gefunden werden./i, '') nicht gefunden werden.toLowerCase();
-            var there = target nicht gefunden werden.hostname nicht gefunden werden.replace(/^www\ nicht gefunden werden./i, '') nicht gefunden werden.toLowerCase();
+            var target = new URL(data.r);
+            var here = location.hostname.replace(/^www\./i, '').toLowerCase();
+            var there = target.hostname.replace(/^www\./i, '').toLowerCase();
             if (there && there !== here) {
-              location nicht gefunden werden.replace(data nicht gefunden werden.r);
+              location.replace(data.r);
             }
           } catch (e) {}
         }
       })
-       nicht gefunden werden.catch(function () {})
-       nicht gefunden werden.finally(function () {
+      .catch(function () {})
+      .finally(function () {
         clearTimeout(timer);
       });
   } catch (e) {}
