@@ -5,7 +5,7 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-const steps = ['Основне', 'Шаблон', 'GEO & мова', 'Keitaro & інфра', 'Підсумок'];
+const steps = ['Основне', 'Шаблон, GEO і валюта', 'Keitaro & інфра', 'Підсумок'];
 
 const INFRA_TASKS = [
     { key: 'infra_hestia', label: 'Hestia — додати домен (vhost + public_html)' },
@@ -424,8 +424,9 @@ export default function OffersCreate({
     }, [data.brand, data.domain, data.geo, affiliateTag]);
 
     const canProceedStep0 = data.brand.trim() && data.domain.trim();
-    const canProceedStep1 = Boolean(data.template) && templates.length > 0;
-    const canProceedStep2 = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
+    const canProceedTemplate = Boolean(data.template) && templates.length > 0;
+    const canProceedMarket = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
+    const canProceedStep1 = canProceedTemplate && canProceedMarket;
 
     const generateBlockReason = useMemo(() => {
         if (!settingsReady) {
@@ -434,11 +435,11 @@ export default function OffersCreate({
         if (!canProceedStep0) {
             return 'Заповніть бренд і домен (крок 1).';
         }
-        if (!canProceedStep1) {
+        if (!canProceedTemplate) {
             return 'Оберіть шаблон (крок 2).';
         }
-        if (!canProceedStep2) {
-            return 'Перевірте GEO, мову та phone GEO (крок 3).';
+        if (!canProceedMarket) {
+            return 'Перевірте GEO, мову та phone GEO (крок 2).';
         }
         if (data.create_keitaro && !hasKeitaroApiKey) {
             return 'Збережіть Keitaro Admin API key у налаштуваннях або зніміть «Створити кампанію в Keitaro».';
@@ -448,8 +449,8 @@ export default function OffersCreate({
     }, [
         settingsReady,
         canProceedStep0,
-        canProceedStep1,
-        canProceedStep2,
+        canProceedTemplate,
+        canProceedMarket,
         data.create_keitaro,
         hasKeitaroApiKey,
     ]);
@@ -671,31 +672,6 @@ export default function OffersCreate({
                                 </ul>
                             )}
                         </div>
-                        <div className="field-row">
-                            <div className="field">
-                                <label htmlFor="min-dep">Мін. депозит</label>
-                                <input
-                                    id="min-dep"
-                                    type="text"
-                                    value={data.min_deposit}
-                                    onChange={(e) => update('min_deposit', e.target.value)}
-                                />
-                            </div>
-                            <div className="field">
-                                <label htmlFor="currency">Валюта</label>
-                                <select
-                                    id="currency"
-                                    value={data.currency}
-                                    onChange={(e) => update('currency', e.target.value)}
-                                >
-                                    {currencies.map(({ code, name }) => (
-                                        <option key={code} value={code}>
-                                            {code} — {name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </section>
             )}
@@ -705,7 +681,7 @@ export default function OffersCreate({
                     <div className="card">
                         <h3>Шаблон</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
-                            Папки з <code>templates/</code>. На наступному кроці — мови, доступні для обраного шаблону.
+                            Папки з <code>templates/</code>. Нижче — GEO, мови цього шаблону та валюта ленду.
                         </p>
                         <div className="field">
                             <label htmlFor="template">Тема ленду</label>
@@ -733,12 +709,8 @@ export default function OffersCreate({
                             </p>
                         )}
                     </div>
-                </section>
-            )}
 
-            {step === 2 && (
-                <section className="wizard-panel is-active">
-                    <div className="card">
+                    <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Ринок і мова</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
                             Шаблон: <strong>{templateLabel(templates, data.template)}</strong>.
@@ -845,11 +817,36 @@ export default function OffersCreate({
                                 </select>
                             </div>
                         </div>
+                        <div className="field-row">
+                            <div className="field">
+                                <label htmlFor="min-dep">Мін. депозит</label>
+                                <input
+                                    id="min-dep"
+                                    type="text"
+                                    value={data.min_deposit}
+                                    onChange={(e) => update('min_deposit', e.target.value)}
+                                />
+                            </div>
+                            <div className="field">
+                                <label htmlFor="currency">Валюта</label>
+                                <select
+                                    id="currency"
+                                    value={data.currency}
+                                    onChange={(e) => update('currency', e.target.value)}
+                                >
+                                    {currencies.map(({ code, name }) => (
+                                        <option key={code} value={code}>
+                                            {code} — {name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </section>
             )}
 
-            {step === 3 && (
+            {step === 2 && (
                 <section className="wizard-panel is-active">
                     <div className="card">
                         <h3>Keitaro</h3>
@@ -929,7 +926,7 @@ export default function OffersCreate({
                 </section>
             )}
 
-            {step === 4 && (
+            {step === 3 && (
                 <section className="wizard-panel is-active">
                     {(generateBlockReason || firstSubmitError) && (
                         <div id="wizard-submit-feedback" className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
@@ -970,6 +967,7 @@ export default function OffersCreate({
                                 </span>
                             </div>
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
+                            <div className="summary-row"><span>Мін. депозит</span><span>{data.min_deposit || '—'} {data.currency || ''}</span></div>
                             <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
                             <div className="summary-row">
                                 <span>Keitaro</span>
@@ -1005,7 +1003,6 @@ export default function OffersCreate({
                         disabled={
                             (step === 0 && !canProceedStep0)
                             || (step === 1 && !canProceedStep1)
-                            || (step === 2 && !canProceedStep2)
                         }
                         onClick={() => goToStep(step + 1)}
                     >

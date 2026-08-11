@@ -14,7 +14,7 @@ export function loadWizardState(defaults) {
 
         const parsed = JSON.parse(raw);
         const step = typeof parsed.step === 'number'
-            ? Math.min(Math.max(parsed.step, 0), 4)
+            ? Math.min(Math.max(parsed.step, 0), 3)
             : 0;
 
         return {
