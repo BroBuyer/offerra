@@ -261,28 +261,8 @@ class OfferController extends Controller
         }
 
         if ($result['offer']->provision_infrastructure) {
-            try {
-                set_time_limit(300);
-                $provisioner->provision($result['offer']->fresh());
-                $result['offer']->refresh();
-            } catch (\Throwable $e) {
-                return redirect()
-                    ->route('offers.create')
-                    ->withErrors(['generate' => 'Інфраструктура: '.$e->getMessage()]);
-            }
-
-            if ($result['offer']->infra_status === 'failed') {
-                return redirect()
-                    ->route('offers.create')
-                    ->withErrors(['generate' => 'Інфраструктура: '.($result['offer']->infra_error ?: 'невідома помилка')]);
-            }
-
-            $message .= ' · інфраструктура налаштована';
-
-            if ($result['offer']->dnsStatus() === 'pending') {
-                $message .= ' · DNS поширюється';
-                RecheckInfrastructureDnsJob::dispatch($result['offer']->id);
-            }
+            $provisioner->enqueue($result['offer']->fresh());
+            $message .= ' · інфраструктура запущена у фоні';
         }
 
         return redirect()
