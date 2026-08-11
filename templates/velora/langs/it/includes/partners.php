@@ -5,17 +5,17 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'name' => 'Coinbase', 'alt' => 'Coinbase — crypto infrastructure partner'],
-    ['file' => 'partner-2.svg', 'name' => 'TradingView', 'alt' => 'TradingView — charting partner'],
-    ['file' => 'partner-3.svg', 'name' => 'MetaTrader', 'alt' => 'MetaTrader — trading terminal partner'],
-    ['file' => 'partner-4.svg', 'name' => 'Visa', 'alt' => 'Visa — payment infrastructure partner'],
-    ['file' => 'partner-5.svg', 'name' => 'Mastercard', 'alt' => 'Mastercard — payment infrastructure partner'],
-    ['file' => 'partner-6.svg', 'name' => 'PayPal', 'alt' => 'PayPal — payment infrastructure partner'],
-    ['file' => 'partner-7.svg', 'name' => 'SWIFT Network', 'alt' => 'SWIFT Network — banking network partner'],
-    ['file' => 'partner-8.svg', 'name' => 'Cloudflare', 'alt' => 'Cloudflare — security and CDN partner'],
+    ['file' => 'partner-1.svg', 'name' => 'Coinbase', 'alt' => 'Coinbase — partner di infrastruttura crypto'],
+    ['file' => 'partner-2.svg', 'name' => 'TradingView', 'alt' => 'TradingView — partner per i grafici'],
+    ['file' => 'partner-3.svg', 'name' => 'MetaTrader', 'alt' => 'MetaTrader — partner per il terminale di trading'],
+    ['file' => 'partner-4.svg', 'name' => 'Visa', 'alt' => 'Visa — partner di infrastruttura di pagamento'],
+    ['file' => 'partner-5.svg', 'name' => 'Mastercard', 'alt' => 'Mastercard — partner di infrastruttura di pagamento'],
+    ['file' => 'partner-6.svg', 'name' => 'PayPal', 'alt' => 'PayPal — partner di infrastruttura di pagamento'],
+    ['file' => 'partner-7.svg', 'name' => 'SWIFT Network', 'alt' => 'SWIFT Network — partner di rete bancaria'],
+    ['file' => 'partner-8.svg', 'name' => 'Cloudflare', 'alt' => 'Cloudflare — partner di sicurezza e CDN'],
 ];
 ?>
-<ul class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> trusted infrastructure and payment partners">
+<ul class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> partner di infrastruttura e pagamento affidabili">
   <?php foreach ($partners as $partner): ?>
     <li class="partner-chip" role="listitem">
       <img

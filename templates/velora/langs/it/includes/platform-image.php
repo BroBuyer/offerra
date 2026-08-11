@@ -11,14 +11,14 @@ $platform_caption = platform_image_caption();
 $as_phone = $as_phone ?? false;
 ?>
 <figure class="platform-figure<?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema.org/ImageObject">
-  <meta itemprop="name" content="<?= e(SITE_NAME) ?> AI Trading Platform">
+  <meta itemprop="name" content="<?= e(SITE_NAME) ?> piattaforma di trading con IA">
   <meta itemprop="description" content="<?= e($platform_alt) ?>">
   <meta itemprop="contentUrl" content="<?= e(page_url($platform_path)) ?>">
   <div class="platform-figure-media">
     <img
       src="<?= e($platform_img) ?>"
       alt="<?= e($platform_alt) ?>"
-      title="<?= e(page_title('AI Trading Platform')) ?>"
+      title="<?= e(page_title('Piattaforma di trading con IA')) ?>"
       width="320"
       height="640"
       class="platform-figure-img<?= $as_phone ? ' app-phone-image' : '' ?>"

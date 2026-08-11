@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => 'A clear AI-assisted investing platform for crypto and multi-asset markets.',
+        'description' => 'Una piattaforma chiara di investimento assistito dall\'IA per i mercati crypto e multi-asset.',
     ];
 
     $website = [
@@ -30,7 +30,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => 'Simple AI investing platform with live markets, guided insights, and a calm trading workspace.',
+        'description' => 'Piattaforma semplice di investimento con IA, con mercati in tempo reale, insight guidati e uno spazio di trading sereno.',
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
@@ -52,34 +52,34 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => 'How do I get started?',
+                'name' => 'Come inizio?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Create an account in minutes, complete a short verification step, and fund your account with a minimum deposit of ' . MIN_DEPOSIT . ' ' . CURRENCY . '. You will unlock the full platform including live charts and trading tools.',
+                    'text' => 'Crea un account in pochi minuti, completa un breve passaggio di verifica e finanzia il tuo account con un deposito minimo di ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Sbloccherai la piattaforma completa, inclusi grafici in tempo reale e strumenti di trading.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Is my money and data safe?',
+                'name' => 'Il mio denaro e i miei dati sono al sicuro?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'We protect accounts with SSL encryption, two-factor authentication, and secure fund handling through trusted payment providers. Your personal data is managed under strict security policies.',
+                    'text' => 'Proteggiamo gli account con crittografia SSL, autenticazione a due fattori e gestione sicura dei fondi tramite fornitori di pagamento affidabili. I tuoi dati personali sono gestiti secondo rigorose politiche di sicurezza.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'When can I withdraw profits?',
+                'name' => 'Quando posso prelevare i profitti?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Withdrawals can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
+                    'text' => 'I prelievi possono essere richiesti in qualsiasi momento dalla dashboard del tuo account. L\'elaborazione richiede in genere 1–3 giorni lavorativi a seconda del metodo. Commissioni e tempi sono mostrati in anticipo.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Do I need trading experience?',
+                'name' => 'Ho bisogno di esperienza nel trading?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No prior experience is required. Guided onboarding, simple tutorials, and AI-assisted tools help you learn at your own pace with 24/7 support available.',
+                    'text' => 'Non è richiesta alcuna esperienza precedente. L\'onboarding guidato, tutorial semplici e strumenti assistiti dall\'IA ti aiutano a imparare al tuo ritmo, con supporto 24/7 disponibile.',
                 ],
             ],
         ],
@@ -88,13 +88,13 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $howto = [
         '@context' => 'https://schema.org',
         '@type' => 'HowTo',
-        'name' => 'How to start trading with ' . $site,
+        'name' => 'Come iniziare a fare trading con ' . $site,
         'step' => [
-            ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Create your account', 'text' => 'Sign up with your basic details and get secure access to the platform.'],
-            ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify your email', 'text' => 'Confirm your email to unlock full platform access.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set your strategy', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
-            ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Start trading', 'text' => 'Enter the market with confidence using real-time data and AI insights.'],
+            ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Crea il tuo account', 'text' => 'Registrati con i tuoi dati di base e ottieni accesso sicuro alla piattaforma.'],
+            ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verifica la tua email', 'text' => 'Conferma la tua email per sbloccare l\'accesso completo alla piattaforma.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Finanzia il tuo account', 'text' => 'Deposita un minimo di ' . MIN_DEPOSIT . ' ' . CURRENCY . ' tramite bonifico bancario, carta o portafoglio elettronico.'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Definisci la tua strategia', 'text' => 'Scegli il livello di rischio e le preferenze di trading — manuale o automatizzato.'],
+            ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Inizia a fare trading', 'text' => 'Entra nel mercato con fiducia usando dati in tempo reale e insight dell\'IA.'],
         ],
     ];
 
@@ -107,11 +107,11 @@ function render_schema(string $page = 'home', array $extra = []): void {
         $blocks[] = [
             '@context' => 'https://schema.org',
             '@type' => 'ImageObject',
-            'name' => $site . ' AI Trading Platform',
-            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart and portfolio tools',
+            'name' => $site . ' Piattaforma di Trading con IA',
+            'description' => $site . ' interfaccia di trading mobile con grafico crypto BTC/USDT in tempo reale e strumenti di portafoglio',
             'contentUrl' => $platform_image,
             'thumbnailUrl' => $platform_image,
-            'caption' => $site . ' | AI Trading Platform — mobile chart view',
+            'caption' => $site . ' | Piattaforma di Trading con IA — vista grafico mobile',
             'representativeOfPage' => true,
         ];
     }

@@ -4,7 +4,7 @@
     <div class="footer-top">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> home">
+          <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> inizio">
             <div class="logo-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
                 <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -22,7 +22,7 @@
         <div class="footer-links-col">
           <h4>Piattaforma</h4>
           <ul>
-            <li><a href="<?= e(page_url()) ?>#platform">Interface</a></li>
+            <li><a href="<?= e(page_url()) ?>#platform">Interfaccia</a></li>
             <li><a href="<?= e(page_url()) ?>#features">Funzionalità</a></li>
             <li><a href="<?= e(page_url()) ?>#markets">Panoramica dei mercati</a></li>
           </ul>
@@ -42,7 +42,7 @@
           <h4>Legale</h4>
           <ul>
             <li><a href="conditions.php">Termini di utilizzo</a></li>
-            <li><a href="privacy.php">Privacy Policy</a></li>
+            <li><a href="privacy.php">Informativa sulla privacy</a></li>
           </ul>
         </div>
       </div>
@@ -56,7 +56,7 @@
         sono utilizzate esclusivamente come supporto analitico.
       </p>
       <div class="footer-meta-links">
-        <span>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. All rights reserved.</span>
+        <span>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. Tutti i diritti riservati.</span>
       </div>
     </div>
   </div>

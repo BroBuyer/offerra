@@ -71,7 +71,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit"><?= e($form_submit) ?></button>
 
     <?php
-    $payment_context = 'account registration';
+    $payment_context = 'création de compte';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

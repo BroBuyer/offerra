@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title("Motore di operazioni con AI premium per i mercati globali");
-$page_description = SITE_NAME . ' — un modo piu intelligente e piu pulito di accedere ai mercati globali con strumenti AI strutturati per crypto, forex e azioni.';
+$page_description = SITE_NAME . ' — un modo più intelligente e più pulito di accedere ai mercati globali con strumenti AI strutturati per crypto, forex e azioni.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="hero-grid">
         <div class="hero-content">
-          <h1><?= e(SITE_NAME) ?>: un modo piu intelligente e piu pulito per accedere ai <span class="text-accent">mercati globali</span></h1>
+          <h1><?= e(SITE_NAME) ?>: un modo più intelligente e più pulito per accedere ai <span class="text-accent">mercati globali</span></h1>
 
           <p class="hero-desc">
             Ti avvicini alle operazioni? <?= e(SITE_NAME) ?> offre strumenti AI strutturati, pensati per rendere il tuo percorso trasparente.
@@ -228,7 +228,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <h3>Analisi di mercato con AI</h3>
-          <p>Calcoli di machine learning in tempo reale, focalizzati sulla cattura dei cambiamenti di mercato piu evidenti.</p>
+          <p>Calcoli di machine learning in tempo reale, focalizzati sulla cattura dei cambiamenti di mercato più evidenti.</p>
         </div>
 
         <div class="card">
