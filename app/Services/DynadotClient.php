@@ -10,6 +10,16 @@ use RuntimeException;
 class DynadotClient
 {
     private const REQUEST_GAP_MICROSECONDS = 180_000;
+
+    /** Prefer these when picking which account credit to spend. */
+    private const PAYMENT_CURRENCY_PRIORITY = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
+
+    /** Minimum credit considered usable for domain purchase / price display. */
+    private const MIN_USABLE_BALANCE = 1.0;
+
+    /** Warn in UI when spendable credit is below this (same units as payment currency). */
+    private const LOW_BALANCE_THRESHOLD = 15.0;
+
     /**
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
      */
@@ -27,25 +37,29 @@ class DynadotClient
             return [];
         }
 
+        $currency = $this->resolvePaymentCurrency($settings);
+
         if (count($domains) === 1) {
-            $row = $this->searchOne($settings, $apiKey, $domains[0]);
+            $row = $this->searchOne($settings, $apiKey, $domains[0], $currency);
             $this->throwOnGlobalApiError($row, (bool) $settings->dynadot_sandbox);
 
             return [$row];
         }
 
-        $batch = $this->searchBatch($settings, $apiKey, $domains);
+        $batch = $this->searchBatch($settings, $apiKey, $domains, $currency);
         if ($batch !== null) {
             return $batch;
         }
 
-        return $this->searchMany($settings, $apiKey, $domains);
+        return $this->searchMany($settings, $apiKey, $domains, $currency);
     }
 
     /**
      * @return array{
      *     balances: list<array{currency: string, amount: string}>,
      *     usd: ?float,
+     *     payment_currency: string,
+     *     payment_amount: ?float,
      *     low_balance: bool
      * }
      */
@@ -84,7 +98,8 @@ class DynadotClient
             throw new RuntimeException('Вкажіть Dynadot Contact ID у налаштуваннях (Мои домены → Контактные записи).');
         }
 
-        $availability = $this->searchOne($settings, $apiKey, $domain);
+        $currency = $this->resolvePaymentCurrency($settings);
+        $availability = $this->searchOne($settings, $apiKey, $domain, $currency);
         $this->throwOnGlobalApiError($availability, (bool) $settings->dynadot_sandbox);
 
         if (! $availability['available']) {
@@ -105,7 +120,7 @@ class DynadotClient
             'command' => 'register',
             'domain' => $domain,
             'duration' => $duration,
-            'currency' => 'USD',
+            'currency' => $currency,
             'registrant_contact' => $contactId,
             'admin_contact' => $contactId,
             'technical_contact' => $contactId,
@@ -279,6 +294,8 @@ class DynadotClient
      * @return array{
      *     balances: list<array{currency: string, amount: string}>,
      *     usd: ?float,
+     *     payment_currency: string,
+     *     payment_amount: ?float,
      *     low_balance: bool
      * }
      */
@@ -333,20 +350,72 @@ class DynadotClient
             }
         }
 
-        $usd = null;
-
-        foreach ($balances as $balance) {
-            if ($balance['currency'] === 'USD') {
-                $usd = (float) str_replace(',', '', $balance['amount']);
-                break;
-            }
-        }
+        $amounts = $this->balanceAmountsByCurrency($balances);
+        $usd = $amounts['USD'] ?? null;
+        $paymentCurrency = $this->pickPaymentCurrency($balances);
+        $paymentAmount = $amounts[$paymentCurrency] ?? null;
 
         return [
             'balances' => $balances,
             'usd' => $usd,
-            'low_balance' => $usd !== null && $usd < 15,
+            'payment_currency' => $paymentCurrency,
+            'payment_amount' => $paymentAmount,
+            'low_balance' => $paymentAmount === null || $paymentAmount < self::LOW_BALANCE_THRESHOLD,
         ];
+    }
+
+    /**
+     * Currency used for search prices + register charges (matches available account credit).
+     */
+    public function resolvePaymentCurrency(UserSetting $settings): string
+    {
+        try {
+            return $this->getAccountBalance($settings)['payment_currency'];
+        } catch (\Throwable) {
+            return 'USD';
+        }
+    }
+
+    /**
+     * @param  list<array{currency: string, amount: string}>  $balances
+     */
+    public function pickPaymentCurrency(array $balances): string
+    {
+        $amounts = $this->balanceAmountsByCurrency($balances);
+
+        foreach (self::PAYMENT_CURRENCY_PRIORITY as $code) {
+            if (($amounts[$code] ?? 0.0) >= self::MIN_USABLE_BALANCE) {
+                return $code;
+            }
+        }
+
+        foreach ($amounts as $code => $amount) {
+            if ($amount >= self::MIN_USABLE_BALANCE) {
+                return $code;
+            }
+        }
+
+        return 'USD';
+    }
+
+    /**
+     * @param  list<array{currency: string, amount: string}>  $balances
+     * @return array<string, float>
+     */
+    private function balanceAmountsByCurrency(array $balances): array
+    {
+        $amounts = [];
+
+        foreach ($balances as $balance) {
+            $currency = strtoupper(trim((string) ($balance['currency'] ?? '')));
+            if ($currency === '') {
+                continue;
+            }
+
+            $amounts[$currency] = (float) str_replace(',', '', (string) ($balance['amount'] ?? '0'));
+        }
+
+        return $amounts;
     }
 
     /**
@@ -444,7 +513,8 @@ class DynadotClient
             str_contains($normalized, 'invalid registrant_contact'),
             str_contains($normalized, 'invalid admin_contact'),
             str_contains($normalized, 'invalid contact') => 'Невірний Contact ID. Вставте лише цифри (наприклад 1885528), без префікса C-.',
-            str_contains($normalized, 'insufficient') => 'Недостатньо коштів на балансі Dynadot. Поповніть акаунт.',
+            str_contains($normalized, 'insufficient') => 'Недостатньо коштів на балансі Dynadot. Поповніть акаунт у тій же валюті, що й ціна домену (USD/EUR).',
+            str_contains($normalized, 'currency') && str_contains($normalized, 'match') => 'Валюта балансу Dynadot не збігається з валютою замовлення. У Account Settings оберіть EUR/USD відповідно до балансу.',
             str_contains($normalized, 'not_available'),
             str_contains($normalized, 'not available') => 'Домен уже зайнятий.',
             str_contains($normalized, 'invalid contact') => 'Невірний Contact ID у налаштуваннях Dynadot.',
@@ -491,14 +561,14 @@ class DynadotClient
      * @param  list<string>  $domains
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>|null
      */
-    private function searchBatch(UserSetting $settings, string $apiKey, array $domains): ?array
+    private function searchBatch(UserSetting $settings, string $apiKey, array $domains, string $currency = 'USD'): ?array
     {
         $sandbox = (bool) $settings->dynadot_sandbox;
         $params = [
             'key' => $apiKey,
             'command' => 'search',
             'show_price' => 1,
-            'currency' => 'USD',
+            'currency' => $currency,
         ];
 
         foreach (array_values($domains) as $index => $domain) {
@@ -525,7 +595,7 @@ class DynadotClient
      * @param  list<string>  $domains
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
      */
-    private function searchMany(UserSetting $settings, string $apiKey, array $domains): array
+    private function searchMany(UserSetting $settings, string $apiKey, array $domains, string $currency = 'USD'): array
     {
         $sandbox = (bool) $settings->dynadot_sandbox;
         $results = [];
@@ -535,7 +605,7 @@ class DynadotClient
                 usleep(self::REQUEST_GAP_MICROSECONDS);
             }
 
-            $row = $this->searchOneWithRetry($settings, $apiKey, $domain);
+            $row = $this->searchOneWithRetry($settings, $apiKey, $domain, $currency);
             $this->throwOnGlobalApiError($row, $sandbox);
             $results[] = $row;
         }
@@ -546,12 +616,12 @@ class DynadotClient
     /**
      * @return array{domain: string, available: bool, price: ?string, status: string, message: ?string}
      */
-    private function searchOneWithRetry(UserSetting $settings, string $apiKey, string $domain): array
+    private function searchOneWithRetry(UserSetting $settings, string $apiKey, string $domain, string $currency = 'USD'): array
     {
         $maxAttempts = 5;
 
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-            $row = $this->searchOne($settings, $apiKey, $domain);
+            $row = $this->searchOne($settings, $apiKey, $domain, $currency);
 
             if ($row['status'] !== 'error' || ! $this->isBusyApiError($row['message'])) {
                 return $row;
@@ -598,7 +668,7 @@ class DynadotClient
     /**
      * @return array{domain: string, available: bool, price: ?string, status: string, message: ?string}
      */
-    private function searchOne(UserSetting $settings, string $apiKey, string $domain): array
+    private function searchOne(UserSetting $settings, string $apiKey, string $domain, string $currency = 'USD'): array
     {
         $baseUrl = $this->apiBaseUrl((bool) $settings->dynadot_sandbox);
 
@@ -607,7 +677,7 @@ class DynadotClient
             'command' => 'search',
             'domain0' => $domain,
             'show_price' => 1,
-            'currency' => 'USD',
+            'currency' => $currency,
         ]);
 
         if ($response->failed()) {

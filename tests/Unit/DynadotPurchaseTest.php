@@ -28,7 +28,48 @@ class DynadotPurchaseTest extends TestCase
         $this->assertSame('42.50', $balance['balances'][0]['amount']);
         $this->assertSame('USD', $balance['balances'][0]['currency']);
         $this->assertSame(42.5, $balance['usd']);
+        $this->assertSame('USD', $balance['payment_currency']);
+        $this->assertSame(42.5, $balance['payment_amount']);
         $this->assertFalse($balance['low_balance']);
+    }
+
+    public function test_get_account_balance_uses_eur_when_usd_empty(): void
+    {
+        Http::fake([
+            'https://api.dynadot.com/api3.json*' => Http::response([
+                'GetAccountBalanceResponse' => [
+                    'ResponseCode' => 0,
+                    'Status' => 'success',
+                    'BalanceList' => [
+                        ['Currency' => 'EUR', 'Amount' => '100.00'],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $balance = app(DynadotClient::class)->getAccountBalance($this->makeSettings());
+
+        $this->assertNull($balance['usd']);
+        $this->assertSame('EUR', $balance['payment_currency']);
+        $this->assertSame(100.0, $balance['payment_amount']);
+        $this->assertFalse($balance['low_balance']);
+    }
+
+    public function test_pick_payment_currency_prefers_usd_then_eur(): void
+    {
+        $client = app(DynadotClient::class);
+
+        $this->assertSame('EUR', $client->pickPaymentCurrency([
+            ['currency' => 'EUR', 'amount' => '100.00'],
+        ]));
+        $this->assertSame('USD', $client->pickPaymentCurrency([
+            ['currency' => 'USD', 'amount' => '5.00'],
+            ['currency' => 'EUR', 'amount' => '100.00'],
+        ]));
+        $this->assertSame('EUR', $client->pickPaymentCurrency([
+            ['currency' => 'USD', 'amount' => '0.00'],
+            ['currency' => 'EUR', 'amount' => '100.00'],
+        ]));
     }
 
     public function test_register_returns_success_payload(): void
@@ -36,6 +77,18 @@ class DynadotPurchaseTest extends TestCase
         Http::fake([
             'https://api.dynadot.com/api3.json*' => function ($request) {
                 $query = $request->data();
+
+                if (($query['command'] ?? '') === 'get_account_balance') {
+                    return Http::response([
+                        'GetAccountBalanceResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                            'BalanceList' => [
+                                ['Currency' => 'USD', 'Amount' => '50.00'],
+                            ],
+                        ],
+                    ]);
+                }
 
                 if (($query['command'] ?? '') === 'search') {
                     return Http::response([
@@ -80,11 +133,90 @@ class DynadotPurchaseTest extends TestCase
         $this->assertTrue($result['auto_renew_disabled']);
     }
 
+    public function test_register_charges_eur_when_only_eur_balance(): void
+    {
+        $seenCurrency = null;
+
+        Http::fake([
+            'https://api.dynadot.com/api3.json*' => function ($request) use (&$seenCurrency) {
+                $query = $request->data();
+
+                if (($query['command'] ?? '') === 'get_account_balance') {
+                    return Http::response([
+                        'GetAccountBalanceResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                            'BalanceList' => [
+                                ['Currency' => 'EUR', 'Amount' => '100.00'],
+                            ],
+                        ],
+                    ]);
+                }
+
+                if (($query['command'] ?? '') === 'search') {
+                    $this->assertSame('EUR', $query['currency'] ?? null);
+
+                    return Http::response([
+                        'SearchResponse' => [
+                            'ResponseCode' => '0',
+                            'SearchResults' => [
+                                [
+                                    'DomainName' => 'brand-new.online',
+                                    'Available' => 'yes',
+                                    'Price' => '2.30 in EUR',
+                                ],
+                            ],
+                        ],
+                    ]);
+                }
+
+                if (($query['command'] ?? '') === 'set_renew_option') {
+                    return Http::response([
+                        'SetRenewOptionResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                        ],
+                    ]);
+                }
+
+                if (($query['command'] ?? '') === 'register') {
+                    $seenCurrency = $query['currency'] ?? null;
+                }
+
+                return Http::response([
+                    'RegisterResponse' => [
+                        'ResponseCode' => 0,
+                        'Status' => 'success',
+                        'DomainName' => 'brand-new.online',
+                        'Expiration' => 1458379145266,
+                    ],
+                ]);
+            },
+        ]);
+
+        $result = app(DynadotClient::class)->register($this->makeSettings(), 'brand-new.online');
+
+        $this->assertTrue($result['ok']);
+        $this->assertSame('EUR', $seenCurrency);
+    }
+
     public function test_register_strips_c_prefix_from_contact_id(): void
     {
         Http::fake([
             'https://api.dynadot.com/api3.json*' => function ($request) {
                 $query = $request->data();
+
+                if (($query['command'] ?? '') === 'get_account_balance') {
+                    return Http::response([
+                        'GetAccountBalanceResponse' => [
+                            'ResponseCode' => 0,
+                            'Status' => 'success',
+                            'BalanceList' => [
+                                ['Currency' => 'USD', 'Amount' => '50.00'],
+                            ],
+                        ],
+                    ]);
+                }
 
                 if (($query['command'] ?? '') === 'search') {
                     return Http::response([
