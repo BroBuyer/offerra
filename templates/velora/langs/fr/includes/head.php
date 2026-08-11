@@ -2,8 +2,8 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
-$page_title = $page_title ?? SITE_NAME . ' | Premium AI Trading Engine for Global Markets';
-$page_description = $page_description ?? 'A smarter, cleaner way to access global markets with ' . SITE_NAME . ' — structured AI tools for crypto, forex, and equities.';
+$page_title = $page_title ?? SITE_NAME . ' | Moteur de trading IA premium pour les marchés mondiaux';
+$page_description = $page_description ?? 'Un accès plus simple et plus clair aux marchés mondiaux avec ' . SITE_NAME . ' — des outils d’IA structurés pour la crypto, le forex et les actions.';
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());
@@ -47,37 +47,37 @@ $og_image = page_url($og_image_path ?? og_image_path());
 
   <script>
     window.APP_LANG = {
-      themeToggleDarkText: '🌙 Dark',
-      themeToggleLightText: '☀️ Light',
-      themeToggleDarkAria: 'Switch to dark theme',
-      themeToggleLightAria: 'Switch to light theme',
-      mockupToday: 'Today',
-      orderPendingAllocation: 'order pending allocation',
-      chatStep1Bot: "Hi! I'm Lisa, your onboarding assistant. Ready to open a trading account in a few quick steps?",
-      chatStep1Yes: "Yes, let's start",
-      chatStep1More: 'Tell me more first',
-      chatStep2Bot: 'Great. Have you traded crypto or forex before?',
-      chatStep2New: "I'm new",
-      chatStep2Mid: 'Some experience',
-      chatStep2Pro: "I'm experienced",
-      chatStep3Bot: 'What interests you most right now?',
+      themeToggleDarkText: '🌙 Sombre',
+      themeToggleLightText: '☀️ Clair',
+      themeToggleDarkAria: 'Passer au thème sombre',
+      themeToggleLightAria: 'Passer au thème clair',
+      mockupToday: 'Aujourd’hui',
+      orderPendingAllocation: 'commande en attente d’allocation',
+      chatStep1Bot: "Salut ! Je suis Lisa, votre assistante d’onboarding. Prêt(e) à ouvrir un compte de trading en quelques étapes rapides ?",
+      chatStep1Yes: 'Oui, commençons',
+      chatStep1More: "Dites-m’en plus d’abord",
+      chatStep2Bot: 'Génial. Avez-vous déjà négocié des cryptos ou du forex auparavant ?',
+      chatStep2New: 'Je débute',
+      chatStep2Mid: "J’ai un peu d’expérience",
+      chatStep2Pro: "Je suis expérimenté(e)",
+      chatStep3Bot: 'Qu’est-ce qui vous intéresse le plus en ce moment ?',
       chatStep3Crypto: 'Crypto',
       chatStep3Forex: 'Forex',
-      chatStep3Stocks: 'Stocks / indices',
-      chatStep3All: 'All of the above',
-      chatStep4Bot: "Perfect. I'll prepare a free account form — it takes under 3 minutes and our team will call to finish setup.",
-      chatStep4Form: 'Open the form',
-      chatMoreReply: 'We guide beginners with a clean dashboard, AI market tips in plain language, and secure funding from your minimum deposit. Shall we continue?',
-      chatContinue: "Yes, let's continue",
-      chatFormPrompt: "Please enter your details below and submit — I'll stay here if you need anything.",
-      valPhoneRequired: 'Enter your phone number',
-      valPhoneInvalid: 'Enter a valid phone number',
-      valPhoneCountry: 'Invalid country code',
-      valPhoneShort: 'The phone number is too short',
-      valPhoneLong: 'The phone number is too long',
-      valSessionExpired: 'Session expired. Please reload the page and try again.',
-      valGenericError: 'Something went wrong. Please try again later.',
-      valConnectionError: 'Connection error. Check your internet connection and try again.'
+      chatStep3Stocks: 'Actions / indices',
+      chatStep3All: 'Tout ce qui précède',
+      chatStep4Bot: "Parfait. Je vais préparer un formulaire de compte gratuit — cela prend moins de 3 minutes et notre équipe vous appellera pour finaliser la configuration.",
+      chatStep4Form: 'Ouvrir le formulaire',
+      chatMoreReply: 'Nous guidons les débutants avec un tableau de bord clair, des conseils IA sur le marché en langage simple, et un financement sécurisé grâce à votre dépôt minimum. On continue ?',
+      chatContinue: 'Oui, continuons',
+      chatFormPrompt: 'Veuillez saisir vos coordonnées ci-dessous et envoyer — je reste ici si vous avez besoin de quelque chose.',
+      valPhoneRequired: 'Entrez votre numéro de téléphone',
+      valPhoneInvalid: 'Entrez un numéro de téléphone valide',
+      valPhoneCountry: 'Code pays invalide',
+      valPhoneShort: 'Le numéro de téléphone est trop court',
+      valPhoneLong: 'Le numéro de téléphone est trop long',
+      valSessionExpired: 'Session expirée. Veuillez recharger la page et réessayer.',
+      valGenericError: 'Une erreur est survenue. Veuillez réessayer plus tard.',
+      valConnectionError: 'Erreur de connexion. Vérifiez votre connexion internet et réessayez.'
     };
   </script>
   <script>
