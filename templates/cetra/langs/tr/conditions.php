@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 $page_title = page_title('Kullanım Şartları');
-$page_description = '' . SITE_NAME . ' sitesine eriştiğinizde veya kullandığınızda geçerli kurallar.';
+$page_description = SITE_NAME . ' sitesine eriştiğinizde veya kullandığınızda geçerli kurallar.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'conditions';
 require __DIR__ . '/includes/head.php';

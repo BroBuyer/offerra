@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 $page_title = page_title('Gizlilik Politikası');
-$page_description = '' . SITE_NAME . ' kişisel verilerinizi nasıl toplar, kullanır ve korur.';
+$page_description = SITE_NAME . ' kişisel verilerinizi nasıl toplar, kullanır ve korur.';
 $page_canonical = page_url('privacy.php');
 $active_page = 'privacy';
 require __DIR__ . '/includes/head.php';
