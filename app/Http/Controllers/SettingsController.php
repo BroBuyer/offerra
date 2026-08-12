@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\User;
 use App\Models\UserSetting;
+use App\Services\CloudflareClient;
 use App\Services\DeployConnection;
 use App\Services\DynadotClient;
 use App\Services\HestiaClient;
@@ -82,7 +83,11 @@ class SettingsController extends Controller
         $this->assignSecret($settings, 'deploy_api_secret_key', $data['deploy_api_secret_key'] ?? null);
         $this->assignSecret($settings, 'dynadot_api_key', $data['dynadot_api_key'] ?? null);
         $this->assignSecret($settings, 'dynadot_api_secret', $data['dynadot_api_secret'] ?? null);
-        $this->assignSecret($settings, 'cloudflare_api_token', $data['cloudflare_api_token'] ?? null);
+        $this->assignSecret(
+            $settings,
+            'cloudflare_api_token',
+            CloudflareClient::normalizeApiToken($data['cloudflare_api_token'] ?? null),
+        );
 
         $settings->save();
 
@@ -154,6 +159,37 @@ class SettingsController extends Controller
         }
 
         return response()->json($hestia->testConnection($settings));
+    }
+
+    public function testCloudflare(UpdateSettingsRequest $request, CloudflareClient $cloudflare): JsonResponse
+    {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+        $settings = $targetUser->settings;
+        $data = $request->validated();
+
+        if (! $settings) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Спочатку збережіть налаштування.',
+            ]);
+        }
+
+        $token = CloudflareClient::normalizeApiToken($data['cloudflare_api_token'] ?? $settings->cloudflare_api_token);
+
+        if ($token === '') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Вкажіть Cloudflare API token (або збережіть його в налаштуваннях).',
+            ]);
+        }
+
+        $settings->cloudflare_api_token = $token;
+        $settings->cloudflare_account_id = trim((string) (
+            $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id ?? ''
+        )) ?: null;
+
+        return response()->json($cloudflare->testConnection($settings));
     }
 
     public function storeGscVerification(

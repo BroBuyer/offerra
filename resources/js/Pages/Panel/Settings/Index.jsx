@@ -42,6 +42,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [testingDeploy, setTestingDeploy] = useState(false);
     const [hestiaApiTest, setHestiaApiTest] = useState(null);
     const [testingHestiaApi, setTestingHestiaApi] = useState(false);
+    const [cloudflareTest, setCloudflareTest] = useState(null);
+    const [testingCloudflare, setTestingCloudflare] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [dynadotBalanceError, setDynadotBalanceError] = useState('');
@@ -104,6 +106,23 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             });
         } finally {
             setTestingHestiaApi(false);
+        }
+    };
+
+    const testCloudflare = async () => {
+        setTestingCloudflare(true);
+        setCloudflareTest(null);
+
+        try {
+            const { data: result } = await axios.post(route('settings.test-cloudflare'), data);
+            setCloudflareTest(result);
+        } catch (error) {
+            setCloudflareTest({
+                ok: false,
+                message: error.response?.data?.message ?? 'Не вдалося перевірити Cloudflare API',
+            });
+        } finally {
+            setTestingCloudflare(false);
         }
     };
 
@@ -433,6 +452,27 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                         />
                         <span>Proxied (помаранчева хмарка) за замовчуванням</span>
                     </label>
+                    <div style={{ marginTop: '1rem' }}>
+                        <button
+                            type="button"
+                            className="btn btn-ghost"
+                            disabled={testingCloudflare}
+                            onClick={testCloudflare}
+                        >
+                            {testingCloudflare ? 'Перевірка…' : 'Перевірити Cloudflare API'}
+                        </button>
+                    </div>
+                    {cloudflareTest && (
+                        <p
+                            className="field-hint"
+                            style={{
+                                marginTop: '0.75rem',
+                                color: cloudflareTest.ok ? 'var(--accent)' : '#f87171',
+                            }}
+                        >
+                            {cloudflareTest.message}
+                        </p>
+                    )}
                 </section>
 
                 <section className="card">

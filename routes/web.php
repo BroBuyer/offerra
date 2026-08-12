@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/test-deploy', [SettingsController::class, 'testDeploy'])->name('settings.test-deploy');
     Route::post('/settings/test-hestia-api', [SettingsController::class, 'testHestiaApi'])->name('settings.test-hestia-api');
+    Route::post('/settings/test-cloudflare', [SettingsController::class, 'testCloudflare'])->name('settings.test-cloudflare');
     Route::post('/settings/gsc-verification', [SettingsController::class, 'storeGscVerification'])->name('settings.gsc-verification.store');
     Route::delete('/settings/gsc-verification', [SettingsController::class, 'destroyGscVerification'])->name('settings.gsc-verification.destroy');
 

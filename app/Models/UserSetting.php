@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\CloudflareClient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -119,7 +120,7 @@ class UserSetting extends Model
     {
         $cfName = trim((string) ($this->cloudflare_account_name ?? ''));
         $dynName = trim((string) ($this->dynadot_account_name ?? ''));
-        $cfToken = trim((string) ($this->cloudflare_api_token ?? ''));
+        $cfToken = CloudflareClient::normalizeApiToken($this->cloudflare_api_token);
         $cfAccountId = trim((string) ($this->cloudflare_account_id ?? ''));
         $dynKey = trim((string) ($this->dynadot_api_key ?? ''));
         $dynContact = trim((string) ($this->dynadot_contact_id ?? ''));

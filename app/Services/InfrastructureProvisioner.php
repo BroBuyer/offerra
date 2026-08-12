@@ -64,7 +64,7 @@ class InfrastructureProvisioner
     public function provision(Offer $offer): void
     {
         $offer->loadMissing('user.settings');
-        $settings = $offer->user?->settings;
+        $settings = $this->providerSettings($offer);
         $options = InfrastructureOptions::forOffer($offer);
 
         if (! $settings || ! self::settingsReady($settings)) {
@@ -127,7 +127,7 @@ class InfrastructureProvisioner
     public function recheckDns(Offer $offer): void
     {
         $offer->loadMissing('user.settings');
-        $settings = $offer->user?->settings;
+        $settings = $this->providerSettings($offer);
 
         if (! $settings) {
             return;
@@ -426,5 +426,38 @@ class InfrastructureProvisioner
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    private function providerSettings(Offer $offer): ?UserSetting
+    {
+        $settings = $offer->user?->settings;
+
+        if ($settings === null) {
+            return null;
+        }
+
+        if (! filled($offer->cloudflare_api_token) && ! filled($offer->dynadot_api_key)) {
+            return $settings;
+        }
+
+        $merged = $settings->replicate();
+
+        if (filled($offer->cloudflare_api_token)) {
+            $merged->cloudflare_api_token = CloudflareClient::normalizeApiToken($offer->cloudflare_api_token);
+
+            if (filled($offer->cloudflare_account_id)) {
+                $merged->cloudflare_account_id = $offer->cloudflare_account_id;
+            }
+        }
+
+        if (filled($offer->dynadot_api_key)) {
+            $merged->dynadot_api_key = $offer->dynadot_api_key;
+
+            if (filled($offer->dynadot_contact_id)) {
+                $merged->dynadot_contact_id = $offer->dynadot_contact_id;
+            }
+        }
+
+        return $merged;
     }
 }

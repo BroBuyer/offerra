@@ -3,17 +3,83 @@
 namespace App\Services;
 
 use App\Models\UserSetting;
+use App\Support\SecretValue;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
 class CloudflareClient
 {
+    public static function normalizeApiToken(?string $token): string
+    {
+        $token = SecretValue::normalize($token);
+
+        if ($token === '') {
+            return '';
+        }
+
+        if (preg_match('/^authorization\s*:\s*bearer\s+/i', $token)) {
+            $token = preg_replace('/^authorization\s*:\s*bearer\s+/i', '', $token);
+        }
+
+        if (preg_match('/^bearer\s+/i', $token)) {
+            $token = preg_replace('/^bearer\s+/i', '', $token);
+        }
+
+        return preg_replace('/\s+/', '', $token) ?? '';
+    }
+
+    /**
+     * @return array{ok: bool, message: string, zones?: int}
+     */
+    public function testConnection(UserSetting $settings): array
+    {
+        $token = self::normalizeApiToken($settings->cloudflare_api_token);
+
+        if ($token === '') {
+            return [
+                'ok' => false,
+                'message' => 'Вкажіть Cloudflare API token (не Global API Key).',
+            ];
+        }
+
+        try {
+            $response = $this->request($settings, 'GET', '/user/tokens/verify');
+        } catch (RuntimeException $e) {
+            return [
+                'ok' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        if (! ($response['success'] ?? false)) {
+            return [
+                'ok' => false,
+                'message' => 'Cloudflare: '.$this->extractError($response),
+            ];
+        }
+
+        $zones = 0;
+
+        try {
+            $listed = $this->request($settings, 'GET', '/zones', ['per_page' => 1]);
+            $zones = (int) ($listed['result_info']['total_count'] ?? 0);
+        } catch (RuntimeException) {
+            // Token verify passed — zones list may fail on narrow permissions.
+        }
+
+        return [
+            'ok' => true,
+            'message' => 'Cloudflare API token валідний.'.($zones > 0 ? " Зон у акаунті: {$zones}." : ''),
+            'zones' => $zones,
+        ];
+    }
+
     /**
      * @return array{zone_id: string, nameservers: list<string>}
      */
     public function ensureZone(UserSetting $settings, string $domain): array
     {
-        $token = trim((string) $settings->cloudflare_api_token);
+        $token = self::normalizeApiToken($settings->cloudflare_api_token);
         $accountId = trim((string) $settings->cloudflare_account_id);
 
         if ($token === '' || $accountId === '') {
@@ -396,7 +462,12 @@ class CloudflareClient
         array $body = [],
         bool $allowNotFound = false,
     ): array {
-        $token = trim((string) $settings->cloudflare_api_token);
+        $token = self::normalizeApiToken($settings->cloudflare_api_token);
+
+        if ($token === '') {
+            throw new RuntimeException('Збережіть Cloudflare API token у налаштуваннях.');
+        }
+
         $url = 'https://api.cloudflare.com/client/v4'.$path;
 
         $pending = Http::timeout(45)

@@ -133,4 +133,42 @@ class CloudflareClientTest extends TestCase
 
         $this->assertSame('deleted', $result);
     }
+
+    public function test_normalize_api_token_strips_bearer_prefix_and_whitespace(): void
+    {
+        $this->assertSame(
+            'abc123-token',
+            CloudflareClient::normalizeApiToken("Bearer \r\nabc123-token\n"),
+        );
+    }
+
+    public function test_test_connection_returns_ok_when_token_valid(): void
+    {
+        Http::fake([
+            'https://api.cloudflare.com/client/v4/user/tokens/verify' => Http::response([
+                'success' => true,
+                'result' => ['status' => 'active'],
+            ]),
+            'https://api.cloudflare.com/client/v4/zones*' => Http::response([
+                'success' => true,
+                'result' => [],
+                'result_info' => ['total_count' => 3],
+            ]),
+        ]);
+
+        $settings = new UserSetting([
+            'cloudflare_api_token' => 'Bearer cf-token',
+            'cloudflare_account_id' => 'acct',
+        ]);
+
+        $result = (new CloudflareClient)->testConnection($settings);
+
+        $this->assertTrue($result['ok']);
+        $this->assertStringContainsString('валідний', $result['message']);
+
+        Http::assertSent(function ($request) {
+            return $request->url() === 'https://api.cloudflare.com/client/v4/user/tokens/verify'
+                && $request->header('Authorization')[0] === 'Bearer cf-token';
+        });
+    }
 }
