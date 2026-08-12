@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/config.php';
-$page_title = $page_title ?? page_title('IA e execução em tempo real');
-$page_description = $page_description ?? (SITE_NAME . ' — tecnologia de IA que analisa mercados e executa ordens em tempo real, com um analista pessoal ao seu lado.');
+$page_title = $page_title ?? page_title('IA ed esecuzione in tempo reale');
+$page_description = $page_description ?? (SITE_NAME . ' — tecnologia di IA che analizza i mercati ed esegue ordini in tempo reale, con un analista personale al tuo fianco.');
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 ?><!doctype html>
-<html lang="<?= e(SITE_LANG) ?>-BR">
+<html lang="<?= e(SITE_LANG) ?>">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -19,7 +19,7 @@ $active_page = $active_page ?? 'home';
 <link rel="icon" type="image/png" sizes="32x32" href="<?= asset('static/img/icons/favicon-32.png') ?>" />
 <link rel="apple-touch-icon" sizes="180x180" href="<?= asset('static/img/icons/apple-touch-icon.png') ?>" />
 <meta property="og:type" content="website" />
-<meta property="og:locale" content="pt_BR" />
+<meta property="og:locale" content="it_IT" />
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>" />
 <meta property="og:title" content="<?= e($page_title) ?>" />
 <meta property="og:description" content="<?= e($page_description) ?>" />
