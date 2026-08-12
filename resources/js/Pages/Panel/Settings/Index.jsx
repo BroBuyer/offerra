@@ -9,7 +9,7 @@ function formFromSettings(settings, userId = null) {
         user_id: userId ?? '',
         keitaro_url: settings.keitaro_url ?? '',
         keitaro_api_key: settings.keitaro_api_key ?? '',
-        keitaro_group: settings.keitaro_group ?? '51',
+        keitaro_group: settings.keitaro_group ?? '19',
         affiliate_tag: settings.affiliate_tag ?? 'BRO',
         crm_api_key: settings.crm_api_key ?? '',
         tg_bot_token: settings.tg_bot_token ?? '',

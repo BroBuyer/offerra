@@ -72,7 +72,7 @@ class UserSetting extends Model
     {
         return [
             'keitaro_url' => $this->keitaro_url ?? 'https://clickmetrics38.com',
-            'keitaro_group' => $this->keitaro_group_id ?? '51',
+            'keitaro_group' => $this->keitaro_group_id ?? '19',
             'affiliate_tag' => $this->affiliate_tag ?? 'BRO',
             'tg_chat_id' => $this->tg_chat_id ?? '',
             'tg_group_chat_id' => $this->tg_group_chat_id ?? '',

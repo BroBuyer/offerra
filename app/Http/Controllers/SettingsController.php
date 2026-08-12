@@ -54,7 +54,7 @@ class SettingsController extends Controller
 
         $settings->fill([
             'keitaro_url' => $data['keitaro_url'] ?? $settings->keitaro_url,
-            'keitaro_group_id' => $data['keitaro_group'] ?? $settings->keitaro_group_id ?? '51',
+            'keitaro_group_id' => $data['keitaro_group'] ?? $settings->keitaro_group_id ?? '19',
             'affiliate_tag' => $data['affiliate_tag'] ?? $settings->affiliate_tag ?? 'BRO',
             'tg_chat_id' => $data['tg_chat_id'] ?? $settings->tg_chat_id,
             'tg_group_chat_id' => $data['tg_group_chat_id'] ?? $settings->tg_group_chat_id,

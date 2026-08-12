@@ -31,7 +31,9 @@ class KeitaroClient
         $existing = $this->findCampaignByName($settings, $name);
 
         if ($existing) {
-            $this->ensureSalesS2sPostback($settings, (int) $existing['id']);
+            $campaignId = (int) $existing['id'];
+            $this->ensureCampaignGroup($settings, $campaignId);
+            $this->ensureSalesS2sPostback($settings, $campaignId);
 
             return array_merge($existing, ['reused' => true]);
         }
@@ -46,13 +48,15 @@ class KeitaroClient
             'state' => 'active',
         ];
 
-        if ($settings->keitaro_group_id) {
-            $payload['group_id'] = (int) $settings->keitaro_group_id;
+        $groupId = $this->targetGroupId($settings);
+        if ($groupId !== null) {
+            $payload['group_id'] = $groupId;
         }
 
         $response = Http::withHeaders([
             'Api-Key' => $apiKey,
             'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
         ])
             ->timeout(30)
             ->post("{$baseUrl}/admin_api/v1/campaigns", $payload);
@@ -62,7 +66,9 @@ class KeitaroClient
                 $existing = $this->findCampaignByName($settings, $name);
 
                 if ($existing) {
-                    $this->ensureSalesS2sPostback($settings, (int) $existing['id']);
+                    $campaignId = (int) $existing['id'];
+                    $this->ensureCampaignGroup($settings, $campaignId);
+                    $this->ensureSalesS2sPostback($settings, $campaignId);
 
                     return array_merge($existing, ['reused' => true]);
                 }
@@ -84,6 +90,7 @@ class KeitaroClient
         }
 
         $this->ensureDefaultStream($settings, $campaignId);
+        $this->ensureCampaignGroup($settings, $campaignId);
         $this->ensureSalesS2sPostback($settings, $campaignId);
 
         return [
@@ -93,6 +100,68 @@ class KeitaroClient
             'name' => (string) ($data['name'] ?? $name),
             'reused' => false,
         ];
+    }
+
+    /**
+     * Ensure campaign belongs to the configured Keitaro group.
+     */
+    public function ensureCampaignGroup(UserSetting $settings, int $campaignId): void
+    {
+        $targetGroupId = $this->targetGroupId($settings);
+
+        if ($campaignId <= 0 || $targetGroupId === null) {
+            return;
+        }
+
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey) {
+            return;
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        try {
+            $response = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+            ])
+                ->timeout(30)
+                ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+        } catch (\Throwable $e) {
+            Log::warning('Keitaro group: failed to load campaign', [
+                'campaign_id' => $campaignId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return;
+        }
+
+        if ($response->failed()) {
+            return;
+        }
+
+        if ((int) ($response->json('group_id') ?? 0) === $targetGroupId) {
+            return;
+        }
+
+        $put = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])
+            ->timeout(30)
+            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
+                'group_id' => $targetGroupId,
+            ]);
+
+        if ($put->failed()) {
+            Log::warning('Keitaro group: failed to assign group', [
+                'campaign_id' => $campaignId,
+                'group_id' => $targetGroupId,
+                'body' => Str::limit($put->body(), 300),
+            ]);
+        }
     }
 
     /**
@@ -178,15 +247,20 @@ class KeitaroClient
             'statuses' => ['sale'],
         ];
 
+        $putPayload = ['postbacks' => $existing];
+        $groupId = $this->resolveGroupIdForUpdate($settings, $campaign);
+
+        if ($groupId !== null) {
+            $putPayload['group_id'] = $groupId;
+        }
+
         $put = Http::withHeaders([
             'Api-Key' => $apiKey,
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ])
             ->timeout(30)
-            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
-                'postbacks' => $existing,
-            ]);
+            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", $putPayload);
 
         if ($put->failed()) {
             Log::warning('Keitaro S2S: failed to attach sales postback', [
@@ -482,6 +556,27 @@ class KeitaroClient
         $tag = strtoupper(trim((string) $tag));
 
         return $tag !== '' ? $tag : 'BRO';
+    }
+
+    private function targetGroupId(UserSetting $settings): ?int
+    {
+        $groupId = (int) trim((string) ($settings->keitaro_group_id ?? ''));
+
+        return $groupId > 0 ? $groupId : null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $campaign
+     */
+    private function resolveGroupIdForUpdate(UserSetting $settings, array $campaign): ?int
+    {
+        $existing = (int) ($campaign['group_id'] ?? 0);
+
+        if ($existing > 0) {
+            return $existing;
+        }
+
+        return $this->targetGroupId($settings);
     }
 
     /**
