@@ -36,3 +36,4 @@ $active_page = $active_page ?? 'home';
 <?php require __DIR__ . '/schema.php'; ?>
 </head>
 <body>
+<?php require __DIR__ . '/icon-sprite.php'; ?>

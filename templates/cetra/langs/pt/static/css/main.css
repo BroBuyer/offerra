@@ -46,6 +46,14 @@ img{max-width:100%;display:block}
 .nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
 .nav-toggle{display:none;width:42px;height:42px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);align-items:center;justify-content:center;cursor:pointer}
 .nav-toggle svg{width:20px;height:20px}
+/* mnav clones CTA into .nav-links for the mobile drawer — hide clone on desktop */
+@media (min-width:761px){
+  .mnav-cta{display:none!important}
+}
+@media (max-width:760px){
+  .mnav-orig{display:none!important}
+  .mnav-cta{display:inline-flex!important;width:calc(100% - 32px);margin:10px 16px 14px!important;justify-content:center;box-sizing:border-box}
+}
 
 /* hero */
 /* .hero-grid also carries .shell — use padding-block, never the `padding` shorthand,
@@ -229,7 +237,15 @@ img{max-width:100%;display:block}
 .leadform .form-already-registered.hidden,.leadform .hidden,.hide{display:none!important}
 .leadform .field-error{color:var(--neg);font-size:12px;margin-top:4px}
 .leadform .form-message{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
-.payment-icons{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:14px 0 8px}
-.payment-icons img{height:22px;width:auto;opacity:.75}
+.payment-icons{margin:14px 0 8px;text-align:center}
+.payment-icons-list{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:10px 12px;list-style:none;margin:0;padding:0
+}
+.payment-icons-list li{list-style:none;margin:0;padding:0;display:flex;align-items:center;line-height:0}
+.payment-icons-list img{display:block;height:22px;width:auto;max-width:56px;object-fit:contain;opacity:.85}
+.payment-icons--compact{margin-top:14px}
+.leadform .form-legal,.leadform .lead-consent{color:var(--muted);font-size:.74rem;margin-top:14px;line-height:1.55;text-align:center}
+.leadform .form-legal a,.leadform .lead-consent a{color:var(--accent)}
 .iti{width:100%}
 @media(max-width:640px){.leadform .form-grid{grid-template-columns:1fr}}

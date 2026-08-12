@@ -70,20 +70,26 @@ $lead_cookie = site_slug() . '_lead';
 
     <button type="submit" class="btn btn-primary btn-block submit"><?= e($form_submit) ?></button>
 
-    <?php
-    $payment_context = 'registo de conta';
-    $payment_compact = true;
-    require __DIR__ . '/payment-icons.php';
-    ?>
+    <div class="pay-row" aria-label="Métodos de pagamento aceites">
+      <svg class="fai" role="img" aria-label="Visa" viewBox="0 0 576 512"><use href="#i-cc-visa"/></svg>
+      <svg class="fai" role="img" aria-label="Mastercard" viewBox="0 0 576 512"><use href="#i-cc-mastercard"/></svg>
+      <svg class="fai" role="img" aria-label="PayPal" viewBox="0 0 576 512"><use href="#i-cc-paypal"/></svg>
+      <svg class="fai" role="img" aria-label="Apple Pay" viewBox="0 0 576 512"><use href="#i-cc-apple-pay"/></svg>
+      <svg class="fai" role="img" aria-label="Google Pay" viewBox="0 0 640 512"><use href="#i-google-pay"/></svg>
+      <svg class="fai" role="img" aria-label="Transferência bancária" viewBox="0 0 512 512"><use href="#i-building-columns"/></svg>
+      <svg class="fai pay-ok" role="img" aria-label="Seguro" viewBox="0 0 512 512"><use href="#i-shield-halved"/></svg>
+    </div>
 
     <div class="form-message hidden" data-form-message role="alert">
       <p class="form-message-title" data-form-message-title></p>
       <div data-form-message-content></div>
     </div>
 
-    <p class="form-legal">
-      Ao submeter os seus dados, concorda com os nossos
-      <a href="conditions.php">Termos de Utilização</a>.
+    <p class="lead-consent form-legal">
+      Ao continuar, aceita nossos Termos e Política de Privacidade.
+      <a href="<?= page_url('privacy.php') ?>">Privacidade</a>
+      &amp;
+      <a href="<?= page_url('conditions.php') ?>">Termos de Utilização</a>.
     </p>
   </div>
 </form>
