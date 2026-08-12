@@ -71,9 +71,8 @@ css = css.replace(/:root\{[\s\S]*?\}/, (block) => {
 // Drop alternate :root theme blocks that reintroduce copper if any after first
 // Keep as-is otherwise.
 
-// Fonts path rewrite
-css = css.replace(/url\(\s*["']?\/fonts\//g, 'url("../fonts/');
-css = `@import url("../fonts/b8a4e4ccd231/f.css");\n` + css;
+// Fonts are loaded via head.php link to static/fonts/.../f.css (not @import).
+css = css.replace(/@import\s+url\([^)]*fonts[^)]*\);\s*/gi, '');
 
 // Offerra form compatibility layer (velora class names used by form.php)
 css += `
@@ -111,11 +110,14 @@ if (fs.existsSync(path.join(MIRROR, '_ext', 'assets', 'og.webp'))) {
   copyFile(path.join(MIRROR, '_ext', 'assets', 'og.webp'), path.join(PT, 'static', 'img', 'og-image.webp'));
 }
 
-// Fix font css urls to be relative
+// Fix font css urls: f.css sits next to the .woff2 files
 const fontCssPath = path.join(PT, 'static', 'fonts', 'b8a4e4ccd231', 'f.css');
 if (fs.existsSync(fontCssPath)) {
   let fcss = fs.readFileSync(fontCssPath, 'utf8');
-  fcss = fcss.replace(/url\(\s*["']?\.?\//g, 'url("./');
+  fcss = fcss.replace(
+    /url\(\s*['"]?\/fonts\/b8a4e4ccd231\/([^)'"\s]+)['"]?\s*\)/g,
+    "url('./$1')",
+  );
   fs.writeFileSync(fontCssPath, fcss, 'utf8');
 }
 

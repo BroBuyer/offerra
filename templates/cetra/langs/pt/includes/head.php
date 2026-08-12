@@ -29,6 +29,7 @@ $active_page = $active_page ?? 'home';
 <meta name="twitter:title" content="<?= e($page_title) ?>" />
 <meta name="twitter:description" content="<?= e($page_description) ?>" />
 <meta name="twitter:image" content="<?= e(page_url('static/img/og-image.webp')) ?>" />
+<link rel="stylesheet" href="<?= asset_version('static/fonts/b8a4e4ccd231/f.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('static/css/main.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('integration/default-integration.css') ?>" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
