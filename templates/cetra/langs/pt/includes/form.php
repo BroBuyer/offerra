@@ -51,19 +51,19 @@ $lead_cookie = site_slug() . '_lead';
     <div class="form-grid">
       <label class="field" data-field="fname">
         <span class="field-label">Nome</span>
-        <input class="input" type="text" name="fname" placeholder="João" required pattern="[^\d]+" autocomplete="given-name">
+        <input class="input" type="text" name="fname" placeholder="Nome" required pattern="[^\d]+" autocomplete="given-name">
       </label>
       <label class="field" data-field="lname">
         <span class="field-label">Sobrenome</span>
-        <input class="input" type="text" name="lname" placeholder="Silva" required pattern="[^\d]+" autocomplete="family-name">
+        <input class="input" type="text" name="lname" placeholder="Sobrenome" required pattern="[^\d]+" autocomplete="family-name">
       </label>
       <label class="field field-full" data-field="email">
         <span class="field-label">E-mail</span>
-        <input class="input" type="email" name="email" placeholder="voce@email.com" required autocomplete="email" inputmode="email">
+        <input class="input" type="email" name="email" placeholder="Endereço de e-mail" required autocomplete="email" inputmode="email">
       </label>
       <label class="field field-full" data-field="phone">
         <span class="field-label">Telefone</span>
-        <input class="input" type="tel" name="fullphone" autocomplete="tel" inputmode="tel">
+        <input class="input" type="tel" name="fullphone" placeholder="11 91234-5678" autocomplete="tel" inputmode="tel">
         <span class="field-error hide" role="alert" aria-live="polite"></span>
       </label>
     </div>
