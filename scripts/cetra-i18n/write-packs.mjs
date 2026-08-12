@@ -8,7 +8,10 @@ const langs = ['fr', 'it', 'es'];
 
 /** Prefer typographic apostrophe so PHP single-quoted strings stay valid. */
 function safeApostrophes(s) {
-  return String(s).replace(/'/g, '\u2019');
+  const str = String(s);
+  // Do not rewrite PHP concatenations or SITE_NAME placeholders.
+  if (str.includes('SITE_NAME') || str.includes("' .")) return str;
+  return str.replace(/'/g, '\u2019');
 }
 
 for (const lang of langs) {

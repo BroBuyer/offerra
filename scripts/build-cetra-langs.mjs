@@ -1,14 +1,15 @@
 /**
- * Build localized cetra packs under templates/cetra/langs/{fr,it,es}/
+ * Build localized cetra packs under templates/cetra/langs/{lang}/
  * from Portuguese source (langs/pt) + longest-first replacement maps.
  *
  * Usage:
  *   node scripts/build-cetra-langs.mjs
- *   node scripts/build-cetra-langs.mjs fr
+ *   node scripts/build-cetra-langs.mjs de
  */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { LOCALES as LOCALES_REMAINING } from './cetra-i18n/locales-all.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LANGS_DIR = path.resolve(__dirname, '..', 'templates', 'cetra', 'langs');
@@ -63,6 +64,7 @@ const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' €',
   },
+  ...LOCALES_REMAINING,
 };
 
 function walkFiles(dir, out = []) {
@@ -250,6 +252,121 @@ function patchTestimonialInitials(langDir, lang) {
       ['<div class="ini">L</div><div><b>Javier Ortega</b>', '<div class="ini">J</div><div><b>Javier Ortega</b>'],
       ['<div class="ini">G</div><div><b>María Gómez</b>', '<div class="ini">M</div><div><b>María Gómez</b>'],
       ['<div class="ini">R</div><div><b>Miguel Navarro</b>', '<div class="ini">M</div><div><b>Miguel Navarro</b>'],
+    ],
+    en: [
+      ['<div class="ini">C</div><div><b>Emma Clarke</b>', '<div class="ini">E</div><div><b>Emma Clarke</b>'],
+      ['<div class="ini">F</div><div><b>James Wilson</b>', '<div class="ini">J</div><div><b>James Wilson</b>'],
+      ['<div class="ini">B</div><div><b>Sophie Hughes</b>', '<div class="ini">S</div><div><b>Sophie Hughes</b>'],
+      ['<div class="ini">L</div><div><b>Oliver Bennett</b>', '<div class="ini">O</div><div><b>Oliver Bennett</b>'],
+      ['<div class="ini">G</div><div><b>Charlotte Reid</b>', '<div class="ini">C</div><div><b>Charlotte Reid</b>'],
+      ['<div class="ini">R</div><div><b>William Hayes</b>', '<div class="ini">W</div><div><b>William Hayes</b>'],
+    ],
+    de: [
+      ['<div class="ini">C</div><div><b>Anna Schneider</b>', '<div class="ini">A</div><div><b>Anna Schneider</b>'],
+      ['<div class="ini">F</div><div><b>Thomas Müller</b>', '<div class="ini">T</div><div><b>Thomas Müller</b>'],
+      ['<div class="ini">B</div><div><b>Sophie Weber</b>', '<div class="ini">S</div><div><b>Sophie Weber</b>'],
+      ['<div class="ini">G</div><div><b>Laura Becker</b>', '<div class="ini">L</div><div><b>Laura Becker</b>'],
+      ['<div class="ini">R</div><div><b>Markus Hoffmann</b>', '<div class="ini">M</div><div><b>Markus Hoffmann</b>'],
+    ],
+    nl: [
+      ['<div class="ini">C</div><div><b>Emma de Vries</b>', '<div class="ini">E</div><div><b>Emma de Vries</b>'],
+      ['<div class="ini">F</div><div><b>Thomas Jansen</b>', '<div class="ini">T</div><div><b>Thomas Jansen</b>'],
+      ['<div class="ini">B</div><div><b>Sophie Bakker</b>', '<div class="ini">S</div><div><b>Sophie Bakker</b>'],
+      ['<div class="ini">G</div><div><b>Laura Smit</b>', '<div class="ini">L</div><div><b>Laura Smit</b>'],
+      ['<div class="ini">R</div><div><b>Mark de Boer</b>', '<div class="ini">M</div><div><b>Mark de Boer</b>'],
+    ],
+    pl: [
+      ['<div class="ini">C</div><div><b>Anna Kowalska</b>', '<div class="ini">A</div><div><b>Anna Kowalska</b>'],
+      ['<div class="ini">F</div><div><b>Tomasz Nowak</b>', '<div class="ini">T</div><div><b>Tomasz Nowak</b>'],
+      ['<div class="ini">B</div><div><b>Katarzyna Wiśniewska</b>', '<div class="ini">K</div><div><b>Katarzyna Wiśniewska</b>'],
+      ['<div class="ini">L</div><div><b>Łukasz Wójcik</b>', '<div class="ini">Ł</div><div><b>Łukasz Wójcik</b>'],
+      ['<div class="ini">G</div><div><b>Magdalena Kamińska</b>', '<div class="ini">M</div><div><b>Magdalena Kamińska</b>'],
+      ['<div class="ini">R</div><div><b>Piotr Lewandowski</b>', '<div class="ini">P</div><div><b>Piotr Lewandowski</b>'],
+    ],
+    cs: [
+      ['<div class="ini">C</div><div><b>Eva Nováková</b>', '<div class="ini">E</div><div><b>Eva Nováková</b>'],
+      ['<div class="ini">F</div><div><b>Jan Svoboda</b>', '<div class="ini">J</div><div><b>Jan Svoboda</b>'],
+      ['<div class="ini">B</div><div><b>Tereza Dvořáková</b>', '<div class="ini">T</div><div><b>Tereza Dvořáková</b>'],
+      ['<div class="ini">L</div><div><b>Petr Černý</b>', '<div class="ini">P</div><div><b>Petr Černý</b>'],
+      ['<div class="ini">G</div><div><b>Lucie Procházková</b>', '<div class="ini">L</div><div><b>Lucie Procházková</b>'],
+      ['<div class="ini">R</div><div><b>Martin Horák</b>', '<div class="ini">M</div><div><b>Martin Horák</b>'],
+    ],
+    sk: [
+      ['<div class="ini">C</div><div><b>Eva Horváthová</b>', '<div class="ini">E</div><div><b>Eva Horváthová</b>'],
+      ['<div class="ini">F</div><div><b>Ján Novák</b>', '<div class="ini">J</div><div><b>Ján Novák</b>'],
+      ['<div class="ini">B</div><div><b>Zuzana Kováčová</b>', '<div class="ini">Z</div><div><b>Zuzana Kováčová</b>'],
+      ['<div class="ini">L</div><div><b>Peter Tóth</b>', '<div class="ini">P</div><div><b>Peter Tóth</b>'],
+      ['<div class="ini">G</div><div><b>Lucia Nagyová</b>', '<div class="ini">L</div><div><b>Lucia Nagyová</b>'],
+      ['<div class="ini">R</div><div><b>Martin Szabó</b>', '<div class="ini">M</div><div><b>Martin Szabó</b>'],
+    ],
+    hu: [
+      ['<div class="ini">C</div><div><b>Anna Kovács</b>', '<div class="ini">A</div><div><b>Anna Kovács</b>'],
+      ['<div class="ini">F</div><div><b>Tamás Nagy</b>', '<div class="ini">T</div><div><b>Tamás Nagy</b>'],
+      ['<div class="ini">B</div><div><b>Zsófia Szabó</b>', '<div class="ini">Z</div><div><b>Zsófia Szabó</b>'],
+      ['<div class="ini">L</div><div><b>László Tóth</b>', '<div class="ini">L</div><div><b>László Tóth</b>'],
+      ['<div class="ini">G</div><div><b>Eszter Horváth</b>', '<div class="ini">E</div><div><b>Eszter Horváth</b>'],
+      ['<div class="ini">R</div><div><b>Gábor Kiss</b>', '<div class="ini">G</div><div><b>Gábor Kiss</b>'],
+    ],
+    ro: [
+      ['<div class="ini">C</div><div><b>Elena Popescu</b>', '<div class="ini">E</div><div><b>Elena Popescu</b>'],
+      ['<div class="ini">F</div><div><b>Andrei Ionescu</b>', '<div class="ini">A</div><div><b>Andrei Ionescu</b>'],
+      ['<div class="ini">B</div><div><b>Maria Dumitru</b>', '<div class="ini">M</div><div><b>Maria Dumitru</b>'],
+      ['<div class="ini">L</div><div><b>Alexandru Stan</b>', '<div class="ini">A</div><div><b>Alexandru Stan</b>'],
+      ['<div class="ini">G</div><div><b>Ioana Georgescu</b>', '<div class="ini">I</div><div><b>Ioana Georgescu</b>'],
+      ['<div class="ini">R</div><div><b>Mihai Radu</b>', '<div class="ini">M</div><div><b>Mihai Radu</b>'],
+    ],
+    da: [
+      ['<div class="ini">C</div><div><b>Anna Nielsen</b>', '<div class="ini">A</div><div><b>Anna Nielsen</b>'],
+      ['<div class="ini">F</div><div><b>Thomas Jensen</b>', '<div class="ini">T</div><div><b>Thomas Jensen</b>'],
+      ['<div class="ini">B</div><div><b>Sofie Hansen</b>', '<div class="ini">S</div><div><b>Sofie Hansen</b>'],
+      ['<div class="ini">G</div><div><b>Emma Andersen</b>', '<div class="ini">E</div><div><b>Emma Andersen</b>'],
+      ['<div class="ini">R</div><div><b>Mikkel Christensen</b>', '<div class="ini">M</div><div><b>Mikkel Christensen</b>'],
+    ],
+    sv: [
+      ['<div class="ini">C</div><div><b>Anna Andersson</b>', '<div class="ini">A</div><div><b>Anna Andersson</b>'],
+      ['<div class="ini">F</div><div><b>Erik Johansson</b>', '<div class="ini">E</div><div><b>Erik Johansson</b>'],
+      ['<div class="ini">B</div><div><b>Sofia Nilsson</b>', '<div class="ini">S</div><div><b>Sofia Nilsson</b>'],
+      ['<div class="ini">G</div><div><b>Emma Larsson</b>', '<div class="ini">E</div><div><b>Emma Larsson</b>'],
+      ['<div class="ini">R</div><div><b>Mikael Olsson</b>', '<div class="ini">M</div><div><b>Mikael Olsson</b>'],
+    ],
+    no: [
+      ['<div class="ini">C</div><div><b>Anna Hansen</b>', '<div class="ini">A</div><div><b>Anna Hansen</b>'],
+      ['<div class="ini">F</div><div><b>Erik Johansen</b>', '<div class="ini">E</div><div><b>Erik Johansen</b>'],
+      ['<div class="ini">B</div><div><b>Sofie Olsen</b>', '<div class="ini">S</div><div><b>Sofie Olsen</b>'],
+      ['<div class="ini">G</div><div><b>Emma Nilsen</b>', '<div class="ini">E</div><div><b>Emma Nilsen</b>'],
+      ['<div class="ini">R</div><div><b>Martin Berg</b>', '<div class="ini">M</div><div><b>Martin Berg</b>'],
+    ],
+    fi: [
+      ['<div class="ini">C</div><div><b>Anna Virtanen</b>', '<div class="ini">A</div><div><b>Anna Virtanen</b>'],
+      ['<div class="ini">F</div><div><b>Jukka Korhonen</b>', '<div class="ini">J</div><div><b>Jukka Korhonen</b>'],
+      ['<div class="ini">B</div><div><b>Sofia Mäkinen</b>', '<div class="ini">S</div><div><b>Sofia Mäkinen</b>'],
+      ['<div class="ini">L</div><div><b>Lauri Nieminen</b>', '<div class="ini">L</div><div><b>Lauri Nieminen</b>'],
+      ['<div class="ini">G</div><div><b>Emma Laine</b>', '<div class="ini">E</div><div><b>Emma Laine</b>'],
+      ['<div class="ini">R</div><div><b>Mikko Heikkinen</b>', '<div class="ini">M</div><div><b>Mikko Heikkinen</b>'],
+    ],
+    el: [
+      ['<div class="ini">C</div><div><b>Ελένη Παπαδοπούλου</b>', '<div class="ini">Ε</div><div><b>Ελένη Παπαδοπούλου</b>'],
+      ['<div class="ini">F</div><div><b>Γιώργος Νικολάου</b>', '<div class="ini">Γ</div><div><b>Γιώργος Νικολάου</b>'],
+      ['<div class="ini">B</div><div><b>Μαρία Γεωργίου</b>', '<div class="ini">Μ</div><div><b>Μαρία Γεωργίου</b>'],
+      ['<div class="ini">L</div><div><b>Νίκος Δημητρίου</b>', '<div class="ini">Ν</div><div><b>Νίκος Δημητρίου</b>'],
+      ['<div class="ini">G</div><div><b>Σοφία Ιωάννου</b>', '<div class="ini">Σ</div><div><b>Σοφία Ιωάννου</b>'],
+      ['<div class="ini">R</div><div><b>Ανδρέας Παπαδάκης</b>', '<div class="ini">Α</div><div><b>Ανδρέας Παπαδάκης</b>'],
+    ],
+    hr: [
+      ['<div class="ini">C</div><div><b>Ana Horvat</b>', '<div class="ini">A</div><div><b>Ana Horvat</b>'],
+      ['<div class="ini">F</div><div><b>Marko Kovač</b>', '<div class="ini">M</div><div><b>Marko Kovač</b>'],
+      ['<div class="ini">B</div><div><b>Petra Babić</b>', '<div class="ini">P</div><div><b>Petra Babić</b>'],
+      ['<div class="ini">L</div><div><b>Ivan Jurić</b>', '<div class="ini">I</div><div><b>Ivan Jurić</b>'],
+      ['<div class="ini">G</div><div><b>Ivana Marić</b>', '<div class="ini">I</div><div><b>Ivana Marić</b>'],
+      ['<div class="ini">R</div><div><b>Tomislav Novak</b>', '<div class="ini">T</div><div><b>Tomislav Novak</b>'],
+    ],
+    tr: [
+      ['<div class="ini">C</div><div><b>Ayşe Yılmaz</b>', '<div class="ini">A</div><div><b>Ayşe Yılmaz</b>'],
+      ['<div class="ini">F</div><div><b>Mehmet Kaya</b>', '<div class="ini">M</div><div><b>Mehmet Kaya</b>'],
+      ['<div class="ini">B</div><div><b>Elif Demir</b>', '<div class="ini">E</div><div><b>Elif Demir</b>'],
+      ['<div class="ini">L</div><div><b>Ahmet Şahin</b>', '<div class="ini">A</div><div><b>Ahmet Şahin</b>'],
+      ['<div class="ini">G</div><div><b>Zeynep Çelik</b>', '<div class="ini">Z</div><div><b>Zeynep Çelik</b>'],
+      ['<div class="ini">R</div><div><b>Emre Yıldız</b>', '<div class="ini">E</div><div><b>Emre Yıldız</b>'],
     ],
   };
   const pairs = map[lang];
