@@ -114,6 +114,37 @@ class TemplateCatalog
     }
 
     /**
+     * Filesystem root used for /preview/{template}/… rendering.
+     * Prefer template root when it has index.php; otherwise the requested
+     * (or first available) language under langs/.
+     */
+    public function previewRootPath(string $templateId, ?string $lang = null): string
+    {
+        $templatePath = $this->templatePath($templateId);
+
+        if (! $templatePath) {
+            throw new InvalidArgumentException("Шаблон «{$templateId}» не знайдено.");
+        }
+
+        $lang = $lang !== null ? strtolower($lang) : null;
+        $codes = $this->languageCodesFor($templateId);
+
+        if ($lang !== null && $lang !== '' && in_array($lang, $codes, true)) {
+            return $this->resolveSourcePath($templateId, $lang);
+        }
+
+        if (File::isFile($templatePath.DIRECTORY_SEPARATOR.'index.php')) {
+            return $templatePath;
+        }
+
+        if ($codes === []) {
+            return $templatePath;
+        }
+
+        return $this->resolveSourcePath($templateId, $codes[0]);
+    }
+
+    /**
      * @return list<string>
      */
     private function discoverTemplateIds(): array

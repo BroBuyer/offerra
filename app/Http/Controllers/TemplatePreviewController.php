@@ -20,8 +20,14 @@ class TemplatePreviewController extends Controller
             abort(404);
         }
 
-        $basePath = rtrim(config('offerra.templates_path'), DIRECTORY_SEPARATOR)
-            .DIRECTORY_SEPARATOR.$template;
+        $lang = request()->query('lang');
+        $lang = is_string($lang) ? strtolower($lang) : null;
+
+        try {
+            $basePath = $this->catalog->previewRootPath($template, $lang);
+        } catch (\InvalidArgumentException) {
+            abort(404);
+        }
 
         if (! is_dir($basePath)) {
             abort(404);
@@ -43,6 +49,16 @@ class TemplatePreviewController extends Controller
 
         if ($path === 'sitemap.xml') {
             $path = 'sitemap.php';
+        }
+
+        // Allow explicit /preview/{id}/langs/{code}/… while keeping asset URLs on /preview/{id}/
+        if (preg_match('#^langs/([a-z]{2})(?:/(.*))?$#', $path, $matches)) {
+            try {
+                $basePath = $this->catalog->previewRootPath($template, $matches[1]);
+            } catch (\InvalidArgumentException) {
+                abort(404);
+            }
+            $path = ($matches[2] ?? '') !== '' ? $matches[2] : 'index.php';
         }
 
         $fullPath = $basePath.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $path);
