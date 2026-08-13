@@ -9,13 +9,7 @@ require __DIR__ . '/includes/head.php';
 <header class="ra-header">
   <div class="ra-shell ra-header__inner">
     <a class="ra-brand" href="<?= page_url() ?>"><?= e(SITE_NAME) ?></a>
-    <div class="ra-lang" aria-label="Language">
-      <button type="button" class="ra-lang__btn" aria-haspopup="listbox" aria-expanded="false" disabled>
-        <img src="https://flagcdn.com/gb.svg" alt="" width="18" height="12" />
-        <span>English</span>
-        <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-      </button>
-    </div>
+    <a class="btn btn-cta ra-header__cta" href="#signup">Start now</a>
   </div>
 </header>
 
