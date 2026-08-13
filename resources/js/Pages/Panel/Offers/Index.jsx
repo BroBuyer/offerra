@@ -839,22 +839,24 @@ export default function OffersIndex({
                         </div>
                     )}
                 </div>
-                <input
-                    type="search"
-                    className="filter-bar__search"
-                    placeholder="Бренд…"
-                    value={brandQuery}
-                    onChange={(event) => setBrandQuery(event.target.value)}
-                    aria-label="Пошук за брендом"
-                />
-                <input
-                    type="search"
-                    className="filter-bar__search"
-                    placeholder="Домен…"
-                    value={domainQuery}
-                    onChange={(event) => setDomainQuery(event.target.value)}
-                    aria-label="Пошук за доменом"
-                />
+                <div className="filter-bar__search-group">
+                    <input
+                        type="search"
+                        className="filter-bar__search"
+                        placeholder="Бренд…"
+                        value={brandQuery}
+                        onChange={(event) => setBrandQuery(event.target.value)}
+                        aria-label="Пошук за брендом"
+                    />
+                    <input
+                        type="search"
+                        className="filter-bar__search"
+                        placeholder="Домен…"
+                        value={domainQuery}
+                        onChange={(event) => setDomainQuery(event.target.value)}
+                        aria-label="Пошук за доменом"
+                    />
+                </div>
                 <select
                     aria-label="GEO"
                     value={filters.geo ?? ''}
@@ -940,24 +942,29 @@ export default function OffersIndex({
                         </label>
                     </div>
                 )}
-                <select
-                    aria-label="На сторінці"
-                    value={String(filters.per_page ?? 30)}
-                    onChange={(e) => reloadOffers({ per_page: Number(e.target.value) })}
-                >
-                    {perPageOptions.map((size) => (
-                        <option key={size} value={size}>
-                            {size} / стор.
-                        </option>
-                    ))}
-                </select>
-                {(hasActiveFilters || total > 0) && (
-                    <span className="filter-bar__count">
-                        {total === 0
-                            ? 'Офферів не знайдено'
-                            : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
-                    </span>
-                )}
+                <div className="filter-bar__meta">
+                    <label className="filter-bar__per-page">
+                        <span className="filter-bar__per-page-label">На стор.</span>
+                        <select
+                            aria-label="Записів на сторінці"
+                            value={String(filters.per_page ?? 30)}
+                            onChange={(e) => reloadOffers({ per_page: Number(e.target.value) })}
+                        >
+                            {perPageOptions.map((size) => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                    {(hasActiveFilters || total > 0) && (
+                        <span className="filter-bar__count">
+                            {total === 0
+                                ? 'Офферів не знайдено'
+                                : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
+                        </span>
+                    )}
+                </div>
             </div>
 
             <div className="table-wrap offers-table-desktop">
