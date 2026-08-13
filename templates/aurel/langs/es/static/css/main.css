@@ -485,53 +485,6 @@ ul,ol{margin:0;padding:0}
 .jkkyl{color:var(--muted);font-size:.88rem;margin-top:10px}
 @media (max-width:860px){.mvuhd{flex:1 1 100%}}
 
-:root{
-  --bg:#fcfcfd; --surface:#ffffff; --surface-2:#f2f4f8; --panel:#ffffff;
-  --text:#2a2f3a; --heading:#0f1320; --muted:#6b7488; --fog:#414a5c;
-  --accent:#4f46e5; --accent-2:#6366f1; --accent2:#6366f1; --gold:#6366f1; --champ:#4f46e5;
-  --border:#e4e7ee; --hover:#f6f7fb;
-  --pos:#0f8a5f; --neg:#d64545; --on-accent:#ffffff;
-  --glass-bar:rgba(255,255,255,.9); --track:#e4e7ee;
-  --shell:1160px; --r:18px;
-}
-*{box-sizing:border-box;min-width:0}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
-img,svg,table,pre{max-width:100%}
-p,li,h1,h2,h3,td,th,summary,a{overflow-wrap:break-word}
-a:focus,button:focus,summary:focus,input:focus{outline:3px solid var(--accent);outline-offset:2px}
-:where(a,button,summary,input):focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
-.smnsm2{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:20px}
-.smnsm2 table{margin-top:0;min-width:520px}
-body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,sans-serif;;display:flex;flex-direction:column;min-height:100vh}
-h1,h2,h3,h4{font-family:Manrope,sans-serif;color:var(--heading);line-height:1.12;letter-spacing:-.02em;margin:0}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
-.ggh3sm{max-width:var(--shell);margin:0 auto;padding:0 22px;width:100%}
-.vd7z9k{font:600 12px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);display:inline-block;margin-bottom:14px}
-.qou73xg{display:inline-flex;align-items:center;gap:8px;font:600 15px Manrope,sans-serif;border-radius:12px;padding:14px 24px;border:1px solid transparent;cursor:pointer;transition:.18s}
-.fi3abjs{background:var(--accent);color:var(--on-accent)}
-.fi3abjs:hover{transform:translateY(-2px);filter:brightness(1.06)}
-.ec2hno{background:transparent;border-color:var(--border);color:var(--text)}
-.ec2hno:hover{background:var(--hover)}
-.lh2p7{position:sticky;top:0;z-index:50;background:var(--glass-bar,rgba(255,255,255,.86));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.br3bd0{display:flex;align-items:center;gap:18px;height:68px}
-.lifld2{display:flex;align-items:center;gap:10px;font:700 19px Manrope,sans-serif;color:var(--heading)}
-.lifld2 img{width:30px;height:30px;border-radius:8px}
-.cpy3s{display:flex;gap:26px;margin-left:32px}
-.cpy3s a{color:var(--muted);font:500 15px Inter;transition:.15s}
-.cpy3s a:hover{color:var(--text)}
-.xwpsbeh{margin-left:auto;display:flex;gap:10px;align-items:center}
-main{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 0}
-.jfjcf{max-width:620px;margin:0 auto;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 36px;box-shadow:0 40px 80px -40px rgba(16,15,12,.22)}
-.ibf0s54{width:78px;height:78px;border-radius:50%;background:var(--surface-2);background:color-mix(in srgb,var(--pos) 18%,transparent);color:var(--pos);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:34px;border:1px solid var(--border);border:1px solid color-mix(in srgb,var(--pos) 40%,transparent)}
-.jfjcf h1{font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;margin-bottom:14px}
-.jfjcf p{color:var(--fog);font-size:1.05rem;margin:0 auto 26px;max-width:460px}
-.jv09m{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.ouqsg{border-top:1px solid var(--border);padding:40px 0 26px}
-.fpt0t{color:var(--muted);font-size:.82rem;text-align:center}
-@media(max-width:900px){.cpy3s{display:none}}
-
-
 /* aurel lead form — match source fields */
 .leadform{position:relative}
 .leadform .form-preloader{background:rgba(255,255,255,.82)}
@@ -560,4 +513,11 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 
 .bqfjng ul{padding-left:20px;margin:10px 0}
 .bqfjng li{margin:6px 0}
 .bqfjng .cs7fii{color:var(--muted);font-size:.9rem}
+
+/* layout guard: thanks-page CSS must never turn <main> into a centering flex row */
+body{display:block;min-height:0}
+main#top,main#yfln8q{display:block;padding:0;align-items:stretch;justify-content:flex-start;flex:none}
+main.aurel-thanks{display:block;padding:0}
+.lh2p7{position:relative;z-index:50}
+.lh2p7,.br3bd0,.cpy3s,.lifld2,.xwpsbeh{min-width:auto}
 

@@ -51,7 +51,7 @@ require __DIR__ . '/includes/header.php';
     <summary class="eik0loi">En esta página</summary>
     <ol>
       <li><a href="#exd9dmd">Mercados en vivo</a></li>
-      <li><a href="#sor9s">Inside Brandname</a></li>
+      <li><a href="#sor9s"><?= e(SITE_NAME) ?></a></li>
       <li><a href="#dmobczk">Cómo funciona</a></li>
       <li><a href="#gp0nit">En cualquier pantalla</a></li>
       <li><a href="#esypwbx">Rendimientos</a></li>
@@ -342,7 +342,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Inside Brandname</span>
+        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Watch your account in real time</h2>
         <p class="rmct9">Every trade your analyst places is logged here — entries, exits and verified results on every pair, streaming live.</p>
       </div>
