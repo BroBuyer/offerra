@@ -114,6 +114,9 @@ define('VITALS_TOKEN', {$vitalsToken});
 define('VITALS_ENDPOINT', {$vitalsEndpoint});
 
 require_once __DIR__ . '/helpers.php';
+if (is_file(__DIR__ . '/i18n-helpers.php')) {
+    require_once __DIR__ . '/i18n-helpers.php';
+}
 offer_send_personalization_headers();
 require_once __DIR__ . '/keitaro.php';
 keitaro_bootstrap();

@@ -417,3 +417,7 @@ function form_token_issue(): string
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());
+
+if (is_file(__DIR__ . '/i18n-helpers.php')) {
+    require_once __DIR__ . '/i18n-helpers.php';
+}
