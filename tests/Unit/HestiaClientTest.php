@@ -152,4 +152,46 @@ class HestiaClientTest extends TestCase
                 && ($data['arg2'] ?? '') === 'old.example';
         });
     }
+
+    public function test_add_web_domain_treats_http_400_exists_as_success(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::sequence()
+                ->push('{}', 200, ['hestia-exit-code' => '0'])
+                ->push('Error: Web domain streamcelexaopt.cyou exists', 400),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        (new HestiaClient)->addWebDomain($settings, 'streamcelexaopt.cyou');
+
+        Http::assertSentCount(2);
+    }
+
+    public function test_domain_exists_is_case_insensitive(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::response(
+                '{"StreamCelexaOpt.CYOU":{"DOMAIN":"StreamCelexaOpt.CYOU"}}',
+                200,
+                ['hestia-exit-code' => '0'],
+            ),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        $this->assertTrue(
+            (new HestiaClient)->domainExists($settings, 'user', 'streamcelexaopt.cyou'),
+        );
+    }
 }

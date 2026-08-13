@@ -47,10 +47,15 @@ class HestiaClient
     {
         $user = trim((string) $settings->deploy_username);
         $host = trim((string) $settings->deploy_host);
+        $domain = strtolower(trim($domain));
         $ip = $this->serverIp($settings);
 
         if ($user === '' || $host === '') {
             throw new RuntimeException('Заповніть Hestia host і користувача SFTP у налаштуваннях.');
+        }
+
+        if ($domain === '') {
+            throw new RuntimeException('Домен порожній.');
         }
 
         if ($this->domainExists($settings, $user, $domain)) {
@@ -83,9 +88,10 @@ class HestiaClient
 
     public function domainExists(UserSetting $settings, string $user, string $domain): bool
     {
+        $domain = strtolower(trim($domain));
         $response = $this->apiRaw($settings, 'v-list-web-domains', [$user, 'json']);
 
-        if ($response === '') {
+        if ($response === '' || $domain === '') {
             return false;
         }
 
@@ -96,7 +102,13 @@ class HestiaClient
             return false;
         }
 
-        return array_key_exists($domain, $decoded);
+        foreach (array_keys($decoded) as $key) {
+            if (strtolower((string) $key) === $domain) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function deleteWebDomain(UserSetting $settings, string $domain): void
@@ -183,12 +195,19 @@ class HestiaClient
             ->withOptions(['verify' => false])
             ->post($baseUrl, $payload);
 
+        $body = trim($response->body());
+
         if ($response->failed()) {
-            throw new RuntimeException($this->formatHttpError($response->status(), $response->body()));
+            // Some Hestia builds return HTTP 400 "Error: Web domain X exists"
+            // instead of 200 + exit code 4 when returncode=no.
+            if ($this->isAlreadyExistsHttpError($command, $response->status(), $body)) {
+                return ['', 4];
+            }
+
+            throw new RuntimeException($this->formatHttpError($response->status(), $body));
         }
 
         $exitCode = (int) ($response->header('hestia-exit-code') ?? $response->header('Hestia-Exit-Code') ?? -1);
-        $body = trim($response->body());
 
         if ($exitCode < 0 && $body !== '' && preg_match('/^\d+$/', $body)) {
             $exitCode = (int) $body;
@@ -196,6 +215,32 @@ class HestiaClient
         }
 
         return [$body, $exitCode];
+    }
+
+    private function isAlreadyExistsHttpError(string $command, int $status, string $body): bool
+    {
+        if (! in_array($status, [400, 409], true)) {
+            return false;
+        }
+
+        $normalized = strtolower($body);
+
+        if (
+            ! str_contains($normalized, 'exists')
+            && ! str_contains($normalized, 'already exist')
+            && ! str_contains($normalized, 'object exist')
+        ) {
+            return false;
+        }
+
+        return in_array($command, [
+            'v-add-web-domain',
+            'v-delete-web-domain',
+            'v-add-letsencrypt-domain',
+            'v-add-web-domain-ssl-force',
+            'v-add-web-domain-ssl-hsts',
+            'v-add-web-domain-redirect',
+        ], true);
     }
 
     /**
