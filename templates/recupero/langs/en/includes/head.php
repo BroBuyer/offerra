@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
-$page_title = $page_title ?? page_title('Official Platform for AI Assisted Trading');
-$page_description = $page_description ?? (SITE_NAME . ' — AI assisted trading platform. Sign up and get instant access.');
+$page_title = $page_title ?? page_title(t('meta_title_home'));
+$page_description = $page_description ?? t('meta_desc_default');
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 ?><!doctype html>
@@ -35,7 +35,15 @@ $active_page = $active_page ?? 'home';
 <link rel="stylesheet" href="<?= asset_version('static/css/main.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('integration/default-integration.css') ?>" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
-<script>window.APP_LANG = <?= json_encode(SITE_LANG) ?>;</script>
+<script>
+window.APP_LANG = {
+  valPhoneInvalid: <?= json_encode(t('val_phone_invalid'), JSON_UNESCAPED_UNICODE) ?>,
+  valPhoneCountry: <?= json_encode(t('val_phone_country'), JSON_UNESCAPED_UNICODE) ?>,
+  valPhoneShort: <?= json_encode(t('val_phone_short'), JSON_UNESCAPED_UNICODE) ?>,
+  valPhoneLong: <?= json_encode(t('val_phone_long'), JSON_UNESCAPED_UNICODE) ?>,
+  valPhoneRequired: <?= json_encode(t('val_phone_required'), JSON_UNESCAPED_UNICODE) ?>
+};
+</script>
 <?php require __DIR__ . '/schema.php'; ?>
 <?php if (function_exists('offer_vitals_head')) { offer_vitals_head(); } ?>
 </head>
