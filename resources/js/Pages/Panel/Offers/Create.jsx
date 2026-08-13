@@ -77,6 +77,22 @@ function formatDomainPrice(price) {
     return String(price).slice(0, 40);
 }
 
+function parseDomainPriceAmount(price) {
+    if (!price) {
+        return null;
+    }
+
+    const match = String(price).match(/(\d+(?:[.,]\d+)?)/);
+
+    if (!match) {
+        return null;
+    }
+
+    return Number.parseFloat(match[1].replace(',', '.'));
+}
+
+const DOMAIN_BULK_PURCHASE_LIMIT = 10;
+
 function buildDefaults(templates) {
     const defaultTemplate = templates[0]?.id ?? 'default';
 
@@ -118,6 +134,8 @@ export default function OffersCreate({
     const [step, setStep] = useState(initial.step);
     const [domainSearching, setDomainSearching] = useState(false);
     const [domainPurchasing, setDomainPurchasing] = useState(null);
+    const [domainBulkPurchasing, setDomainBulkPurchasing] = useState(false);
+    const [domainSelected, setDomainSelected] = useState([]);
     const [domainSearchError, setDomainSearchError] = useState('');
     const [domainSearchResults, setDomainSearchResults] = useState(null);
     const [dynadotBalance, setDynadotBalance] = useState(null);
@@ -319,6 +337,7 @@ export default function OffersCreate({
         setDomainSearching(true);
         setDomainSearchError('');
         setDomainSearchResults(null);
+        setDomainSelected([]);
 
         try {
             const { data: result } = await axios.post(route('domains.search'), { query });
@@ -336,9 +355,65 @@ export default function OffersCreate({
         }
     };
 
-    const pickDomain = (domain) => {
+    const pickDomain = (domain, { clearResults = true } = {}) => {
         update('domain', domain);
-        setDomainSearchResults(null);
+        if (clearResults) {
+            setDomainSearchResults(null);
+            setDomainSelected([]);
+        }
+    };
+
+    const availableSearchResults = useMemo(
+        () => (domainSearchResults ?? []).filter((item) => item.available),
+        [domainSearchResults],
+    );
+
+    const selectedDomainItems = useMemo(() => {
+        const selected = new Set(domainSelected);
+
+        return availableSearchResults.filter((item) => selected.has(item.domain));
+    }, [availableSearchResults, domainSelected]);
+
+    const toggleDomainSelected = (domain, checked) => {
+        setDomainSelected((prev) => {
+            if (checked) {
+                if (prev.includes(domain)) {
+                    return prev;
+                }
+
+                if (prev.length >= DOMAIN_BULK_PURCHASE_LIMIT) {
+                    setDomainSearchError(`Можна вибрати максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+                    return prev;
+                }
+
+                setDomainSearchError('');
+                return [...prev, domain];
+            }
+
+            return prev.filter((item) => item !== domain);
+        });
+    };
+
+    const toggleSelectAllAvailable = (checked) => {
+        if (!checked) {
+            setDomainSelected([]);
+            setDomainSearchError('');
+            return;
+        }
+
+        const next = availableSearchResults
+            .slice(0, DOMAIN_BULK_PURCHASE_LIMIT)
+            .map((item) => item.domain);
+
+        setDomainSelected(next);
+
+        if (availableSearchResults.length > DOMAIN_BULK_PURCHASE_LIMIT) {
+            setDomainSearchError(
+                `Вибрано перші ${DOMAIN_BULK_PURCHASE_LIMIT} з ${availableSearchResults.length} вільних доменів.`,
+            );
+        } else {
+            setDomainSearchError('');
+        }
     };
 
     const loadDynadotBalance = async () => {
@@ -393,6 +468,96 @@ export default function OffersCreate({
             );
         } finally {
             setDomainPurchasing(null);
+        }
+    };
+
+    const purchaseSelectedDomains = async () => {
+        if (!hasDynadotContactId) {
+            setDomainSearchError('Вкажіть Dynadot Contact ID у налаштуваннях перед покупкою.');
+            return;
+        }
+
+        const items = selectedDomainItems.slice(0, DOMAIN_BULK_PURCHASE_LIMIT);
+
+        if (items.length === 0) {
+            setDomainSearchError('Виберіть хоча б один вільний домен.');
+            return;
+        }
+
+        const totalAmount = items.reduce((sum, item) => {
+            const amount = parseDomainPriceAmount(item.price);
+            return amount === null ? sum : sum + amount;
+        }, 0);
+        const currencyMatch = items.map((item) => String(item.price ?? '').match(/\b([A-Z]{3})\b/i)).find(Boolean);
+        const currency = currencyMatch?.[1]?.toUpperCase() ?? '';
+        const totalHint = totalAmount > 0
+            ? ` Приблизно ${totalAmount.toFixed(2)}${currency ? ` ${currency}` : ''}.`
+            : '';
+
+        if (!window.confirm(
+            `Купити ${items.length} домен(и) на 1 рік без автопродовження?${totalHint}\n${items.map((item) => `• ${item.domain}`).join('\n')}\nСписання з балансу Dynadot.`,
+        )) {
+            return;
+        }
+
+        setDomainBulkPurchasing(true);
+        setDomainSearchError('');
+
+        const bought = [];
+        const failed = [];
+
+        try {
+            for (let index = 0; index < items.length; index += 1) {
+                const item = items[index];
+                setDomainPurchasing(item.domain);
+                setDomainSearchError(`Купівля ${index + 1}/${items.length}: ${item.domain}…`);
+
+                try {
+                    const { data: result } = await axios.post(route('domains.purchase'), { domain: item.domain });
+
+                    if (!result.ok) {
+                        failed.push({
+                            domain: item.domain,
+                            message: result.message ?? 'Не вдалося купити домен',
+                        });
+                        continue;
+                    }
+
+                    const purchasedDomain = result.result?.domain ?? item.domain;
+                    bought.push(purchasedDomain);
+
+                    setDomainSearchResults((prev) => (prev ?? []).map((row) => (
+                        row.domain === item.domain || row.domain === purchasedDomain
+                            ? { ...row, available: false, status: 'taken', message: null }
+                            : row
+                    )));
+                    setDomainSelected((prev) => prev.filter((domain) => domain !== item.domain && domain !== purchasedDomain));
+                } catch (error) {
+                    failed.push({
+                        domain: item.domain,
+                        message: error.response?.data?.message ?? 'Не вдалося купити домен',
+                    });
+                }
+            }
+
+            if (bought.length > 0) {
+                pickDomain(bought[0], { clearResults: failed.length === 0 });
+                setDomainPurchasedViaPanel(true);
+            }
+
+            const parts = [];
+            if (bought.length > 0) {
+                parts.push(`Куплено: ${bought.join(', ')}`);
+            }
+            if (failed.length > 0) {
+                parts.push(`Не вдалося: ${failed.map((item) => `${item.domain} (${item.message})`).join('; ')}`);
+            }
+
+            setDomainSearchError(parts.join('. ') || '');
+            await loadDynadotBalance();
+        } finally {
+            setDomainPurchasing(null);
+            setDomainBulkPurchasing(false);
         }
     };
 
@@ -588,6 +753,7 @@ export default function OffersCreate({
                                     onChange={(e) => {
                                         update('domain', e.target.value);
                                         setDomainSearchResults(null);
+                                        setDomainSelected([]);
                                     }}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -648,52 +814,109 @@ export default function OffersCreate({
                                 <p className="field-hint" style={{ color: '#f87171' }}>{domainSearchError}</p>
                             )}
                             {domainSearchResults && (
-                                <ul className="domain-search-results">
-                                    {domainSearchResults.map((item) => (
-                                        <li
-                                            key={item.domain}
-                                            className={`domain-search-results__item${item.available ? ' is-available' : ''}`}
-                                        >
-                                            <div className="domain-search-results__main">
-                                                <span className="domain-search-results__name">{item.domain}</span>
-                                                <span className={`domain-search-results__badge domain-search-results__badge--${item.status}`}>
-                                                    {item.available
-                                                        ? 'Вільний'
-                                                        : item.status === 'taken'
-                                                            ? 'Зайнятий'
-                                                            : item.status === 'error'
-                                                                ? 'Помилка'
-                                                                : item.status}
+                                <>
+                                    {availableSearchResults.length > 0 && (
+                                        <div className="domain-bulk-bar">
+                                            <label className="domain-bulk-bar__select-all">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        availableSearchResults.length > 0
+                                                        && domainSelected.length > 0
+                                                        && domainSelected.length === Math.min(
+                                                            availableSearchResults.length,
+                                                            DOMAIN_BULK_PURCHASE_LIMIT,
+                                                        )
+                                                    }
+                                                    disabled={domainBulkPurchasing || domainPurchasing !== null}
+                                                    onChange={(e) => toggleSelectAllAvailable(e.target.checked)}
+                                                />
+                                                <span>
+                                                    Вибрано {domainSelected.length}/{Math.min(availableSearchResults.length, DOMAIN_BULK_PURCHASE_LIMIT)}
+                                                    {' '}(макс. {DOMAIN_BULK_PURCHASE_LIMIT})
                                                 </span>
-                                            </div>
-                                            <div className="domain-search-results__meta">
-                                                {item.message && item.status === 'error' && (
-                                                    <span title={item.message}>{item.message}</span>
-                                                )}
-                                                {item.price && <span>{item.price}</span>}
-                                                {item.available && (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-ghost btn-sm"
-                                                            onClick={() => pickDomain(item.domain)}
-                                                        >
-                                                            Обрати
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-primary btn-sm"
-                                                            disabled={!hasDynadotContactId || domainPurchasing === item.domain}
-                                                            onClick={() => purchaseDomain(item)}
-                                                        >
-                                                            {domainPurchasing === item.domain ? 'Купівля…' : 'Купити'}
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                                            </label>
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary btn-sm"
+                                                disabled={
+                                                    !hasDynadotContactId
+                                                    || domainSelected.length === 0
+                                                    || domainBulkPurchasing
+                                                    || domainPurchasing !== null
+                                                }
+                                                onClick={purchaseSelectedDomains}
+                                            >
+                                                {domainBulkPurchasing
+                                                    ? `Купівля… ${domainPurchasing ? `(${domainPurchasing})` : ''}`
+                                                    : `Купити вибрані (${domainSelected.length})`}
+                                            </button>
+                                        </div>
+                                    )}
+                                    <ul className="domain-search-results">
+                                        {domainSearchResults.map((item) => (
+                                            <li
+                                                key={item.domain}
+                                                className={`domain-search-results__item${item.available ? ' is-available' : ''}${domainSelected.includes(item.domain) ? ' is-selected' : ''}`}
+                                            >
+                                                <div className="domain-search-results__main">
+                                                    {item.available ? (
+                                                        <label className="domain-search-results__check">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={domainSelected.includes(item.domain)}
+                                                                disabled={domainBulkPurchasing || domainPurchasing !== null}
+                                                                onChange={(e) => toggleDomainSelected(item.domain, e.target.checked)}
+                                                            />
+                                                            <span className="domain-search-results__name">{item.domain}</span>
+                                                        </label>
+                                                    ) : (
+                                                        <span className="domain-search-results__name">{item.domain}</span>
+                                                    )}
+                                                    <span className={`domain-search-results__badge domain-search-results__badge--${item.status}`}>
+                                                        {item.available
+                                                            ? 'Вільний'
+                                                            : item.status === 'taken'
+                                                                ? 'Зайнятий'
+                                                                : item.status === 'error'
+                                                                    ? 'Помилка'
+                                                                    : item.status}
+                                                    </span>
+                                                </div>
+                                                <div className="domain-search-results__meta">
+                                                    {item.message && item.status === 'error' && (
+                                                        <span title={item.message}>{item.message}</span>
+                                                    )}
+                                                    {item.price && <span>{item.price}</span>}
+                                                    {item.available && (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-ghost btn-sm"
+                                                                disabled={domainBulkPurchasing}
+                                                                onClick={() => pickDomain(item.domain)}
+                                                            >
+                                                                Обрати
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-primary btn-sm"
+                                                                disabled={
+                                                                    !hasDynadotContactId
+                                                                    || domainBulkPurchasing
+                                                                    || domainPurchasing === item.domain
+                                                                }
+                                                                onClick={() => purchaseDomain(item)}
+                                                            >
+                                                                {domainPurchasing === item.domain ? 'Купівля…' : 'Купити'}
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
                             )}
                         </div>
                     </div>

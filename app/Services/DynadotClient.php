@@ -43,15 +43,64 @@ class DynadotClient
             $row = $this->searchOne($settings, $apiKey, $domains[0], $currency);
             $this->throwOnGlobalApiError($row, (bool) $settings->dynadot_sandbox);
 
-            return [$row];
+            return $this->sortSearchResultsByPriceDesc([$row]);
         }
 
         $batch = $this->searchBatch($settings, $apiKey, $domains, $currency);
         if ($batch !== null) {
-            return $batch;
+            return $this->sortSearchResultsByPriceDesc($batch);
         }
 
-        return $this->searchMany($settings, $apiKey, $domains, $currency);
+        return $this->sortSearchResultsByPriceDesc(
+            $this->searchMany($settings, $apiKey, $domains, $currency),
+        );
+    }
+
+    /**
+     * Sort by registration price descending; rows without a parseable price go last.
+     *
+     * @param  list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>  $results
+     * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
+     */
+    public function sortSearchResultsByPriceDesc(array $results): array
+    {
+        usort($results, function (array $a, array $b): int {
+            $priceA = $this->parsePriceAmount($a['price'] ?? null);
+            $priceB = $this->parsePriceAmount($b['price'] ?? null);
+
+            if ($priceA === null && $priceB === null) {
+                return strcmp((string) ($a['domain'] ?? ''), (string) ($b['domain'] ?? ''));
+            }
+
+            if ($priceA === null) {
+                return 1;
+            }
+
+            if ($priceB === null) {
+                return -1;
+            }
+
+            if ($priceA === $priceB) {
+                return strcmp((string) ($a['domain'] ?? ''), (string) ($b['domain'] ?? ''));
+            }
+
+            return $priceB <=> $priceA;
+        });
+
+        return array_values($results);
+    }
+
+    public function parsePriceAmount(?string $price): ?float
+    {
+        if ($price === null || trim($price) === '') {
+            return null;
+        }
+
+        if (preg_match('/(\d+(?:[.,]\d+)?)/', $price, $matches) !== 1) {
+            return null;
+        }
+
+        return (float) str_replace(',', '.', $matches[1]);
     }
 
     /**

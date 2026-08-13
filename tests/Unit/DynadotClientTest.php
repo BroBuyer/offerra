@@ -28,8 +28,28 @@ class DynadotClientTest extends TestCase
         $tlds = config('offerra.domain_search_tlds');
 
         $this->assertCount(count($tlds), $domains);
-        $this->assertContains('pestotracer.com', $domains);
-        $this->assertContains('pestotracer.org', $domains);
+        $this->assertContains('pestotracer.click', $domains);
+        $this->assertContains('pestotracer.online', $domains);
+        $this->assertContains('pestotracer.co', $domains);
+        $this->assertSame(
+            array_map(fn (string $tld) => 'pestotracer.'.ltrim($tld, '.'), $tlds),
+            $domains,
+        );
+    }
+
+    public function test_sort_search_results_by_price_desc(): void
+    {
+        $sorted = $this->client->sortSearchResultsByPriceDesc([
+            ['domain' => 'a.online', 'available' => true, 'price' => '2.50 in USD', 'status' => 'available', 'message' => null],
+            ['domain' => 'b.click', 'available' => true, 'price' => '12.99 in USD', 'status' => 'available', 'message' => null],
+            ['domain' => 'c.com', 'available' => false, 'price' => null, 'status' => 'taken', 'message' => null],
+            ['domain' => 'd.live', 'available' => true, 'price' => '7.99 in USD', 'status' => 'available', 'message' => null],
+        ]);
+
+        $this->assertSame(
+            ['b.click', 'd.live', 'a.online', 'c.com'],
+            array_column($sorted, 'domain'),
+        );
     }
 
     public function test_expand_query_strips_protocol_and_www(): void
