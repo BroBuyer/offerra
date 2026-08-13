@@ -473,7 +473,7 @@ require __DIR__ . '/includes/header.php';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Empezar ahora';
-  $form_class = 'leadform lead-form aurel-form';
+  $form_class = 'leadform lead-form aurel-form aurel-stack';
   $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>

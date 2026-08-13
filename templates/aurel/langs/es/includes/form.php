@@ -4,13 +4,13 @@ require_once __DIR__ . '/config.php';
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
 $form_submit = $form_submit ?? 'Empezar ahora';
-$form_class = $form_class ?? 'leadform lead-form aurel-form';
 $form_variant = $form_variant ?? 'band';
+$form_class = trim(($form_class ?? 'leadform lead-form aurel-form') . ($form_variant === 'stack' ? ' aurel-stack' : ''));
 $form_subtitle = $form_subtitle ?? null;
 $phone_country = form_visitor_phone_country();
 $allowed_countries = form_allowed_countries();
 $lead_cookie = site_slug() . '_lead';
-$grid_class = $form_variant === 'stack' ? 'xdzqh aurel-stack' : 'nc427f';
+$is_stack = $form_variant === 'stack';
 ?>
 <form
   name="form"
@@ -50,7 +50,8 @@ $grid_class = $form_variant === 'stack' ? 'xdzqh aurel-stack' : 'nc427f';
       <p class="pt6joj"><?= e($form_subtitle) ?></p>
     <?php endif; ?>
 
-    <div class="<?= e($grid_class) ?>">
+<?php if ($is_stack): ?>
+    <div class="xdzqh">
       <div class="wxts7 field" data-field="fname">
         <label class="field-label" for="<?= e($form_id) ?>-fname">Nombre</label>
         <input class="wnzxg input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nombre" required pattern="[^\d]+" autocomplete="given-name">
@@ -59,16 +60,37 @@ $grid_class = $form_variant === 'stack' ? 'xdzqh aurel-stack' : 'nc427f';
         <label class="field-label" for="<?= e($form_id) ?>-lname">Apellidos</label>
         <input class="wnzxg input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Apellidos" required pattern="[^\d]+" autocomplete="family-name">
       </div>
-      <div class="wxts7 field field-full" data-field="email">
+    </div>
+    <div class="wxts7 field" data-field="email">
+      <label class="field-label" for="<?= e($form_id) ?>-email">Correo electrónico</label>
+      <input class="wnzxg input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Correo electrónico" required autocomplete="email" inputmode="email">
+    </div>
+    <div class="wxts7 field" data-field="phone">
+      <label class="field-label" for="<?= e($form_id) ?>-phone">Teléfono</label>
+      <input class="wnzxg input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="612 34 56 78" autocomplete="tel" inputmode="tel">
+      <span class="field-error hide" role="alert" aria-live="polite"></span>
+    </div>
+<?php else: ?>
+    <div class="nc427f">
+      <div class="wxts7 field" data-field="fname">
+        <label class="field-label" for="<?= e($form_id) ?>-fname">Nombre</label>
+        <input class="wnzxg input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nombre" required pattern="[^\d]+" autocomplete="given-name">
+      </div>
+      <div class="wxts7 field" data-field="lname">
+        <label class="field-label" for="<?= e($form_id) ?>-lname">Apellidos</label>
+        <input class="wnzxg input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Apellidos" required pattern="[^\d]+" autocomplete="family-name">
+      </div>
+      <div class="wxts7 field" data-field="email">
         <label class="field-label" for="<?= e($form_id) ?>-email">Correo electrónico</label>
         <input class="wnzxg input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Correo electrónico" required autocomplete="email" inputmode="email">
       </div>
-      <div class="wxts7 field field-full" data-field="phone">
+      <div class="wxts7 field" data-field="phone">
         <label class="field-label" for="<?= e($form_id) ?>-phone">Teléfono</label>
         <input class="wnzxg input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="612 34 56 78" autocomplete="tel" inputmode="tel">
         <span class="field-error hide" role="alert" aria-live="polite"></span>
       </div>
     </div>
+<?php endif; ?>
 
     <button type="submit" class="qou73xg fi3abjs submit"><?= e($form_submit) ?></button>
 
@@ -95,5 +117,5 @@ $grid_class = $form_variant === 'stack' ? 'xdzqh aurel-stack' : 'nc427f';
   </div>
 </form>
 <?php
-unset($form_id, $form_heading, $form_submit, $form_class, $form_subtitle, $form_variant);
+unset($form_id, $form_heading, $form_submit, $form_class, $form_subtitle, $form_variant, $is_stack);
 ?>
