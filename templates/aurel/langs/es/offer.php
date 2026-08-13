@@ -11,9 +11,9 @@ require __DIR__ . '/includes/header.php';
 
 <section class="kj9w4x">
   <div class="ggh3sm">
-    <span class="qwce6q">Why this platform</span>
-    <h1>Why people choose to start here</h1>
-    <p class="kpnq92g">Not a sales pitch — the specific, checkable reasons, plus the parts that will not suit everyone.</p>
+    <span class="qwce6q">Por qué esta plataforma</span>
+    <h1>Por qué la gente elige empezar aquí</h1>
+    <p class="kpnq92g">No es un discurso comercial: son motivos concretos y comprobables, y también las partes que no convienen a todo el mundo.</p>
   </div>
 </section>
 
@@ -39,7 +39,7 @@ require __DIR__ . '/includes/header.php';
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
-    <h2>What you get that a do-it-yourself setup does not</h2>
+    <h2>Lo que obtienes y un enfoque por tu cuenta no te da</h2>
     <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Ejecución en menos de un segundo en cada mercado conectado.</b> <?= e(SITE_NAME) ?> mantiene conexiones API permanentes de baja latencia con cada exchange soportado. Cuando el modelo genera una señal, la orden se envía, se ejecuta y queda registrada en tu panel antes del siguiente tick.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Funciona 24/7, en cada sesión de mercado.</b> Las criptomonedas no descansan, y <?= e(SITE_NAME) ?> tampoco. El motor sigue analizando pares durante fines de semana y festivos para que nunca se te escape una oportunidad.</span></li>
@@ -55,14 +55,14 @@ require __DIR__ . '/includes/header.php';
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm">
     <div class="fduhcv"><b>03</b><i></i></div>
-    <h2>Who this is probably not for</h2>
-    <p>Being straight about this saves everyone time. If any of the following describes you, a different route will suit you better.</p>
+    <h2>Para quién probablemente no es</h2>
+    <p>Decirlo claro ahorra tiempo a todos. Si alguno de estos puntos te describe, otra vía te encajará mejor.</p>
     <ul class="skvsaz4">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>You need guaranteed returns. No honest platform offers them, and neither do we.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>You want to invest money you cannot afford to be without.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>You trade at professional volume with your own execution stack.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Necesitas rentabilidades garantizadas. Ninguna plataforma honesta las ofrece, y nosotros tampoco.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Quieres invertir dinero que no puedes permitirte perder.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Operas a volumen profesional con tu propia infraestructura de ejecución.</span></li>
     </ul>
-    <p class="jkkyl">Investment involves risk, including the possible loss of some or all of the capital you invest. The value of investments can go down as well as up, and you may receive back less than you originally put in. You should not invest money that you cannot afford to lose.</p>
+    <p class="jkkyl">Invertir conlleva riesgo, incluida la posible pérdida de parte o de todo el capital. El valor de las inversiones puede subir o bajar, y es posible que recuperes menos de lo que invertiste. No inviertas dinero que no puedas permitirte perder.</p>
     <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Empezar — <?= e(money_min()) ?> mín.</a></div>
   </div>
 </section>

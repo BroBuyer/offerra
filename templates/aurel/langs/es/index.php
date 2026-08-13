@@ -38,10 +38,10 @@ require __DIR__ . '/includes/header.php';
 ?>
     </div>
     <div class="mcitl7d">
-      <div class="ohqkun7"><b>33.000</b><span>Active users</span></div>
-      <div class="ohqkun7"><b>€0,6B</b><span>Traded volume</span></div>
+      <div class="ohqkun7"><b>33.000</b><span>Usuarios activos</span></div>
+      <div class="ohqkun7"><b>€0,6B</b><span>Volumen negociado</span></div>
       <div class="ohqkun7"><b>99,8%</b><span>Disponibilidad de señal</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Support</span></div>
+      <div class="ohqkun7"><b>24/7</b><span>Soporte</span></div>
     </div>
   </div>
 </section>
@@ -55,11 +55,11 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#dmobczk">Cómo funciona</a></li>
       <li><a href="#gp0nit">En cualquier pantalla</a></li>
       <li><a href="#esypwbx">Rendimientos</a></li>
-      <li><a href="#evp8w6d">Safeguards</a></li>
+      <li><a href="#evp8w6d">Protecciones</a></li>
       <li><a href="#vzo0q">Por qué <?= e(SITE_NAME) ?></a></li>
-      <li><a href="#br1y4s">What members say</a></li>
+      <li><a href="#br1y4s">Lo que dicen los miembros</a></li>
       <li><a href="#vatll">Tu analista</a></li>
-      <li><a href="#rb8p3">Find your starting point</a></li>
+      <li><a href="#rb8p3">Tu punto de partida</a></li>
       <li><a href="#nw3j7wd">Preguntas</a></li>
     </ol>
     <a class="qou73xg fi3abjs" href="#nl3qm8">Empezar — <?= e(money_min()) ?> mín.</a>
@@ -68,8 +68,8 @@ require __DIR__ . '/includes/header.php';
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">What members say</span>
-        <h2 id="es9pra">What traders are saying</h2>
+        <span class="vd7z9k">Lo que dicen los miembros</span>
+        <h2 id="es9pra">Lo que dicen los operadores</h2>
       </div>
       <div class="vdaz1q">
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
@@ -183,16 +183,16 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Gestor personal asignado</td><td class="bfe2o6f">✓</td><td class="byuav">horario limitado</td><td class="byuav">manual</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Why us</a></p>
+      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Por qué nosotros</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Safeguards</span>
-            <h2 id="ykur4hl">Your money, protected by design</h2>
-            <p class="rmct9">Client funds sit with regulated payment partners, access is verified, and every withdrawal follows a documented route back to the account it came from.</p>
+            <span class="vd7z9k">Protecciones</span>
+            <h2 id="ykur4hl">Tu dinero, protegido por diseño</h2>
+            <p class="rmct9">Los fondos de los clientes se depositan en socios de pago regulados, el acceso está verificado y cada retiro sigue una ruta documentada de vuelta a la cuenta de origen.</p>
           </div>
           <ul class="ibiqy0k">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Gráficos de velas y profundidad de mercado en tiempo real, en cualquier dispositivo</span></li>
@@ -230,8 +230,13 @@ require __DIR__ . '/includes/header.php';
       </div>
       <div class="wmuyc">
         <div>
-          <div class="vcf9ca"><label for="calc-dep">Importe inicial</label><span class="cj9i15q" id="csezcv1">€1.000</span></div>
-          <input id="lsm9on" type="range" min="250" max="10000" step="50" value="1000" aria-label="Importe inicial"/>
+          <?php
+            $calc_min = max(1, (int) MIN_DEPOSIT);
+            $calc_max = 10000;
+            $calc_default = min($calc_max, max($calc_min, 1000));
+          ?>
+          <div class="vcf9ca"><label for="calc-dep">Importe inicial</label><span class="cj9i15q" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0, ',', '.')) ?></span></div>
+          <input id="lsm9on" type="range" min="<?= (int) $calc_min ?>" max="<?= (int) $calc_max ?>" step="50" value="<?= (int) $calc_default ?>" aria-label="Importe inicial"/>
           <div class="vcf9ca"><label for="calc-mon">Meses</label><span class="cj9i15q" id="ywprvgd">6</span></div>
           <input id="gqz8w" type="range" min="1" max="24" step="1" value="6" aria-label="Meses"/>
           <p class="ifuciwq">Las cifras son ilustrativas. Tus ingresos reales dependen del importe que inviertas y de la estrategia que elijas junto a tu analista.</p>
@@ -246,43 +251,43 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Find your starting point</span>
-        <h2 id="dv0846">Three questions, then a suggested starting plan</h2>
-        <p class="rmct9">No score, no grade — the answers just tell your specialist where to begin so the first call is not spent on basics.</p>
+        <span class="vd7z9k">Tu punto de partida</span>
+        <h2 id="dv0846">Tres preguntas, y un plan inicial sugerido</h2>
+        <p class="rmct9">Sin puntuación ni nota: las respuestas solo indican a tu especialista por dónde empezar, para que la primera llamada no se vaya en lo básico.</p>
       </div>
       <form class="yw6xmlm" id="sqw38g" novalidate>
         <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
         <p class="sdahnb" hidden aria-live="polite" role="status"
-           data-l="Question"
-           data-of="of"></p>
+           data-l="Pregunta"
+           data-of="de"></p>
         <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
-          <legend>01. How much investing have you done before?</legend>
+          <legend>01. ¿Cuánta experiencia tienes invirtiendo?</legend>
           <div class="bjatk">
-            <label><input type="radio" name="q1" value="1"/><span>None at all</span></label>
-            <label><input type="radio" name="q1" value="2"/><span>A little, on my own</span></label>
-            <label><input type="radio" name="q1" value="3"/><span>I invest regularly</span></label>
+            <label><input type="radio" name="q1" value="1"/><span>Ninguna</span></label>
+            <label><input type="radio" name="q1" value="2"/><span>Un poco, por mi cuenta</span></label>
+            <label><input type="radio" name="q1" value="3"/><span>Invierto con regularidad</span></label>
           </div>
         </fieldset>
         <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
-          <legend>02. What matters most to you right now?</legend>
+          <legend>02. ¿Qué es lo más importante para ti ahora?</legend>
           <div class="bjatk">
-            <label><input type="radio" name="q2" value="1"/><span>Keeping risk low</span></label>
-            <label><input type="radio" name="q2" value="2"/><span>Steady growth</span></label>
-            <label><input type="radio" name="q2" value="3"/><span>Learning how it works</span></label>
+            <label><input type="radio" name="q2" value="1"/><span>Mantener el riesgo bajo</span></label>
+            <label><input type="radio" name="q2" value="2"/><span>Crecimiento constante</span></label>
+            <label><input type="radio" name="q2" value="3"/><span>Entender cómo funciona</span></label>
           </div>
         </fieldset>
         <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
-          <legend>03. How much time can you give it?</legend>
+          <legend>03. ¿Cuánto tiempo puedes dedicarte?</legend>
           <div class="bjatk">
-            <label><input type="radio" name="q3" value="1"/><span>Almost none</span></label>
-            <label><input type="radio" name="q3" value="2"/><span>A few minutes a day</span></label>
-            <label><input type="radio" name="q3" value="3"/><span>I like following markets</span></label>
+            <label><input type="radio" name="q3" value="1"/><span>Casi nada</span></label>
+            <label><input type="radio" name="q3" value="2"/><span>Unos minutos al día</span></label>
+            <label><input type="radio" name="q3" value="3"/><span>Me gusta seguir los mercados</span></label>
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Back</button>
-          <p class="ubn7i4v" id="bpisnbk" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">See my starting plan</a>
+          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Atrás</button>
+          <p class="ubn7i4v" id="bpisnbk" hidden>Tus respuestas están listas: deja tus datos y un especialista las repasará contigo.</p>
+          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Ver mi plan inicial</a>
         </div>
       </form>
     </section>
@@ -311,7 +316,7 @@ require __DIR__ . '/includes/header.php';
       </div>
       <div class="smnsm2" role="region" tabindex="0" aria-label="Opera con Bitcoin, Ethereum y mucho más"><table class="nd3owbf">
         <caption>Los precios se actualizan automáticamente mientras la página está abierta.</caption>
-        <thead><tr><th scope="col">Asset</th><th scope="col">Price</th><th scope="col">24h</th></tr></thead>
+        <thead><tr><th scope="col">Activo</th><th scope="col">Precio</th><th scope="col">24h</th></tr></thead>
         <tbody>
           <tr data-sym="BTC"><td><span class="jtcrzrj">Bitcoin<small>BTC/USDT</small></span></td><td class="qsd2h">€64.671</td><td class="dprrq gv5fw2">-1,06%</td></tr>
           <tr data-sym="ETH"><td><span class="jtcrzrj">Ethereum<small>ETH/USDT</small></span></td><td class="qsd2h">€1.881</td><td class="dprrq gv5fw2">-2,55%</td></tr>
@@ -343,8 +348,8 @@ require __DIR__ . '/includes/header.php';
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
         <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
-        <h2 id="onidtj">Watch your account in real time</h2>
-        <p class="rmct9">Every trade your analyst places is logged here — entries, exits and verified results on every pair, streaming live.</p>
+        <h2 id="onidtj">Mira tu cuenta en tiempo real</h2>
+        <p class="rmct9">Cada operación que coloca tu analista queda registrada aquí: entradas, salidas y resultados verificados en cada par, en directo.</p>
       </div>
       <ol class="zzk9i">
         <li><span class="vpx6kk">01</span><div><h3>Ejecución en menos de un segundo en cada mercado conectado</h3><p><?= e(SITE_NAME) ?> mantiene conexiones API permanentes de baja latencia con cada exchange soportado. Cuando el modelo genera una señal, la orden se envía, se ejecuta y queda registrada en tu panel antes del siguiente tick.</p></div></li>
@@ -453,16 +458,16 @@ require __DIR__ . '/includes/header.php';
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Client ratings" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE CONFIANZA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reseñas</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reseñas · Basado en <b style="color:var(--text,#fff)">4.902</b> valoraciones</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
+<!--reviews-block--><section aria-label="Valoraciones de clientes" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE CONFIANZA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reseñas</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reseñas · Basado en <b style="color:var(--text,#fff)">4.902</b> valoraciones</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
   <div class="ggh3sm kdbtf1i">
     <div>
       <span class="vd7z9k">Comienza ya</span>
       <h2 id="fglj2pf">¿Listo para ver tu capital en movimiento?</h2>
       <p class="rmct9">Abre tu cuenta en minutos, ingresa desde un mínimo modesto y empieza a seguir tu progreso de forma transparente desde el primer día.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An email address you actually read.</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>A phone number, so a specialist can reach you.</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An identity document, for the verification step later.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un correo que realmente consultes.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un teléfono, para que un especialista pueda contactarte.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un documento de identidad, para la verificación posterior.</span></li>
       </ul>
     </div>
     <div class="bv1ft5">

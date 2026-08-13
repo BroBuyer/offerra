@@ -12,21 +12,21 @@ require __DIR__ . '/includes/header.php';
 <section class="kj9w4x">
   <div class="ggh3sm">
     <span class="qwce6q">Comienza ya</span>
-    <h1>Open your account</h1>
-    <p class="kpnq92g">A few details to start, then a specialist takes it from there. No payment is taken at this step.</p>
+    <h1>Abre tu cuenta</h1>
+    <p class="kpnq92g">Unos datos para empezar, y un especialista se ocupa del resto. En este paso no se cobra nada.</p>
   </div>
 </section>
 
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
-    <h2>What happens next</h2>
+    <h2>Qué ocurre después</h2>
     <ol class="nxlk2qu">
-      <li><h3>You send the form</h3><p>It takes about a minute and costs nothing.</p></li>
-      <li><h3>A specialist calls</h3><p>They confirm your details, answer questions and explain the next step. No pressure to deposit.</p></li>
-      <li><h3>You verify and choose an amount</h3><p>Only then does any money move — and only the amount you pick.</p></li>
+      <li><h3>Envías el formulario</h3><p>Tarda unos minutos y no cuesta nada.</p></li>
+      <li><h3>Te llama un especialista</h3><p>Confirma tus datos, responde preguntas y explica el siguiente paso. Sin presión para ingresar.</p></li>
+      <li><h3>Verificas y eliges un importe</h3><p>Solo entonces se mueve dinero, y solo la cantidad que tú elijas.</p></li>
     </ol>
-    <p class="jkkyl">Investment involves risk, including the possible loss of some or all of the capital you invest. The value of investments can go down as well as up, and you may receive back less than you originally put in. You should not invest money that you cannot afford to lose.</p>
+    <p class="jkkyl">Invertir conlleva riesgo, incluida la posible pérdida de parte o de todo el capital. El valor de las inversiones puede subir o bajar, y es posible que recuperes menos de lo que invertiste. No inviertas dinero que no puedas permitirte perder.</p>
     <div class="tw9z4by">
       <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Empezar — <?= e(money_min()) ?> mín.</a>
       <a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Preguntas frecuentes</a>
@@ -37,26 +37,26 @@ require __DIR__ . '/includes/header.php';
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
-    <h2>What you need</h2>
+    <h2>Qué necesitas</h2>
     <ul class="skvsaz4">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An email address you actually read.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>A phone number, so a specialist can reach you.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An identity document, for the verification step later.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un correo que realmente consultes.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un teléfono, para que un especialista pueda contactarte.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un documento de identidad, para la verificación posterior.</span></li>
     </ul>
   </div>
 </section>
 
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm op6k5h">
-    <h2>What happens after you send the form</h2>
-    <h3>The verification call</h3>
-    <p>A specialist calls to confirm the details you submitted, answer questions and agree what a sensible starting amount looks like for you. The call is a conversation, not a sales script — an account that is opened on unrealistic expectations is no use to anybody.</p>
-    <h4>How long it takes</h4>
-    <p>Usually one call of ten to fifteen minutes. If you would rather be called at a specific time, say so in the form and that time is respected.</p>
-    <h3>Identity checks explained</h3>
-    <p>Before the first deposit you will be asked for a photo ID and a recent document showing your address. This is the same requirement any regulated financial service has, and it exists so that a withdrawal can only ever return to you.</p>
-    <h4>What is accepted</h4>
-    <p>A passport or national ID card, and a utility bill or bank statement issued within the last three months. A clear photo taken on a phone is fine.</p>
+    <h2>Qué ocurre después de enviar el formulario</h2>
+    <h3>La llamada de verificación</h3>
+    <p>Un especialista llama para confirmar los datos que enviaste, responder preguntas y acordar un importe inicial razonable para ti. Es una conversación, no un guion de venta: una cuenta abierta con expectativas irreales no sirve a nadie.</p>
+    <h4>Cuánto tarda</h4>
+    <p>Suele ser una llamada de diez a quince minutos. Si prefieres que te llamen a una hora concreta, indícalo en el formulario y se respeta.</p>
+    <h3>La verificación de identidad, explicada</h3>
+    <p>Antes del primer ingreso te pedirán un documento de identidad con foto y un justificante reciente de domicilio. Es el mismo requisito de cualquier servicio financiero regulado, y existe para que un retiro solo pueda volver a ti.</p>
+    <h4>Qué se acepta</h4>
+    <p>Pasaporte o DNI, y una factura o extracto bancario de los últimos tres meses. Una foto nítida hecha con el móvil es suficiente.</p>
   </div>
 </section>
 

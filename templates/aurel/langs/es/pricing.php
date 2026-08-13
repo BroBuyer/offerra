@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 $page_title = 'Precios ' . SITE_NAME;
-$page_description = 'Simple, transparent pricing — ' . SITE_NAME;
+$page_description = 'Precios simples y transparentes — ' . SITE_NAME;
 $page_canonical = page_url("pricing.php");
 $active_page = "pricing";
 require __DIR__ . '/includes/head.php';
@@ -11,8 +11,8 @@ require __DIR__ . '/includes/header.php';
 
 <section class="kj9w4x">
   <div class="ggh3sm">
-    <span class="qwce6q">Pricing</span>
-    <h1>Simple, transparent pricing.</h1>
+    <span class="qwce6q">Precios</span>
+    <h1>Precios simples y transparentes.</h1>
     <p class="kpnq92g">Empezar con <?= e(SITE_NAME) ?> es gratis. No hay comisiones ocultas por abrir una cuenta, y solo aportas lo que decidas invertir: la plataforma y sus herramientas están incluidas.</p>
   </div>
 </section>
@@ -23,15 +23,15 @@ require __DIR__ . '/includes/header.php';
     <h2>Dónde pueden aparecer costes</h2>
     <p>Estos son los únicos puntos donde el dinero sale de tu saldo por algo que no sea una inversión elegida por ti.</p>
     <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
-      <thead><tr><th scope="col">Item</th><th scope="col">Charged by</th><th scope="col">Note</th></tr></thead>
+      <thead><tr><th scope="col">Concepto</th><th scope="col">Lo cobra</th><th scope="col">Nota</th></tr></thead>
       <tbody>
-        <tr><td>Account opening</td><td>—</td><td>Free.</td></tr>
-        <tr><td>Platform access</td><td>—</td><td>Included, with no subscription.</td></tr>
-        <tr><td>Market spread</td><td>Broker</td><td>The standard difference between buy and sell price.</td></tr>
-        <tr><td>Network / bank fee</td><td>Payment provider</td><td>Depends on the method you choose.</td></tr>
+        <tr><td>Apertura de cuenta</td><td>—</td><td>Gratis.</td></tr>
+        <tr><td>Acceso a la plataforma</td><td>—</td><td>Incluido, sin suscripción.</td></tr>
+        <tr><td>Spread de mercado</td><td>Bróker</td><td>La diferencia habitual entre precio de compra y de venta.</td></tr>
+        <tr><td>Comisión de red / banco</td><td>Proveedor de pago</td><td>Depende del método que elijas.</td></tr>
       </tbody>
     </table></div>
-    <p class="jkkyl">Capital is at risk. Only invest what you can afford to lose.</p>
+    <p class="jkkyl">El capital está en riesgo. Invierte solo lo que puedas permitirte perder.</p>
     <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Abrir una cuenta</a></div>
   </div>
 </section>
@@ -39,27 +39,27 @@ require __DIR__ . '/includes/header.php';
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
-    <h2>What is included</h2>
+    <h2>Qué está incluido</h2>
     <ul class="skvsaz4">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Free account setup — no registration or licence fees.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>No hidden charges on deposits, withdrawals or account maintenance.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Only standard broker spreads or network costs may apply.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Start from the minimum deposit and scale at your own pace.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Alta de cuenta gratuita: sin tasas de registro ni de licencia.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Sin cargos ocultos en ingresos, retiros ni mantenimiento de cuenta.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Solo pueden aplicarse spreads habituales del bróker o costes de red.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Empieza desde el depósito mínimo y escala a tu ritmo.</span></li>
     </ul>
   </div>
 </section>
 
 <section class="onxr8te" data-u="sec">
   <div class="ggh3sm op6k5h">
-    <h2>What the numbers look like in practice</h2>
-    <h3>A first deposit, step by step</h3>
-    <p>A first deposit is the whole cost picture in one place: the amount you send, the spread you pay when it is converted, and nothing else until you decide to trade. There is no account fee waiting at the end of the month and no charge for leaving the balance where it is.</p>
-    <h4>What happens on the same day</h4>
-    <p>The balance appears once the payment clears, and a specialist walks through the plan before anything is opened. Nothing is placed automatically on your behalf.</p>
-    <h3>Withdrawals and what they cost</h3>
-    <p>Withdrawals return to the payment method the money arrived from, which is a requirement rather than a preference — it is how the account stays yours. Processing is free from our side; the only deduction you may see is the one your own bank or card issuer applies.</p>
-    <h4>Timing you can plan around</h4>
-    <p>Requests made on a working day are reviewed the same day. Card returns usually settle within three to five working days, bank transfers within two.</p>
+    <h2>Cómo se ven las cifras en la práctica</h2>
+    <h3>Un primer ingreso, paso a paso</h3>
+    <p>El primer ingreso resume todo el coste en un solo sitio: el importe que envías, el spread al convertirlo, y nada más hasta que decidas operar. No hay cuota de cuenta a fin de mes ni cargo por dejar el saldo donde está.</p>
+    <h4>Qué ocurre el mismo día</h4>
+    <p>El saldo aparece cuando se confirma el pago, y un especialista recorre el plan antes de abrir nada. Nada se coloca automáticamente en tu nombre.</p>
+    <h3>Retiros y lo que cuestan</h3>
+    <p>Los retiros vuelven al método de pago con el que llegó el dinero: es un requisito, no una preferencia, para que la cuenta siga siendo tuya. El procesamiento es gratuito por nuestra parte; la única deducción posible es la de tu banco o emisor de tarjeta.</p>
+    <h4>Plazos con los que puedes contar</h4>
+    <p>Las solicitudes en día laborable se revisan el mismo día. Las devoluciones a tarjeta suelen liquidarse en tres a cinco días laborables, las transferencias en dos.</p>
   </div>
 </section>
 

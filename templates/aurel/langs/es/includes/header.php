@@ -1,4 +1,4 @@
-<a class="lzvjboi" href="#top">Skip to content</a>
+<a class="lzvjboi" href="#top">Saltar al contenido</a>
 <header class="lh2p7">
   <div class="ggh3sm br3bd0">
     <a class="lifld2" href="<?= page_url() ?>">
@@ -9,11 +9,11 @@
       <button class="eaoigpo" type="button" aria-label="Cerrar menú">&times;</button>
       <a href="<?= page_url('product.php') ?>">Cómo funciona</a>
       <a href="<?= page_url() ?>#exd9dmd">Mercados en vivo</a>
-      <a href="<?= page_url('offer.php') ?>">Why us</a>
-      <a href="<?= page_url('pricing.php') ?>">Pricing</a>
-      <a href="<?= page_url('faq.php') ?>">FAQ</a>
+      <a href="<?= page_url('offer.php') ?>">Por qué nosotros</a>
+      <a href="<?= page_url('pricing.php') ?>">Precios</a>
+      <a href="<?= page_url('faq.php') ?>">Preguntas</a>
       <a href="<?= page_url('blog.php') ?>">Blog</a>
-      <a href="<?= page_url('about.php') ?>">About</a>
+      <a href="<?= page_url('about.php') ?>">Nosotros</a>
       <a class="qou73xg fi3abjs zpud7" href="<?= page_url() ?>#nl3qm8">Abre tu cuenta</a>
     </nav>
     <div class="ulec2" hidden></div>

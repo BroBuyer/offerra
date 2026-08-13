@@ -56,12 +56,12 @@ require __DIR__ . '/includes/header.php';
     <h2>Qué puedes tener en tu cartera</h2>
     <p>Una sola cuenta cubre varias clases de activos, así que no tendrás que abrir una segunda plataforma en cuanto amplíes tus intereses.</p>
     <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
-      <thead><tr><th scope="col">Asset class</th><th scope="col">Examples</th><th scope="col">Good to know</th></tr></thead>
+      <thead><tr><th scope="col">Clase de activo</th><th scope="col">Ejemplos</th><th scope="col">Conviene saber</th></tr></thead>
       <tbody>
-        <tr><td>Cryptocurrency</td><td>BTC, ETH, SOL, XRP</td><td>Trades around the clock, including weekends.</td></tr>
-        <tr><td>Currencies</td><td>EUR/USD, GBP/USD</td><td>Follows the main session hours.</td></tr>
-        <tr><td>Indices</td><td>S&P 500, DAX</td><td>Broad exposure without picking single companies.</td></tr>
-        <tr><td>Commodities</td><td>Gold, oil</td><td>Often used to balance a portfolio.</td></tr>
+        <tr><td>Criptomonedas</td><td>BTC, ETH, SOL, XRP</td><td>Se opera las 24 horas, incluidos los fines de semana.</td></tr>
+        <tr><td>Divisas</td><td>EUR/USD, GBP/USD</td><td>Sigue el horario de las sesiones principales.</td></tr>
+        <tr><td>Índices</td><td>S&P 500, DAX</td><td>Exposición amplia sin elegir empresas sueltas.</td></tr>
+        <tr><td>Materias primas</td><td>Oro, petróleo</td><td>Suelen usarse para equilibrar una cartera.</td></tr>
       </tbody>
     </table></div>
   </div>

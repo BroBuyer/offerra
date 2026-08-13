@@ -40,7 +40,7 @@ require __DIR__ . '/includes/header.php';
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Los reintegros se devuelven al mismo método utilizado en el ingreso.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Condiciones, aviso de riesgo y política de privacidad publicados en su totalidad.</span></li>
     </ul>
-    <p class="jkkyl">Investment involves risk, including the possible loss of some or all of the capital you invest. The value of investments can go down as well as up, and you may receive back less than you originally put in. You should not invest money that you cannot afford to lose.</p>
+    <p class="jkkyl">Invertir conlleva riesgo, incluida la posible pérdida de parte o de todo el capital. El valor de las inversiones puede subir o bajar, y es posible que recuperes menos de lo que invertiste. No inviertas dinero que no puedas permitirte perder.</p>
     <div class="tw9z4by">
       <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Empezar — <?= e(money_min()) ?> mín.</a>
       <a class="qou73xg ec2hno" href="<?= page_url('contacts.php') ?>">Enviar mensaje</a>
@@ -69,9 +69,9 @@ require __DIR__ . '/includes/header.php';
     <p>La mayoría de las personas que quieren invertir nunca empiezan, porque cada camino parece pensado para alguien que ya conoce el vocabulario. Nosotros construimos lo contrario: una sola cuenta, lenguaje claro y un especialista con quien realmente puedes hablar.</p>
     <p>Sin jerga donde basta una frase sencilla, sin comisiones que aparecen solo después de mover el dinero, y sin promesas de rentabilidad que nadie puede garantizar honestamente.</p>
     <div class="luvxe">
-      <div class="mvuhd"><b class="lfu72qs">33.000</b><span>Active users</span></div>
-      <div class="mvuhd"><b class="lfu72qs">€0,6B</b><span>Traded volume</span></div>
-      <div class="mvuhd"><b class="lfu72qs">24/7</b><span>Support</span></div>
+      <div class="mvuhd"><b class="lfu72qs">33.000</b><span>Usuarios activos</span></div>
+      <div class="mvuhd"><b class="lfu72qs">€0,6B</b><span>Volumen negociado</span></div>
+      <div class="mvuhd"><b class="lfu72qs">24/7</b><span>Soporte</span></div>
     </div>
   </div>
 </section>
