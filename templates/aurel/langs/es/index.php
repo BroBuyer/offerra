@@ -69,7 +69,7 @@ require __DIR__ . '/includes/header.php';
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
         <span class="vd7z9k">Lo que dicen los miembros</span>
-        <h2 id="es9pra">Lo que dicen los operadores</h2>
+        <h2 id="es9pra">Lo que dicen los inversores</h2>
       </div>
       <div class="vdaz1q">
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
@@ -77,7 +77,7 @@ require __DIR__ . '/includes/header.php';
             <span class="cc91z" aria-label="5/5">★★★★★</span>
             <span class="ue1r1">+€2.200 en 4 meses</span>
           </div>
-          <blockquote style="margin:0" itemprop="reviewBody"><p>Mi analista me explicó cada paso. Establecí mis objetivos una sola vez, y ahora veo exactamente cómo funciona mi capital — sin dudar de cada decisión.</p></blockquote>
+          <blockquote style="margin:0" itemprop="reviewBody"><p>Mi analista me explicó cada paso. Establecí mis objetivos una sola vez, y ahora veo exactamente cómo funciona mi capital, sin cuestionar cada decisión.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
             <b itemprop="name">Isabel García López</b>Madrid
           </figcaption>
@@ -252,8 +252,8 @@ require __DIR__ . '/includes/header.php';
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
         <span class="vd7z9k">Tu punto de partida</span>
-        <h2 id="dv0846">Tres preguntas, y un plan inicial sugerido</h2>
-        <p class="rmct9">Sin puntuación ni nota: las respuestas solo indican a tu especialista por dónde empezar, para que la primera llamada no se vaya en lo básico.</p>
+        <h2 id="dv0846">Tres preguntas y un plan inicial sugerido</h2>
+        <p class="rmct9">Sin puntuación ni nota: las respuestas solo indican a tu especialista por dónde empezar, para que la primera llamada no se gaste en lo básico.</p>
       </div>
       <form class="yw6xmlm" id="sqw38g" novalidate>
         <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
@@ -277,7 +277,7 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
-          <legend>03. ¿Cuánto tiempo puedes dedicarte?</legend>
+          <legend>03. ¿Cuánto tiempo puedes dedicarle?</legend>
           <div class="bjatk">
             <label><input type="radio" name="q3" value="1"/><span>Casi nada</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Unos minutos al día</span></label>
@@ -395,7 +395,7 @@ require __DIR__ . '/includes/header.php';
         <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">¿Hay comisiones ocultas?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-            <p itemprop="text">Todos los costes se muestran de forma transparente antes de comprometerme. Siempre verás qué se aplica a tu plan — sin sorpresas.</p>
+            <p itemprop="text">Todos los costes se muestran de forma transparente antes de comprometerte. Siempre verás qué se aplica a tu plan, sin sorpresas.</p>
           </div>
         </details>
         <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">

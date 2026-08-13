@@ -512,6 +512,9 @@ ul,ol{margin:0;padding:0}
 .tl154k .mcitl7d .ohqkun7{border-radius:0;box-shadow:none;border-top:0;border-right:0;border-bottom:0;border-left:1px solid var(--border);padding:20px 24px}
 .tl154k .mcitl7d .ohqkun7:first-child{border-left:0}
 .hpwy9 legend{margin-left:-10px;padding:0 8px}
+main#top>.tl154k{padding-bottom:52px}
+main#top>.jx8jnza{padding-top:24px}
+@media (max-width:1080px){main#top>.jx8jnza{padding-top:32px}}
 .ibf0s54{width:78px;height:78px;border-radius:50%;background:color-mix(in srgb,var(--pos) 18%,transparent);color:var(--pos);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:34px;border:1px solid color-mix(in srgb,var(--pos) 40%,transparent)}
 .jfjcf{max-width:620px;margin:0 auto;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 36px;box-shadow:0 40px 80px -40px rgba(16,15,12,.22)}
 .jfjcf h1{font-size:clamp(1.9rem,4vw,2.6rem);font-weight:800;margin-bottom:14px}

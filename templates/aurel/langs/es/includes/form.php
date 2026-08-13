@@ -109,9 +109,9 @@ $is_stack = $form_variant === 'stack';
     </div>
 
     <p class="ac7ftax">
-      Al continuar, aceptas nuestras Condiciones y Política de Privacidad.
+      Al continuar, aceptas la política de privacidad y las condiciones de uso.
       <a href="<?= page_url('privacy.php') ?>">Privacidad</a>
-      &amp;
+      y
       <a href="<?= page_url('conditions.php') ?>">Condiciones de uso</a>.
     </p>
   </div>
