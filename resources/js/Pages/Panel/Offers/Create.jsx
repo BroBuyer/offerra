@@ -782,10 +782,7 @@ export default function OffersCreate({
             setDomainSearchError(parts.join('. ') || '');
             await loadDynadotBalance();
 
-            if (failed.length === 0 && boughtCount > 0) {
-                ensureBulkTemplatesForLang(data.lang);
-                goToStep(1);
-            }
+            // Після купівлі лишаємось на кроці 1 — можна ще додати домени вручну.
         } finally {
             setDomainPurchasing(null);
             setDomainBulkPurchasing(false);
