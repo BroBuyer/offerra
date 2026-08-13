@@ -7,7 +7,7 @@ import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-const steps = ['Основне', 'Шаблон, GEO і валюта', 'Keitaro & інфра', 'Підсумок'];
+const steps = ['Основне', 'Ринок і шаблони', 'Keitaro & інфра', 'Підсумок'];
 
 const INFRA_TASKS = [
     { key: 'infra_hestia', label: 'Hestia — додати домен (vhost + public_html)' },
@@ -102,13 +102,59 @@ function parseDomainPriceCurrency(price) {
 
 const DOMAIN_BULK_PURCHASE_LIMIT = 10;
 
-/** Round-robin templates, preferring unused-for-brand; fallback to defaultTemplate / templates[0]. */
-function assignTemplatesRoundRobin(domains, templates, usedTemplateIds, fallbackTemplate) {
-    const fallback = fallbackTemplate
+function templateSupportsLang(template, langCode) {
+    if (!langCode) {
+        return true;
+    }
+
+    return (template?.languages ?? []).some((item) => item.code === langCode);
+}
+
+function unionLanguages(templates) {
+    const seen = new Map();
+
+    templates.forEach((template) => {
+        (template.languages ?? []).forEach((lang) => {
+            if (!seen.has(lang.code)) {
+                seen.set(lang.code, lang);
+            }
+        });
+    });
+
+    return [...seen.values()];
+}
+
+function makePackItem(domain, searchItem = null, { owned = false } = {}) {
+    const price = searchItem?.price ?? null;
+    const amount = parseDomainPriceAmount(price);
+    const currency = parseDomainPriceCurrency(price);
+
+    return {
+        domain,
+        template: '',
+        price,
+        amount,
+        currency,
+        purchaseStatus: owned ? 'owned' : 'pending',
+        purchaseError: null,
+    };
+}
+
+/** Round-robin among templates that support lang; prefer unused-for-brand. */
+function assignTemplatesRoundRobin(domains, templates, usedTemplateIds, fallbackTemplate, langCode = '') {
+    const eligible = langCode
+        ? templates.filter((item) => templateSupportsLang(item, langCode))
+        : templates;
+    const fallback = (
+        (fallbackTemplate && eligible.some((item) => item.id === fallbackTemplate))
+            ? fallbackTemplate
+            : null
+    )
+        || eligible[0]?.id
         || templates[0]?.id
         || 'default';
-    const unused = templates.filter((item) => !usedTemplateIds.includes(item.id));
-    const pool = unused.length > 0 ? unused : templates;
+    const unused = eligible.filter((item) => !usedTemplateIds.includes(item.id));
+    const pool = unused.length > 0 ? unused : eligible;
     const ids = pool.length > 0
         ? pool.map((item) => item.id)
         : [fallback];
@@ -117,21 +163,6 @@ function assignTemplatesRoundRobin(domains, templates, usedTemplateIds, fallback
         domain,
         template: ids[index % ids.length] ?? fallback,
     }));
-}
-
-function intersectLanguages(languageLists) {
-    if (languageLists.length === 0) {
-        return [];
-    }
-
-    let codes = new Set((languageLists[0] ?? []).map((item) => item.code));
-
-    for (let index = 1; index < languageLists.length; index += 1) {
-        const next = new Set((languageLists[index] ?? []).map((item) => item.code));
-        codes = new Set([...codes].filter((code) => next.has(code)));
-    }
-
-    return (languageLists[0] ?? []).filter((item) => codes.has(item.code));
 }
 
 function buildDefaults(templates) {
@@ -176,7 +207,6 @@ export default function OffersCreate({
     const [domainSearching, setDomainSearching] = useState(false);
     const [domainPurchasing, setDomainPurchasing] = useState(null);
     const [domainBulkPurchasing, setDomainBulkPurchasing] = useState(false);
-    const [domainSelected, setDomainSelected] = useState([]);
     const [domainSearchError, setDomainSearchError] = useState('');
     const [domainSearchResults, setDomainSearchResults] = useState(null);
     const [dynadotBalance, setDynadotBalance] = useState(null);
@@ -217,18 +247,93 @@ export default function OffersCreate({
         : isMultilangTemplate(data.template);
 
     const availableLanguages = useMemo(() => {
-        if (!isBulkMode) {
-            return selectedTemplate?.languages ?? [];
+        if (isMarketMultilang) {
+            return selectedTemplate?.languages
+                ?? templates.find((item) => item.id === 'multilang')?.languages
+                ?? [];
         }
 
-        const lists = bulkItems.map((item) => {
-            const template = templates.find((row) => row.id === item.template);
+        // Мову обираємо до шаблонів — показуємо всі мови з каталогу.
+        return unionLanguages(templates);
+    }, [isMarketMultilang, selectedTemplate, templates]);
 
-            return template?.languages ?? [];
+    const templatesForLang = useMemo(() => {
+        if (!data.lang || isMarketMultilang) {
+            return templates;
+        }
+
+        return templates.filter((item) => templateSupportsLang(item, data.lang));
+    }, [templates, data.lang, isMarketMultilang]);
+
+    const disabledTemplateIds = useMemo(() => {
+        if (isMarketMultilang) {
+            return [];
+        }
+
+        if (!data.lang) {
+            return templates.map((item) => item.id);
+        }
+
+        return templates
+            .filter((item) => !templateSupportsLang(item, data.lang))
+            .map((item) => item.id);
+    }, [templates, data.lang, isMarketMultilang]);
+
+    const packNeedsPurchase = useMemo(
+        () => bulkItems.some((item) => item.purchaseStatus === 'pending' || item.purchaseStatus === 'error'),
+        [bulkItems],
+    );
+
+    const packAllReady = useMemo(
+        () => bulkItems.length > 0
+            && bulkItems.every((item) => item.purchaseStatus === 'purchased' || item.purchaseStatus === 'owned'),
+        [bulkItems],
+    );
+
+    const packTotal = useMemo(() => {
+        const billable = bulkItems.filter((item) => (
+            item.purchaseStatus === 'pending'
+            || item.purchaseStatus === 'error'
+            || item.purchaseStatus === 'buying'
+        ));
+
+        if (billable.length === 0) {
+            return null;
+        }
+
+        let sum = 0;
+        let priced = 0;
+        let currency = '';
+
+        billable.forEach((item) => {
+            if (item.amount === null || item.amount === undefined || Number.isNaN(item.amount)) {
+                return;
+            }
+
+            sum += item.amount;
+            priced += 1;
+
+            if (!currency && item.currency) {
+                currency = item.currency;
+            }
         });
 
-        return intersectLanguages(lists);
-    }, [isBulkMode, selectedTemplate, bulkItems, templates]);
+        if (priced === 0) {
+            return null;
+        }
+
+        return {
+            amount: sum,
+            currency,
+            incomplete: priced < billable.length,
+            count: billable.length,
+        };
+    }, [bulkItems]);
+
+    const packInSearch = useMemo(
+        () => new Set(bulkItems.map((item) => item.domain)),
+        [bulkItems],
+    );
 
     useEffect(() => {
         if (fresh) {
@@ -440,7 +545,6 @@ export default function OffersCreate({
         setDomainSearching(true);
         setDomainSearchError('');
         setDomainSearchResults(null);
-        setDomainSelected([]);
 
         try {
             const { data: result } = await axios.post(route('domains.search'), { query });
@@ -462,96 +566,99 @@ export default function OffersCreate({
         update('domain', domain);
         if (clearResults) {
             setDomainSearchResults(null);
-            setDomainSelected([]);
         }
     };
 
-    const availableSearchResults = useMemo(
-        () => (domainSearchResults ?? []).filter((item) => item.available),
-        [domainSearchResults],
-    );
+    const addDomainToPack = (searchItem, { owned = false } = {}) => {
+        const domain = searchItem.domain;
 
-    const selectedDomainItems = useMemo(() => {
-        const selected = new Set(domainSelected);
-
-        return availableSearchResults.filter((item) => selected.has(item.domain));
-    }, [availableSearchResults, domainSelected]);
-
-    const selectedDomainsTotal = useMemo(() => {
-        if (selectedDomainItems.length === 0) {
-            return null;
-        }
-
-        let sum = 0;
-        let priced = 0;
-        let currency = '';
-
-        selectedDomainItems.forEach((item) => {
-            const amount = parseDomainPriceAmount(item.price);
-
-            if (amount === null) {
-                return;
+        setBulkItems((prev) => {
+            if (prev.some((item) => item.domain === domain)) {
+                setDomainSearchError(`${domain} уже в пакеті.`);
+                return prev;
             }
 
-            sum += amount;
-            priced += 1;
-
-            if (!currency) {
-                currency = parseDomainPriceCurrency(item.price);
-            }
-        });
-
-        if (priced === 0) {
-            return null;
-        }
-
-        return {
-            amount: sum,
-            currency,
-            incomplete: priced < selectedDomainItems.length,
-        };
-    }, [selectedDomainItems]);
-
-    const toggleDomainSelected = (domain, checked) => {
-        setDomainSelected((prev) => {
-            if (checked) {
-                if (prev.includes(domain)) {
-                    return prev;
-                }
-
-                if (prev.length >= DOMAIN_BULK_PURCHASE_LIMIT) {
-                    setDomainSearchError(`Можна вибрати максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
-                    return prev;
-                }
-
-                setDomainSearchError('');
-                return [...prev, domain];
+            if (prev.length >= DOMAIN_BULK_PURCHASE_LIMIT) {
+                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+                return prev;
             }
 
-            return prev.filter((item) => item !== domain);
-        });
-    };
-
-    const toggleSelectAllAvailable = (checked) => {
-        if (!checked) {
-            setDomainSelected([]);
             setDomainSearchError('');
+            return [...prev, makePackItem(domain, searchItem, { owned })];
+        });
+
+        pickDomain(domain, { clearResults: false });
+    };
+
+    const addTypedDomainToPack = ({ owned = true } = {}) => {
+        const domain = data.domain.trim().toLowerCase().replace(/^https?:\/\//i, '').split(/[/?#]/)[0];
+
+        if (!domain.includes('.')) {
+            setDomainSearchError('Вкажіть повний домен (з зоною), щоб додати до пакету.');
             return;
         }
 
-        const next = availableSearchResults
-            .slice(0, DOMAIN_BULK_PURCHASE_LIMIT)
-            .map((item) => item.domain);
+        const fromSearch = (domainSearchResults ?? []).find((item) => item.domain === domain);
+        addDomainToPack(
+            fromSearch ?? { domain, price: null, available: !owned },
+            { owned: owned || fromSearch?.available === false },
+        );
+    };
 
-        setDomainSelected(next);
+    const removeBulkItem = (domain) => {
+        setBulkItems((prev) => prev.filter((item) => item.domain !== domain));
+    };
 
-        if (availableSearchResults.length > DOMAIN_BULK_PURCHASE_LIMIT) {
-            setDomainSearchError(
-                `Вибрано перші ${DOMAIN_BULK_PURCHASE_LIMIT} з ${availableSearchResults.length} вільних доменів.`,
-            );
-        } else {
-            setDomainSearchError('');
+    const updateBulkItemTemplate = (domain, templateId) => {
+        setBulkItems((prev) => prev.map((item) => (
+            item.domain === domain ? { ...item, template: templateId } : item
+        )));
+    };
+
+    const applyFirstTemplateToAll = () => {
+        const templateId = bulkItems[0]?.template;
+        if (!templateId) {
+            return;
         }
+        setBulkItems((prev) => prev.map((item) => ({ ...item, template: templateId })));
+    };
+
+    const ensureBulkTemplatesForLang = (langCode) => {
+        if (!langCode || bulkItems.length === 0) {
+            return;
+        }
+
+        setBulkItems((prev) => {
+            const needsAssign = prev.some((item) => {
+                if (!item.template) {
+                    return true;
+                }
+
+                const template = templates.find((row) => row.id === item.template);
+
+                return !templateSupportsLang(template, langCode);
+            });
+
+            if (!needsAssign) {
+                return prev;
+            }
+
+            const packUsed = [
+                ...usedTemplatesForBrand(brandTemplateUsage, data.brand),
+            ];
+            const assigned = assignTemplatesRoundRobin(
+                prev.map((item) => item.domain),
+                templates,
+                packUsed,
+                data.template || templates[0]?.id,
+                langCode,
+            );
+
+            return prev.map((item, index) => ({
+                ...item,
+                template: assigned[index]?.template || item.template,
+            }));
+        });
     };
 
     const loadDynadotBalance = async () => {
@@ -573,63 +680,23 @@ export default function OffersCreate({
         }
     };
 
-    const purchaseDomain = async (item) => {
+    const purchasePackDomains = async () => {
         if (!hasDynadotContactId) {
             setDomainSearchError('Вкажіть Dynadot Contact ID у налаштуваннях перед покупкою.');
             return;
         }
 
-        const priceHint = item.price ? ` (${formatDomainPrice(item.price)})` : '';
-        if (!window.confirm(`Купити ${item.domain} на 1 рік без автопродовження${priceHint}? Списання з балансу Dynadot.`)) {
-            return;
-        }
-
-        setDomainPurchasing(item.domain);
-        setDomainSearchError('');
-
-        try {
-            const { data: result } = await axios.post(route('domains.purchase'), { domain: item.domain });
-            if (!result.ok) {
-                setDomainSearchError(result.message ?? 'Не вдалося купити домен');
-                return;
-            }
-
-            pickDomain(result.result?.domain ?? item.domain);
-            setDomainPurchasedViaPanel(true);
-            if (result.result?.message) {
-                setDomainSearchError(result.result.message);
-            }
-            await loadDynadotBalance();
-        } catch (error) {
-            setDomainSearchError(
-                error.response?.data?.message ?? 'Не вдалося купити домен',
-            );
-        } finally {
-            setDomainPurchasing(null);
-        }
-    };
-
-    const purchaseSelectedDomains = async () => {
-        if (!hasDynadotContactId) {
-            setDomainSearchError('Вкажіть Dynadot Contact ID у налаштуваннях перед покупкою.');
-            return;
-        }
-
-        const items = selectedDomainItems.slice(0, DOMAIN_BULK_PURCHASE_LIMIT);
+        const items = bulkItems.filter((item) => (
+            item.purchaseStatus === 'pending' || item.purchaseStatus === 'error'
+        ));
 
         if (items.length === 0) {
-            setDomainSearchError('Виберіть хоча б один вільний домен.');
+            setDomainSearchError('У пакеті немає доменів для купівлі.');
             return;
         }
 
-        const totalAmount = items.reduce((sum, item) => {
-            const amount = parseDomainPriceAmount(item.price);
-            return amount === null ? sum : sum + amount;
-        }, 0);
-        const currencyMatch = items.map((item) => String(item.price ?? '').match(/\b([A-Z]{3})\b/i)).find(Boolean);
-        const currency = currencyMatch?.[1]?.toUpperCase() ?? '';
-        const totalHint = totalAmount > 0
-            ? ` Приблизно ${totalAmount.toFixed(2)}${currency ? ` ${currency}` : ''}.`
+        const totalHint = packTotal
+            ? ` Приблизно ${packTotal.incomplete ? '≈ ' : ''}${packTotal.amount.toFixed(2)}${packTotal.currency ? ` ${packTotal.currency}` : ''}.`
             : '';
 
         if (!window.confirm(
@@ -641,143 +708,96 @@ export default function OffersCreate({
         setDomainBulkPurchasing(true);
         setDomainSearchError('');
 
-        const bought = [];
+        let boughtCount = 0;
+        let primaryDomain = null;
         const failed = [];
 
         try {
             for (let index = 0; index < items.length; index += 1) {
                 const item = items[index];
                 setDomainPurchasing(item.domain);
-                setDomainSearchError(`Купівля ${index + 1}/${items.length}: ${item.domain}…`);
+                setBulkItems((prev) => prev.map((row) => (
+                    row.domain === item.domain
+                        ? { ...row, purchaseStatus: 'buying', purchaseError: null }
+                        : row
+                )));
 
                 try {
                     const { data: result } = await axios.post(route('domains.purchase'), { domain: item.domain });
 
                     if (!result.ok) {
-                        failed.push({
-                            domain: item.domain,
-                            message: result.message ?? 'Не вдалося купити домен',
-                        });
+                        const message = result.message ?? 'Не вдалося купити домен';
+                        failed.push({ domain: item.domain, message });
+                        setBulkItems((prev) => prev.map((row) => (
+                            row.domain === item.domain
+                                ? { ...row, purchaseStatus: 'error', purchaseError: message }
+                                : row
+                        )));
                         continue;
                     }
 
                     const purchasedDomain = result.result?.domain ?? item.domain;
-                    bought.push(purchasedDomain);
-
+                    boughtCount += 1;
+                    if (!primaryDomain) {
+                        primaryDomain = purchasedDomain;
+                    }
+                    setDomainPurchasedViaPanel(true);
+                    setBulkItems((prev) => prev.map((row) => (
+                        row.domain === item.domain
+                            ? {
+                                ...row,
+                                domain: purchasedDomain,
+                                purchaseStatus: 'purchased',
+                                purchaseError: null,
+                            }
+                            : row
+                    )));
                     setDomainSearchResults((prev) => (prev ?? []).map((row) => (
                         row.domain === item.domain || row.domain === purchasedDomain
                             ? { ...row, available: false, status: 'taken', message: null }
                             : row
                     )));
-                    setDomainSelected((prev) => prev.filter((domain) => domain !== item.domain && domain !== purchasedDomain));
                 } catch (error) {
-                    failed.push({
-                        domain: item.domain,
-                        message: error.response?.data?.message ?? 'Не вдалося купити домен',
-                    });
+                    const message = error.response?.data?.message ?? 'Не вдалося купити домен';
+                    failed.push({ domain: item.domain, message });
+                    setBulkItems((prev) => prev.map((row) => (
+                        row.domain === item.domain
+                            ? { ...row, purchaseStatus: 'error', purchaseError: message }
+                            : row
+                    )));
                 }
             }
 
-            if (bought.length > 0) {
-                pickDomain(bought[0], { clearResults: failed.length === 0 });
-                setDomainPurchasedViaPanel(true);
-                setBulkItems(assignTemplatesRoundRobin(
-                    bought,
-                    templates,
-                    usedTemplatesForBrand(brandTemplateUsage, data.brand),
-                    data.template || templates[0]?.id,
-                ));
+            if (primaryDomain) {
+                pickDomain(primaryDomain, { clearResults: false });
             }
 
             const parts = [];
-            if (bought.length > 0) {
-                parts.push(`Куплено: ${bought.join(', ')}`);
+            if (boughtCount > 0) {
+                parts.push(`Куплено: ${boughtCount}`);
             }
             if (failed.length > 0) {
                 parts.push(`Не вдалося: ${failed.map((item) => `${item.domain} (${item.message})`).join('; ')}`);
             }
-
             setDomainSearchError(parts.join('. ') || '');
             await loadDynadotBalance();
+
+            if (failed.length === 0 && boughtCount > 0) {
+                ensureBulkTemplatesForLang(data.lang);
+                goToStep(1);
+            }
         } finally {
             setDomainPurchasing(null);
             setDomainBulkPurchasing(false);
         }
     };
 
-    const addSelectedToPack = () => {
-        const domains = selectedDomainItems.map((item) => item.domain);
-
-        if (domains.length === 0) {
-            setDomainSearchError('Виберіть хоча б один вільний домен.');
-            return;
-        }
-
-        setBulkItems((prev) => {
-            const existing = new Set(prev.map((item) => item.domain));
-            const room = DOMAIN_BULK_PURCHASE_LIMIT - prev.length;
-
-            if (room <= 0) {
-                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
-                return prev;
-            }
-
-            const toAdd = [];
-            for (const domain of domains) {
-                if (existing.has(domain)) {
-                    continue;
-                }
-                if (toAdd.length >= room) {
-                    break;
-                }
-                toAdd.push(domain);
-            }
-
-            if (toAdd.length === 0) {
-                setDomainSearchError('Вибрані домени вже в пакеті.');
-                return prev;
-            }
-
-            if (toAdd.length < domains.filter((domain) => !existing.has(domain)).length) {
-                setDomainSearchError(
-                    `Додано ${toAdd.length} (ліміт пакету ${DOMAIN_BULK_PURCHASE_LIMIT}).`,
-                );
-            } else {
-                setDomainSearchError(`Додано до пакету: ${toAdd.join(', ')}`);
-            }
-
-            const packUsed = [
-                ...usedTemplatesForBrand(brandTemplateUsage, data.brand),
-                ...prev.map((item) => item.template),
-            ];
-
-            const assigned = assignTemplatesRoundRobin(
-                toAdd,
-                templates,
-                packUsed,
-                data.template || templates[0]?.id,
-            );
-
-            return [...prev, ...assigned];
-        });
-    };
-
-    const removeBulkItem = (domain) => {
-        setBulkItems((prev) => prev.filter((item) => item.domain !== domain));
-    };
-
-    const updateBulkItemTemplate = (domain, templateId) => {
+    const markPackItemOwned = (domain) => {
         setBulkItems((prev) => prev.map((item) => (
-            item.domain === domain ? { ...item, template: templateId } : item
+            item.domain === domain
+                ? { ...item, purchaseStatus: 'owned', purchaseError: null, amount: null, price: null }
+                : item
         )));
-    };
-
-    const applyFirstTemplateToAll = () => {
-        const templateId = bulkItems[0]?.template;
-        if (!templateId) {
-            return;
-        }
-        setBulkItems((prev) => prev.map((item) => ({ ...item, template: templateId })));
     };
 
     const toggleInfraOption = (key, checked) => {
@@ -829,15 +849,31 @@ export default function OffersCreate({
     }, [data.brand, data.domain, data.geo, affiliateTag]);
 
     const canProceedStep0 = Boolean(data.brand.trim()) && (
-        isBulkMode
-            ? bulkItems.every((item) => Boolean(item.domain?.trim()))
+        bulkItems.length > 0
+            ? packAllReady
             : Boolean(data.domain.trim())
     );
-    const canProceedTemplate = isBulkMode
-        ? bulkItems.every((item) => Boolean(item.template))
+    const canProceedTemplate = bulkItems.length > 0
+        ? bulkItems.every((item) => {
+            if (!item.template) {
+                return false;
+            }
+            if (!data.lang || isMarketMultilang) {
+                return true;
+            }
+            const template = templates.find((row) => row.id === item.template);
+
+            return templateSupportsLang(template, data.lang);
+        })
             && templates.length > 0
             && !bulkHasMultilangMix
-        : Boolean(data.template) && templates.length > 0;
+        : Boolean(data.template)
+            && templates.length > 0
+            && (
+                isMarketMultilang
+                || !data.lang
+                || templateSupportsLang(selectedTemplate, data.lang)
+            );
     const langInIntersection = Boolean(
         data.lang && availableLanguages.some((item) => item.code === data.lang),
     );
@@ -854,8 +890,10 @@ export default function OffersCreate({
             return 'Збережіть CRM API key і Telegram bot token у налаштуваннях.';
         }
         if (!canProceedStep0) {
-            return isBulkMode
-                ? 'Заповніть бренд і домени в пакеті (крок 1).'
+            return isBulkMode || bulkItems.length > 0
+                ? (packNeedsPurchase
+                    ? 'Спочатку купіть домени в пакеті (крок 1).'
+                    : 'Заповніть бренд і зберіть пакет доменів (крок 1).')
                 : 'Заповніть бренд і домен (крок 1).';
         }
         if (isBulkMode && bulkHasMultilangMix) {
@@ -863,11 +901,11 @@ export default function OffersCreate({
         }
         if (!canProceedTemplate) {
             return isBulkMode
-                ? 'Оберіть шаблон для кожного домену в пакеті (крок 2).'
-                : 'Оберіть шаблон (крок 2).';
+                ? 'Оберіть шаблон з підтримкою мови для кожного домену (крок 2).'
+                : 'Оберіть шаблон з підтримкою мови (крок 2).';
         }
-        if (isBulkMode && availableLanguages.length === 0) {
-            return 'Немає спільної мови для всіх шаблонів у пакеті (крок 2).';
+        if (templatesForLang.length === 0 && data.lang && !isMarketMultilang) {
+            return 'Жоден шаблон не підтримує обрану мову (крок 2).';
         }
         if (!canProceedMarket) {
             return 'Перевірте GEO, мову та phone GEO (крок 2).';
@@ -886,7 +924,11 @@ export default function OffersCreate({
         hasKeitaroApiKey,
         isBulkMode,
         bulkHasMultilangMix,
-        availableLanguages.length,
+        packNeedsPurchase,
+        bulkItems.length,
+        templatesForLang.length,
+        data.lang,
+        isMarketMultilang,
     ]);
 
     const submitErrors = useMemo(
@@ -939,7 +981,7 @@ export default function OffersCreate({
                 infra_cloudflare_ssl: data.infra_cloudflare_ssl,
                 infra_cloudflare_https: data.infra_cloudflare_https,
                 infra_cloudflare_www_redirect: data.infra_cloudflare_www_redirect,
-                items: bulkItems,
+                items: bulkItems.map(({ domain, template }) => ({ domain, template })),
             }, {
                 preserveScroll: true,
                 onSuccess,
@@ -1031,26 +1073,94 @@ export default function OffersCreate({
                         </div>
                         {bulkItems.length > 0 && (
                             <div className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>
-                                <h3>Пакет оферів ({bulkItems.length})</h3>
+                                <div className="offer-bulk-pack__head">
+                                    <h3>Пакет оферів ({bulkItems.length})</h3>
+                                    {packTotal && (
+                                        <span className="offer-bulk-pack__total" title="Сума реєстрації доменів до купівлі">
+                                            {packTotal.incomplete ? '≈ ' : ''}
+                                            Разом: {packTotal.amount.toFixed(2)}
+                                            {packTotal.currency ? ` ${packTotal.currency}` : ''}
+                                        </span>
+                                    )}
+                                </div>
                                 <ul className="offer-bulk-pack__list">
                                     {bulkItems.map((item) => (
                                         <li key={item.domain} className="offer-bulk-pack__row">
-                                            <span className="offer-bulk-pack__domain">{item.domain}</span>
-                                            <button
-                                                type="button"
-                                                className="btn btn-ghost btn-sm"
-                                                onClick={() => removeBulkItem(item.domain)}
-                                            >
-                                                Прибрати
-                                            </button>
+                                            <div className="offer-bulk-pack__info">
+                                                <span className="offer-bulk-pack__domain">{item.domain}</span>
+                                                {item.amount != null && item.purchaseStatus !== 'owned' && item.purchaseStatus !== 'purchased' && (
+                                                    <span className="offer-bulk-pack__price">
+                                                        {item.amount.toFixed(2)}
+                                                        {item.currency ? ` ${item.currency}` : ''}
+                                                    </span>
+                                                )}
+                                                {item.purchaseStatus === 'buying' && (
+                                                    <span className="offer-bulk-pack__status is-buying">
+                                                        <span className="btn-spinner" aria-hidden="true" />
+                                                        Купівля…
+                                                    </span>
+                                                )}
+                                                {(item.purchaseStatus === 'purchased' || item.purchaseStatus === 'owned') && (
+                                                    <span className="offer-bulk-pack__status is-ok" title={item.purchaseStatus === 'owned' ? 'Вже ваш / без купівлі' : 'Куплено'}>
+                                                        ✓ {item.purchaseStatus === 'owned' ? 'Свій' : 'Куплено'}
+                                                    </span>
+                                                )}
+                                                {item.purchaseStatus === 'error' && (
+                                                    <span className="offer-bulk-pack__status is-error" title={item.purchaseError || ''}>
+                                                        Помилка
+                                                    </span>
+                                                )}
+                                                {item.purchaseStatus === 'pending' && (
+                                                    <span className="offer-bulk-pack__status is-pending">Очікує купівлі</span>
+                                                )}
+                                            </div>
+                                            <div className="offer-bulk-pack__actions">
+                                                {item.purchaseStatus === 'pending' || item.purchaseStatus === 'error' ? (
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-ghost btn-sm"
+                                                        disabled={domainBulkPurchasing}
+                                                        onClick={() => markPackItemOwned(item.domain)}
+                                                        title="Домен уже куплений раніше — не купувати знову"
+                                                    >
+                                                        Вже мій
+                                                    </button>
+                                                ) : null}
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    disabled={domainBulkPurchasing || item.purchaseStatus === 'buying'}
+                                                    onClick={() => removeBulkItem(item.domain)}
+                                                >
+                                                    Прибрати
+                                                </button>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>
-                                {isBulkMode && (
-                                    <p className="field-hint">
-                                        Генерація піде пакетом ({bulkItems.length} оферів). Перший домен — основний для превʼю.
-                                    </p>
-                                )}
+                                <div className="offer-bulk-pack__footer">
+                                    {packNeedsPurchase ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            disabled={
+                                                !hasDynadotContactId
+                                                || domainBulkPurchasing
+                                                || domainPurchasing !== null
+                                            }
+                                            onClick={purchasePackDomains}
+                                        >
+                                            {domainBulkPurchasing
+                                                ? `Купівля…${domainPurchasing ? ` (${domainPurchasing})` : ''}`
+                                                : `Купити пакет (${bulkItems.filter((item) => item.purchaseStatus === 'pending' || item.purchaseStatus === 'error').length})`}
+                                        </button>
+                                    ) : (
+                                        <p className="field-hint" style={{ margin: 0 }}>
+                                            Усі домени готові — можна на «Далі».
+                                            {bulkItems.length > 1 ? ` Генерація пакетом (${bulkItems.length}).` : ''}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         )}
                         <div className="field">
@@ -1063,7 +1173,6 @@ export default function OffersCreate({
                                     onChange={(e) => {
                                         update('domain', e.target.value);
                                         setDomainSearchResults(null);
-                                        setDomainSelected([]);
                                     }}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -1124,87 +1233,17 @@ export default function OffersCreate({
                                 <p className="field-hint" style={{ color: '#f87171' }}>{domainSearchError}</p>
                             )}
                             {domainSearchResults && (
-                                <>
-                                    {availableSearchResults.length > 0 && (
-                                        <div className="domain-bulk-bar">
-                                            <label className="domain-bulk-bar__select-all">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={
-                                                        availableSearchResults.length > 0
-                                                        && domainSelected.length > 0
-                                                        && domainSelected.length === Math.min(
-                                                            availableSearchResults.length,
-                                                            DOMAIN_BULK_PURCHASE_LIMIT,
-                                                        )
-                                                    }
-                                                    disabled={domainBulkPurchasing || domainPurchasing !== null}
-                                                    onChange={(e) => toggleSelectAllAvailable(e.target.checked)}
-                                                />
-                                                <span>
-                                                    Вибрано {domainSelected.length}/{Math.min(availableSearchResults.length, DOMAIN_BULK_PURCHASE_LIMIT)}
-                                                    {' '}(макс. {DOMAIN_BULK_PURCHASE_LIMIT})
-                                                </span>
-                                            </label>
-                                            <div className="domain-bulk-bar__actions">
-                                                {selectedDomainsTotal && (
-                                                    <span className="domain-bulk-bar__total" title="Сума цін реєстрації вибраних доменів">
-                                                        {selectedDomainsTotal.incomplete ? '≈ ' : ''}
-                                                        Разом: {selectedDomainsTotal.amount.toFixed(2)}
-                                                        {selectedDomainsTotal.currency ? ` ${selectedDomainsTotal.currency}` : ''}
-                                                    </span>
-                                                )}
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-ghost btn-sm"
-                                                    disabled={
-                                                        domainSelected.length === 0
-                                                        || domainBulkPurchasing
-                                                        || domainPurchasing !== null
-                                                        || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
-                                                    }
-                                                    onClick={addSelectedToPack}
-                                                >
-                                                    Додати вибрані до пакету
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary btn-sm"
-                                                    disabled={
-                                                        !hasDynadotContactId
-                                                        || domainSelected.length === 0
-                                                        || domainBulkPurchasing
-                                                        || domainPurchasing !== null
-                                                    }
-                                                    onClick={purchaseSelectedDomains}
-                                                >
-                                                    {domainBulkPurchasing
-                                                        ? `Купівля… ${domainPurchasing ? `(${domainPurchasing})` : ''}`
-                                                        : `Купити вибрані (${domainSelected.length})`}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <ul className="domain-search-results">
-                                        {domainSearchResults.map((item) => (
+                                <ul className="domain-search-results">
+                                    {domainSearchResults.map((item) => {
+                                        const inPack = packInSearch.has(item.domain);
+
+                                        return (
                                             <li
                                                 key={item.domain}
-                                                className={`domain-search-results__item${item.available ? ' is-available' : ''}${domainSelected.includes(item.domain) ? ' is-selected' : ''}`}
+                                                className={`domain-search-results__item${item.available ? ' is-available' : ''}${inPack ? ' is-selected' : ''}`}
                                             >
                                                 <div className="domain-search-results__main">
-                                                    {item.available ? (
-                                                        <label className="domain-search-results__check">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={domainSelected.includes(item.domain)}
-                                                                disabled={domainBulkPurchasing || domainPurchasing !== null}
-                                                                onChange={(e) => toggleDomainSelected(item.domain, e.target.checked)}
-                                                            />
-                                                            <span className="domain-search-results__name">{item.domain}</span>
-                                                        </label>
-                                                    ) : (
-                                                        <span className="domain-search-results__name">{item.domain}</span>
-                                                    )}
+                                                    <span className="domain-search-results__name">{item.domain}</span>
                                                     <span className={`domain-search-results__badge domain-search-results__badge--${item.status}`}>
                                                         {item.available
                                                             ? 'Вільний'
@@ -1221,34 +1260,51 @@ export default function OffersCreate({
                                                     )}
                                                     {item.price && <span>{item.price}</span>}
                                                     {item.available && (
-                                                        <>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-ghost btn-sm"
-                                                                disabled={domainBulkPurchasing}
-                                                                onClick={() => pickDomain(item.domain)}
-                                                            >
-                                                                Обрати
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-primary btn-sm"
-                                                                disabled={
-                                                                    !hasDynadotContactId
-                                                                    || domainBulkPurchasing
-                                                                    || domainPurchasing === item.domain
-                                                                }
-                                                                onClick={() => purchaseDomain(item)}
-                                                            >
-                                                                {domainPurchasing === item.domain ? 'Купівля…' : 'Купити'}
-                                                            </button>
-                                                        </>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary btn-sm"
+                                                            disabled={
+                                                                domainBulkPurchasing
+                                                                || inPack
+                                                                || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
+                                                            }
+                                                            onClick={() => addDomainToPack(item)}
+                                                        >
+                                                            {inPack ? 'У пакеті' : 'Додати до пакету'}
+                                                        </button>
+                                                    )}
+                                                    {!item.available && item.status === 'taken' && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-ghost btn-sm"
+                                                            disabled={
+                                                                domainBulkPurchasing
+                                                                || inPack
+                                                                || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
+                                                            }
+                                                            onClick={() => addDomainToPack(item, { owned: true })}
+                                                            title="Додати як уже ваш домен (без купівлі)"
+                                                        >
+                                                            {inPack ? 'У пакеті' : 'Додати (свій)'}
+                                                        </button>
                                                     )}
                                                 </div>
                                             </li>
-                                        ))}
-                                    </ul>
-                                </>
+                                        );
+                                    })}
+                                </ul>
+                            )}
+                            {data.domain.trim().includes('.') && !packInSearch.has(data.domain.trim().toLowerCase()) && (
+                                <div className="btn-row" style={{ marginTop: '0.75rem' }}>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        disabled={domainBulkPurchasing || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT}
+                                        onClick={() => addTypedDomainToPack({ owned: true })}
+                                    >
+                                        Додати введений домен як свій
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -1258,100 +1314,12 @@ export default function OffersCreate({
             {step === 1 && (
                 <section className="wizard-panel is-active">
                     <div className="card">
-                        <h3>Шаблон</h3>
-                        <p className="card-desc" style={{ marginBottom: '1rem' }}>
-                            Папки з <code>templates/</code>. Нижче — GEO, мови цього шаблону та валюта ленду.
-                        </p>
-                        {isBulkMode ? (
-                            <div className="offer-bulk-map">
-                                <div className="offer-bulk-map__head">
-                                    <p className="field-hint" style={{ margin: 0 }}>
-                                        Окремий шаблон для кожного домену в пакеті.
-                                    </p>
-                                    <button
-                                        type="button"
-                                        className="btn btn-ghost btn-sm"
-                                        onClick={applyFirstTemplateToAll}
-                                        disabled={!bulkItems[0]?.template}
-                                    >
-                                        Застосувати цей шаблон до всіх
-                                    </button>
-                                </div>
-                                <ul className="offer-bulk-map__list">
-                                    {bulkItems.map((item) => (
-                                        <li key={item.domain} className="offer-bulk-map__row">
-                                            <span className="offer-bulk-map__domain">{item.domain}</span>
-                                            <select
-                                                className="offer-bulk-map__select"
-                                                value={item.template}
-                                                onChange={(e) => updateBulkItemTemplate(item.domain, e.target.value)}
-                                                aria-label={`Шаблон для ${item.domain}`}
-                                            >
-                                                {templates.map((template) => (
-                                                    <option key={template.id} value={template.id}>
-                                                        {template.name}
-                                                        {usedTemplateIds.includes(template.id) ? ' ✓' : ''}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </li>
-                                    ))}
-                                </ul>
-                                {bulkHasMultilangMix && (
-                                    <p className="field-hint" style={{ color: '#f87171' }}>
-                                        Не можна змішувати multilang і звичайні шаблони в одному пакеті.
-                                    </p>
-                                )}
-                                {availableLanguages.length === 0 && !bulkHasMultilangMix && (
-                                    <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                        Немає спільної мови для всіх обраних шаблонів — змініть шаблони або мову.
-                                    </p>
-                                )}
-                                {availableLanguages.length > 0 && (
-                                    <p className="field-hint">
-                                        Спільні мови: {availableLanguages.map((item) => item.code).join(', ')}
-                                    </p>
-                                )}
-                            </div>
-                        ) : (
-                            <div className="field">
-                                <label id="template-label">Тема ленду</label>
-                                <TemplatePicker
-                                    templates={templates}
-                                    value={data.template}
-                                    onChange={updateTemplate}
-                                    usedTemplateIds={usedTemplateIds}
-                                    idPrefix="template"
-                                />
-                                {usedTemplateIds.length > 0 && data.brand.trim() && (
-                                    <p className="field-hint">
-                                        ✓ — шаблон уже є для бренду «{data.brand.trim()}». Можна обрати інший; вибір не блокується.
-                                    </p>
-                                )}
-                                {selectedTemplate && (
-                                    <p className="field-hint">
-                                        Доступні мови: {selectedTemplate.languages.map((item) => item.code).join(', ') || '—'}
-                                    </p>
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Ринок і мова</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
-                            {isBulkMode ? (
-                                <>Спільні GEO / мова / валюта для всього пакету.</>
-                            ) : (
-                                <>
-                                    Шаблон: <strong>{templateLabel(templates, data.template)}</strong>.
-                                </>
-                            )}
+                            Спочатку GEO, мова й валюта — далі шаблони, які підтримують цю мову.
                             {isMarketMultilang ? (
-                                <> Multilang: у CRM країна з IP ліда; мови — через URL (<code>/fr/</code>, …), корінь — EN.</>
-                            ) : (
-                                <> GEO — зі списку або вручну. Мова — тільки з перекладів {isBulkMode ? 'спільних для пакету' : 'цього шаблону'}.</>
-                            )}
+                                <> Multilang: у CRM країна з IP; мови через URL (<code>/fr/</code>, …).</>
+                            ) : null}
                         </p>
                         <div className="field-row">
                             <div className="field">
@@ -1394,7 +1362,20 @@ export default function OffersCreate({
                                 <select
                                     id="lang"
                                     value={data.lang}
-                                    onChange={(e) => update('lang', e.target.value)}
+                                    onChange={(e) => {
+                                        const nextLang = e.target.value;
+                                        update('lang', nextLang);
+                                        ensureBulkTemplatesForLang(nextLang);
+                                        if (!isBulkMode && nextLang) {
+                                            const currentOk = templateSupportsLang(selectedTemplate, nextLang);
+                                            if (!currentOk) {
+                                                const first = templates.find((item) => templateSupportsLang(item, nextLang));
+                                                if (first) {
+                                                    updateTemplate(first.id);
+                                                }
+                                            }
+                                        }
+                                    }}
                                     disabled={
                                         isMarketMultilang
                                         || availableLanguages.length === 0
@@ -1412,9 +1393,12 @@ export default function OffersCreate({
                                 </select>
                                 {availableLanguages.length === 0 && (
                                     <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                        {isBulkMode
-                                            ? 'Немає спільної мови для шаблонів у пакеті'
-                                            : 'Для цього шаблону не знайдено жодного перекладу'}
+                                        У каталозі шаблонів не знайдено жодної мови
+                                    </p>
+                                )}
+                                {data.lang && templatesForLang.length === 0 && !isMarketMultilang && (
+                                    <p className="field-hint" style={{ color: '#f59e0b' }}>
+                                        Жоден шаблон не має мови «{data.lang}»
                                     </p>
                                 )}
                             </div>
@@ -1480,6 +1464,102 @@ export default function OffersCreate({
                                 </select>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="card" style={{ marginTop: '1rem' }}>
+                        <h3>Шаблони</h3>
+                        <p className="card-desc" style={{ marginBottom: '1rem' }}>
+                            Папки з <code>templates/</code>.
+                            {data.brand.trim() ? (
+                                <> Для воронки «{data.brand.trim()}» позначено вже використані шаблони.</>
+                            ) : null}
+                            {' '}Без обраної мови шаблон недоступний.
+                        </p>
+                        {bulkItems.length > 0 ? (
+                            <div className="offer-bulk-map">
+                                <div className="offer-bulk-map__head">
+                                    <p className="field-hint" style={{ margin: 0 }}>
+                                        Окремий шаблон для кожного домену.
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        onClick={applyFirstTemplateToAll}
+                                        disabled={!bulkItems[0]?.template || !data.lang}
+                                    >
+                                        Застосувати цей шаблон до всіх
+                                    </button>
+                                </div>
+                                {usedTemplateIds.length > 0 && data.brand.trim() && (
+                                    <p className="field-hint">
+                                        Уже на цій воронці: {usedTemplateIds.map((id) => templateLabel(templates, id)).join(', ')}
+                                    </p>
+                                )}
+                                <ul className="offer-bulk-map__list">
+                                    {bulkItems.map((item) => (
+                                        <li key={item.domain} className="offer-bulk-map__row">
+                                            <span className="offer-bulk-map__domain">{item.domain}</span>
+                                            <select
+                                                className="offer-bulk-map__select"
+                                                value={item.template}
+                                                onChange={(e) => updateBulkItemTemplate(item.domain, e.target.value)}
+                                                aria-label={`Шаблон для ${item.domain}`}
+                                                disabled={!data.lang && !isMarketMultilang}
+                                            >
+                                                <option value="">
+                                                    {!data.lang && !isMarketMultilang ? 'Спочатку мова' : '— шаблон —'}
+                                                </option>
+                                                {templates.map((template) => {
+                                                    const langOk = isMarketMultilang || templateSupportsLang(template, data.lang);
+                                                    const used = usedTemplateIds.includes(template.id);
+
+                                                    return (
+                                                        <option
+                                                            key={template.id}
+                                                            value={template.id}
+                                                            disabled={!langOk}
+                                                        >
+                                                            {template.name}
+                                                            {used ? ' · вже є' : ''}
+                                                            {!langOk ? ' · немає мови' : ''}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {bulkHasMultilangMix && (
+                                    <p className="field-hint" style={{ color: '#f87171' }}>
+                                        Не можна змішувати multilang і звичайні шаблони в одному пакеті.
+                                    </p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="field">
+                                <label id="template-label">Тема ленду</label>
+                                <TemplatePicker
+                                    templates={templates}
+                                    value={data.template}
+                                    onChange={updateTemplate}
+                                    usedTemplateIds={usedTemplateIds}
+                                    disabledTemplateIds={disabledTemplateIds}
+                                    disabledReason={data.lang ? `Немає мови «${data.lang}»` : 'Спочатку оберіть мову'}
+                                    idPrefix="template"
+                                />
+                                {usedTemplateIds.length > 0 && data.brand.trim() && (
+                                    <p className="field-hint">
+                                        «вже є» — шаблон уже стоїть на воронці «{data.brand.trim()}». Можна обрати інший.
+                                    </p>
+                                )}
+                                {selectedTemplate && data.lang && (
+                                    <p className="field-hint">
+                                        Обрано: {selectedTemplate.name}. Мови шаблону:{' '}
+                                        {selectedTemplate.languages.map((item) => item.code).join(', ') || '—'}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </section>
             )}
@@ -1661,7 +1741,12 @@ export default function OffersCreate({
                             (step === 0 && !canProceedStep0)
                             || (step === 1 && !canProceedStep1)
                         }
-                        onClick={() => goToStep(step + 1)}
+                        onClick={() => {
+                            if (step === 0 && data.lang) {
+                                ensureBulkTemplatesForLang(data.lang);
+                            }
+                            goToStep(step + 1);
+                        }}
                     >
                         Далі →
                     </button>

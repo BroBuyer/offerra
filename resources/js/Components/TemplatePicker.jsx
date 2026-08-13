@@ -5,14 +5,18 @@
  * @param {string} value
  * @param {(id: string) => void} onChange
  * @param {string[]} usedTemplateIds
+ * @param {string[]} [disabledTemplateIds]
  * @param {string} [idPrefix]
+ * @param {string} [disabledReason]
  */
 export default function TemplatePicker({
     templates = [],
     value,
     onChange,
     usedTemplateIds = [],
+    disabledTemplateIds = [],
     idPrefix = 'template',
+    disabledReason = 'Немає обраної мови',
 }) {
     if (!templates.length) {
         return (
@@ -23,6 +27,7 @@ export default function TemplatePicker({
     }
 
     const usedSet = new Set(usedTemplateIds);
+    const disabledSet = new Set(disabledTemplateIds);
 
     return (
         <div
@@ -33,8 +38,9 @@ export default function TemplatePicker({
         >
             {templates.map((item) => {
                 const used = usedSet.has(item.id);
+                const disabled = disabledSet.has(item.id);
                 const selected = value === item.id;
-                const tip = 'Цей шаблон уже використовується для цього бренду';
+                const usedTip = 'Цей шаблон уже використовується для цього бренду';
 
                 return (
                     <button
@@ -42,21 +48,34 @@ export default function TemplatePicker({
                         type="button"
                         role="option"
                         aria-selected={selected}
+                        aria-disabled={disabled}
+                        disabled={disabled}
+                        title={disabled ? disabledReason : (used ? usedTip : undefined)}
                         className={
                             'template-picker__item'
                             + (selected ? ' is-selected' : '')
                             + (used ? ' is-used' : '')
+                            + (disabled ? ' is-disabled' : '')
                         }
-                        onClick={() => onChange(item.id)}
+                        onClick={() => {
+                            if (!disabled) {
+                                onChange(item.id);
+                            }
+                        }}
                     >
                         <span className="template-picker__name">{item.name || item.id}</span>
                         {used && (
                             <span
-                                className="template-picker__used"
-                                title={tip}
-                                aria-label={tip}
+                                className="template-picker__used-badge"
+                                title={usedTip}
+                                aria-label={usedTip}
                             >
-                                ✓
+                                вже є
+                            </span>
+                        )}
+                        {disabled && (
+                            <span className="template-picker__lang-badge" aria-hidden="true">
+                                немає мови
                             </span>
                         )}
                     </button>
