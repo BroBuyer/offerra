@@ -1131,7 +1131,7 @@ export default function OffersCreate({
                         {bulkItems.length > 0 && (
                             <div className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>
                                 <div className="offer-bulk-pack__head">
-                                    <h3>Пакет оферів ({bulkItems.length})</h3>
+                                    <h3>Пакет доменів ({bulkItems.length})</h3>
                                     {packTotal && (
                                         <span className="offer-bulk-pack__total" title="Сума реєстрації доменів до купівлі">
                                             {packTotal.incomplete ? '≈ ' : ''}
