@@ -248,6 +248,7 @@ export default function OffersIndex({
     geoPresets = [],
     currencies = [],
     templates = [],
+    brandTemplateUsage = {},
     showUserColumn = false,
     users = [],
     dateFilters = {},
@@ -1051,6 +1052,7 @@ export default function OffersIndex({
                     geoPresets={geoPresets}
                     currencies={currencies}
                     templates={templates}
+                    brandTemplateUsage={brandTemplateUsage}
                     hasKeitaroApiKey={hasKeitaroApiKey}
                     onClose={() => setEditingOffer(null)}
                 />

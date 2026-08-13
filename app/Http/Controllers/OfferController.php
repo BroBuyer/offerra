@@ -58,6 +58,7 @@ class OfferController extends Controller
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
             'templates' => app(TemplateCatalog::class)->forWizard(),
+            'brandTemplateUsage' => $this->brandTemplateUsage($user),
             'showUserColumn' => $user->isAdmin(),
             'users' => $user->isAdmin()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
@@ -69,6 +70,36 @@ class OfferController extends Controller
                 'monthStart' => $today->copy()->startOfMonth()->toDateString(),
             ],
         ]);
+    }
+
+    /**
+     * Active (non-archived) offers: lowercase brand → template_id → usage count.
+     *
+     * @return array<string, array<string, int>>
+     */
+    private function brandTemplateUsage(User $user): array
+    {
+        $rows = Offer::query()
+            ->where('user_id', $user->id)
+            ->whereNotIn('status', ['archived', 'teardown_failed'])
+            ->whereNotNull('template')
+            ->where('template', '!=', '')
+            ->get(['brand', 'template']);
+
+        $map = [];
+
+        foreach ($rows as $row) {
+            $brand = mb_strtolower(trim((string) $row->brand));
+            $template = trim((string) $row->template);
+
+            if ($brand === '' || $template === '') {
+                continue;
+            }
+
+            $map[$brand][$template] = ($map[$brand][$template] ?? 0) + 1;
+        }
+
+        return $map;
     }
 
     /**
@@ -214,6 +245,7 @@ class OfferController extends Controller
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
             'templates' => $catalog->forWizard(),
+            'brandTemplateUsage' => $this->brandTemplateUsage(auth()->user()),
             'fresh' => request()->boolean('fresh'),
             'initialTemplate' => request()->string('template')->toString() ?: null,
             'canProvisionInfrastructure' => InfrastructureProvisioner::settingsReady($settings),

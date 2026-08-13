@@ -1,5 +1,6 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
+import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
 import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
 import { Link, useForm, usePage } from '@inertiajs/react';
@@ -106,6 +107,7 @@ export default function OffersCreate({
     geoPresets,
     currencies = [],
     templates,
+    brandTemplateUsage = {},
     fresh = false,
     initialTemplate = null,
 }) {
@@ -127,6 +129,11 @@ export default function OffersCreate({
     const selectedTemplate = useMemo(
         () => templates.find((item) => item.id === data.template) ?? templates[0],
         [templates, data.template],
+    );
+
+    const usedTemplateIds = useMemo(
+        () => usedTemplatesForBrand(brandTemplateUsage, data.brand),
+        [brandTemplateUsage, data.brand],
     );
 
     const availableLanguages = selectedTemplate?.languages ?? [];
@@ -701,23 +708,18 @@ export default function OffersCreate({
                             Папки з <code>templates/</code>. Нижче — GEO, мови цього шаблону та валюта ленду.
                         </p>
                         <div className="field">
-                            <label htmlFor="template">Тема ленду</label>
-                            {templates.length === 0 ? (
-                                <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                    Немає шаблонів у <code>templates/</code> — додайте підпапку з лендом.
+                            <label id="template-label">Тема ленду</label>
+                            <TemplatePicker
+                                templates={templates}
+                                value={data.template}
+                                onChange={updateTemplate}
+                                usedTemplateIds={usedTemplateIds}
+                                idPrefix="template"
+                            />
+                            {usedTemplateIds.length > 0 && data.brand.trim() && (
+                                <p className="field-hint">
+                                    ✓ — шаблон уже є для бренду «{data.brand.trim()}». Можна обрати інший; вибір не блокується.
                                 </p>
-                            ) : (
-                                <select
-                                    id="template"
-                                    value={data.template}
-                                    onChange={(e) => updateTemplate(e.target.value)}
-                                >
-                                    {templates.map((item) => (
-                                        <option key={item.id} value={item.id}>
-                                            {item.name}
-                                        </option>
-                                    ))}
-                                </select>
                             )}
                         </div>
                         {selectedTemplate && (

@@ -1,4 +1,5 @@
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
@@ -25,6 +26,7 @@ export default function OfferEditModal({
     geoPresets = [],
     currencies = [],
     templates = [],
+    brandTemplateUsage = {},
     hasKeitaroApiKey,
     onClose,
 }) {
@@ -45,6 +47,14 @@ export default function OfferEditModal({
         vitals_enabled: Boolean(offer.vitals_enabled),
         auto_redeploy: true,
     });
+
+    const usedTemplateIds = useMemo(
+        () => usedTemplatesForBrand(brandTemplateUsage, data.brand, {
+            excludeTemplate: initialTemplate,
+            excludeIfCountIsOne: true,
+        }),
+        [brandTemplateUsage, data.brand, initialTemplate],
+    );
 
     useEffect(() => {
         const onKey = (event) => {
@@ -201,21 +211,18 @@ export default function OfferEditModal({
                         />
                     </div>
 
+                    <div className="field">
+                        <label id="edit-template-label">Шаблон</label>
+                        <TemplatePicker
+                            templates={templates}
+                            value={data.template}
+                            onChange={onTemplateChange}
+                            usedTemplateIds={usedTemplateIds}
+                            idPrefix="edit-template"
+                        />
+                    </div>
+
                     <div className="field-row">
-                        <div className="field">
-                            <label htmlFor="edit-template">Шаблон</label>
-                            <select
-                                id="edit-template"
-                                value={data.template}
-                                onChange={(event) => onTemplateChange(event.target.value)}
-                            >
-                                {templates.map((item) => (
-                                    <option key={item.id} value={item.id}>
-                                        {item.name || item.id}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
                         <div className="field">
                             <label htmlFor="edit-geo">GEO (CRM)</label>
                             <select
