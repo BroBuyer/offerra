@@ -82,13 +82,22 @@ function parseDomainPriceAmount(price) {
         return null;
     }
 
-    const match = String(price).match(/(\d+(?:[.,]\d+)?)/);
+    const text = String(price);
+    const match = text.match(/Registration\s*Price:\s*(\d+(?:[.,]\d+)?)/i)
+        || text.match(/(\d+(?:[.,]\d+)?)\s*in\s*[A-Z]{3}/i)
+        || text.match(/(\d+(?:[.,]\d+)?)/);
 
     if (!match) {
         return null;
     }
 
     return Number.parseFloat(match[1].replace(',', '.'));
+}
+
+function parseDomainPriceCurrency(price) {
+    const match = String(price ?? '').match(/\b([A-Z]{3})\b/);
+
+    return match?.[1] ?? '';
 }
 
 const DOMAIN_BULK_PURCHASE_LIMIT = 10;
@@ -373,6 +382,41 @@ export default function OffersCreate({
 
         return availableSearchResults.filter((item) => selected.has(item.domain));
     }, [availableSearchResults, domainSelected]);
+
+    const selectedDomainsTotal = useMemo(() => {
+        if (selectedDomainItems.length === 0) {
+            return null;
+        }
+
+        let sum = 0;
+        let priced = 0;
+        let currency = '';
+
+        selectedDomainItems.forEach((item) => {
+            const amount = parseDomainPriceAmount(item.price);
+
+            if (amount === null) {
+                return;
+            }
+
+            sum += amount;
+            priced += 1;
+
+            if (!currency) {
+                currency = parseDomainPriceCurrency(item.price);
+            }
+        });
+
+        if (priced === 0) {
+            return null;
+        }
+
+        return {
+            amount: sum,
+            currency,
+            incomplete: priced < selectedDomainItems.length,
+        };
+    }, [selectedDomainItems]);
 
     const toggleDomainSelected = (domain, checked) => {
         setDomainSelected((prev) => {
@@ -836,21 +880,30 @@ export default function OffersCreate({
                                                     {' '}(макс. {DOMAIN_BULK_PURCHASE_LIMIT})
                                                 </span>
                                             </label>
-                                            <button
-                                                type="button"
-                                                className="btn btn-primary btn-sm"
-                                                disabled={
-                                                    !hasDynadotContactId
-                                                    || domainSelected.length === 0
-                                                    || domainBulkPurchasing
-                                                    || domainPurchasing !== null
-                                                }
-                                                onClick={purchaseSelectedDomains}
-                                            >
-                                                {domainBulkPurchasing
-                                                    ? `Купівля… ${domainPurchasing ? `(${domainPurchasing})` : ''}`
-                                                    : `Купити вибрані (${domainSelected.length})`}
-                                            </button>
+                                            <div className="domain-bulk-bar__actions">
+                                                {selectedDomainsTotal && (
+                                                    <span className="domain-bulk-bar__total" title="Сума цін реєстрації вибраних доменів">
+                                                        {selectedDomainsTotal.incomplete ? '≈ ' : ''}
+                                                        Разом: {selectedDomainsTotal.amount.toFixed(2)}
+                                                        {selectedDomainsTotal.currency ? ` ${selectedDomainsTotal.currency}` : ''}
+                                                    </span>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary btn-sm"
+                                                    disabled={
+                                                        !hasDynadotContactId
+                                                        || domainSelected.length === 0
+                                                        || domainBulkPurchasing
+                                                        || domainPurchasing !== null
+                                                    }
+                                                    onClick={purchaseSelectedDomains}
+                                                >
+                                                    {domainBulkPurchasing
+                                                        ? `Купівля… ${domainPurchasing ? `(${domainPurchasing})` : ''}`
+                                                        : `Купити вибрані (${domainSelected.length})`}
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                     <ul className="domain-search-results">
