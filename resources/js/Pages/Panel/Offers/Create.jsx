@@ -590,6 +590,66 @@ export default function OffersCreate({
         pickDomain(domain, { clearResults: false });
     };
 
+    const addAllAvailableToPack = () => {
+        const available = (domainSearchResults ?? []).filter((item) => item.available);
+
+        if (available.length === 0) {
+            setDomainSearchError('Немає вільних доменів у результатах.');
+            return;
+        }
+
+        setBulkItems((prev) => {
+            const existing = new Set(prev.map((item) => item.domain));
+            const room = DOMAIN_BULK_PURCHASE_LIMIT - prev.length;
+
+            if (room <= 0) {
+                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+                return prev;
+            }
+
+            const toAdd = [];
+            for (const item of available) {
+                if (existing.has(item.domain)) {
+                    continue;
+                }
+                if (toAdd.length >= room) {
+                    break;
+                }
+                toAdd.push(makePackItem(item.domain, item));
+            }
+
+            if (toAdd.length === 0) {
+                setDomainSearchError('Усі вільні домени вже в пакеті.');
+                return prev;
+            }
+
+            const skipped = available.filter((item) => !existing.has(item.domain)).length - toAdd.length;
+            if (skipped > 0) {
+                setDomainSearchError(
+                    `Додано ${toAdd.length} (ліміт пакету ${DOMAIN_BULK_PURCHASE_LIMIT}).`,
+                );
+            } else {
+                setDomainSearchError(`Додано до пакету: ${toAdd.map((item) => item.domain).join(', ')}`);
+            }
+
+            const next = [...prev, ...toAdd];
+            if (next[0]?.domain) {
+                pickDomain(next[0].domain, { clearResults: false });
+            }
+            return next;
+        });
+    };
+
+    const availableNotInPackCount = useMemo(() => {
+        if (!domainSearchResults) {
+            return 0;
+        }
+
+        return domainSearchResults.filter((item) => (
+            item.available && !packInSearch.has(item.domain)
+        )).length;
+    }, [domainSearchResults, packInSearch]);
+
     const addTypedDomainToPack = ({ owned = true } = {}) => {
         const domain = data.domain.trim().toLowerCase().replace(/^https?:\/\//i, '').split(/[/?#]/)[0];
 
@@ -1230,7 +1290,27 @@ export default function OffersCreate({
                                 <p className="field-hint" style={{ color: '#f87171' }}>{domainSearchError}</p>
                             )}
                             {domainSearchResults && (
-                                <ul className="domain-search-results">
+                                <>
+                                    {availableNotInPackCount > 0 && (
+                                        <div className="domain-bulk-bar">
+                                            <span className="field-hint" style={{ margin: 0 }}>
+                                                Вільних поза пакетом: {availableNotInPackCount}
+                                                {' '}(макс. у пакеті {DOMAIN_BULK_PURCHASE_LIMIT})
+                                            </span>
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                disabled={
+                                                    domainBulkPurchasing
+                                                    || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
+                                                }
+                                                onClick={addAllAvailableToPack}
+                                            >
+                                                Додати всі вільні
+                                            </button>
+                                        </div>
+                                    )}
+                                    <ul className="domain-search-results">
                                     {domainSearchResults.map((item) => {
                                         const inPack = packInSearch.has(item.domain);
 
@@ -1290,6 +1370,7 @@ export default function OffersCreate({
                                         );
                                     })}
                                 </ul>
+                                </>
                             )}
                             {data.domain.trim().includes('.') && !packInSearch.has(data.domain.trim().toLowerCase()) && (
                                 <div className="btn-row" style={{ marginTop: '0.75rem' }}>
