@@ -3,7 +3,7 @@ import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptio
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
 import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -102,6 +102,38 @@ function parseDomainPriceCurrency(price) {
 
 const DOMAIN_BULK_PURCHASE_LIMIT = 10;
 
+/** Round-robin templates, preferring unused-for-brand; fallback to defaultTemplate / templates[0]. */
+function assignTemplatesRoundRobin(domains, templates, usedTemplateIds, fallbackTemplate) {
+    const fallback = fallbackTemplate
+        || templates[0]?.id
+        || 'default';
+    const unused = templates.filter((item) => !usedTemplateIds.includes(item.id));
+    const pool = unused.length > 0 ? unused : templates;
+    const ids = pool.length > 0
+        ? pool.map((item) => item.id)
+        : [fallback];
+
+    return domains.map((domain, index) => ({
+        domain,
+        template: ids[index % ids.length] ?? fallback,
+    }));
+}
+
+function intersectLanguages(languageLists) {
+    if (languageLists.length === 0) {
+        return [];
+    }
+
+    let codes = new Set((languageLists[0] ?? []).map((item) => item.code));
+
+    for (let index = 1; index < languageLists.length; index += 1) {
+        const next = new Set((languageLists[index] ?? []).map((item) => item.code));
+        codes = new Set([...codes].filter((code) => next.has(code)));
+    }
+
+    return (languageLists[0] ?? []).filter((item) => codes.has(item.code));
+}
+
 function buildDefaults(templates) {
     const defaultTemplate = templates[0]?.id ?? 'default';
 
@@ -150,8 +182,12 @@ export default function OffersCreate({
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [domainPurchasedViaPanel, setDomainPurchasedViaPanel] = useState(false);
+    const [bulkItems, setBulkItems] = useState([]);
+    const [bulkSubmitting, setBulkSubmitting] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
+
+    const isBulkMode = bulkItems.length > 1;
 
     const selectedTemplate = useMemo(
         () => templates.find((item) => item.id === data.template) ?? templates[0],
@@ -163,7 +199,36 @@ export default function OffersCreate({
         [brandTemplateUsage, data.brand],
     );
 
-    const availableLanguages = selectedTemplate?.languages ?? [];
+    const bulkMultilangFlags = useMemo(
+        () => bulkItems.map((item) => isMultilangTemplate(item.template)),
+        [bulkItems],
+    );
+
+    const bulkHasMultilangMix = isBulkMode
+        && bulkMultilangFlags.some(Boolean)
+        && !bulkMultilangFlags.every(Boolean);
+
+    const bulkAllMultilang = isBulkMode
+        && bulkItems.length > 0
+        && bulkMultilangFlags.every(Boolean);
+
+    const isMarketMultilang = isBulkMode
+        ? bulkAllMultilang
+        : isMultilangTemplate(data.template);
+
+    const availableLanguages = useMemo(() => {
+        if (!isBulkMode) {
+            return selectedTemplate?.languages ?? [];
+        }
+
+        const lists = bulkItems.map((item) => {
+            const template = templates.find((row) => row.id === item.template);
+
+            return template?.languages ?? [];
+        });
+
+        return intersectLanguages(lists);
+    }, [isBulkMode, selectedTemplate, bulkItems, templates]);
 
     useEffect(() => {
         if (fresh) {
@@ -171,6 +236,9 @@ export default function OffersCreate({
             clearWizardState();
             setStep(0);
             reset();
+            setBulkItems([]);
+            setBulkSubmitting(false);
+            setDomainPurchasedViaPanel(false);
 
             if (initialTemplate && templates.some((item) => item.id === initialTemplate)) {
                 setData((prev) => ({
@@ -185,12 +253,32 @@ export default function OffersCreate({
     }, [fresh, reset, initialTemplate, templates, setData]);
 
     useEffect(() => {
-        if (skipPersist.current || processing) {
+        if (bulkItems.length === 0) {
+            return;
+        }
+
+        const firstDomain = bulkItems[0]?.domain ?? '';
+        const firstTemplate = bulkItems[0]?.template;
+
+        setData((prev) => {
+            let next = prev;
+            if (firstDomain && prev.domain !== firstDomain) {
+                next = { ...next, domain: firstDomain };
+            }
+            if (!isBulkMode && firstTemplate && prev.template !== firstTemplate) {
+                next = next === prev ? { ...prev, template: firstTemplate } : { ...next, template: firstTemplate };
+            }
+            return next;
+        });
+    }, [bulkItems, isBulkMode, setData]);
+
+    useEffect(() => {
+        if (skipPersist.current || processing || bulkSubmitting) {
             return;
         }
 
         saveWizardState(step, data);
-    }, [step, data, processing]);
+    }, [step, data, processing, bulkSubmitting]);
 
     const goToStep = (nextStep) => {
         setStep(nextStep);
@@ -215,13 +303,19 @@ export default function OffersCreate({
                     ? { geo: '', phone: '', phone_countries: [] }
                     : {}),
         }));
+
+        if (bulkItems.length === 1) {
+            setBulkItems((prev) => prev.map((item, index) => (
+                index === 0 ? { ...item, template: templateId } : item
+            )));
+        }
     };
 
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
 
     useEffect(() => {
         // Multilang: SITE_LANG фіксуємо в en, але phone_countries дозволяємо всі (dropdown на клієнті).
-        if (selectedTemplate?.id !== 'multilang') return;
+        if (!isMarketMultilang) return;
 
         const allPhoneCodes = phoneOptions.map((item) => phoneOptionCode(item));
         if (allPhoneCodes.length === 0) return;
@@ -234,10 +328,10 @@ export default function OffersCreate({
             // Дефолтний phone — беремо з поточного GEO-ресолву, або перший доступний.
             phone: prev.phone && allPhoneCodes.includes(prev.phone) ? prev.phone : allPhoneCodes[0],
         }));
-    }, [selectedTemplate?.id, phoneOptions, setData]);
+    }, [isMarketMultilang, phoneOptions, setData]);
 
     const updateGeo = (raw) => {
-        if (isMultilangTemplate(selectedTemplate?.id)) {
+        if (isMarketMultilang) {
             return;
         }
 
@@ -587,6 +681,12 @@ export default function OffersCreate({
             if (bought.length > 0) {
                 pickDomain(bought[0], { clearResults: failed.length === 0 });
                 setDomainPurchasedViaPanel(true);
+                setBulkItems(assignTemplatesRoundRobin(
+                    bought,
+                    templates,
+                    usedTemplatesForBrand(brandTemplateUsage, data.brand),
+                    data.template || templates[0]?.id,
+                ));
             }
 
             const parts = [];
@@ -603,6 +703,81 @@ export default function OffersCreate({
             setDomainPurchasing(null);
             setDomainBulkPurchasing(false);
         }
+    };
+
+    const addSelectedToPack = () => {
+        const domains = selectedDomainItems.map((item) => item.domain);
+
+        if (domains.length === 0) {
+            setDomainSearchError('Виберіть хоча б один вільний домен.');
+            return;
+        }
+
+        setBulkItems((prev) => {
+            const existing = new Set(prev.map((item) => item.domain));
+            const room = DOMAIN_BULK_PURCHASE_LIMIT - prev.length;
+
+            if (room <= 0) {
+                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+                return prev;
+            }
+
+            const toAdd = [];
+            for (const domain of domains) {
+                if (existing.has(domain)) {
+                    continue;
+                }
+                if (toAdd.length >= room) {
+                    break;
+                }
+                toAdd.push(domain);
+            }
+
+            if (toAdd.length === 0) {
+                setDomainSearchError('Вибрані домени вже в пакеті.');
+                return prev;
+            }
+
+            if (toAdd.length < domains.filter((domain) => !existing.has(domain)).length) {
+                setDomainSearchError(
+                    `Додано ${toAdd.length} (ліміт пакету ${DOMAIN_BULK_PURCHASE_LIMIT}).`,
+                );
+            } else {
+                setDomainSearchError(`Додано до пакету: ${toAdd.join(', ')}`);
+            }
+
+            const packUsed = [
+                ...usedTemplatesForBrand(brandTemplateUsage, data.brand),
+                ...prev.map((item) => item.template),
+            ];
+
+            const assigned = assignTemplatesRoundRobin(
+                toAdd,
+                templates,
+                packUsed,
+                data.template || templates[0]?.id,
+            );
+
+            return [...prev, ...assigned];
+        });
+    };
+
+    const removeBulkItem = (domain) => {
+        setBulkItems((prev) => prev.filter((item) => item.domain !== domain));
+    };
+
+    const updateBulkItemTemplate = (domain, templateId) => {
+        setBulkItems((prev) => prev.map((item) => (
+            item.domain === domain ? { ...item, template: templateId } : item
+        )));
+    };
+
+    const applyFirstTemplateToAll = () => {
+        const templateId = bulkItems[0]?.template;
+        if (!templateId) {
+            return;
+        }
+        setBulkItems((prev) => prev.map((item) => ({ ...item, template: templateId })));
     };
 
     const toggleInfraOption = (key, checked) => {
@@ -653,9 +828,25 @@ export default function OffersCreate({
         return `SEO ${data.geo || '…'} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
     }, [data.brand, data.domain, data.geo, affiliateTag]);
 
-    const canProceedStep0 = data.brand.trim() && data.domain.trim();
-    const canProceedTemplate = Boolean(data.template) && templates.length > 0;
-    const canProceedMarket = data.geo.length === 2 && data.lang && data.phone && selectedPhones.length > 0 && availableLanguages.length > 0;
+    const canProceedStep0 = Boolean(data.brand.trim()) && (
+        isBulkMode
+            ? bulkItems.every((item) => Boolean(item.domain?.trim()))
+            : Boolean(data.domain.trim())
+    );
+    const canProceedTemplate = isBulkMode
+        ? bulkItems.every((item) => Boolean(item.template))
+            && templates.length > 0
+            && !bulkHasMultilangMix
+        : Boolean(data.template) && templates.length > 0;
+    const langInIntersection = Boolean(
+        data.lang && availableLanguages.some((item) => item.code === data.lang),
+    );
+    const canProceedMarket = data.geo.length === 2
+        && data.lang
+        && data.phone
+        && selectedPhones.length > 0
+        && availableLanguages.length > 0
+        && langInIntersection;
     const canProceedStep1 = canProceedTemplate && canProceedMarket;
 
     const generateBlockReason = useMemo(() => {
@@ -663,10 +854,20 @@ export default function OffersCreate({
             return 'Збережіть CRM API key і Telegram bot token у налаштуваннях.';
         }
         if (!canProceedStep0) {
-            return 'Заповніть бренд і домен (крок 1).';
+            return isBulkMode
+                ? 'Заповніть бренд і домени в пакеті (крок 1).'
+                : 'Заповніть бренд і домен (крок 1).';
+        }
+        if (isBulkMode && bulkHasMultilangMix) {
+            return 'У пакеті змішані multilang і звичайні шаблони — оберіть один тип.';
         }
         if (!canProceedTemplate) {
-            return 'Оберіть шаблон (крок 2).';
+            return isBulkMode
+                ? 'Оберіть шаблон для кожного домену в пакеті (крок 2).'
+                : 'Оберіть шаблон (крок 2).';
+        }
+        if (isBulkMode && availableLanguages.length === 0) {
+            return 'Немає спільної мови для всіх шаблонів у пакеті (крок 2).';
         }
         if (!canProceedMarket) {
             return 'Перевірте GEO, мову та phone GEO (крок 2).';
@@ -683,6 +884,9 @@ export default function OffersCreate({
         canProceedMarket,
         data.create_keitaro,
         hasKeitaroApiKey,
+        isBulkMode,
+        bulkHasMultilangMix,
+        availableLanguages.length,
     ]);
 
     const submitErrors = useMemo(
@@ -703,17 +907,55 @@ export default function OffersCreate({
             return;
         }
 
+        const onSuccess = () => {
+            if (data.geo.length === 2) {
+                saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
+            }
+            skipPersist.current = true;
+            clearWizardState();
+            setStep(0);
+            reset();
+            setBulkItems([]);
+            setBulkSubmitting(false);
+            setDomainPurchasedViaPanel(false);
+        };
+
+        if (isBulkMode) {
+            setBulkSubmitting(true);
+            router.post(route('offers.bulk'), {
+                brand: data.brand,
+                min_deposit: data.min_deposit,
+                currency: data.currency,
+                geo: data.geo,
+                lang: data.lang,
+                phone: data.phone,
+                phone_countries: data.phone_countries,
+                create_keitaro: data.create_keitaro,
+                vitals_enabled: data.vitals_enabled,
+                infra_hestia: data.infra_hestia,
+                infra_cloudflare_zone: data.infra_cloudflare_zone,
+                infra_cloudflare_dns: data.infra_cloudflare_dns,
+                infra_dynadot_ns: data.infra_dynadot_ns,
+                infra_cloudflare_ssl: data.infra_cloudflare_ssl,
+                infra_cloudflare_https: data.infra_cloudflare_https,
+                infra_cloudflare_www_redirect: data.infra_cloudflare_www_redirect,
+                items: bulkItems,
+            }, {
+                preserveScroll: true,
+                onSuccess,
+                onError: () => {
+                    setStep(steps.length - 1);
+                },
+                onFinish: () => {
+                    setBulkSubmitting(false);
+                },
+            });
+            return;
+        }
+
         post(route('offers.store'), {
             preserveScroll: true,
-            onSuccess: () => {
-                if (data.geo.length === 2) {
-                    saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
-                }
-                skipPersist.current = true;
-                clearWizardState();
-                setStep(0);
-                reset();
-            },
+            onSuccess,
             onError: () => {
                 setStep(steps.length - 1);
             },
@@ -787,6 +1029,30 @@ export default function OffersCreate({
                             />
                             {errors.brand && <p className="field-hint" style={{ color: '#f87171' }}>{errors.brand}</p>}
                         </div>
+                        {bulkItems.length > 0 && (
+                            <div className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>
+                                <h3>Пакет оферів ({bulkItems.length})</h3>
+                                <ul className="offer-bulk-pack__list">
+                                    {bulkItems.map((item) => (
+                                        <li key={item.domain} className="offer-bulk-pack__row">
+                                            <span className="offer-bulk-pack__domain">{item.domain}</span>
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                onClick={() => removeBulkItem(item.domain)}
+                                            >
+                                                Прибрати
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {isBulkMode && (
+                                    <p className="field-hint">
+                                        Генерація піде пакетом ({bulkItems.length} оферів). Перший домен — основний для превʼю.
+                                    </p>
+                                )}
+                            </div>
+                        )}
                         <div className="field">
                             <label htmlFor="domain">Домен</label>
                             <div className="domain-search-row">
@@ -890,6 +1156,19 @@ export default function OffersCreate({
                                                 )}
                                                 <button
                                                     type="button"
+                                                    className="btn btn-ghost btn-sm"
+                                                    disabled={
+                                                        domainSelected.length === 0
+                                                        || domainBulkPurchasing
+                                                        || domainPurchasing !== null
+                                                        || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
+                                                    }
+                                                    onClick={addSelectedToPack}
+                                                >
+                                                    Додати вибрані до пакету
+                                                </button>
+                                                <button
+                                                    type="button"
                                                     className="btn btn-primary btn-sm"
                                                     disabled={
                                                         !hasDynadotContactId
@@ -983,58 +1262,117 @@ export default function OffersCreate({
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
                             Папки з <code>templates/</code>. Нижче — GEO, мови цього шаблону та валюта ленду.
                         </p>
-                        <div className="field">
-                            <label id="template-label">Тема ленду</label>
-                            <TemplatePicker
-                                templates={templates}
-                                value={data.template}
-                                onChange={updateTemplate}
-                                usedTemplateIds={usedTemplateIds}
-                                idPrefix="template"
-                            />
-                            {usedTemplateIds.length > 0 && data.brand.trim() && (
-                                <p className="field-hint">
-                                    ✓ — шаблон уже є для бренду «{data.brand.trim()}». Можна обрати інший; вибір не блокується.
-                                </p>
-                            )}
-                        </div>
-                        {selectedTemplate && (
-                            <p className="field-hint">
-                                Доступні мови: {selectedTemplate.languages.map((item) => item.code).join(', ') || '—'}
-                            </p>
+                        {isBulkMode ? (
+                            <div className="offer-bulk-map">
+                                <div className="offer-bulk-map__head">
+                                    <p className="field-hint" style={{ margin: 0 }}>
+                                        Окремий шаблон для кожного домену в пакеті.
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        onClick={applyFirstTemplateToAll}
+                                        disabled={!bulkItems[0]?.template}
+                                    >
+                                        Застосувати цей шаблон до всіх
+                                    </button>
+                                </div>
+                                <ul className="offer-bulk-map__list">
+                                    {bulkItems.map((item) => (
+                                        <li key={item.domain} className="offer-bulk-map__row">
+                                            <span className="offer-bulk-map__domain">{item.domain}</span>
+                                            <select
+                                                className="offer-bulk-map__select"
+                                                value={item.template}
+                                                onChange={(e) => updateBulkItemTemplate(item.domain, e.target.value)}
+                                                aria-label={`Шаблон для ${item.domain}`}
+                                            >
+                                                {templates.map((template) => (
+                                                    <option key={template.id} value={template.id}>
+                                                        {template.name}
+                                                        {usedTemplateIds.includes(template.id) ? ' ✓' : ''}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {bulkHasMultilangMix && (
+                                    <p className="field-hint" style={{ color: '#f87171' }}>
+                                        Не можна змішувати multilang і звичайні шаблони в одному пакеті.
+                                    </p>
+                                )}
+                                {availableLanguages.length === 0 && !bulkHasMultilangMix && (
+                                    <p className="field-hint" style={{ color: '#f59e0b' }}>
+                                        Немає спільної мови для всіх обраних шаблонів — змініть шаблони або мову.
+                                    </p>
+                                )}
+                                {availableLanguages.length > 0 && (
+                                    <p className="field-hint">
+                                        Спільні мови: {availableLanguages.map((item) => item.code).join(', ')}
+                                    </p>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="field">
+                                <label id="template-label">Тема ленду</label>
+                                <TemplatePicker
+                                    templates={templates}
+                                    value={data.template}
+                                    onChange={updateTemplate}
+                                    usedTemplateIds={usedTemplateIds}
+                                    idPrefix="template"
+                                />
+                                {usedTemplateIds.length > 0 && data.brand.trim() && (
+                                    <p className="field-hint">
+                                        ✓ — шаблон уже є для бренду «{data.brand.trim()}». Можна обрати інший; вибір не блокується.
+                                    </p>
+                                )}
+                                {selectedTemplate && (
+                                    <p className="field-hint">
+                                        Доступні мови: {selectedTemplate.languages.map((item) => item.code).join(', ') || '—'}
+                                    </p>
+                                )}
+                            </div>
                         )}
                     </div>
 
                     <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Ринок і мова</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
-                            Шаблон: <strong>{templateLabel(templates, data.template)}</strong>.
-                            {isMultilangTemplate(data.template) ? (
+                            {isBulkMode ? (
+                                <>Спільні GEO / мова / валюта для всього пакету.</>
+                            ) : (
+                                <>
+                                    Шаблон: <strong>{templateLabel(templates, data.template)}</strong>.
+                                </>
+                            )}
+                            {isMarketMultilang ? (
                                 <> Multilang: у CRM країна з IP ліда; мови — через URL (<code>/fr/</code>, …), корінь — EN.</>
                             ) : (
-                                <> GEO — зі списку або вручну. Мова — тільки з перекладів цього шаблону.</>
+                                <> GEO — зі списку або вручну. Мова — тільки з перекладів {isBulkMode ? 'спільних для пакету' : 'цього шаблону'}.</>
                             )}
                         </p>
                         <div className="field-row">
                             <div className="field">
                                 <label htmlFor="geo">
-                                    {isMultilangTemplate(data.template) ? 'GEO (мітка)' : 'GEO (CRM country)'}
+                                    {isMarketMultilang ? 'GEO (мітка)' : 'GEO (CRM country)'}
                                 </label>
                                 <input
                                     id="geo"
                                     type="text"
-                                    list={isMultilangTemplate(data.template) ? undefined : 'geo-presets'}
-                                    value={isMultilangTemplate(data.template) ? MULTILANG_GEO : data.geo}
+                                    list={isMarketMultilang ? undefined : 'geo-presets'}
+                                    value={isMarketMultilang ? MULTILANG_GEO : data.geo}
                                     onChange={(e) => updateGeo(e.target.value)}
                                     onBlur={(e) => updateGeo(e.target.value)}
-                                    placeholder={isMultilangTemplate(data.template) ? 'Multi' : 'IE, IT, NG, ZA…'}
+                                    placeholder={isMarketMultilang ? 'Multi' : 'IE, IT, NG, ZA…'}
                                     maxLength={2}
                                     autoComplete="off"
-                                    readOnly={isMultilangTemplate(data.template)}
-                                    disabled={isMultilangTemplate(data.template)}
+                                    readOnly={isMarketMultilang}
+                                    disabled={isMarketMultilang}
                                     style={{ textTransform: 'uppercase' }}
                                 />
-                                {isMultilangTemplate(data.template) ? (
+                                {isMarketMultilang ? (
                                     <p className="field-hint">
                                         <strong>Multi</strong> ({MULTILANG_GEO}) — лише для імені папки та Keitaro.
                                         У CRM <code>country_code</code> піде з IP відвідувача.
@@ -1058,7 +1396,7 @@ export default function OffersCreate({
                                     value={data.lang}
                                     onChange={(e) => update('lang', e.target.value)}
                                     disabled={
-                                        isMultilangTemplate(selectedTemplate?.id)
+                                        isMarketMultilang
                                         || availableLanguages.length === 0
                                         || data.geo.length < 2
                                     }
@@ -1074,7 +1412,9 @@ export default function OffersCreate({
                                 </select>
                                 {availableLanguages.length === 0 && (
                                     <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                        Для цього шаблону не знайдено жодного перекладу
+                                        {isBulkMode
+                                            ? 'Немає спільної мови для шаблонів у пакеті'
+                                            : 'Для цього шаблону не знайдено жодного перекладу'}
                                     </p>
                                 )}
                             </div>
@@ -1086,7 +1426,7 @@ export default function OffersCreate({
                                     options={phoneOptions}
                                     selected={selectedPhones}
                                     onToggle={togglePhoneCountry}
-                                    disabled={!isMultilangTemplate(data.template) && data.geo.length < 2}
+                                    disabled={!isMarketMultilang && data.geo.length < 2}
                                 />
                                 <p className="field-hint">
                                     За IP (Cloudflare) підставляється код зі списку, інакше — дефолтний.
@@ -1254,19 +1594,38 @@ export default function OffersCreate({
                         <h3>Підсумок</h3>
                         <dl className="summary-grid">
                             <div className="summary-row"><span>Бренд</span><span>{data.brand || '—'}</span></div>
-                            <div className="summary-row"><span>Домен</span><span>{data.domain || '—'}</span></div>
-                            <div className="summary-row"><span>Шаблон</span><span>{templateLabel(templates, data.template)}</span></div>
+                            {isBulkMode ? (
+                                <div className="summary-row">
+                                    <span>Пакет ({bulkItems.length})</span>
+                                    <span>
+                                        <ul className="offer-bulk-summary">
+                                            {bulkItems.map((item) => (
+                                                <li key={item.domain}>
+                                                    {item.domain} → {templateLabel(templates, item.template)}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </span>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="summary-row"><span>Домен</span><span>{data.domain || '—'}</span></div>
+                                    <div className="summary-row"><span>Шаблон</span><span>{templateLabel(templates, data.template)}</span></div>
+                                </>
+                            )}
                             <div className="summary-row">
                                 <span>GEO / мова</span>
                                 <span>
-                                    {isMultilangTemplate(data.template)
+                                    {isMarketMultilang
                                         ? `Multi (${MULTILANG_GEO}) / en + ${Math.max(0, availableLanguages.length - 1)} мов`
                                         : `${data.geo} / ${data.lang}`}
                                 </span>
                             </div>
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Мін. депозит</span><span>{data.min_deposit || '—'} {data.currency || ''}</span></div>
-                            <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
+                            {!isBulkMode && (
+                                <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
+                            )}
                             <div className="summary-row">
                                 <span>Keitaro</span>
                                 <span>{data.create_keitaro ? 'Створити кампанію' : '—'}</span>
@@ -1310,11 +1669,15 @@ export default function OffersCreate({
                     <button
                         type="button"
                         className="btn btn-primary"
-                        disabled={processing || Boolean(generateBlockReason)}
+                        disabled={processing || bulkSubmitting || Boolean(generateBlockReason)}
                         onClick={generate}
                         title={generateBlockReason ?? undefined}
                     >
-                        {processing ? 'Генерація…' : 'Згенерувати оффер'}
+                        {processing || bulkSubmitting
+                            ? 'Генерація…'
+                            : isBulkMode
+                                ? `Згенерувати ${bulkItems.length} оферів`
+                                : 'Згенерувати оффер'}
                     </button>
                 )}
             </div>

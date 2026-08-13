@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/offers/archive', [OfferController::class, 'archiveIndex'])->name('offers.archive.index');
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
+    Route::post('/offers/bulk', [OfferController::class, 'storeBulk'])->name('offers.bulk');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
     Route::post('/offers/{offer}/archive', [OfferController::class, 'archive'])->name('offers.archive');
     Route::post('/offers/{offer}/archive/retry', [OfferController::class, 'retryArchive'])->name('offers.archive.retry');

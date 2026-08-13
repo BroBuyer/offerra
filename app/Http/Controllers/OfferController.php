@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBulkOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
 use App\Jobs\RecheckInfrastructureDnsJob;
@@ -300,6 +301,97 @@ class OfferController extends Controller
         return redirect()
             ->route('offers.index')
             ->with('success', $message);
+    }
+
+    public function storeBulk(
+        StoreBulkOffersRequest $request,
+        OfferGenerator $generator,
+        InfrastructureProvisioner $provisioner,
+    ): RedirectResponse {
+        $shared = [
+            'brand' => $request->string('brand')->toString(),
+            'min_deposit' => $request->string('min_deposit')->toString(),
+            'currency' => strtoupper($request->string('currency')->toString()),
+            'geo' => strtoupper($request->string('geo')->toString()),
+            'lang' => strtolower($request->string('lang')->toString()),
+            'phone' => strtolower($request->string('phone')->toString()),
+            'phone_countries' => $request->input('phone_countries', []),
+            'create_keitaro' => $request->boolean('create_keitaro'),
+            'vitals_enabled' => $request->boolean('vitals_enabled'),
+            'infra_hestia' => $request->boolean('infra_hestia'),
+            'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
+            'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
+            'infra_dynadot_ns' => $request->boolean('infra_dynadot_ns'),
+            'infra_cloudflare_ssl' => $request->boolean('infra_cloudflare_ssl'),
+            'infra_cloudflare_https' => $request->boolean('infra_cloudflare_https'),
+            'infra_cloudflare_www_redirect' => $request->boolean('infra_cloudflare_www_redirect'),
+        ];
+
+        /** @var list<array{domain: string, template: string}> $items */
+        $items = $request->input('items', []);
+        $created = [];
+        $failed = [];
+        $infraQueued = 0;
+
+        foreach ($items as $item) {
+            $domain = strtolower((string) ($item['domain'] ?? ''));
+            $template = (string) ($item['template'] ?? '');
+
+            try {
+                $result = $generator->generate($request->user(), [
+                    ...$shared,
+                    'domain' => $domain,
+                    'template' => $template,
+                ]);
+
+                if ($result['offer']->provision_infrastructure) {
+                    $provisioner->enqueue($result['offer']->fresh());
+                    $infraQueued++;
+                }
+
+                $created[] = [
+                    'domain' => $domain,
+                    'folder' => $result['folder'],
+                    'already_existed' => ! empty($result['already_existed']),
+                ];
+            } catch (\Throwable $e) {
+                $failed[] = [
+                    'domain' => $domain,
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        if ($created === [] && $failed !== []) {
+            $firstError = $failed[0]['message'] ?? 'Не вдалося згенерувати офери.';
+
+            return redirect()
+                ->route('offers.create')
+                ->withErrors(['generate' => $firstError]);
+        }
+
+        $parts = [];
+        $parts[] = 'Згенеровано '.count($created).' з '.count($items).' оферів';
+
+        if ($created !== []) {
+            $parts[] = collect($created)
+                ->map(static fn (array $row) => $row['domain'].($row['already_existed'] ? ' (вже був)' : ''))
+                ->implode(', ');
+        }
+
+        if ($failed !== []) {
+            $parts[] = 'Помилки: '.collect($failed)
+                ->map(static fn (array $row) => "{$row['domain']} — {$row['message']}")
+                ->implode('; ');
+        }
+
+        if ($infraQueued > 0) {
+            $parts[] = "інфраструктура запущена у фоні ({$infraQueued})";
+        }
+
+        return redirect()
+            ->route('offers.index')
+            ->with($failed === [] ? 'success' : 'warning', implode(' · ', $parts));
     }
 
     public function deploy(Offer $offer, DeployService $deploy): RedirectResponse
