@@ -783,6 +783,62 @@ export default function OffersIndex({
             )}
 
             <div className="filter-bar">
+                <div className="columns-picker" ref={columnsMenuRef}>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm columns-picker__btn"
+                        aria-expanded={columnsMenuOpen}
+                        aria-haspopup="true"
+                        aria-label="Вибрати колонки таблиці"
+                        title="Колонки таблиці"
+                        onClick={() => setColumnsMenuOpen((open) => !open)}
+                    >
+                        <svg
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            height="16"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <rect x="3" y="4" width="18" height="16" rx="2" />
+                            <path d="M9 4v16" />
+                            <path d="M15 4v16" />
+                        </svg>
+                    </button>
+                    {columnsMenuOpen && (
+                        <div className="columns-picker__menu" role="menu" aria-label="Видимі колонки">
+                            <div className="columns-picker__head">
+                                <span>Показати колонки</span>
+                                <button
+                                    type="button"
+                                    className="btn btn-ghost btn-sm"
+                                    onClick={showAllColumns}
+                                >
+                                    Усі
+                                </button>
+                            </div>
+                            <ul className="columns-picker__list">
+                                {availableColumns.map((col) => (
+                                    <li key={col.id}>
+                                        <label className={`columns-picker__option${col.locked ? ' is-locked' : ''}`}>
+                                            <input
+                                                type="checkbox"
+                                                checked={colVisible(col.id)}
+                                                disabled={Boolean(col.locked)}
+                                                onChange={() => toggleColumn(col.id)}
+                                            />
+                                            <span>{col.label}</span>
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
                 <input
                     type="search"
                     className="filter-bar__search"
@@ -902,46 +958,6 @@ export default function OffersIndex({
                             : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
                     </span>
                 )}
-                <div className="columns-picker" ref={columnsMenuRef}>
-                    <button
-                        type="button"
-                        className="btn btn-ghost btn-sm"
-                        aria-expanded={columnsMenuOpen}
-                        aria-haspopup="true"
-                        onClick={() => setColumnsMenuOpen((open) => !open)}
-                    >
-                        Колонки
-                    </button>
-                    {columnsMenuOpen && (
-                        <div className="columns-picker__menu" role="menu" aria-label="Видимі колонки">
-                            <div className="columns-picker__head">
-                                <span>Показати колонки</span>
-                                <button
-                                    type="button"
-                                    className="btn btn-ghost btn-sm"
-                                    onClick={showAllColumns}
-                                >
-                                    Усі
-                                </button>
-                            </div>
-                            <ul className="columns-picker__list">
-                                {availableColumns.map((col) => (
-                                    <li key={col.id}>
-                                        <label className={`columns-picker__option${col.locked ? ' is-locked' : ''}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={colVisible(col.id)}
-                                                disabled={Boolean(col.locked)}
-                                                onChange={() => toggleColumn(col.id)}
-                                            />
-                                            <span>{col.label}</span>
-                                        </label>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
             </div>
 
             <div className="table-wrap offers-table-desktop">

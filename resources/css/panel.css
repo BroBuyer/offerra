@@ -366,21 +366,21 @@ a:hover { text-decoration: underline; }
 }
 
 .offers-page table {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
 }
 
 .offers-page th,
 .offers-page td {
-  padding: 0.4rem 0.55rem;
+  padding: 0.42rem 0.55rem;
 }
 
 .offers-page th {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.03em;
 }
 
 .offers-page .offer-user {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
 }
 
 .offers-page .badge {
@@ -1592,12 +1592,29 @@ a:hover { text-decoration: underline; }
 .columns-picker {
   position: relative;
   flex-shrink: 0;
+  margin-right: 0.2rem;
+}
+
+.columns-picker__btn {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.columns-picker__btn[aria-expanded="true"] {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--accent-glow);
 }
 
 .columns-picker__menu {
   position: absolute;
   top: calc(100% + 0.35rem);
-  right: 0;
+  left: 0;
+  right: auto;
   z-index: 40;
   width: min(16rem, 80vw);
   max-height: min(24rem, 70vh);
