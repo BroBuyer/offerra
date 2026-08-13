@@ -2,7 +2,79 @@ import PanelLayout from '@/Layouts/PanelLayout';
 import OfferEditModal from '@/Components/OfferEditModal';
 import { clearWizardState } from '@/lib/offerWizardStorage';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+const OFFER_COLUMNS_STORAGE_KEY = 'offerra.offers.visibleColumns.v1';
+
+/** @type {{ id: string, label: string, locked?: boolean, adminOnly?: boolean }[]} */
+const OFFER_TABLE_COLUMNS = [
+    { id: 'user', label: 'Користувач', adminOnly: true },
+    { id: 'brand', label: 'Бренд', locked: true },
+    { id: 'domain', label: 'Домен', locked: true },
+    { id: 'geo', label: 'GEO' },
+    { id: 'lang', label: 'Мова' },
+    { id: 'template', label: 'Шаблон' },
+    { id: 'panel', label: 'Панель' },
+    { id: 'cloudflare', label: 'Cloudflare' },
+    { id: 'dynadot', label: 'Dynadot' },
+    { id: 'keitaro', label: 'Keitaro' },
+    { id: 'cwv', label: 'CWV' },
+    { id: 'created', label: 'Створено' },
+    { id: 'deployed', label: 'Останній деплой' },
+    { id: 'status', label: 'Статус' },
+    { id: 'dns', label: 'DNS' },
+    { id: 'indexing', label: 'Індексація' },
+    { id: 'actions', label: 'Дії', locked: true },
+];
+
+function defaultOfferColumnVisibility(showUserColumn) {
+    return Object.fromEntries(
+        OFFER_TABLE_COLUMNS
+            .filter((col) => !col.adminOnly || showUserColumn)
+            .map((col) => [col.id, true]),
+    );
+}
+
+function loadOfferColumnVisibility(showUserColumn) {
+    const defaults = defaultOfferColumnVisibility(showUserColumn);
+
+    try {
+        const raw = localStorage.getItem(OFFER_COLUMNS_STORAGE_KEY);
+        if (!raw) {
+            return defaults;
+        }
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') {
+            return defaults;
+        }
+
+        const next = { ...defaults };
+        Object.keys(defaults).forEach((key) => {
+            if (typeof parsed[key] === 'boolean') {
+                next[key] = parsed[key];
+            }
+        });
+
+        OFFER_TABLE_COLUMNS.forEach((col) => {
+            if (col.locked) {
+                next[col.id] = true;
+            }
+        });
+
+        return next;
+    } catch {
+        return defaults;
+    }
+}
+
+function saveOfferColumnVisibility(visibility) {
+    try {
+        localStorage.setItem(OFFER_COLUMNS_STORAGE_KEY, JSON.stringify(visibility));
+    } catch {
+        // ignore quota / private mode
+    }
+}
 
 function TrashIcon() {
     return (
@@ -262,12 +334,91 @@ export default function OffersIndex({
     const [editingOffer, setEditingOffer] = useState(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
+    const [columnVisibility, setColumnVisibility] = useState(() => loadOfferColumnVisibility(showUserColumn));
+    const [columnsMenuOpen, setColumnsMenuOpen] = useState(false);
+    const columnsMenuRef = useRef(null);
 
     const pagination = resolveOffersPagination(offers, filters);
     const rows = pagination.rows;
     const { total, from: rangeFrom, to: rangeTo, currentPage, lastPage, perPage } = pagination;
     const geos = filterOptions.geos ?? [];
     const langs = filterOptions.langs ?? [];
+
+    const availableColumns = useMemo(
+        () => OFFER_TABLE_COLUMNS.filter((col) => !col.adminOnly || showUserColumn),
+        [showUserColumn],
+    );
+
+    const colVisible = (id) => Boolean(columnVisibility[id]);
+
+    const visibleDataColCount = useMemo(
+        () => 1 + availableColumns.filter((col) => columnVisibility[col.id]).length,
+        [availableColumns, columnVisibility],
+    );
+
+    useEffect(() => {
+        setColumnVisibility((prev) => {
+            const defaults = defaultOfferColumnVisibility(showUserColumn);
+            const next = { ...defaults };
+            Object.keys(defaults).forEach((key) => {
+                if (typeof prev[key] === 'boolean') {
+                    next[key] = prev[key];
+                }
+            });
+            OFFER_TABLE_COLUMNS.forEach((col) => {
+                if (col.locked) {
+                    next[col.id] = true;
+                }
+            });
+            return next;
+        });
+    }, [showUserColumn]);
+
+    useEffect(() => {
+        saveOfferColumnVisibility(columnVisibility);
+    }, [columnVisibility]);
+
+    useEffect(() => {
+        if (!columnsMenuOpen) {
+            return undefined;
+        }
+
+        const onPointerDown = (event) => {
+            if (!columnsMenuRef.current?.contains(event.target)) {
+                setColumnsMenuOpen(false);
+            }
+        };
+
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                setColumnsMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', onPointerDown);
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => {
+            document.removeEventListener('mousedown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [columnsMenuOpen]);
+
+    const toggleColumn = (id) => {
+        const meta = OFFER_TABLE_COLUMNS.find((col) => col.id === id);
+        if (!meta || meta.locked) {
+            return;
+        }
+
+        setColumnVisibility((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
+
+    const showAllColumns = () => {
+        setColumnVisibility(defaultOfferColumnVisibility(showUserColumn));
+    };
 
     useEffect(() => {
         if (flash?.success) {
@@ -751,6 +902,46 @@ export default function OffersIndex({
                             : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
                     </span>
                 )}
+                <div className="columns-picker" ref={columnsMenuRef}>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        aria-expanded={columnsMenuOpen}
+                        aria-haspopup="true"
+                        onClick={() => setColumnsMenuOpen((open) => !open)}
+                    >
+                        Колонки
+                    </button>
+                    {columnsMenuOpen && (
+                        <div className="columns-picker__menu" role="menu" aria-label="Видимі колонки">
+                            <div className="columns-picker__head">
+                                <span>Показати колонки</span>
+                                <button
+                                    type="button"
+                                    className="btn btn-ghost btn-sm"
+                                    onClick={showAllColumns}
+                                >
+                                    Усі
+                                </button>
+                            </div>
+                            <ul className="columns-picker__list">
+                                {availableColumns.map((col) => (
+                                    <li key={col.id}>
+                                        <label className={`columns-picker__option${col.locked ? ' is-locked' : ''}`}>
+                                            <input
+                                                type="checkbox"
+                                                checked={colVisible(col.id)}
+                                                disabled={Boolean(col.locked)}
+                                                onChange={() => toggleColumn(col.id)}
+                                            />
+                                            <span>{col.label}</span>
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="table-wrap offers-table-desktop">
@@ -758,28 +949,30 @@ export default function OffersIndex({
                     <thead>
                         <tr>
                             <th className="col-num" title={`Всього: ${total}`}>#</th>
-                            {showUserColumn && <th>Користувач</th>}
-                            <th>Бренд</th>
-                            <th>Домен</th>
-                            <th>GEO</th>
-                            <th>Мова</th>
-                            <th>Шаблон</th>
-                            <th>Панель</th>
-                            <th>Cloudflare</th>
-                            <th>Dynadot</th>
-                            <th>Keitaro</th>
-                            <th
-                                className="col-cwv"
-                                title="CWV (Core Web Vitals) — CDN-скрипт на ленді: детекція дзеркал і повернення трафіку з копій"
-                            >
-                                CWV
-                            </th>
-                            <th>Створено</th>
-                            <th className="col-deployed">Останній деплой</th>
-                            <th>Статус</th>
-                            <th>DNS</th>
-                            <th>Індексація</th>
-                            <th />
+                            {colVisible('user') && showUserColumn && <th>Користувач</th>}
+                            {colVisible('brand') && <th>Бренд</th>}
+                            {colVisible('domain') && <th>Домен</th>}
+                            {colVisible('geo') && <th>GEO</th>}
+                            {colVisible('lang') && <th>Мова</th>}
+                            {colVisible('template') && <th>Шаблон</th>}
+                            {colVisible('panel') && <th>Панель</th>}
+                            {colVisible('cloudflare') && <th>Cloudflare</th>}
+                            {colVisible('dynadot') && <th>Dynadot</th>}
+                            {colVisible('keitaro') && <th>Keitaro</th>}
+                            {colVisible('cwv') && (
+                                <th
+                                    className="col-cwv"
+                                    title="CWV (Core Web Vitals) — CDN-скрипт на ленді: детекція дзеркал і повернення трафіку з копій"
+                                >
+                                    CWV
+                                </th>
+                            )}
+                            {colVisible('created') && <th>Створено</th>}
+                            {colVisible('deployed') && <th className="col-deployed">Останній деплой</th>}
+                            {colVisible('status') && <th>Статус</th>}
+                            {colVisible('dns') && <th>DNS</th>}
+                            {colVisible('indexing') && <th>Індексація</th>}
+                            {colVisible('actions') && <th />}
                         </tr>
                     </thead>
                     <tbody>
@@ -789,145 +982,163 @@ export default function OffersIndex({
                             return (
                                 <tr key={offer.folder}>
                                     <td className="col-num">{rowNumber}</td>
-                                    {showUserColumn && (
+                                    {colVisible('user') && showUserColumn && (
                                         <td>
                                             <span className="offer-user" title={offer.user_email}>
                                                 {offer.user_name ?? offer.user_email ?? '—'}
                                             </span>
                                         </td>
                                     )}
-                                    <td>{offer.brand}</td>
-                                    <td>
-                                        <div className="domain-cell">
-                                            <a
-                                                href={`https://${offer.domain}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                {offer.domain}
-                                            </a>
-                                            <button
-                                                type="button"
-                                                className={`domain-copy${copiedDomainId === offer.id ? ' is-copied' : ''}`}
-                                                onClick={() => copyDomainUrl(offer)}
-                                                title={`Копіювати https://${offer.domain}`}
-                                                aria-label={`Копіювати https://${offer.domain}`}
-                                            >
-                                                {copiedDomainId === offer.id ? (
-                                                    <span aria-hidden="true">✓</span>
-                                                ) : (
-                                                    <svg
-                                                        aria-hidden="true"
-                                                        viewBox="0 0 24 24"
-                                                        width="14"
-                                                        height="14"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    >
-                                                        <rect x="9" y="9" width="13" height="13" rx="2" />
-                                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                                                    </svg>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>{offer.geo}</td>
-                                    <td>{offer.lang}</td>
-                                    <td>{offer.template}</td>
-                                    <td>{offer.deploy_panel ?? '—'}</td>
-                                    <td>{offer.cloudflare_account ?? '—'}</td>
-                                    <td>{offer.dynadot_account ?? '—'}</td>
-                                    <td>
-                                        {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
-                                    </td>
-                                    <td
-                                        className="col-cwv"
-                                        title={
-                                            offer.vitals_enabled
-                                                ? 'CWV увімкнено: CDN-скрипт на ленді (дзеркала / редірект з копій)'
-                                                : 'CWV вимкнено'
-                                        }
-                                    >
-                                        {offer.vitals_enabled ? (
-                                            <span className="cwv-mark cwv-mark--on" aria-label="CWV увімкнено">
-                                                ✓
-                                            </span>
-                                        ) : (
-                                            <span className="cwv-mark cwv-mark--off" aria-label="CWV вимкнено">
-                                                —
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td title={offer.date ?? undefined}>
-                                        {formatCreatedDate(offer.date)}
-                                    </td>
-                                    <td className="col-deployed" title={offer.deployed_at ?? undefined}>
-                                        {formatDeployedAt(offer.deployed_at)}
-                                    </td>
-                                    <td>
-                                        {statusBadge(offer.status)}
-                                        {infraBadge(offer) && (
-                                            <div style={{ marginTop: '0.35rem' }}>{infraBadge(offer)}</div>
-                                        )}
-                                        {offer.infra_error && (
-                                            <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                {offer.infra_error}
-                                            </p>
-                                        )}
-                                        {offer.deploy_error && (
-                                            <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                {offer.deploy_error}
-                                            </p>
-                                        )}
-                                    </td>
-                                    <td className="col-dns">
-                                        {dnsBadge(offer)}
-                                        {offer.dns_error && (
-                                            <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                {offer.dns_error}
-                                            </p>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <div className="indexing-cell">
-                                            {canManageOffer(offer) ? (
-                                                <label
-                                                    className="indexing-check"
-                                                    title={
-                                                        offer.submitted_for_indexing && offer.indexed_at
-                                                            ? `Подано: ${offer.indexed_at}`
-                                                            : 'Подано на індексацію (GSC / IndexNow)'
-                                                    }
+                                    {colVisible('brand') && <td>{offer.brand}</td>}
+                                    {colVisible('domain') && (
+                                        <td>
+                                            <div className="domain-cell">
+                                                <a
+                                                    href={`https://${offer.domain}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
                                                 >
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={Boolean(offer.submitted_for_indexing)}
-                                                        disabled={indexingId === offer.id}
-                                                        onChange={(e) => toggleIndexing(offer, e.target.checked)}
-                                                    />
-                                                    <span className="indexing-check__label">
-                                                        {offer.submitted_for_indexing ? 'Так' : 'Ні'}
-                                                    </span>
-                                                </label>
+                                                    {offer.domain}
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    className={`domain-copy${copiedDomainId === offer.id ? ' is-copied' : ''}`}
+                                                    onClick={() => copyDomainUrl(offer)}
+                                                    title={`Копіювати https://${offer.domain}`}
+                                                    aria-label={`Копіювати https://${offer.domain}`}
+                                                >
+                                                    {copiedDomainId === offer.id ? (
+                                                        <span aria-hidden="true">✓</span>
+                                                    ) : (
+                                                        <svg
+                                                            aria-hidden="true"
+                                                            viewBox="0 0 24 24"
+                                                            width="14"
+                                                            height="14"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <rect x="9" y="9" width="13" height="13" rx="2" />
+                                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    )}
+                                    {colVisible('geo') && <td>{offer.geo}</td>}
+                                    {colVisible('lang') && <td>{offer.lang}</td>}
+                                    {colVisible('template') && <td>{offer.template}</td>}
+                                    {colVisible('panel') && <td>{offer.deploy_panel ?? '—'}</td>}
+                                    {colVisible('cloudflare') && <td>{offer.cloudflare_account ?? '—'}</td>}
+                                    {colVisible('dynadot') && <td>{offer.dynadot_account ?? '—'}</td>}
+                                    {colVisible('keitaro') && (
+                                        <td>
+                                            {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
+                                        </td>
+                                    )}
+                                    {colVisible('cwv') && (
+                                        <td
+                                            className="col-cwv"
+                                            title={
+                                                offer.vitals_enabled
+                                                    ? 'CWV увімкнено: CDN-скрипт на ленді (дзеркала / редірект з копій)'
+                                                    : 'CWV вимкнено'
+                                            }
+                                        >
+                                            {offer.vitals_enabled ? (
+                                                <span className="cwv-mark cwv-mark--on" aria-label="CWV увімкнено">
+                                                    ✓
+                                                </span>
                                             ) : (
-                                                <span className="field-hint">
-                                                    {offer.submitted_for_indexing ? 'Так' : '—'}
+                                                <span className="cwv-mark cwv-mark--off" aria-label="CWV вимкнено">
+                                                    —
                                                 </span>
                                             )}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {renderOfferActions(offer)}
-                                    </td>
+                                        </td>
+                                    )}
+                                    {colVisible('created') && (
+                                        <td title={offer.date ?? undefined}>
+                                            {formatCreatedDate(offer.date)}
+                                        </td>
+                                    )}
+                                    {colVisible('deployed') && (
+                                        <td className="col-deployed" title={offer.deployed_at ?? undefined}>
+                                            {formatDeployedAt(offer.deployed_at)}
+                                        </td>
+                                    )}
+                                    {colVisible('status') && (
+                                        <td>
+                                            {statusBadge(offer.status)}
+                                            {infraBadge(offer) && (
+                                                <div style={{ marginTop: '0.35rem' }}>{infraBadge(offer)}</div>
+                                            )}
+                                            {offer.infra_error && (
+                                                <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
+                                                    {offer.infra_error}
+                                                </p>
+                                            )}
+                                            {offer.deploy_error && (
+                                                <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
+                                                    {offer.deploy_error}
+                                                </p>
+                                            )}
+                                        </td>
+                                    )}
+                                    {colVisible('dns') && (
+                                        <td className="col-dns">
+                                            {dnsBadge(offer)}
+                                            {offer.dns_error && (
+                                                <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
+                                                    {offer.dns_error}
+                                                </p>
+                                            )}
+                                        </td>
+                                    )}
+                                    {colVisible('indexing') && (
+                                        <td>
+                                            <div className="indexing-cell">
+                                                {canManageOffer(offer) ? (
+                                                    <label
+                                                        className="indexing-check"
+                                                        title={
+                                                            offer.submitted_for_indexing && offer.indexed_at
+                                                                ? `Подано: ${offer.indexed_at}`
+                                                                : 'Подано на індексацію (GSC / IndexNow)'
+                                                        }
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={Boolean(offer.submitted_for_indexing)}
+                                                            disabled={indexingId === offer.id}
+                                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                                        />
+                                                        <span className="indexing-check__label">
+                                                            {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                                        </span>
+                                                    </label>
+                                                ) : (
+                                                    <span className="field-hint">
+                                                        {offer.submitted_for_indexing ? 'Так' : '—'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                    )}
+                                    {colVisible('actions') && (
+                                        <td>
+                                            {renderOfferActions(offer)}
+                                        </td>
+                                    )}
                                 </tr>
                             );
                         })}
                         {rows.length === 0 && (
                             <tr>
-                                <td colSpan={showUserColumn ? 14 : 13} className="field-hint">
+                                <td colSpan={visibleDataColCount} className="field-hint">
                                     Офферів не знайдено
                                 </td>
                             </tr>
