@@ -85,7 +85,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
           <div class="dnjuv">
@@ -100,7 +100,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
           <div class="dnjuv">
@@ -115,7 +115,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
           <div class="dnjuv">
@@ -130,7 +130,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
           <div class="dnjuv">
@@ -145,7 +145,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
         <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
           <div class="dnjuv">
@@ -160,7 +160,7 @@ require __DIR__ . '/includes/header.php';
           <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
             <meta itemprop="ratingValue" content="5"/><meta itemprop="bestRating" content="5"/>
           </div>
-          <meta itemprop="itemReviewed" content="<?= e(SITE_NAME) ?>"/>
+          <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
       </div>
     </section>
