@@ -1,8 +1,8 @@
 # thalora
 
-Teal trading-platform template for Offerra, based on a full visual clone of the sample landing (homepage, inner pages, CSS, images, chat widget).
+Template teal di piattaforma di trading per Offerra, clone visivo della landing (home, pagine interne, CSS, immagini, chat).
 
-- **Source language:** English at template root (`SITE_LANG=en`); French in `langs/fr/`; Italian in `langs/it/`
+- **Lingua sorgente:** inglese alla radice (`SITE_LANG=en`); italiano in `langs/it/`
 - **Look:** universal teal (`#0d7377`), Inter + Unbounded, Tailwind build from the sample
 - **Logic:** same Offerra `integration/` stack as `lumen` / `noctra` (form token, LeadProcessor, Keitaro, intl-tel-input validation)
 
