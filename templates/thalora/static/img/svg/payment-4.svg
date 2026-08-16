@@ -1,0 +1,6 @@
+<svg width="105" height="39" viewBox="0 0 105 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.8 3L31.7 8.3C31.7 8.3 31.7 20.1 23.7 27.6C19.1 31.9 16.8 34 16.8 34C16.8 34 14.5 31.9 9.9 27.6C1.9 20.1 1.9 8.3 1.9 8.3L16.8 3Z" fill="#28A745"/>
+<path d="M11.8 17.3L15.5 21.6L23 12.9" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="39" y="17" fill="#1A1A1A" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="800">SECURE</text>
+<text x="39" y="29" fill="#1A1A1A" fill-opacity="0.45" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="700">SSL ENCRYPTION</text>
+</svg>

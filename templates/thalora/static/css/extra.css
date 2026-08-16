@@ -1,0 +1,71 @@
+@media (min-width: 520px) {
+  .apx-lead-row,
+  .lead-form-wrap .lead-form-row {
+    flex-direction: row;
+  }
+}
+
+.apx-lead .form-already-registered__title {
+  color: #fff;
+}
+
+.apx-lead .form-already-registered__text {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.apx-lead .field-error {
+  color: #fecaca;
+}
+
+.apx-lead .form-message {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.apx-lead .form-preloader {
+  background: rgba(9, 84, 86, 0.88);
+  border-radius: 24px;
+}
+
+.apx-lead .form-preloader .spinner {
+  border-top-color: #fff;
+}
+
+.apx-lead .form-heading {
+  margin: 0 0 4px;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.page-shell {
+  padding: 2.5rem 0 4rem;
+}
+
+.page-shell .container-base,
+.page-shell .container-narrow {
+  max-width: 1108px;
+}
+
+.thanks-page,
+.notfound-page {
+  padding: 4.5rem 1rem 5.5rem;
+  text-align: center;
+}
+
+.thanks-page h1,
+.notfound-page h1 {
+  margin-bottom: 0.75rem;
+}
+
+.thanks-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: var(--color-primary, #0d7377);
+  color: #fff;
+  font-size: 1.75rem;
+  line-height: 64px;
+  font-weight: 700;
+}

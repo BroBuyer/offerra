@@ -1,0 +1,17 @@
+{
+    "name": "",
+    "short_name": "",
+    "start_url": "http://althera-pro.live/",
+    "scope": "http://althera-pro.live/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0d7377",
+    "icons": [
+        {
+            "src": "http://althera-pro.live/favicon.php?theme=universal",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}
