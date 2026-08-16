@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Trading FAQs | Deposit &amp; Security Information | Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Get clear answers on sign-up , min. deposits , fund safety, withdrawals, and market access at Althera Pro.");
+$page_title = 'Trading FAQs | Deposit & Security Information | ' . SITE_NAME;
+$page_description = 'Get clear answers on sign-up, minimum deposits, fund safety, withdrawals, and market access at ' . SITE_NAME . '.';
 $page_canonical = page_url("faq.php");
 $active_page = "faq";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('FAQs', 'faq.php')];
 
 
 require_once __DIR__ . '/includes/head.php';
@@ -26,7 +27,7 @@ require_once __DIR__ . '/includes/header.php';
       <!-- contact -->
 <section class="py-8" id="faq">
   <div class="container-base grid gap-6 md:gap-10">
-    <h1>Frequently Asked Queries</h1>
+    <h1>Frequently Asked Questions</h1>
     <div class="grid gap-3 md:gap-6" data-accordion>
         <div id="accordion-1" class="group border-primary rounded-custom border transition-all">
           <button

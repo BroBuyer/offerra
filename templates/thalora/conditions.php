@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Terms &amp; Conditions | User Agreement with Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Review Althera Pro’s platform terms, trading rules, and customer support policies.");
+$page_title = 'Terms & Conditions | User Agreement with ' . SITE_NAME;
+$page_description = 'Review ' . SITE_NAME . '\'s platform terms, trading rules, and customer support policies.';
 $page_canonical = page_url("conditions.php");
 $active_page = "terms";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Terms & Conditions', 'conditions.php')];
 
 
 require_once __DIR__ . '/includes/head.php';

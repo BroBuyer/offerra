@@ -6,7 +6,8 @@ $page_title = $page_title ?? (SITE_NAME . ' | Premier AI-Powered Trading Platfor
 $page_description = $page_description ?? ('Access cryptocurrencies, forex, and global assets through one platform. ' . SITE_NAME . ' combines live analytics, assisted automation, and expert support.');
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
-$og_image = page_url($og_image_path ?? 'static/img/og.jpg');
+$og_image = page_url($og_image_path ?? og_image_path());
+$og_locale = str_replace('-', '_', site_locale());
 ?>
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="<?= e(site_locale()) ?>" data-theme="universal">
@@ -16,6 +17,8 @@ $og_image = page_url($og_image_path ?? 'static/img/og.jpg');
   <title><?= e($page_title) ?></title>
   <meta name="description" content="<?= e($page_description) ?>">
   <link rel="canonical" href="<?= e($page_canonical) ?>">
+  <link rel="alternate" hreflang="<?= e(SITE_LANG) ?>" href="<?= e($page_canonical) ?>">
+  <link rel="alternate" hreflang="x-default" href="<?= e($page_canonical) ?>">
 <?php if (!empty($noindex)): ?>
   <meta name="robots" content="noindex, nofollow">
 <?php else: ?>
@@ -25,26 +28,28 @@ $og_image = page_url($og_image_path ?? 'static/img/og.jpg');
   <meta name="author" content="<?= e(SITE_NAME) ?>">
 
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="en_GB">
+  <meta property="og:locale" content="<?= e($og_locale) ?>">
   <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
   <meta property="og:title" content="<?= e($page_title) ?>">
   <meta property="og:description" content="<?= e($page_description) ?>">
   <meta property="og:url" content="<?= e($page_canonical) ?>">
   <meta property="og:image" content="<?= e($og_image) ?>">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="<?= e(SITE_NAME) ?>">
+  <meta property="og:image:alt" content="<?= e(platform_image_alt()) ?>">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<?= e($page_title) ?>">
   <meta name="twitter:description" content="<?= e($page_description) ?>">
   <meta name="twitter:image" content="<?= e($og_image) ?>">
-  <meta name="twitter:image:alt" content="<?= e(SITE_NAME) ?>">
+  <meta name="twitter:image:alt" content="<?= e(platform_image_alt()) ?>">
 
   <link rel="icon" type="image/svg+xml" href="<?= asset('static/img/favicon.svg') ?>">
   <link rel="apple-touch-icon" href="<?= asset('static/img/favicon-96.png') ?>">
   <link rel="preload" href="<?= asset('static/fonts/inter-latin.woff2') ?>" as="font" type="font/woff2" crossorigin>
+<?php if (($active_page ?? '') === 'home'): ?>
+  <link rel="preload" as="image" href="<?= asset(platform_image_path()) ?>" type="image/webp">
+<?php else: ?>
   <link rel="preload" href="<?= asset('static/img/logo.webp') ?>" as="image" type="image/webp">
+<?php endif; ?>
   <style>
     html { scroll-behavior: smooth; }
     body {

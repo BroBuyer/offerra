@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "About Althera Pro | Comprehensive Trading Platform Insights");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Discover Althera Pro’s mission , technology , and commitment to a secure trading experience.");
+$page_title = 'About ' . SITE_NAME . ' | Comprehensive Trading Platform Insights';
+$page_description = 'Discover ' . SITE_NAME . '\'s mission, technology, and commitment to a secure trading experience.';
 $page_canonical = page_url("about.php");
 $active_page = "about";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('About Us', 'about.php')];
 
 
 require_once __DIR__ . '/includes/head.php';

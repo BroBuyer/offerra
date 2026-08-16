@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Contact Support | Assistance from Althera Pro Team");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Connect with Althera Pro’s support team for help with accounts , deposits , withdrawals, and platform queries.");
+$page_title = 'Contact Support | Assistance from the ' . SITE_NAME . ' Team';
+$page_description = 'Connect with the ' . SITE_NAME . ' support team for help with accounts, deposits, withdrawals, and platform queries.';
 $page_canonical = page_url("contacts.php");
 $active_page = "contacts";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Contact Us', 'contacts.php')];
 
 
 require_once __DIR__ . '/includes/head.php';

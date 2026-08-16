@@ -252,6 +252,24 @@ function platform_image_caption(): string
     return SITE_NAME . ' — mobile trading with real-time cryptocurrency charts';
 }
 
+function schema_breadcrumb(string $name, string $path): array
+{
+    return [
+        [
+            '@type' => 'ListItem',
+            'position' => 1,
+            'name' => 'Home',
+            'item' => page_url(),
+        ],
+        [
+            '@type' => 'ListItem',
+            'position' => 2,
+            'name' => $name,
+            'item' => page_url($path),
+        ],
+    ];
+}
+
 function offer_is_preview(): bool
 {
     return (defined('OFFERRA_PREVIEW') && OFFERRA_PREVIEW)

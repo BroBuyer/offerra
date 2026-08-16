@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Explore Trading Solutions | AI-Driven Services by Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Benefit from Althera Pro’s customised onboarding , portfolio oversight , encrypted security, and expert market assistance.");
+$page_title = 'Explore Trading Solutions | AI-Driven Services by ' . SITE_NAME;
+$page_description = 'Benefit from ' . SITE_NAME . '\'s customised onboarding, portfolio oversight, encrypted security, and expert market assistance.';
 $page_canonical = page_url("offer.php");
 $active_page = "offer";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Promotions', 'offer.php')];
 
 
 require_once __DIR__ . '/includes/head.php';
@@ -91,7 +92,7 @@ require_once __DIR__ . '/includes/header.php';
                   <source type="image/webp" srcset="<?= asset('static/img/responsive/orange/phone-3-1033.webp') ?>" />
                   <img
                     src="<?= asset('static/img/responsive/orange/phone-3-1033.webp') ?>"
-                    alt="Trading app"
+                    alt="<?= e(SITE_NAME) ?> trading app"
                     class="offer-phone"
                     width="400"
                     height="660"
@@ -106,10 +107,10 @@ require_once __DIR__ . '/includes/header.php';
             >
               <a class="btn btn-black col-span-full" href="<?= page_url('sign.php') ?>">Sign Up</a>
               <a class="btn btn-black btn-square" href="<?= page_url('sign.php') ?>">
-                <img src="<?= asset('static/img/svg/google-play.svg') ?>" alt="google play" />
+                <img src="<?= asset('static/img/svg/google-play.svg') ?>" alt="Get it on Google Play" />
               </a>
               <a class="btn btn-black btn-square" href="<?= page_url('sign.php') ?>">
-                <img src="<?= asset('static/img/svg/app-store.svg') ?>" alt="app store" />
+                <img src="<?= asset('static/img/svg/app-store.svg') ?>" alt="Download on the App Store" />
               </a>
             </div>
           </div>

@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Althera Pro | Premier AI-Powered Trading Platform");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Engage with crypto, forex, and global markets via Althera Pro's AI-powered analytics and intuitive platform tailored for UK clients.");
+$page_title = SITE_NAME . ' | Premier AI-Powered Trading Platform';
+$page_description = 'Engage with crypto, forex, and global markets via ' . SITE_NAME . '\'s AI-powered analytics and intuitive platform tailored for ' . geo_country_name() . ' clients.';
 $page_canonical = page_url();
 $active_page = "home";
 
@@ -164,23 +164,12 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <p class="h3">
-        Enhance your financial journey with.      </p>
+        Enhance your financial journey with <?= e(SITE_NAME) ?>.
+      </p>
       <a class="btn btn-black" href="<?= page_url('sign.php') ?>">Sign Up Now</a>
     </div>
       <div class="flex items-center justify-center max-lg:order-1">
-                <picture>
-          <source type="image/avif" srcset="<?= asset('static/img/responsive/orange/phone-1-640.avif') ?> 640w, <?= asset('static/img/responsive/orange/phone-1-960.avif') ?> 960w" sizes="(max-width: 640px) 92vw, 500px" />
-          <source type="image/webp" srcset="<?= asset('static/img/responsive/orange/phone-1-640.webp') ?> 640w, <?= asset('static/img/responsive/orange/phone-1-960.webp') ?> 960w" sizes="(max-width: 640px) 92vw, 500px" />
-          <img
-            src="<?= asset('static/img/responsive/orange/phone-1-640.webp') ?>"
-            alt="Trading platform UI"
-            class="w-full max-w-[500px] h-auto"
-            width="500"
-            height="822"
-            loading="lazy"
-            decoding="async"
-          />
-        </picture>
+        <?php require __DIR__ . '/includes/platform-image.php'; ?>
       </div>
   </div>
 </div>

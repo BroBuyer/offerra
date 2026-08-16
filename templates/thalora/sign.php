@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Open Your Account | Start Trading with Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Quickly set up your Althera Pro account to unlock advanced AI trading capabilities.");
+$page_title = 'Open Your Account | Start Trading with ' . SITE_NAME;
+$page_description = 'Quickly set up your ' . SITE_NAME . ' account to unlock advanced AI trading capabilities.';
 $page_canonical = page_url("sign.php");
 $active_page = "sign";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Sign In / Register', 'sign.php')];
 
 
 require_once __DIR__ . '/includes/head.php';

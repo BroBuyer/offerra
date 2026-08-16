@@ -5,14 +5,15 @@
 function render_schema(string $page = 'home', array $extra = []): void {
     $site = SITE_NAME;
     $url = SITE_URL;
-    $platform_image = $url . '/' . platform_image_path();
+    $platform_image = page_url(platform_image_path());
+    $logo_url = page_url('static/img/logo.webp');
 
     $organization = [
         '@context' => 'https://schema.org',
         '@type' => 'Organization',
         'name' => $site,
         'url' => $url,
-        'logo' => $url . '/static/img/logo.webp',
+        'logo' => $logo_url,
         'description' => 'Access cryptocurrencies, forex, and global assets through one platform. ' . $site . ' combines live analytics, assisted automation, and expert support.',
     ];
 
@@ -52,34 +53,34 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => 'How do I get started?',
+                'name' => 'What are the steps to start trading?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Create an account in minutes, complete a short verification step, and fund your account with a minimum deposit of ' . MIN_DEPOSIT . ' ' . CURRENCY . '. You will unlock the full platform including live charts and trading tools.',
+                    'text' => 'Sign up with your essential details, confirm your email, and fund your account with a minimum of ' . money_min() . '. This unlocks live charts, trading tools, market analysis, and dedicated support.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Is my money and data safe?',
+                'name' => 'Is ' . $site . ' reliable for handling my money and information?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'We protect accounts with SSL encryption, two-factor authentication, and secure fund handling through trusted payment providers. Your personal data is managed under strict security policies.',
+                    'text' => 'Sessions are secured with SSL encryption, two-factor authentication is available, and financial transactions are handled through trusted partners. Privacy practices are outlined on the site.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'When can I withdraw profits?',
+                'name' => 'How soon can I withdraw my funds?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Withdrawals can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
+                    'text' => 'Withdrawals can be requested from your account portal at any time. Processing usually takes 1 to 3 business days depending on the method. Fees and timings are shown before you confirm.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Do I need trading experience?',
+                'name' => 'Is it necessary to have trading experience before starting?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No prior experience is required. Guided onboarding, simple tutorials, and AI-assisted tools help you learn at your own pace with 24/7 support available.',
+                    'text' => 'No prior trading experience is necessary. Onboarding support, tutorials, and AI-enhanced tools help you learn at your own pace.',
                 ],
             ],
         ],
@@ -92,7 +93,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Create your account', 'text' => 'Sign up with your basic details and get secure access to the platform.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify your email', 'text' => 'Confirm your email to unlock full platform access.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your account', 'text' => 'Deposit a minimum of ' . money_min() . ' via bank transfer, card, or e-wallet.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set your strategy', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Start trading', 'text' => 'Enter the market with confidence using real-time data and AI insights.'],
         ],

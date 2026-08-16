@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Trading Instruments | AI-Enhanced Features by Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Utilise Althera Pro’s live market charts , AI-driven insights , and diverse trading tools with trusted security.");
+$page_title = 'Trading Instruments | AI-Enhanced Features by ' . SITE_NAME;
+$page_description = 'Use ' . SITE_NAME . '\'s live market charts, AI-driven insights, and diverse trading tools with trusted security.';
 $page_canonical = page_url("product.php");
 $active_page = "product";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Platform Features', 'product.php')];
 
 
 require_once __DIR__ . '/includes/head.php';
@@ -91,7 +92,7 @@ require_once __DIR__ . '/includes/header.php';
             <source type="image/webp" srcset="<?= asset('static/img/responsive/orange/phone-3-1033.webp') ?>" />
             <img
               src="<?= asset('static/img/responsive/orange/phone-3-1033.webp') ?>"
-              alt="Mobile app showing portfolio overview"
+              alt="<?= e(SITE_NAME) ?> mobile app showing portfolio overview"
               class="offer-phone"
               width="400"
               height="660"
@@ -104,10 +105,10 @@ require_once __DIR__ . '/includes/header.php';
       <div class="bg-before-custom relative z-30 grid grid-cols-2 gap-3 md:gap-6">
         <a class="btn btn-black col-span-full" href="<?= page_url('sign.php') ?>">Sign Up</a>
         <a class="btn btn-black btn-square" href="<?= page_url('sign.php') ?>">
-          <img src="<?= asset('static/img/svg/google-play.svg') ?>" alt="google play" />
+          <img src="<?= asset('static/img/svg/google-play.svg') ?>" alt="Get it on Google Play" />
         </a>
         <a class="btn btn-black btn-square" href="<?= page_url('sign.php') ?>">
-          <img src="<?= asset('static/img/svg/app-store.svg') ?>" alt="app store" />
+          <img src="<?= asset('static/img/svg/app-store.svg') ?>" alt="Download on the App Store" />
         </a>
       </div>
     </div>
@@ -191,7 +192,7 @@ require_once __DIR__ . '/includes/header.php';
         <source type="image/webp" srcset="<?= asset('static/img/responsive/orange/phone-4-1033.webp') ?>" />
         <img
           src="<?= asset('static/img/responsive/orange/phone-4-1033.webp') ?>"
-          alt="Mobile app showing portfolio overview"
+          alt="<?= e(SITE_NAME) ?> trading platform on mobile"
           class="w-full h-auto max-w-[340px] mx-auto drop-shadow-xl"
           width="340"
           height="560"
@@ -349,7 +350,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 <p class="h2">Begin Your Journey Now</p>
 <p>
-  Explore crypto trading with <?= e(SITE_NAME) ?>. UK traders benefit from a platform combining cutting-edge technology, efficiency, and user-friendly tools.</p>
+  Explore crypto trading with <?= e(SITE_NAME) ?>. <?= e(geo_country_name()) ?> traders benefit from a platform combining cutting-edge technology, efficiency, and user-friendly tools.</p>
           </div>
         
 

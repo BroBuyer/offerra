@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = str_replace('Althera Pro', SITE_NAME, "Privacy Overview | Data Protection at Althera Pro");
-$page_description = str_replace('Althera Pro', SITE_NAME, "Understand how Althera Pro safeguards your data through our detailed Privacy Policy.");
+$page_title = 'Privacy Overview | Data Protection at ' . SITE_NAME;
+$page_description = 'Understand how ' . SITE_NAME . ' safeguards your data through our detailed Privacy Policy.';
 $page_canonical = page_url("privacy.php");
 $active_page = "privacy";
+$schema_extra = ['breadcrumb' => schema_breadcrumb('Privacy Policy', 'privacy.php')];
 
 
 require_once __DIR__ . '/includes/head.php';
