@@ -3,11 +3,11 @@ const forms = document.querySelectorAll('.leadform');
 const L = window.APP_LANG || {};
 
 const phoneErrorMap = {
-  0: L.valPhoneInvalid || 'Enter a valid phone number',
-  1: L.valPhoneCountry || 'Invalid country code',
-  2: L.valPhoneShort || 'The phone number is too short',
-  3: L.valPhoneLong || 'The phone number is too long',
-  4: L.valPhoneInvalid || 'Enter a valid phone number',
+  0: L.valPhoneInvalid || 'Saisissez un numéro de téléphone valide',
+  1: L.valPhoneCountry || 'Indicatif pays invalide',
+  2: L.valPhoneShort || 'Le numéro de téléphone est trop court',
+  3: L.valPhoneLong || 'Le numéro de téléphone est trop long',
+  4: L.valPhoneInvalid || 'Saisissez un numéro de téléphone valide',
 };
 
 function getLeadCookieName(form) {
@@ -100,10 +100,10 @@ function validateNativeFields(form) {
 
 function validatePhone(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return L.valPhoneEmpty || 'Enter your phone number';
+  if (!trimmed) return L.valPhoneEmpty || 'Saisissez votre numéro de téléphone';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || L.valPhoneInvalid || 'Enter a valid phone number';
+    return phoneErrorMap[code] || L.valPhoneInvalid || 'Saisissez un numéro de téléphone valide';
   }
   return '';
 }
@@ -288,7 +288,7 @@ function setupFormValidation(form) {
 
     const tokenOk = await ensureFormToken(form);
     if (!tokenOk) {
-      showFormMessage(form, L.valSessionExpired || 'Session expired. Please reload the page and try again.');
+      showFormMessage(form, L.valSessionExpired || 'Session expirée. Rechargez la page et réessayez.');
       preloader?.classList.add('hidden');
       return;
     }
@@ -304,7 +304,7 @@ function setupFormValidation(form) {
       const data = await res.json();
 
       if (!data.ok) {
-        showFormMessage(form, data.error || L.valGenericError || 'Something went wrong. Please try again later.');
+        showFormMessage(form, data.error || L.valGenericError || 'Une erreur s’est produite. Réessayez plus tard.');
         return;
       }
 
@@ -315,7 +315,7 @@ function setupFormValidation(form) {
       window.location.href = thanks.href;
     } catch (err) {
       console.error(err);
-      showFormMessage(form, L.valConnectionError || 'Connection error. Check your internet connection and try again.');
+      showFormMessage(form, L.valConnectionError || 'Erreur de connexion. Vérifiez votre connexion internet et réessayez.');
     } finally {
       preloader?.classList.add('hidden');
     }

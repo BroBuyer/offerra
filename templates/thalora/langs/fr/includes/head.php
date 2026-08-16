@@ -2,8 +2,8 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
-$page_title = $page_title ?? (SITE_NAME . ' | Premier AI-Powered Trading Platform');
-$page_description = $page_description ?? ('Access cryptocurrencies, forex, and global assets through one platform. ' . SITE_NAME . ' combines live analytics, assisted automation, and expert support.');
+$page_title = $page_title ?? (SITE_NAME . ' | Plateforme de trading IA de premier plan');
+$page_description = $page_description ?? ('Accédez aux cryptomonnaies, au forex et aux actifs mondiaux depuis une seule plateforme. ' . SITE_NAME . ' combine des analyses en direct, une automatisation assistée et un accompagnement expert.');
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());
@@ -117,14 +117,14 @@ $og_locale = str_replace('-', '_', site_locale());
   <style>:root{--iti-path-flags-1x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/img/flags.png");--iti-path-flags-2x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/img/flags@2x.png");}</style>
   <script>
   window.APP_LANG = {
-    valPhoneInvalid: 'Enter a valid phone number',
-    valPhoneCountry: 'Invalid country code',
-    valPhoneShort: 'The number is too short',
-    valPhoneLong: 'The number is too long',
-    valPhoneEmpty: 'Enter your phone number',
-    valSessionExpired: 'Session expired. Please reload the page and try again.',
-    valGenericError: 'Something went wrong. Please try again later.',
-    valConnectionError: 'Connection error. Check your internet connection and try again.'
+    valPhoneInvalid: 'Saisissez un numéro de téléphone valide',
+    valPhoneCountry: 'Indicatif pays invalide',
+    valPhoneShort: 'Le numéro est trop court',
+    valPhoneLong: 'Le numéro est trop long',
+    valPhoneEmpty: 'Saisissez votre numéro de téléphone',
+    valSessionExpired: 'Session expirée. Rechargez la page et réessayez.',
+    valGenericError: 'Une erreur s’est produite. Réessayez plus tard.',
+    valConnectionError: 'Erreur de connexion. Vérifiez votre connexion internet et réessayez.'
   };
   window.OFFER_CURRENCY_SYMBOL = <?= json_encode(currency_symbol(), JSON_UNESCAPED_UNICODE) ?>;
   window.OFFER_LOCALE = <?= json_encode(site_locale(), JSON_UNESCAPED_UNICODE) ?>;

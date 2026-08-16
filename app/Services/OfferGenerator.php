@@ -65,6 +65,7 @@ class OfferGenerator
             File::copyDirectory($templatePath, $targetPath);
             $this->syncSharedIncludeFiles($targetPath, $template);
             $this->syncSharedIntegrationFiles($targetPath, $template);
+            $this->syncSharedStaticFiles($targetPath, $template);
 
             if ($template === 'multilang') {
                 $this->pruneMultilangDuplicates($targetPath);
@@ -315,6 +316,7 @@ class OfferGenerator
         File::copyDirectory($templatePath, $targetPath);
         $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
+        $this->syncSharedStaticFiles($targetPath, $offer->template);
 
         if ($offer->template === 'multilang') {
             $this->pruneMultilangDuplicates($targetPath);
@@ -406,6 +408,7 @@ class OfferGenerator
         File::put($configPath, $this->configBuilder->build($input, $settings));
         $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
+        $this->syncSharedStaticFiles($targetPath, $offer->template);
         $this->migrateLegacyAssets($targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
@@ -620,6 +623,26 @@ class OfferGenerator
             $tokensDir = $destination.DIRECTORY_SEPARATOR.'tokens';
             File::ensureDirectoryExists($tokensDir);
             File::copy($tokensDeny, $tokensDir.DIRECTORY_SEPARATOR.'.htaccess');
+        }
+    }
+
+    /**
+     * Language packs under langs/{code}/ omit static/; copy from the template root.
+     */
+    public function syncSharedStaticFiles(string $targetPath, string $templateId = 'default'): void
+    {
+        $source = rtrim($this->templatesPath, DIRECTORY_SEPARATOR)
+            .DIRECTORY_SEPARATOR.$templateId
+            .DIRECTORY_SEPARATOR.'static';
+
+        if (! File::isDirectory($source)) {
+            return;
+        }
+
+        $destination = $targetPath.DIRECTORY_SEPARATOR.'static';
+
+        if (! File::isDirectory($destination)) {
+            File::copyDirectory($source, $destination);
         }
     }
 
