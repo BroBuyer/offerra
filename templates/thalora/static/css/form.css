@@ -258,11 +258,19 @@ form.js-lead-form .iti .iti__dropdown-content,
     width: 75px;
 }
 
+@media (min-width: 481px) {
+    .apx-lead-row,
+    .lead-form-wrap .lead-form-row {
+        flex-direction: row;
+    }
+}
+
 @media (max-width: 480px) {
     .lead-form-wrap {
         padding: 22px 18px;
     }
 
+    .apx-lead-row,
     .lead-form-wrap .lead-form-row {
         flex-direction: column;
     }

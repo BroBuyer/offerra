@@ -85,7 +85,7 @@ class TemplatePreviewController extends Controller
             return $this->servePhp($template, $realFile, $path);
         }
 
-        if (! in_array($extension, ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'ico', 'woff', 'woff2', 'ttf', 'map', 'json', 'txt'], true)) {
+        if (! in_array($extension, ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'ico', 'woff', 'woff2', 'ttf', 'map', 'json', 'txt'], true)) {
             abort(404);
         }
 
@@ -154,6 +154,7 @@ class TemplatePreviewController extends Controller
             'png' => 'image/png',
             'jpg', 'jpeg' => 'image/jpeg',
             'webp' => 'image/webp',
+            'avif' => 'image/avif',
             'gif' => 'image/gif',
             'ico' => 'image/x-icon',
             'woff' => 'font/woff',

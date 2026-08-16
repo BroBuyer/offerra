@@ -220,7 +220,7 @@ function setupFormValidation(form) {
   const singleCountry = onlyCountries.length === 1;
 
   const iti = window.intlTelInput(phone, {
-    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.12/build/js/utils.js',
+    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/js/utils.js',
     separateDialCode: true,
     initialCountry: singleCountry ? onlyCountries[0] : phoneCountry,
     onlyCountries: onlyCountries.length ? onlyCountries : undefined,

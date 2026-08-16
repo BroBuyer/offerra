@@ -1,8 +1,17 @@
-@media (min-width: 520px) {
-  .apx-lead-row,
-  .lead-form-wrap .lead-form-row {
-    flex-direction: row;
+@media (min-width: 1024px) {
+  .container-base.grid > .apx-lead.lead-form-wrap {
+    align-self: center;
+    width: 100%;
   }
+}
+
+.apx-lead .iti__selected-dial-code,
+.apx-lead .iti__selected-country-primary {
+  color: #17171a;
+}
+
+.apx-lead .form-already-registered {
+  color: #fff;
 }
 
 .apx-lead .form-already-registered__title {

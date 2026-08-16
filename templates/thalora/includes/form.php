@@ -50,19 +50,22 @@ $wrap_hidden = !empty($form_hidden);
       <label class="apx-lead-field field" data-field="fname">
         <span class="field-label">First name</span>
         <input class="input" type="text" name="fname" placeholder="First name" required pattern="[^\d]+" autocomplete="given-name" minlength="2" maxlength="50" inputmode="text" autocapitalize="words" spellcheck="false" title="Use letters only (no numbers or symbols)">
+        <span class="field-error hide" role="alert" aria-live="polite"></span>
       </label>
       <label class="apx-lead-field field" data-field="lname">
         <span class="field-label">Last name</span>
         <input class="input" type="text" name="lname" placeholder="Last name" required pattern="[^\d]+" autocomplete="family-name" minlength="2" maxlength="50" inputmode="text" autocapitalize="words" spellcheck="false" title="Use letters only (no numbers or symbols)">
+        <span class="field-error hide" role="alert" aria-live="polite"></span>
       </label>
     </div>
     <label class="apx-lead-field field" data-field="email">
       <span class="field-label">Email Address</span>
       <input class="input" type="email" name="email" placeholder="Email Address" required autocomplete="email" inputmode="email">
+      <span class="field-error hide" role="alert" aria-live="polite"></span>
     </label>
     <label class="apx-lead-field apx-lead-field--phone lead-form-field lead-form-field--phone field" data-field="phone">
       <span class="field-label">Phone Number</span>
-      <input class="input" type="tel" name="fullphone" placeholder="Phone Number" autocomplete="tel" inputmode="tel">
+      <input class="input" type="tel" name="fullphone" autocomplete="tel" inputmode="tel">
       <span class="field-error hide" role="alert" aria-live="polite"></span>
     </label>
 
