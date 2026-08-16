@@ -302,6 +302,21 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
+function currency_symbol(): string
+{
+    return match (strtoupper((string) CURRENCY)) {
+        'EUR' => '€',
+        'USD' => '$',
+        'GBP' => '£',
+        default => CURRENCY,
+    };
+}
+
+function money_min(): string
+{
+    return currency_symbol() . MIN_DEPOSIT;
+}
+
 /** @return array{cdn: string, token: string}|null */
 function offer_vitals_parts(): ?array
 {
