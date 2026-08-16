@@ -124,6 +124,65 @@ function form_visitor_phone_country(): string
     return $allowed[0];
 }
 
+function geo_country_code(): string
+{
+    $code = strtolower(trim((string) FORM_PHONE_COUNTRY));
+    if ($code === '' && defined('CRM_COUNTRY')) {
+        $code = strtolower(trim((string) CRM_COUNTRY));
+    }
+    if ($code === 'uk') {
+        $code = 'gb';
+    }
+
+    return preg_match('/^[a-z]{2}$/', $code) ? $code : 'gb';
+}
+
+function geo_country_name(): string
+{
+    $code = geo_country_code();
+    $names = [
+        'gb' => 'UK', 'uk' => 'UK', 'us' => 'United States', 'ae' => 'UAE',
+        'de' => 'Germany', 'fr' => 'France', 'es' => 'Spain', 'it' => 'Italy',
+        'pl' => 'Poland', 'nl' => 'Netherlands', 'pt' => 'Portugal', 'cz' => 'Czech Republic',
+        'sk' => 'Slovakia', 'hu' => 'Hungary', 'ro' => 'Romania', 'hr' => 'Croatia',
+        'no' => 'Norway', 'se' => 'Sweden', 'dk' => 'Denmark', 'fi' => 'Finland',
+        'gr' => 'Greece', 'el' => 'Greece', 'tr' => 'Turkey', 'at' => 'Austria',
+        'ch' => 'Switzerland', 'be' => 'Belgium', 'ie' => 'Ireland', 'au' => 'Australia',
+        'ca' => 'Canada', 'nz' => 'New Zealand', 'bg' => 'Bulgaria', 'lt' => 'Lithuania',
+        'lv' => 'Latvia', 'ee' => 'Estonia', 'si' => 'Slovenia', 'cy' => 'Cyprus',
+        'mt' => 'Malta', 'lu' => 'Luxembourg', 'is' => 'Iceland', 'rs' => 'Serbia',
+        'ba' => 'Bosnia and Herzegovina', 'mk' => 'North Macedonia', 'al' => 'Albania',
+        'ua' => 'Ukraine', 'md' => 'Moldova', 'ge' => 'Georgia', 'am' => 'Armenia',
+        'kz' => 'Kazakhstan', 'za' => 'South Africa', 'ng' => 'Nigeria', 'ke' => 'Kenya',
+        'in' => 'India', 'sg' => 'Singapore', 'my' => 'Malaysia', 'th' => 'Thailand',
+        'ph' => 'Philippines', 'id' => 'Indonesia', 'vn' => 'Vietnam', 'jp' => 'Japan',
+        'kr' => 'South Korea', 'br' => 'Brazil', 'mx' => 'Mexico', 'ar' => 'Argentina',
+        'cl' => 'Chile', 'co' => 'Colombia', 'pe' => 'Peru',
+    ];
+
+    if (isset($names[$code])) {
+        return $names[$code];
+    }
+
+    if (class_exists(\Locale::class)) {
+        $name = \Locale::getDisplayRegion('en_'.strtoupper($code), 'en');
+        if (is_string($name) && $name !== '' && strcasecmp($name, $code) !== 0) {
+            return $name;
+        }
+    }
+
+    return strtoupper($code);
+}
+
+function geo_country_in(): string
+{
+    $code = geo_country_code();
+    $name = geo_country_name();
+    $withThe = ['gb', 'uk', 'us', 'nl', 'ae', 'ph', 'cz', 'bs', 'mv', 'sc', 'km', 'do'];
+
+    return in_array($code, $withThe, true) ? ('the '.$name) : $name;
+}
+
 function offer_send_personalization_headers(): void
 {
     if (headers_sent() || PHP_SAPI === 'cli') {

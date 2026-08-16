@@ -19,7 +19,7 @@
     --apx-muted: #8f8f98;
     --apx-border: rgba(255, 255, 255, 0.42);
     --apx-radius: 999px;
-    --apx-max: 560px;
+    --apx-max: 100%;
     --lead-accent: var(--apx-accent);
     --lead-bg: var(--apx-bg);
     --lead-text: var(--apx-text);
@@ -63,7 +63,7 @@
 .apx-lead {
     background: var(--apx-card);
     border-radius: 24px;
-    padding: 30px 32px 26px;
+    padding: 32px 36px 28px;
     box-shadow: 0 18px 46px rgba(var(--color-primary-rgb, 13, 115, 119), 0.22);
 }
 
@@ -71,7 +71,7 @@
 .lead-form-wrap .js-lead-form {
     display: flex;
     flex-direction: column;
-    gap: 13px;
+    gap: 16px;
     width: 100%;
 }
 
@@ -258,21 +258,10 @@ form.js-lead-form .iti .iti__dropdown-content,
     width: 75px;
 }
 
-@media (min-width: 481px) {
-    .apx-lead-row,
-    .lead-form-wrap .lead-form-row {
-        flex-direction: row;
-    }
-}
-
 @media (max-width: 480px) {
+    .apx-lead.lead-form-wrap,
     .lead-form-wrap {
         padding: 22px 18px;
-    }
-
-    .apx-lead-row,
-    .lead-form-wrap .lead-form-row {
-        flex-direction: column;
     }
 
     .apx-lead-badges {

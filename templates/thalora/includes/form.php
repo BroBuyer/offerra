@@ -52,6 +52,8 @@ $wrap_hidden = !empty($form_hidden);
         <input class="input" type="text" name="fname" placeholder="First name" required pattern="[^\d]+" autocomplete="given-name" minlength="2" maxlength="50" inputmode="text" autocapitalize="words" spellcheck="false" title="Use letters only (no numbers or symbols)">
         <span class="field-error hide" role="alert" aria-live="polite"></span>
       </label>
+    </div>
+    <div class="apx-lead-row lead-form-row">
       <label class="apx-lead-field field" data-field="lname">
         <span class="field-label">Last name</span>
         <input class="input" type="text" name="lname" placeholder="Last name" required pattern="[^\d]+" autocomplete="family-name" minlength="2" maxlength="50" inputmode="text" autocapitalize="words" spellcheck="false" title="Use letters only (no numbers or symbols)">

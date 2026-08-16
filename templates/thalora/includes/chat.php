@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Передаємо змінні з PHP масиву в JS об'єкт
     const quizLang = {
         welcome: `Hello! I’m Olivia, your <?= e(SITE_NAME) ?> onboarding guide. Your access is pre-approved. Let’s begin building your profile.`,
-        q1: `Please confirm that you are a resident of the UK to comply fully with legal requirements.`,
+        q1: `Please confirm that you are a resident of <?= e(geo_country_in()) ?> to comply fully with legal requirements.`,
         a1_yes: `Yes, I live here now`,
         a1_no: `No`,
         q2: `Great. Select your age group so we can recommend appropriate financial products:`,

@@ -67,11 +67,10 @@ $og_image = page_url($og_image_path ?? 'static/img/og.jpg');
     .apx-lead.lead-form-wrap {
       box-sizing: border-box;
       width: 100%;
-      max-width: 560px;
       margin: 0 auto;
       background: var(--color-primary, #0d7377);
-      border-radius: 24px;
-      padding: 30px 32px 26px;
+      border-radius: 25px;
+      padding: 32px 36px 28px;
       box-shadow: 0 18px 46px rgba(var(--color-primary-rgb, 13, 115, 119), 0.22);
     }
     .apx-lead-badges {
