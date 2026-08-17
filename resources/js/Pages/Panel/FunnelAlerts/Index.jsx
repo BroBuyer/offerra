@@ -62,33 +62,47 @@ export default function FunnelAlertsIndex({ settings, events }) {
                 </div>
             )}
 
-            <section className="card" style={{ marginBottom: '1.5rem' }}>
-                <h3>Postback для їхньої системи</h3>
-                <div className="field">
-                    <label htmlFor="postback-url">URL</label>
-                    <input
-                        id="postback-url"
-                        type="text"
-                        readOnly
-                        value={settings.postback_url}
-                        onFocus={(e) => e.target.select()}
-                    />
-                </div>
-                <div className="field">
-                    <label htmlFor="webhook-token">Bearer token</label>
-                    <input
-                        id="webhook-token"
-                        type="text"
-                        readOnly
-                        value={settings.webhook_token}
-                        onFocus={(e) => e.target.select()}
-                    />
-                    <p className="field-hint">
-                        Заголовок: <code>Authorization: Bearer &lt;token&gt;</code>.
-                        Бренд передавати як є (без lower case). GEO — ISO2 uppercase, lang — lowercase.
-                    </p>
-                </div>
-                <pre className="card-desc" style={{ whiteSpace: 'pre-wrap', marginTop: '0.75rem' }}>
+            <form onSubmit={submit}>
+                <section className="card" style={{ marginBottom: '1.5rem' }}>
+                    <h3>Postback для їхньої системи</h3>
+                    <div className="field">
+                        <label htmlFor="postback-url">URL</label>
+                        <input
+                            id="postback-url"
+                            type="text"
+                            readOnly
+                            value={settings.postback_url}
+                            onFocus={(e) => e.target.select()}
+                        />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="webhook-token">Bearer token</label>
+                        <input
+                            id="webhook-token"
+                            type="text"
+                            readOnly
+                            value={settings.webhook_token}
+                            onFocus={(e) => e.target.select()}
+                        />
+                        <p className="field-hint">
+                            Заголовок: <code>Authorization: Bearer &lt;token&gt;</code>.
+                            Бренд передавати як є (без lower case). GEO — ISO2 uppercase, lang — lowercase.
+                        </p>
+                    </div>
+                    <div className="field">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={data.regenerate_webhook_token}
+                                onChange={(e) => setData('regenerate_webhook_token', e.target.checked)}
+                            />
+                            {' '}Згенерувати новий Bearer token
+                        </label>
+                        <p className="field-hint">
+                            Після збереження старий token перестане працювати — передай новий їхній системі.
+                        </p>
+                    </div>
+                    <pre className="card-desc" style={{ whiteSpace: 'pre-wrap', marginTop: '0.75rem' }}>
 {`POST ${settings.postback_url}
 Authorization: Bearer ${settings.webhook_token}
 Content-Type: application/json
@@ -101,12 +115,11 @@ Content-Type: application/json
   "lang": "fr",
   "ts": "2026-08-17T08:00:00Z"
 }`}
-                </pre>
-            </section>
+                    </pre>
+                </section>
 
-            <section className="card" style={{ marginBottom: '1.5rem' }}>
-                <h3>Telegram</h3>
-                <form onSubmit={submit}>
+                <section className="card" style={{ marginBottom: '1.5rem' }}>
+                    <h3>Telegram</h3>
                     <div className="field">
                         <label htmlFor="tg-token">Bot token</label>
                         <SecretInput
@@ -143,25 +156,14 @@ Content-Type: application/json
                         </button>
                     </div>
 
-                    <div className="field" style={{ marginTop: '1rem' }}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={data.regenerate_webhook_token}
-                                onChange={(e) => setData('regenerate_webhook_token', e.target.checked)}
-                            />
-                            {' '}Згенерувати новий Bearer token
-                        </label>
-                    </div>
-
                     <div className="form-actions">
                         <button type="submit" className="btn btn-primary" disabled={processing}>
                             {processing ? 'Збереження…' : 'Зберегти'}
                         </button>
                         {recentlySuccessful && <span className="field-hint">Збережено</span>}
                     </div>
-                </form>
-            </section>
+                </section>
+            </form>
 
             <section className="card">
                 <h3>Останні postback-и</h3>
