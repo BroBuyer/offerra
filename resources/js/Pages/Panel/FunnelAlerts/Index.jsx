@@ -2,7 +2,6 @@ import CopyReadonlyInput from '@/Components/CopyReadonlyInput';
 import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
 import { useForm, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import { useMemo, useState } from 'react';
 
 function statusLabel(event) {
@@ -19,9 +18,7 @@ function statusLabel(event) {
 
 export default function FunnelAlertsIndex({ settings, events }) {
     const { flash } = usePage().props;
-    const [webhookToken, setWebhookToken] = useState(settings.webhook_token);
-    const [regeneratingToken, setRegeneratingToken] = useState(false);
-    const [tokenRegenerated, setTokenRegenerated] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         tg_bot_token: '',
@@ -29,7 +26,7 @@ export default function FunnelAlertsIndex({ settings, events }) {
     });
 
     const postbackExample = useMemo(() => `POST ${settings.postback_url}
-Authorization: Bearer ${webhookToken}
+Authorization: Bearer ${settings.webhook_token}
 Content-Type: application/json
 
 {
@@ -39,7 +36,7 @@ Content-Type: application/json
   "geo": "FR",
   "lang": "fr",
   "ts": "2026-08-17T08:00:00Z"
-}`, [settings.postback_url, webhookToken]);
+}`, [settings.postback_url, settings.webhook_token]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -49,25 +46,6 @@ Content-Type: application/json
                 setData('tg_bot_token', '');
             },
         });
-    };
-
-    const regenerateToken = async () => {
-        if (! window.confirm('Згенерувати новий Bearer token? Старий перестане працювати.')) {
-            return;
-        }
-
-        setRegeneratingToken(true);
-        setTokenRegenerated(false);
-
-        try {
-            const { data: result } = await axios.post(route('funnel-alerts.regenerate-token'));
-            setWebhookToken(result.webhook_token);
-            setTokenRegenerated(true);
-        } catch {
-            window.alert('Не вдалося згенерувати новий token');
-        } finally {
-            setRegeneratingToken(false);
-        }
     };
 
     const updateChatId = (index, value) => {
@@ -89,7 +67,16 @@ Content-Type: application/json
         <PanelLayout title="Алерти воронок" wide>
             <header className="page-header">
                 <h2>Алерти воронок</h2>
-                <p>Postback від зовнішньої системи: якщо воронка активна, а офера в Offerra ще немає — сповіщення в Telegram</p>
+                <p>Алерти тільки коли офер у базі не знайдено (offer_found=false). TG надсилається один раз на комбінацію.</p>
+                <div className="offer-actions">
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setSettingsOpen(true)}
+                    >
+                        Налаштування
+                    </button>
+                </div>
             </header>
 
             {flash?.success && (
@@ -98,95 +85,108 @@ Content-Type: application/json
                 </div>
             )}
 
-            <form onSubmit={submit}>
-                <section className="card" style={{ marginBottom: '1.5rem' }}>
-                    <h3>Postback для їхньої системи</h3>
-                    <div className="field">
-                        <label htmlFor="postback-url">URL</label>
-                        <CopyReadonlyInput
-                            id="postback-url"
-                            value={settings.postback_url}
-                            label="URL"
-                        />
-                    </div>
-                    <div className="field">
-                        <label htmlFor="webhook-token">Bearer token</label>
-                        <CopyReadonlyInput
-                            id="webhook-token"
-                            value={webhookToken}
-                            label="Bearer token"
-                        />
-                        <p className="field-hint">
-                            Заголовок: <code>Authorization: Bearer &lt;token&gt;</code>.
-                            Бренд передавати як є (без lower case). GEO — ISO2 uppercase, lang — lowercase.
-                        </p>
-                    </div>
-                    <div className="field">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={regenerateToken}
-                            disabled={regeneratingToken}
-                        >
-                            {regeneratingToken ? 'Генерація…' : 'Перегенерувати token'}
-                        </button>
-                        {tokenRegenerated && (
-                            <p className="field-hint" style={{ marginTop: '0.5rem' }}>
-                                Новий token збережено — передай його їхній системі.
-                            </p>
-                        )}
-                    </div>
-                    <pre className="card-desc" style={{ whiteSpace: 'pre-wrap', marginTop: '0.75rem' }}>
-                        {postbackExample}
-                    </pre>
-                </section>
+            {settingsOpen && (
+                <div
+                    className="modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Налаштування алертів воронок"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setSettingsOpen(false);
+                        }
+                    }}
+                >
+                    <div className="modal-card modal-card--wide">
+                        <div className="modal-card__header">
+                            <h3>Налаштування алертів воронок</h3>
+                            <button
+                                type="button"
+                                className="modal-card__close"
+                                aria-label="Закрити"
+                                onClick={() => setSettingsOpen(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
 
-                <section className="card" style={{ marginBottom: '1.5rem' }}>
-                    <h3>Telegram</h3>
-                    <div className="field">
-                        <label htmlFor="tg-token">Bot token</label>
-                        <SecretInput
-                            id="tg-token"
-                            value={data.tg_bot_token}
-                            onChange={(e) => setData('tg_bot_token', e.target.value)}
-                            placeholder={settings.has_tg_bot_token ? 'Залиш порожнім, щоб не змінювати' : '123456:ABC...'}
-                        />
-                    </div>
+                        <form onSubmit={submit}>
+                            <section className="card" style={{ marginBottom: '1.1rem' }}>
+                                <h3>Postback для їхньої системи</h3>
+                                <div className="field">
+                                    <label htmlFor="postback-url">URL</label>
+                                    <CopyReadonlyInput
+                                        id="postback-url"
+                                        value={settings.postback_url}
+                                        label="URL"
+                                    />
+                                </div>
+                                <div className="field">
+                                    <label htmlFor="webhook-token">Bearer token</label>
+                                    <CopyReadonlyInput
+                                        id="webhook-token"
+                                        value={settings.webhook_token}
+                                        label="Bearer token"
+                                    />
+                                    <p className="field-hint">
+                                        Заголовок: <code>Authorization: Bearer &lt;token&gt;</code>.
+                                        Бренд передавати як є (без lower case). GEO — ISO2 uppercase, lang — lowercase.
+                                    </p>
+                                </div>
+                                <pre className="card-desc" style={{ whiteSpace: 'pre-wrap', marginTop: '0.75rem' }}>
+                                    {postbackExample}
+                                </pre>
+                            </section>
 
-                    <div className="field">
-                        <label>Chat ID (група або особистий)</label>
-                        {data.tg_chat_ids.map((chatId, index) => (
-                            <div key={index} className="field-row" style={{ marginBottom: '0.5rem' }}>
-                                <input
-                                    type="text"
-                                    value={chatId}
-                                    onChange={(e) => updateChatId(index, e.target.value)}
-                                    placeholder={index === 0 ? '-1001234567890' : 'Ще один chat ID'}
-                                />
-                                {data.tg_chat_ids.length > 1 && (
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        onClick={() => removeChatId(index)}
-                                    >
-                                        −
+                            <section className="card" style={{ marginBottom: '1.1rem' }}>
+                                <h3>Telegram</h3>
+                                <div className="field">
+                                    <label htmlFor="tg-token">Bot token</label>
+                                    <SecretInput
+                                        id="tg-token"
+                                        value={data.tg_bot_token}
+                                        onChange={(e) => setData('tg_bot_token', e.target.value)}
+                                        placeholder={settings.has_tg_bot_token ? 'Залиш порожнім, щоб не змінювати' : '123456:ABC...'}
+                                    />
+                                </div>
+
+                                <div className="field">
+                                    <label>Chat ID (група або особистий)</label>
+                                    {data.tg_chat_ids.map((chatId, index) => (
+                                        <div key={index} className="field-row" style={{ marginBottom: '0.5rem' }}>
+                                            <input
+                                                type="text"
+                                                value={chatId}
+                                                onChange={(e) => updateChatId(index, e.target.value)}
+                                                placeholder={index === 0 ? '-1001234567890' : 'Ще один chat ID'}
+                                            />
+                                            {data.tg_chat_ids.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-secondary"
+                                                    onClick={() => removeChatId(index)}
+                                                >
+                                                    −
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                    <button type="button" className="btn btn-secondary" onClick={addChatId}>
+                                        + Додати chat ID
                                     </button>
-                                )}
-                            </div>
-                        ))}
-                        <button type="button" className="btn btn-secondary" onClick={addChatId}>
-                            + Додати chat ID
-                        </button>
-                    </div>
+                                </div>
 
-                    <div className="form-actions">
-                        <button type="submit" className="btn btn-primary" disabled={processing}>
-                            {processing ? 'Збереження…' : 'Зберегти'}
-                        </button>
-                        {recentlySuccessful && <span className="field-hint">Збережено</span>}
+                                <div className="form-actions">
+                                    <button type="submit" className="btn btn-primary" disabled={processing}>
+                                        {processing ? 'Збереження…' : 'Зберегти'}
+                                    </button>
+                                    {recentlySuccessful && <span className="field-hint">Збережено</span>}
+                                </div>
+                            </section>
+                        </form>
                     </div>
-                </section>
-            </form>
+                </div>
+            )}
 
             <section className="card">
                 <h3>Останні postback-и</h3>

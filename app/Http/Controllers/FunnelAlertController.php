@@ -19,6 +19,7 @@ class FunnelAlertController extends Controller
         $token = $alerts->ensureWebhookToken($settings);
 
         $events = FunnelAlertEvent::query()
+            ->where('offer_found', false)
             ->latest('id')
             ->limit(200)
             ->get()
