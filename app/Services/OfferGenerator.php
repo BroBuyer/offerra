@@ -232,7 +232,7 @@ class OfferGenerator
 
         $needsRebuild = false;
 
-        if (File::isDirectory($targetPath) && $this->folderIsComplete($targetPath)) {
+        if (File::isDirectory($targetPath) && $this->folderIsComplete($targetPath, $offer->template)) {
             // For multilang we rely on language switcher assets under `static/img/flags/*`.
             // If the folder was generated previously from `langs/<code>` (without root `static/`),
             // those files may be missing while the generic required files are still present.
@@ -257,9 +257,9 @@ class OfferGenerator
     /**
      * @return list<string>
      */
-    public function requiredRelativePaths(): array
+    public function requiredRelativePaths(?string $template = null): array
     {
-        return [
+        $paths = [
             'index.php',
             'contacts.php',
             'product.php',
@@ -278,13 +278,27 @@ class OfferGenerator
             'integration/visitor-geo.php',
             'integration/send.php',
             'integration/default-integration.css',
+        ];
+
+        if ($template === 'thalora') {
+            return [
+                ...$paths,
+                'static/css/fonts.css',
+                'static/css/tailwind.min.css',
+                'static/css/form.css',
+                'static/css/extra.css',
+            ];
+        }
+
+        return [
+            ...$paths,
             'static/css/main.css',
         ];
     }
 
-    private function folderIsComplete(string $targetPath): bool
+    private function folderIsComplete(string $targetPath, ?string $template = null): bool
     {
-        foreach ($this->requiredRelativePaths() as $relativePath) {
+        foreach ($this->requiredRelativePaths($template) as $relativePath) {
             if (! File::isFile($targetPath.DIRECTORY_SEPARATOR.$relativePath)) {
                 return false;
             }

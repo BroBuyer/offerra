@@ -220,7 +220,7 @@ class DeployService
                 throw new RuntimeException('index.php не знайдено на сервері після деплою.');
             }
 
-            $this->verifyRequiredRemoteFiles($filesystem, $localPath, $remotePath);
+            $this->verifyRequiredRemoteFiles($filesystem, $localPath, $remotePath, $offer->template);
 
             try {
                 $this->connection->chmodPublicRecursive($config, $remotePath, self::DEPLOY_TIMEOUT);
@@ -372,11 +372,11 @@ class DeployService
         return $count;
     }
 
-    private function verifyRequiredRemoteFiles(Filesystem $filesystem, string $localPath, string $remotePath): void
+    private function verifyRequiredRemoteFiles(Filesystem $filesystem, string $localPath, string $remotePath, ?string $template = null): void
     {
         $missing = [];
 
-        foreach ($this->generator->requiredRelativePaths() as $relativePath) {
+        foreach ($this->generator->requiredRelativePaths($template) as $relativePath) {
             $localFile = $localPath.DIRECTORY_SEPARATOR.$relativePath;
             $remoteFile = rtrim($remotePath, '/').'/'.$relativePath;
 
