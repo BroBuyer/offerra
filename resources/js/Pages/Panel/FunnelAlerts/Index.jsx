@@ -23,6 +23,7 @@ function statusLabel(event) {
 export default function FunnelAlertsIndex({ settings, events, ignoredBrands = [] }) {
     const { flash, errors } = usePage().props;
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [retryingTelegram, setRetryingTelegram] = useState(false);
     const [ignoreBrand, setIgnoreBrand] = useState('');
     const [ignoringBrand, setIgnoringBrand] = useState(false);
 
