@@ -3,6 +3,7 @@ import de from './de.mjs';
 import es from './es.mjs';
 import fr from './fr.mjs';
 import hr from './hr.mjs';
+import hu from './hu.mjs';
 import it from './it.mjs';
 import ms from './ms.mjs';
 import nl from './nl.mjs';
@@ -71,6 +72,12 @@ export const LOCALES = {
     phoneCountry: 'hr',
     currency: 'EUR',
   },
+  hu: {
+    siteLang: 'hu',
+    crmCountry: 'HU',
+    phoneCountry: 'hu',
+    currency: 'EUR',
+  },
   ms: {
     siteLang: 'ms',
     crmCountry: 'MY',
@@ -79,4 +86,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, ms };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, ms };
