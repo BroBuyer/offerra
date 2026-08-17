@@ -240,6 +240,36 @@ class FunnelAlertService
             ->all();
     }
 
+    /**
+     * @param  \Illuminate\Support\Collection<int, FunnelAlertEvent>  $events
+     * @return array<string, true>
+     */
+    public function existingMatchKeys($events): array
+    {
+        $brands = collect($events)
+            ->map(fn (FunnelAlertEvent $event) => mb_strtolower(trim((string) $event->brand)))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($brands === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($brands), '?'));
+
+        return Offer::query()
+            ->where('status', '!=', 'archived')
+            ->whereNull('archived_at')
+            ->whereRaw('LOWER(brand) in ('.$placeholders.')', $brands)
+            ->get(['brand', 'geo', 'lang'])
+            ->mapWithKeys(fn (Offer $offer) => [
+                FunnelAlertEvent::matchKey((string) $offer->brand, (string) $offer->geo, (string) $offer->lang) => true,
+            ])
+            ->all();
+    }
+
     private function offerExists(string $brand, string $geo, string $lang): bool
     {
         $brandKey = mb_strtolower(trim($brand));

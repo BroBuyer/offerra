@@ -9,10 +9,6 @@ function statusLabel(event) {
         return 'Оффер є';
     }
 
-    if (event.ignored) {
-        return 'Ігнор';
-    }
-
     if (event.notified_at) {
         return 'TG надіслано';
     }
@@ -23,6 +19,7 @@ function statusLabel(event) {
 export default function FunnelAlertsIndex({ settings, events, ignoredBrands = [] }) {
     const { flash, errors } = usePage().props;
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [blacklistOpen, setBlacklistOpen] = useState(false);
     const [retryingTelegram, setRetryingTelegram] = useState(false);
     const [ignoreBrand, setIgnoreBrand] = useState('');
     const [ignoringBrand, setIgnoringBrand] = useState(false);
@@ -75,7 +72,7 @@ Content-Type: application/json
         setData('tg_chat_ids', next.length ? next : ['']);
     };
 
-    const pendingTelegramCount = events.filter((event) => !event.offer_found && !event.notified_at && !event.ignored).length;
+    const pendingTelegramCount = events.filter((event) => !event.offer_found && !event.notified_at).length;
 
     const retryTelegram = () => {
         setRetryingTelegram(true);
@@ -85,8 +82,9 @@ Content-Type: application/json
         });
     };
 
-    const submitIgnoreBrand = (brand) => {
-        const value = (brand ?? '').trim();
+    const submitIgnoreBrand = (e) => {
+        e?.preventDefault?.();
+        const value = ignoreBrand.trim();
         if (!value || ignoringBrand) {
             return;
         }
@@ -94,6 +92,7 @@ Content-Type: application/json
         setIgnoringBrand(true);
         router.post(route('funnel-alerts.ignored-brands.store'), { brand: value }, {
             preserveScroll: true,
+            preserveState: true,
             onFinish: () => {
                 setIgnoringBrand(false);
                 setIgnoreBrand('');
@@ -104,14 +103,17 @@ Content-Type: application/json
     const removeIgnoredBrand = (id) => {
         router.delete(route('funnel-alerts.ignored-brands.destroy', id), {
             preserveScroll: true,
+            preserveState: true,
         });
     };
 
     return (
         <PanelLayout title="Алерти воронок" wide>
-            <header className="page-header">
-                <h2>Алерти воронок</h2>
-                <p>TG лише якщо офера немає в базі і бренд не в ігнорі. Пуш один раз на комбінацію.</p>
+            <header className="page-header funnel-alerts-header">
+                <div>
+                    <h2>Алерти воронок</h2>
+                    <p>TG лише якщо офера немає в базі і бренд не в чорному списку. Пуш один раз на комбінацію.</p>
+                </div>
                 <div className="offer-actions">
                     {pendingTelegramCount > 0 && (
                         <button
@@ -123,6 +125,14 @@ Content-Type: application/json
                             {retryingTelegram ? 'Надсилаю…' : 'Надіслати в Telegram'}
                         </button>
                     )}
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setBlacklistOpen(true)}
+                    >
+                        Чорний список
+                        {ignoredBrands.length > 0 ? ` (${ignoredBrands.length})` : ''}
+                    </button>
                     <button
                         type="button"
                         className="btn btn-secondary"
@@ -142,6 +152,76 @@ Content-Type: application/json
             {errors?.telegram && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.telegram}</p>
+                </div>
+            )}
+
+            {blacklistOpen && (
+                <div
+                    className="modal-backdrop"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Чорний список воронок"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setBlacklistOpen(false);
+                        }
+                    }}
+                >
+                    <div className="modal-card modal-card--wide">
+                        <div className="modal-card__header">
+                            <div>
+                                <h3>Чорний список</h3>
+                                <p className="card-desc" style={{ margin: 0 }}>
+                                    По цих брендах Telegram не йде. Якщо офер уже створили — в таблиці буде «Оффер є».
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                className="modal-card__close"
+                                aria-label="Закрити"
+                                onClick={() => setBlacklistOpen(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <form onSubmit={submitIgnoreBrand} className="blacklist-add">
+                            <input
+                                type="text"
+                                value={ignoreBrand}
+                                onChange={(e) => setIgnoreBrand(e.target.value)}
+                                placeholder="Назва воронки / бренд"
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={ignoringBrand || !ignoreBrand.trim()}
+                            >
+                                {ignoringBrand ? 'Додаю…' : 'Додати'}
+                            </button>
+                        </form>
+
+                        {ignoredBrands.length === 0 ? (
+                            <p className="card-desc">Список порожній.</p>
+                        ) : (
+                            <ul className="blacklist-chips">
+                                {ignoredBrands.map((item) => (
+                                    <li key={item.id} className="blacklist-chip">
+                                        <span>{item.brand}</span>
+                                        <button
+                                            type="button"
+                                            className="blacklist-chip__remove"
+                                            onClick={() => removeIgnoredBrand(item.id)}
+                                            aria-label={`Прибрати ${item.brand}`}
+                                        >
+                                            ×
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -251,45 +331,6 @@ Content-Type: application/json
                 </div>
             )}
 
-            <section className="card" style={{ marginBottom: '1.5rem' }}>
-                <h3>Ігнор воронок</h3>
-                <p className="card-desc">По цих брендах Telegram не йде, навіть якщо офера в базі немає. Назва зберігається як є.</p>
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        submitIgnoreBrand(ignoreBrand);
-                    }}
-                    className="field-row"
-                    style={{ marginBottom: ignoredBrands.length ? '0.85rem' : 0 }}
-                >
-                    <input
-                        type="text"
-                        value={ignoreBrand}
-                        onChange={(e) => setIgnoreBrand(e.target.value)}
-                        placeholder="Назва воронки / бренд"
-                    />
-                    <button type="submit" className="btn btn-secondary" disabled={ignoringBrand || !ignoreBrand.trim()}>
-                        {ignoringBrand ? 'Додаю…' : 'Додати в ігнор'}
-                    </button>
-                </form>
-                {ignoredBrands.length > 0 && (
-                    <ul className="ignored-brands-list">
-                        {ignoredBrands.map((item) => (
-                            <li key={item.id} className="ignored-brands-list__item">
-                                <span>{item.brand}</span>
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary btn-sm"
-                                    onClick={() => removeIgnoredBrand(item.id)}
-                                >
-                                    Прибрати
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </section>
-
             <section className="card">
                 <h3>Останні postback-и</h3>
                 {events.length === 0 ? (
@@ -305,7 +346,6 @@ Content-Type: application/json
                                     <th>Lang</th>
                                     <th>ID</th>
                                     <th>Статус</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -317,18 +357,6 @@ Content-Type: application/json
                                         <td>{event.lang}</td>
                                         <td>{event.external_id ?? '—'}</td>
                                         <td>{statusLabel(event)}</td>
-                                        <td>
-                                            {!event.ignored && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-secondary btn-sm"
-                                                    disabled={ignoringBrand}
-                                                    onClick={() => submitIgnoreBrand(event.brand)}
-                                                >
-                                                    Ігнорувати
-                                                </button>
-                                            )}
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

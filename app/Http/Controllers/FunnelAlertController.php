@@ -25,24 +25,47 @@ class FunnelAlertController extends Controller
             ->map(fn (array $row) => FunnelAlertIgnoredBrand::keyFor($row['brand']))
             ->all();
 
-        $events = FunnelAlertEvent::query()
+        $rawEvents = FunnelAlertEvent::query()
             ->where('offer_found', false)
             ->latest('id')
-            ->limit(200)
-            ->get()
-            ->map(fn (FunnelAlertEvent $event) => [
-                'id' => $event->id,
-                'external_id' => $event->external_id,
-                'event' => $event->event,
-                'brand' => $event->brand,
-                'geo' => $event->geo,
-                'lang' => $event->lang,
-                'offer_found' => $event->offer_found,
-                'ignored' => in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true),
-                'notified_at' => $event->notified_at?->format('Y-m-d H:i:s'),
-                'event_at' => $event->event_at?->format('Y-m-d H:i:s'),
-                'received_at' => $event->created_at?->format('Y-m-d H:i:s'),
-            ]);
+            ->limit(400)
+            ->get();
+
+        $existingKeys = $alerts->existingMatchKeys($rawEvents);
+
+        $resolvedIds = [];
+
+        $events = $rawEvents
+            ->map(function (FunnelAlertEvent $event) use ($ignoredKeys, $existingKeys, &$resolvedIds) {
+                $offerFound = isset($existingKeys[$event->match_key]);
+                $ignored = in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true);
+
+                if ($offerFound && ! $event->offer_found) {
+                    $resolvedIds[] = $event->id;
+                }
+
+                return [
+                    'id' => $event->id,
+                    'external_id' => $event->external_id,
+                    'event' => $event->event,
+                    'brand' => $event->brand,
+                    'geo' => $event->geo,
+                    'lang' => $event->lang,
+                    'offer_found' => $offerFound,
+                    'ignored' => $ignored,
+                    'notified_at' => $event->notified_at?->format('Y-m-d H:i:s'),
+                    'event_at' => $event->event_at?->format('Y-m-d H:i:s'),
+                    'received_at' => $event->created_at?->format('Y-m-d H:i:s'),
+                ];
+            })
+            ->filter(fn (array $event) => $event['offer_found'] || ! $event['ignored'])
+            ->values()
+            ->take(200)
+            ->all();
+
+        if ($resolvedIds !== []) {
+            FunnelAlertEvent::query()->whereIn('id', $resolvedIds)->update(['offer_found' => true]);
+        }
 
         return Inertia::render('Panel/FunnelAlerts/Index', [
             'settings' => [

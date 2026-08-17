@@ -1623,6 +1623,78 @@ a:hover { text-decoration: underline; }
   font-size: 0.82rem;
 }
 
+.funnel-alerts-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.funnel-alerts-header .offer-actions {
+  margin-left: auto;
+}
+
+.blacklist-add {
+  display: flex;
+  gap: 0.55rem;
+  margin: 0.35rem 0 1rem;
+}
+
+.blacklist-add input {
+  flex: 1;
+  min-width: 0;
+}
+
+.blacklist-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.blacklist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding: 0.28rem 0.35rem 0.28rem 0.65rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.blacklist-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blacklist-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.blacklist-chip__remove:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+}
+
 .table-wrap::-webkit-scrollbar {
   width: 8px;
   height: 8px;
