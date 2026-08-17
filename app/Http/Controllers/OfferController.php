@@ -249,6 +249,9 @@ class OfferController extends Controller
             'brandTemplateUsage' => $this->brandTemplateUsage(auth()->user()),
             'fresh' => request()->boolean('fresh'),
             'initialTemplate' => request()->string('template')->toString() ?: null,
+            'initialBrand' => request()->string('brand')->toString() ?: null,
+            'initialGeo' => request()->string('geo')->toString() ?: null,
+            'initialLang' => request()->string('lang')->toString() ?: null,
             'canProvisionInfrastructure' => InfrastructureProvisioner::settingsReady($settings),
         ]);
     }

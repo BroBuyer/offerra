@@ -198,6 +198,9 @@ export default function OffersCreate({
     brandTemplateUsage = {},
     fresh = false,
     initialTemplate = null,
+    initialBrand = null,
+    initialGeo = null,
+    initialLang = null,
 }) {
     const { errors } = usePage().props;
     const defaults = useMemo(() => buildDefaults(templates), [templates]);
@@ -354,8 +357,38 @@ export default function OffersCreate({
                         : {}),
                 }));
             }
+
+            const brand = (initialBrand ?? '').trim();
+            const geo = normalizeGeo(initialGeo ?? '');
+            const lang = (initialLang ?? '').trim().toLowerCase();
+
+            if (brand || geo || lang) {
+                setData((prev) => {
+                    let next = { ...prev };
+
+                    if (brand) {
+                        next = { ...next, brand };
+                    }
+
+                    if (geo) {
+                        const preset = geoPresets.find((item) => item.code === geo);
+                        next = {
+                            ...next,
+                            geo,
+                            lang: lang || preset?.lang || next.lang,
+                            phone: preset?.phone ?? geo.toLowerCase(),
+                            phone_countries: [preset?.phone ?? geo.toLowerCase()],
+                            ...(preset?.currency ? { currency: preset.currency } : {}),
+                        };
+                    } else if (lang) {
+                        next = { ...next, lang };
+                    }
+
+                    return next;
+                });
+            }
         }
-    }, [fresh, reset, initialTemplate, templates, setData]);
+    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, templates, geoPresets, setData]);
 
     useEffect(() => {
         if (bulkItems.length === 0) {

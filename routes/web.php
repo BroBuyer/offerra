@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FunnelAlertController;
 use App\Http\Controllers\DomainBalanceController;
 use App\Http\Controllers\DomainPurchaseController;
 use App\Http\Controllers\DomainSearchController;
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
             ->name('users.reset-password');
+
+        Route::get('/funnel-alerts', [FunnelAlertController::class, 'index'])->name('funnel-alerts.index');
+        Route::patch('/funnel-alerts', [FunnelAlertController::class, 'update'])->name('funnel-alerts.update');
     });
 });
 

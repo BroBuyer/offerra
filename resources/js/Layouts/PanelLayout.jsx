@@ -15,6 +15,7 @@ const navItems = [
 
 const adminNavItems = [
     { href: '/users', icon: '👥', label: 'Користувачі' },
+    { href: '/funnel-alerts', icon: '🔔', label: 'Алерти воронок' },
 ];
 
 export default function PanelLayout({ title, children, wide = false, fullWidth = false }) {
