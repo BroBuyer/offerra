@@ -4,6 +4,9 @@ return [
     'allow_registration' => env('OFFERRA_ALLOW_REGISTRATION', false),
     'purge_local_after_deploy' => env('OFFERRA_PURGE_LOCAL_AFTER_DEPLOY', true),
 
+    // Max parallel SFTP deploys per Hestia host (match supervisor deploy workers).
+    'deploy_concurrency_per_host' => (int) env('OFFERRA_DEPLOY_CONCURRENCY', 5),
+
     // Neutral CDN host for mirror beacons (pixel/css/boot). Example: cdnedge.io
     'cdn_probe_host' => env('CDN_PROBE_HOST', 'cdnedge.io'),
 

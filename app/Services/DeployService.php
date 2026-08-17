@@ -21,7 +21,7 @@ class DeployService
 {
     private const DEPLOY_TIMEOUT = 600;
 
-    /** Only one SFTP deploy per Hestia host at a time. */
+    /** Per-host deploy slot TTL — must exceed slow uploads. */
     private const HOST_DEPLOY_LOCK_SECONDS = 720;
 
     private const HOST_DEPLOY_LOCK_WAIT = 3600;
@@ -125,6 +125,28 @@ class DeployService
         }
     }
 
+    public function needsDeploy(Offer $offer): bool
+    {
+        $offer->loadMissing('user.settings');
+
+        if (! $offer->user || $offer->infra_status !== 'ready') {
+            return false;
+        }
+
+        if (in_array($offer->status, ['deploying', 'archived', 'archiving'], true)) {
+            return false;
+        }
+
+        $options = InfrastructureOptions::forOffer($offer);
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+
+        if (($options['hestia'] ?? false) && ($meta['hestia'] ?? '') !== 'done') {
+            return false;
+        }
+
+        return $this->shouldAutoDeployAfterInfra($offer, $meta);
+    }
+
     public function assertCanDeploy(User $user, Offer $offer): void
     {
         $settings = $user->settings;
@@ -150,15 +172,7 @@ class DeployService
             throw new InvalidArgumentException('Заповніть SFTP-налаштування в розділі «Деплой на Hestia».');
         }
 
-        $hostLock = Cache::lock($this->deployHostLockKey($settings), self::HOST_DEPLOY_LOCK_SECONDS);
-
-        try {
-            $hostLock->block(self::HOST_DEPLOY_LOCK_WAIT);
-        } catch (LockTimeoutException) {
-            throw new RuntimeException(
-                'Черга деплою на цей Hestia-сервер зайнята. Спробуйте пізніше.',
-            );
-        }
+        $hostLock = $this->acquireDeployHostSlot($settings);
 
         $lock = Cache::lock('offer-deploy-'.$offer->id, self::DEPLOY_TIMEOUT + 60);
 
@@ -267,6 +281,7 @@ class DeployService
 
             $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
             unset($meta['needs_redeploy']);
+            $meta['deploy_host'] = trim((string) $settings->deploy_host);
 
             $offer->update([
                 'status' => 'deployed',
@@ -274,7 +289,7 @@ class DeployService
                 'remote_path' => $remotePath,
                 'deployed_at' => now(),
                 'deploy_error' => null,
-                'infra_meta' => $meta !== [] ? $meta : $offer->infra_meta,
+                'infra_meta' => $meta,
             ]);
 
             if (config('offerra.purge_local_after_deploy', true)) {
@@ -554,6 +569,45 @@ class DeployService
             return true;
         }
 
-        return ! filled($offer->remote_path);
+        if (! filled($offer->remote_path)) {
+            return true;
+        }
+
+        $settings = $offer->user?->settings;
+        $currentHost = trim((string) ($settings?->deploy_host ?? ''));
+        $deployedHost = trim((string) ($meta['deploy_host'] ?? ''));
+
+        if ($currentHost !== '' && $deployedHost === '') {
+            return true;
+        }
+
+        if ($currentHost !== '' && $deployedHost !== '' && $currentHost !== $deployedHost) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function acquireDeployHostSlot(UserSetting $settings): \Illuminate\Contracts\Cache\Lock
+    {
+        $slots = max(1, (int) config('offerra.deploy_concurrency_per_host', 5));
+        $base = $this->deployHostLockKey($settings);
+        $deadline = time() + self::HOST_DEPLOY_LOCK_WAIT;
+
+        while (time() < $deadline) {
+            for ($slot = 1; $slot <= $slots; $slot++) {
+                $lock = Cache::lock($base.'-slot-'.$slot, self::HOST_DEPLOY_LOCK_SECONDS);
+
+                if ($lock->get()) {
+                    return $lock;
+                }
+            }
+
+            sleep(2);
+        }
+
+        throw new RuntimeException(
+            'Черга деплою на цей Hestia-сервер зайнята. Спробуйте пізніше.',
+        );
     }
 }
