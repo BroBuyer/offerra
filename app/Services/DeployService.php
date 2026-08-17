@@ -21,6 +21,11 @@ class DeployService
 {
     private const DEPLOY_TIMEOUT = 600;
 
+    /** Only one SFTP deploy per Hestia host at a time. */
+    private const HOST_DEPLOY_LOCK_SECONDS = 720;
+
+    private const HOST_DEPLOY_LOCK_WAIT = 3600;
+
     /** @var array<string, true> */
     private array $knownRemoteDirs = [];
 
@@ -68,10 +73,7 @@ class DeployService
             throw new RuntimeException('Архівний оффер не можна деплоїти.');
         }
 
-        $offer->update([
-            'status' => 'deploying',
-            'deploy_error' => null,
-        ]);
+        $offer->update(['deploy_error' => null]);
 
         DeployOfferJob::dispatch($offer->id);
     }
@@ -132,11 +134,30 @@ class DeployService
 
         $this->resetStuckDeploys();
 
+        $offer->loadMissing('user.settings');
+        $settings = $user->settings;
+
+        if (! $settings) {
+            throw new InvalidArgumentException('Заповніть SFTP-налаштування в розділі «Деплой на Hestia».');
+        }
+
+        $hostLock = Cache::lock($this->deployHostLockKey($settings), self::HOST_DEPLOY_LOCK_SECONDS);
+
+        try {
+            $hostLock->block(self::HOST_DEPLOY_LOCK_WAIT);
+        } catch (LockTimeoutException) {
+            throw new RuntimeException(
+                'Черга деплою на цей Hestia-сервер зайнята. Спробуйте пізніше.',
+            );
+        }
+
         $lock = Cache::lock('offer-deploy-'.$offer->id, self::DEPLOY_TIMEOUT + 60);
 
         try {
             $lock->block(5);
         } catch (LockTimeoutException) {
+            $hostLock->release();
+
             throw new RuntimeException(
                 'Деплой цього оффера вже виконується. Зачекайте кілька хвилин і спробуйте знову.',
             );
@@ -146,6 +167,7 @@ class DeployService
             return $this->runDeploy($user, $offer);
         } finally {
             $lock->release();
+            $hostLock->release();
         }
     }
 
@@ -492,5 +514,17 @@ class DeployService
             'folder' => $offer->folder,
             'path' => $localPath,
         ]);
+    }
+
+    private function deployHostLockKey(UserSetting $settings): string
+    {
+        $host = strtolower(trim((string) $settings->deploy_host));
+        $panelUrl = strtolower(trim((string) ($settings->deploy_panel_url ?? '')));
+
+        if ($host === '' && $panelUrl !== '') {
+            $host = parse_url($panelUrl, PHP_URL_HOST) ?: $panelUrl;
+        }
+
+        return 'hestia-deploy-host-'.md5($host !== '' ? $host : 'unknown');
     }
 }

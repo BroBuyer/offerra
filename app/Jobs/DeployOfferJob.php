@@ -4,11 +4,12 @@ namespace App\Jobs;
 
 use App\Models\Offer;
 use App\Services\DeployService;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
-class DeployOfferJob implements ShouldQueue
+class DeployOfferJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
@@ -16,7 +17,18 @@ class DeployOfferJob implements ShouldQueue
 
     public int $tries = 1;
 
-    public function __construct(public int $offerId) {}
+    /** Prevent duplicate deploy jobs for the same offer while queued/running. */
+    public int $uniqueFor = 900;
+
+    public function __construct(public int $offerId)
+    {
+        $this->onQueue('deploy');
+    }
+
+    public function uniqueId(): string
+    {
+        return (string) $this->offerId;
+    }
 
     public function handle(DeployService $deploy): void
     {
