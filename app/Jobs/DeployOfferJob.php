@@ -4,12 +4,17 @@ namespace App\Jobs;
 
 use App\Models\Offer;
 use App\Services\DeployService;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
-class DeployOfferJob
+class DeployOfferJob implements ShouldQueue
 {
-    use Dispatchable;
+    use Queueable;
+
+    public int $timeout = 600;
+
+    public int $tries = 1;
 
     public function __construct(public int $offerId) {}
 

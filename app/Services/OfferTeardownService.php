@@ -39,7 +39,7 @@ class OfferTeardownService
             ],
         ]);
 
-        ArchiveOfferJob::dispatch($offer->id)->afterResponse();
+        ArchiveOfferJob::dispatch($offer->id);
     }
 
     public function run(Offer $offer): void

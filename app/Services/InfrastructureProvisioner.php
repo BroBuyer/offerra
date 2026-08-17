@@ -58,7 +58,7 @@ class InfrastructureProvisioner
             'infra_error' => null,
         ]);
 
-        ProvisionInfrastructureJob::dispatch($offer->id)->afterResponse();
+        ProvisionInfrastructureJob::dispatch($offer->id);
     }
 
     public function provision(Offer $offer): void

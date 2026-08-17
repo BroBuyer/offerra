@@ -73,7 +73,7 @@ class DeployService
             'deploy_error' => null,
         ]);
 
-        DeployOfferJob::dispatch($offer->id)->afterResponse();
+        DeployOfferJob::dispatch($offer->id);
     }
 
     public function enqueueDeployAfterInfra(Offer $offer): bool
