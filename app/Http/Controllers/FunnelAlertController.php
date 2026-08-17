@@ -73,6 +73,35 @@ class FunnelAlertController extends Controller
             ->with('success', 'Налаштування збережено');
     }
 
+    public function retryTelegram(FunnelAlertService $alerts): RedirectResponse
+    {
+        $result = $alerts->retryPending();
+
+        if (($result['error'] ?? null) === 'telegram_not_configured') {
+            return redirect()
+                ->route('funnel-alerts.index')
+                ->withErrors(['telegram' => 'Спочатку збережи bot token і chat ID групи.']);
+        }
+
+        if (($result['sent'] ?? 0) === 0 && ($result['failed'] ?? 0) === 0) {
+            return redirect()
+                ->route('funnel-alerts.index')
+                ->with('success', 'Немає очікуючих алертів для Telegram.');
+        }
+
+        if (($result['failed'] ?? 0) > 0) {
+            $error = $result['results'][0]['error'] ?? 'telegram_failed';
+
+            return redirect()
+                ->route('funnel-alerts.index')
+                ->withErrors(['telegram' => 'Telegram не прийняв повідомлення: '.$error]);
+        }
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', 'Надіслано в Telegram: '.$result['sent']);
+    }
+
     public function regenerateToken(FunnelAlertService $alerts): JsonResponse
     {
         $settings = FunnelAlertSetting::current();

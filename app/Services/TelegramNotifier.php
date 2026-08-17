@@ -61,6 +61,15 @@ class TelegramNotifier
      */
     public function sendRaw(string $token, array $chatIds, string $text, ?string $parseMode = null): bool
     {
+        return (bool) ($this->sendRawResult($token, $chatIds, $text, $parseMode)['ok'] ?? false);
+    }
+
+    /**
+     * @param  list<string>  $chatIds
+     * @return array{ok: bool, error?: string}
+     */
+    public function sendRawResult(string $token, array $chatIds, string $text, ?string $parseMode = null): array
+    {
         $token = trim($token);
         $targets = array_values(array_unique(array_filter(array_map(
             static fn ($id) => trim((string) $id),
@@ -68,10 +77,11 @@ class TelegramNotifier
         ), static fn (string $id) => $id !== '')));
 
         if ($token === '' || $targets === []) {
-            return false;
+            return ['ok' => false, 'error' => 'empty_token_or_chat'];
         }
 
         $ok = false;
+        $errors = [];
 
         foreach ($targets as $target) {
             try {
@@ -93,6 +103,9 @@ class TelegramNotifier
                 if ($response->successful()) {
                     $ok = true;
                 } else {
+                    $description = (string) ($response->json('description') ?? Str::limit($response->body(), 180));
+                    $errors[] = $description;
+
                     Log::warning('TelegramNotifier failed', [
                         'chat_id' => $target,
                         'status' => $response->status(),
@@ -100,10 +113,18 @@ class TelegramNotifier
                     ]);
                 }
             } catch (\Throwable $e) {
+                $errors[] = $e->getMessage();
                 Log::warning('TelegramNotifier exception: '.$e->getMessage());
             }
         }
 
-        return $ok;
+        if ($ok) {
+            return ['ok' => true];
+        }
+
+        return [
+            'ok' => false,
+            'error' => $errors[0] ?? 'telegram_failed',
+        ];
     }
 }

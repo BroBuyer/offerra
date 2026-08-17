@@ -1,7 +1,7 @@
 import CopyReadonlyInput from '@/Components/CopyReadonlyInput';
 import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
-import { useForm, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 
 function statusLabel(event) {
@@ -17,8 +17,9 @@ function statusLabel(event) {
 }
 
 export default function FunnelAlertsIndex({ settings, events }) {
-    const { flash } = usePage().props;
+    const { flash, errors } = usePage().props;
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [retryingTelegram, setRetryingTelegram] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         tg_bot_token: settings.tg_bot_token ?? '',
@@ -68,12 +69,32 @@ Content-Type: application/json
         setData('tg_chat_ids', next.length ? next : ['']);
     };
 
+    const pendingTelegramCount = events.filter((event) => !event.offer_found && !event.notified_at).length;
+
+    const retryTelegram = () => {
+        setRetryingTelegram(true);
+        router.post(route('funnel-alerts.retry-telegram'), {}, {
+            preserveScroll: true,
+            onFinish: () => setRetryingTelegram(false),
+        });
+    };
+
     return (
         <PanelLayout title="Алерти воронок" wide>
             <header className="page-header">
                 <h2>Алерти воронок</h2>
                 <p>Алерти тільки коли офер у базі не знайдено (offer_found=false). TG надсилається один раз на комбінацію.</p>
                 <div className="offer-actions">
+                    {pendingTelegramCount > 0 && (
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            disabled={retryingTelegram}
+                            onClick={retryTelegram}
+                        >
+                            {retryingTelegram ? 'Надсилаю…' : 'Надіслати в Telegram'}
+                        </button>
+                    )}
                     <button
                         type="button"
                         className="btn btn-secondary"
@@ -87,6 +108,12 @@ Content-Type: application/json
             {flash?.success && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
                     <p className="card-desc">{flash.success}</p>
+                </div>
+            )}
+
+            {errors?.telegram && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.telegram}</p>
                 </div>
             )}
 

@@ -61,6 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/funnel-alerts', [FunnelAlertController::class, 'index'])->name('funnel-alerts.index');
         Route::patch('/funnel-alerts', [FunnelAlertController::class, 'update'])->name('funnel-alerts.update');
+        Route::post('/funnel-alerts/retry-telegram', [FunnelAlertController::class, 'retryTelegram'])
+            ->name('funnel-alerts.retry-telegram');
         Route::post('/funnel-alerts/regenerate-token', [FunnelAlertController::class, 'regenerateToken'])
             ->name('funnel-alerts.regenerate-token');
     });

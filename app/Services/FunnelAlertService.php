@@ -101,19 +101,80 @@ class FunnelAlertService
             return ['ok' => true];
         }
 
-        $sent = $this->notifyMissingOffer($settings, $brand, $geo, $lang);
+        $result = $this->notifyMissingOffer($settings, $brand, $geo, $lang);
 
-        if ($sent) {
+        if ($result['ok'] ?? false) {
             $record->forceFill(['notified_at' => now()])->save();
         } else {
             Log::warning('FunnelAlert: telegram send failed', [
                 'brand' => $brand,
                 'geo' => $geo,
                 'lang' => $lang,
+                'error' => $result['error'] ?? null,
             ]);
         }
 
         return ['ok' => true];
+    }
+
+    /**
+     * @return array{ok: bool, sent: int, failed: int, error?: string, results: list<array{id: int, brand: string, ok: bool, error?: string}>}
+     */
+    public function retryPending(): array
+    {
+        $settings = FunnelAlertSetting::current();
+        $token = trim((string) ($settings->tg_bot_token ?? ''));
+        $chatIds = $settings->chatIds();
+
+        if ($token === '' || $chatIds === []) {
+            return [
+                'ok' => false,
+                'sent' => 0,
+                'failed' => 0,
+                'error' => 'telegram_not_configured',
+                'results' => [],
+            ];
+        }
+
+        $events = FunnelAlertEvent::query()
+            ->where('offer_found', false)
+            ->whereNull('notified_at')
+            ->orderBy('id')
+            ->limit(50)
+            ->get();
+
+        $sent = 0;
+        $failed = 0;
+        $results = [];
+
+        foreach ($events as $event) {
+            $result = $this->notifyMissingOffer($settings, $event->brand, $event->geo, $event->lang);
+
+            if ($result['ok'] ?? false) {
+                $event->forceFill(['notified_at' => now()])->save();
+                $sent++;
+                $results[] = [
+                    'id' => $event->id,
+                    'brand' => $event->brand,
+                    'ok' => true,
+                ];
+            } else {
+                $failed++;
+                $results[] = [
+                    'id' => $event->id,
+                    'brand' => $event->brand,
+                    'ok' => false,
+                    'error' => $result['error'] ?? 'telegram_failed',
+                ];
+            }
+        }
+
+        return [
+            'ok' => $failed === 0,
+            'sent' => $sent,
+            'failed' => $failed,
+            'results' => $results,
+        ];
     }
 
     private function offerExists(string $brand, string $geo, string $lang): bool
@@ -129,13 +190,16 @@ class FunnelAlertService
             ->exists();
     }
 
-    private function notifyMissingOffer(FunnelAlertSetting $settings, string $brand, string $geo, string $lang): bool
+    /**
+     * @return array{ok: bool, error?: string}
+     */
+    private function notifyMissingOffer(FunnelAlertSetting $settings, string $brand, string $geo, string $lang): array
     {
         $token = trim((string) ($settings->tg_bot_token ?? ''));
         $chatIds = $settings->chatIds();
 
         if ($token === '' || $chatIds === []) {
-            return false;
+            return ['ok' => false, 'error' => 'telegram_not_configured'];
         }
 
         $base = rtrim((string) config('app.url'), '/');
@@ -159,7 +223,7 @@ class FunnelAlertService
             "<a href=\"{$safeLink}\">Створити оффер</a>",
         ]);
 
-        return $this->telegram->sendRaw($token, $chatIds, $text, 'HTML');
+        return $this->telegram->sendRawResult($token, $chatIds, $text, 'HTML');
     }
 
     private function parseTimestamp(mixed $value): ?Carbon
