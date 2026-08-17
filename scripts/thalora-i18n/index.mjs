@@ -5,6 +5,7 @@ import it from './it.mjs';
 import ms from './ms.mjs';
 import nl from './nl.mjs';
 import no from './no.mjs';
+import pl from './pl.mjs';
 import pt from './pt.mjs';
 
 export const LOCALES = {
@@ -50,6 +51,12 @@ export const LOCALES = {
     phoneCountry: 'dk',
     currency: 'EUR',
   },
+  pl: {
+    siteLang: 'pl',
+    crmCountry: 'PL',
+    phoneCountry: 'pl',
+    currency: 'EUR',
+  },
   ms: {
     siteLang: 'ms',
     crmCountry: 'MY',
@@ -58,4 +65,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, ms };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, ms };
