@@ -6,6 +6,7 @@ use App\Jobs\DeployOfferJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
+use App\Support\InfrastructureOptions;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -73,6 +74,44 @@ class DeployService
         ]);
 
         DeployOfferJob::dispatch($offer->id)->afterResponse();
+    }
+
+    public function enqueueDeployAfterInfra(Offer $offer): bool
+    {
+        $offer->loadMissing('user.settings');
+
+        if (! $offer->user || ! $offer->provision_infrastructure) {
+            return false;
+        }
+
+        if ($offer->infra_status !== 'ready') {
+            return false;
+        }
+
+        if (in_array($offer->status, ['deploying', 'archived', 'archiving'], true)) {
+            return false;
+        }
+
+        $options = InfrastructureOptions::forOffer($offer);
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+
+        if (($options['hestia'] ?? false) && ($meta['hestia'] ?? '') !== 'done') {
+            return false;
+        }
+
+        try {
+            $this->enqueueDeploy($offer->user, $offer->fresh());
+
+            return true;
+        } catch (InvalidArgumentException|RuntimeException $e) {
+            Log::info('Auto-deploy after infra skipped', [
+                'offer' => $offer->id,
+                'domain' => $offer->domain,
+                'reason' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     public function assertCanDeploy(User $user, Offer $offer): void

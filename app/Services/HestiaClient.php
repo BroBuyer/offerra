@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\UserSetting;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -10,7 +12,17 @@ class HestiaClient
 {
     private const int DEFAULT_TIMEOUT = 60;
 
+    private const int ADD_DOMAIN_TIMEOUT = 120;
+
     private const int SSL_TIMEOUT = 180;
+
+    /** Max seconds to wait for another offer's Hestia job on the same host. */
+    private const int HOST_LOCK_WAIT = 900;
+
+    /** Lock TTL — must exceed slow nginx restart on busy hosts. */
+    private const int HOST_LOCK_SECONDS = 180;
+
+    private const int NGINX_RESTART_MAX_ATTEMPTS = 4;
 
     /**
      * @return array{ok: bool, message: string, domains?: int}
@@ -62,7 +74,7 @@ class HestiaClient
             return;
         }
 
-        $this->api($settings, 'v-add-web-domain', [$user, $domain, $ip, 'yes']);
+        $this->api($settings, 'v-add-web-domain', [$user, $domain, $ip, 'yes'], self::ADD_DOMAIN_TIMEOUT);
     }
 
     public function issueLetsEncrypt(UserSetting $settings, string $domain): void
@@ -153,22 +165,116 @@ class HestiaClient
      */
     private function api(UserSetting $settings, string $command, array $args, int $timeout = self::DEFAULT_TIMEOUT): void
     {
-        [$body, $code] = $this->apiCall($settings, $command, $args, $timeout);
+        if ($this->isReadOnlyCommand($command)) {
+            $this->executeApi($settings, $command, $args, $timeout);
 
-        if ($code === 4 && in_array($command, ['v-add-web-domain', 'v-delete-web-domain'], true)) {
             return;
         }
 
-        if ($code !== 0) {
-            throw new RuntimeException("Hestia {$command}: ".($body !== '' ? $body : 'код '.$code));
+        $this->withHostLock($settings, function () use ($settings, $command, $args, $timeout): void {
+            $this->executeApi($settings, $command, $args, $timeout);
+        });
+    }
+
+    /**
+     * @param  list<string>  $args
+     */
+    private function executeApi(UserSetting $settings, string $command, array $args, int $timeout): void
+    {
+        $attempt = 0;
+        $delaySeconds = 2;
+
+        while (true) {
+            $attempt++;
+
+            try {
+                [$body, $code] = $this->apiCallOnce($settings, $command, $args, $timeout);
+
+                if ($code === 4 && in_array($command, ['v-add-web-domain', 'v-delete-web-domain'], true)) {
+                    return;
+                }
+
+                if ($code !== 0) {
+                    $message = "Hestia {$command}: ".($body !== '' ? $body : 'код '.$code);
+
+                    if ($this->isRetryableNginxRestartError($message) && $attempt < self::NGINX_RESTART_MAX_ATTEMPTS) {
+                        sleep($delaySeconds);
+                        $delaySeconds = min($delaySeconds * 2, 16);
+
+                        continue;
+                    }
+
+                    throw new RuntimeException($message);
+                }
+
+                return;
+            } catch (RuntimeException $e) {
+                if ($this->isRetryableNginxRestartError($e->getMessage()) && $attempt < self::NGINX_RESTART_MAX_ATTEMPTS) {
+                    sleep($delaySeconds);
+                    $delaySeconds = min($delaySeconds * 2, 16);
+
+                    continue;
+                }
+
+                throw $e;
+            }
         }
+    }
+
+    /**
+     * @param  callable(): void  $callback
+     */
+    private function withHostLock(UserSetting $settings, callable $callback): void
+    {
+        $lock = Cache::lock($this->hostLockKey($settings), self::HOST_LOCK_SECONDS);
+
+        try {
+            $lock->block(self::HOST_LOCK_WAIT);
+        } catch (LockTimeoutException) {
+            throw new RuntimeException(
+                'Hestia зайнята іншими офферами на цьому сервері. Спробуйте через хвилину.',
+            );
+        }
+
+        try {
+            $callback();
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function hostLockKey(UserSetting $settings): string
+    {
+        $host = strtolower(trim((string) $settings->deploy_host));
+        $panelUrl = strtolower(trim((string) ($settings->deploy_panel_url ?? '')));
+
+        if ($host === '' && $panelUrl !== '') {
+            $host = parse_url($panelUrl, PHP_URL_HOST) ?: $panelUrl;
+        }
+
+        return 'hestia-host-'.md5($host !== '' ? $host : 'unknown');
+    }
+
+    private function isReadOnlyCommand(string $command): bool
+    {
+        return str_starts_with($command, 'v-list-');
+    }
+
+    private function isRetryableNginxRestartError(string $message): bool
+    {
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'nginx restart failed')
+            || str_contains($normalized, 'restart proxy failed')
+            || str_contains($normalized, 'v-restart-proxy')
+            || str_contains($normalized, 'too many open files');
     }
 
     /**
      * @param  list<string>  $args
      * @return array{0: string, 1: int}
      */
-    private function apiCall(UserSetting $settings, string $command, array $args, int $timeout = self::DEFAULT_TIMEOUT): array
+    private function apiCallOnce(UserSetting $settings, string $command, array $args, int $timeout = self::DEFAULT_TIMEOUT): array
     {
         $host = trim((string) $settings->deploy_host);
         $panelUrl = trim((string) ($settings->deploy_panel_url ?? ''));
@@ -248,7 +354,7 @@ class HestiaClient
      */
     private function apiRaw(UserSetting $settings, string $command, array $args): string
     {
-        [$body, $code] = $this->apiCall($settings, $command, $args);
+        [$body, $code] = $this->apiCallOnce($settings, $command, $args);
 
         if ($code !== 0) {
             throw new RuntimeException("Hestia {$command}: ".($body !== '' ? $body : 'код '.$code));

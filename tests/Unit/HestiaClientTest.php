@@ -194,4 +194,25 @@ class HestiaClientTest extends TestCase
             (new HestiaClient)->domainExists($settings, 'user', 'streamcelexaopt.cyou'),
         );
     }
+
+    public function test_add_web_domain_retries_transient_nginx_restart_failure(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::sequence()
+                ->push('{}', 200, ['hestia-exit-code' => '0'])
+                ->push('Error: nginx restart failed', 400)
+                ->push('', 200, ['hestia-exit-code' => '0']),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        (new HestiaClient)->addWebDomain($settings, 'retry.example');
+
+        Http::assertSentCount(3);
+    }
 }
