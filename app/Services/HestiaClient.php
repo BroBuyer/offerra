@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\UserSetting;
 use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
@@ -23,6 +24,10 @@ class HestiaClient
     private const int HOST_LOCK_SECONDS = 180;
 
     private const int NGINX_RESTART_MAX_ATTEMPTS = 4;
+
+    private const int CONNECT_TIMEOUT = 8;
+
+    private const int CONNECTION_RETRY_ATTEMPTS = 3;
 
     /**
      * @return array{ok: bool, message: string, domains?: int}
@@ -197,8 +202,8 @@ class HestiaClient
                 if ($code !== 0) {
                     $message = "Hestia {$command}: ".($body !== '' ? $body : 'код '.$code);
 
-                    if ($this->isRetryableNginxRestartError($message) && $attempt < self::NGINX_RESTART_MAX_ATTEMPTS) {
-                        sleep($delaySeconds);
+                    if ($this->isRetryableError($message) && $attempt < $this->retryLimit($message)) {
+                        sleep($this->retryDelaySeconds($message, $delaySeconds));
                         $delaySeconds = min($delaySeconds * 2, 16);
 
                         continue;
@@ -209,8 +214,8 @@ class HestiaClient
 
                 return;
             } catch (RuntimeException $e) {
-                if ($this->isRetryableNginxRestartError($e->getMessage()) && $attempt < self::NGINX_RESTART_MAX_ATTEMPTS) {
-                    sleep($delaySeconds);
+                if ($this->isRetryableError($e->getMessage()) && $attempt < $this->retryLimit($e->getMessage())) {
+                    sleep($this->retryDelaySeconds($e->getMessage(), $delaySeconds));
                     $delaySeconds = min($delaySeconds * 2, 16);
 
                     continue;
@@ -260,6 +265,24 @@ class HestiaClient
         return str_starts_with($command, 'v-list-');
     }
 
+    private function isRetryableError(string $message): bool
+    {
+        return $this->isRetryableNginxRestartError($message)
+            || $this->isRetryableConnectionError($message);
+    }
+
+    private function retryLimit(string $message): int
+    {
+        return $this->isRetryableConnectionError($message)
+            ? self::CONNECTION_RETRY_ATTEMPTS
+            : self::NGINX_RESTART_MAX_ATTEMPTS;
+    }
+
+    private function retryDelaySeconds(string $message, int $currentDelay): int
+    {
+        return $this->isRetryableConnectionError($message) ? 1 : $currentDelay;
+    }
+
     private function isRetryableNginxRestartError(string $message): bool
     {
         $normalized = strtolower($message);
@@ -268,6 +291,18 @@ class HestiaClient
             || str_contains($normalized, 'restart proxy failed')
             || str_contains($normalized, 'v-restart-proxy')
             || str_contains($normalized, 'too many open files');
+    }
+
+    private function isRetryableConnectionError(string $message): bool
+    {
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'не відповідає')
+            || str_contains($normalized, 'curl error 28')
+            || str_contains($normalized, 'failed to connect')
+            || str_contains($normalized, 'connection timed out')
+            || str_contains($normalized, 'connection refused')
+            || str_contains($normalized, 'could not resolve host');
     }
 
     /**
@@ -296,10 +331,15 @@ class HestiaClient
             $payload['arg'.($index + 1)] = $value;
         }
 
-        $response = Http::timeout($timeout)
-            ->asForm()
-            ->withOptions(['verify' => false])
-            ->post($baseUrl, $payload);
+        try {
+            $response = Http::timeout($timeout)
+                ->connectTimeout(self::CONNECT_TIMEOUT)
+                ->asForm()
+                ->withOptions(['verify' => false])
+                ->post($baseUrl, $payload);
+        } catch (ConnectionException $e) {
+            throw new RuntimeException($this->formatConnectionError($baseUrl, $e->getMessage()), 0, $e);
+        }
 
         $body = trim($response->body());
 
@@ -409,5 +449,20 @@ class HestiaClient
         }
 
         return $message;
+    }
+
+    private function formatConnectionError(string $baseUrl, string $raw): string
+    {
+        $host = parse_url($baseUrl, PHP_URL_HOST) ?: $baseUrl;
+        $port = parse_url($baseUrl, PHP_URL_PORT);
+
+        if ($port === null) {
+            $port = str_starts_with($baseUrl, 'https://') ? 443 : 80;
+            if (str_contains($baseUrl, ':8083')) {
+                $port = 8083;
+            }
+        }
+
+        return "Hestia API не відповідає ({$host}:{$port}). Сервер вимкнений, IP змінено, або порт {$port} закритий для панелі Offer (213.176.115.14).";
     }
 }

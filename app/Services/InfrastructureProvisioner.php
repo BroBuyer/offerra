@@ -249,8 +249,10 @@ class InfrastructureProvisioner
     private function runSteps(UserSetting $settings, string $domain, array $options, array &$meta): void
     {
         if ($options['hestia'] ?? false) {
-            $this->hestia->addWebDomain($settings, $domain);
-            $meta['hestia'] = 'done';
+            if (($meta['hestia'] ?? '') !== 'done') {
+                $this->hestia->addWebDomain($settings, $domain);
+                $meta['hestia'] = 'done';
+            }
         }
 
         $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');

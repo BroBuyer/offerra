@@ -430,7 +430,6 @@ class OfferController extends Controller
     public function provision(
         Offer $offer,
         InfrastructureProvisioner $provisioner,
-        DeployService $deploy,
     ): RedirectResponse {
         $authUser = auth()->user();
 
@@ -446,34 +445,19 @@ class OfferController extends Controller
             'infra_error' => null,
         ]);
 
-        $autoDeployQueued = false;
+        if ($wasDnsRecheck) {
+            RecheckInfrastructureDnsJob::dispatchSync($offer->id);
 
-        try {
-            if ($wasDnsRecheck) {
-                RecheckInfrastructureDnsJob::dispatchSync($offer->id);
-            } else {
-                set_time_limit(300);
-                $provisioner->provision($offer->fresh());
-                $offer->refresh();
-                $autoDeployQueued = $deploy->enqueueDeployAfterInfra($offer->fresh());
-            }
-        } catch (\Throwable $e) {
             return redirect()
                 ->back()
-                ->withErrors(['provision' => $e->getMessage()]);
+                ->with('success', "DNS для {$offer->domain} перевірено.");
         }
 
-        $message = $wasDnsRecheck
-            ? "DNS для {$offer->domain} перевірено."
-            : "Інфраструктура для {$offer->domain} налаштована.";
-
-        if ($autoDeployQueued) {
-            $message .= ' Деплой запущено у фоні.';
-        }
+        $provisioner->enqueue($offer->fresh());
 
         return redirect()
             ->back()
-            ->with('success', $message);
+            ->with('success', "Інфраструктура для {$offer->domain} запущена у фоні.");
     }
 
     public function update(

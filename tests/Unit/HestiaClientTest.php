@@ -107,6 +107,29 @@ class HestiaClientTest extends TestCase
         $this->assertStringContainsString('213.176.115.14', $result['message']);
     }
 
+    public function test_connection_timeout_returns_readable_error(): void
+    {
+        Http::fake(function () {
+            throw new \Illuminate\Http\Client\ConnectionException(
+                'cURL error 28: Failed to connect to 10.0.0.1 port 8083 after 10002 ms: Timeout was reached',
+            );
+        });
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        $result = (new HestiaClient)->testConnection($settings);
+
+        $this->assertFalse($result['ok']);
+        $this->assertStringContainsString('Hestia API не відповідає (10.0.0.1:8083)', $result['message']);
+        $this->assertStringContainsString('213.176.115.14', $result['message']);
+        $this->assertStringNotContainsString('cURL error 28', $result['message']);
+    }
+
     public function test_delete_web_domain_skips_when_missing(): void
     {
         Http::fake([

@@ -131,6 +131,26 @@ function infraBadge(offer) {
     }
 }
 
+function formatOfferError(message) {
+    const text = String(message ?? '').trim();
+
+    if (!text) {
+        return '';
+    }
+
+    if (/cURL error 28|Failed to connect/i.test(text)) {
+        const match = text.match(/connect to ([^\s]+) port (\d+)/i);
+
+        if (match) {
+            return `Hestia API не відповідає (${match[1]}:${match[2]}). Перевір IP і що порт відкритий для панелі.`;
+        }
+
+        return 'Hestia API не відповідає (таймаут). Перевір IP і порт 8083 у налаштуваннях.';
+    }
+
+    return text;
+}
+
 function dnsBadge(offer) {
     switch (offer.dns_status) {
         case 'ready':
@@ -1101,12 +1121,12 @@ export default function OffersIndex({
                                             )}
                                             {offer.infra_error && (
                                                 <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                    {offer.infra_error}
+                                                    {formatOfferError(offer.infra_error)}
                                                 </p>
                                             )}
                                             {offer.deploy_error && (
                                                 <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                    {offer.deploy_error}
+                                                    {formatOfferError(offer.deploy_error)}
                                                 </p>
                                             )}
                                         </td>
@@ -1116,7 +1136,7 @@ export default function OffersIndex({
                                             {dnsBadge(offer)}
                                             {offer.dns_error && (
                                                 <p className="field-hint" style={{ color: '#f87171', marginTop: '0.25rem' }}>
-                                                    {offer.dns_error}
+                                                    {formatOfferError(offer.dns_error)}
                                                 </p>
                                             )}
                                         </td>
@@ -1224,7 +1244,7 @@ export default function OffersIndex({
 
                         {(offer.infra_error || offer.deploy_error || offer.dns_error) && (
                             <p className="field-hint" style={{ color: '#f87171', marginBottom: '0.65rem' }}>
-                                {offer.infra_error || offer.deploy_error || offer.dns_error}
+                                {formatOfferError(offer.infra_error || offer.deploy_error || offer.dns_error)}
                             </p>
                         )}
 
