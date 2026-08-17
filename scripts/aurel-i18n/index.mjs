@@ -1,5 +1,13 @@
 import cs from './cs.mjs';
 import de from './de.mjs';
+import el from './el.mjs';
+import fi from './fi.mjs';
+import hu from './hu.mjs';
+import pl from './pl.mjs';
+import ro from './ro.mjs';
+import sk from './sk.mjs';
+import sv from './sv.mjs';
+import tr from './tr.mjs';
 
 export const LOCALES = {
   cs: {
@@ -94,4 +102,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { cs, de };
+export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr };
