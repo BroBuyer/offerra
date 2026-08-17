@@ -21,7 +21,7 @@ export default function FunnelAlertsIndex({ settings, events }) {
     const [settingsOpen, setSettingsOpen] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
-        tg_bot_token: '',
+        tg_bot_token: settings.tg_bot_token ?? '',
         tg_chat_ids: settings.tg_chat_ids?.length ? settings.tg_chat_ids : [''],
     });
 
@@ -42,8 +42,13 @@ Content-Type: application/json
         e.preventDefault();
         patch(route('funnel-alerts.update'), {
             preserveScroll: true,
-            onSuccess: () => {
-                setData('tg_bot_token', '');
+            preserveState: true,
+            onSuccess: (page) => {
+                const next = page.props.settings ?? {};
+                setData({
+                    tg_bot_token: next.tg_bot_token ?? '',
+                    tg_chat_ids: next.tg_chat_ids?.length ? next.tg_chat_ids : [''],
+                });
             },
         });
     };
@@ -146,8 +151,11 @@ Content-Type: application/json
                                         id="tg-token"
                                         value={data.tg_bot_token}
                                         onChange={(e) => setData('tg_bot_token', e.target.value)}
-                                        placeholder={settings.has_tg_bot_token ? 'Залиш порожнім, щоб не змінювати' : '123456:ABC...'}
+                                        placeholder="123456:ABC..."
                                     />
+                                    {settings.has_tg_bot_token && !data.tg_bot_token && (
+                                        <p className="field-hint">Токен уже збережено. Встав новий, лише якщо хочеш замінити.</p>
+                                    )}
                                 </div>
 
                                 <div className="field">
@@ -158,7 +166,7 @@ Content-Type: application/json
                                                 type="text"
                                                 value={chatId}
                                                 onChange={(e) => updateChatId(index, e.target.value)}
-                                                placeholder={index === 0 ? '-1001234567890' : 'Ще один chat ID'}
+                                                placeholder={index === 0 ? 'ID групи або особистого чату' : 'Ще один chat ID'}
                                             />
                                             {data.tg_chat_ids.length > 1 && (
                                                 <button

@@ -41,6 +41,7 @@ class FunnelAlertController extends Controller
                 'postback_url' => $alerts->postbackUrl($settings),
                 'webhook_token' => $token,
                 'has_tg_bot_token' => filled($settings->tg_bot_token),
+                'tg_bot_token' => (string) ($settings->tg_bot_token ?? ''),
                 'tg_chat_ids' => $settings->chatIds() ?: [''],
             ],
             'events' => $events,
