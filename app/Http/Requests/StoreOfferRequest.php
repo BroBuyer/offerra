@@ -81,6 +81,7 @@ class StoreOfferRequest extends FormRequest
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
+            'from_search_team' => ['boolean'],
             'provision_infrastructure' => ['boolean'],
             'infra_hestia' => ['boolean'],
             'infra_cloudflare_zone' => ['boolean'],

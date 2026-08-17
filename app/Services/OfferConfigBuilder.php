@@ -49,6 +49,9 @@ class OfferConfigBuilder
         $vitalsEndpoint = ! empty($offer['vitals_enabled'])
             ? $this->quote($this->mirrorProbe->collectUrl($settings))
             : $this->quote('');
+        $fromSearchTeam = ! empty($offer['from_search_team']);
+        $crmSub7 = $this->quote($fromSearchTeam ? 'SEO' : '');
+        $crmSub8 = $this->quote($fromSearchTeam ? 'SearchAM' : '');
 
         return <<<PHP
 <?php
@@ -72,8 +75,8 @@ define('CRM_AFF_SUB3', '');
 define('CRM_AFF_SUB4', '');
 define('CRM_AFF_SUB5', '');
 define('CRM_AFF_SUB6', '');
-define('CRM_AFF_SUB7', '');
-define('CRM_AFF_SUB8', '');
+define('CRM_AFF_SUB7', {$crmSub7});
+define('CRM_AFF_SUB8', {$crmSub8});
 define('CRM_AFF_SUB9', '');
 define('CRM_AFF_SUB10', '');
 define('CRM_AFF_SUB11', '');

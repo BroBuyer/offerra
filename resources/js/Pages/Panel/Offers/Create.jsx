@@ -165,7 +165,7 @@ function assignTemplatesRoundRobin(domains, templates, usedTemplateIds, fallback
     }));
 }
 
-function buildDefaults(templates) {
+function buildDefaults(templates, fromSearch = false) {
     const defaultTemplate = templates[0]?.id ?? 'default';
 
     return {
@@ -180,6 +180,7 @@ function buildDefaults(templates) {
         phone_countries: [],
         create_keitaro: true,
         vitals_enabled: true,
+        from_search_team: Boolean(fromSearch),
         ...defaultInfraOptions(false),
     };
 }
@@ -201,9 +202,13 @@ export default function OffersCreate({
     initialBrand = null,
     initialGeo = null,
     initialLang = null,
+    initialFromSearch = false,
 }) {
     const { errors } = usePage().props;
-    const defaults = useMemo(() => buildDefaults(templates), [templates]);
+    const defaults = useMemo(
+        () => buildDefaults(templates, initialFromSearch),
+        [templates, initialFromSearch],
+    );
     const skipPersist = useRef(false);
     const initial = useMemo(() => (fresh ? { step: 0, data: defaults } : loadWizardState(defaults)), [fresh, defaults]);
     const [step, setStep] = useState(initial.step);
@@ -387,8 +392,12 @@ export default function OffersCreate({
                     return next;
                 });
             }
+
+            if (initialFromSearch) {
+                setData((prev) => ({ ...prev, from_search_team: true }));
+            }
         }
-    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, templates, geoPresets, setData]);
+    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, setData]);
 
     useEffect(() => {
         if (bulkItems.length === 0) {
@@ -1064,6 +1073,7 @@ export default function OffersCreate({
                 phone_countries: data.phone_countries,
                 create_keitaro: data.create_keitaro,
                 vitals_enabled: data.vitals_enabled,
+                from_search_team: data.from_search_team,
                 infra_hestia: data.infra_hestia,
                 infra_cloudflare_zone: data.infra_cloudflare_zone,
                 infra_cloudflare_dns: data.infra_cloudflare_dns,
@@ -1700,6 +1710,22 @@ export default function OffersCreate({
                     </div>
 
                     <div className="card" style={{ marginTop: '1rem' }}>
+                        <h3>Джерело воронки</h3>
+                        <label className="field-check" htmlFor="from-search-team">
+                            <input
+                                id="from-search-team"
+                                type="checkbox"
+                                checked={Boolean(data.from_search_team)}
+                                onChange={(e) => update('from_search_team', e.target.checked)}
+                            />
+                            <span>Воронка з Search-відділу</span>
+                        </label>
+                        <p className="field-hint">
+                            Увімкни лише якщо офер береш із постбеку Search. Тоді в CRM піде aff_sub7 = SEO, aff_sub8 = SearchAM.
+                        </p>
+                    </div>
+
+                    <div className="card" style={{ marginTop: '1rem' }}>
                         <h3 title="CWV — Core Web Vitals collector">CWV / дзеркала</h3>
                         <label className="field-check" htmlFor="vitals-enabled">
                             <input
@@ -1824,6 +1850,10 @@ export default function OffersCreate({
                             <div className="summary-row">
                                 <span>CWV / дзеркала</span>
                                 <span>{data.vitals_enabled ? 'Так' : 'Ні'}</span>
+                            </div>
+                            <div className="summary-row">
+                                <span>Search-відділ</span>
+                                <span>{data.from_search_team ? 'SEO / SearchAM у CRM' : '—'}</span>
                             </div>
                             <div className="summary-row">
                                 <span>Інфраструктура</span>

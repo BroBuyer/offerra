@@ -91,6 +91,8 @@ class OfferGenerator
                 'status' => 'generated',
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
+                'vitals_enabled' => ! empty($input['vitals_enabled']),
+                'from_search_team' => ! empty($input['from_search_team']),
                 'owner_id' => $user->id,
                 'created_at' => now()->toDateString(),
                 'folder' => $folder,
@@ -122,6 +124,7 @@ class OfferGenerator
                 'keitaro_alias' => $keitaro['alias'] ?? null,
                 'keitaro_campaign_token' => $keitaro['token'] ?? null,
                 'vitals_enabled' => ! empty($input['vitals_enabled']),
+                'from_search_team' => ! empty($input['from_search_team']),
                 'provision_infrastructure' => $provisionInfrastructure,
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
                 'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
@@ -351,6 +354,7 @@ class OfferGenerator
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $preservedFormTokenSecret,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
+            'from_search_team' => (bool) $offer->from_search_team,
         ];
 
         File::put($targetPath.'/includes/config.php', $this->configBuilder->build($input, $settings));
@@ -369,6 +373,7 @@ class OfferGenerator
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'keitaro_alias' => $offer->keitaro_alias,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
+            'from_search_team' => (bool) $offer->from_search_team,
             'owner_id' => $offer->user_id,
             'folder' => $offer->folder,
             'deploy_panel' => $offer->deploy_panel_name,
@@ -416,6 +421,7 @@ class OfferGenerator
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $formTokenSecret,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
+            'from_search_team' => (bool) $offer->from_search_team,
         ];
 
         File::ensureDirectoryExists(dirname($configPath));
@@ -546,6 +552,7 @@ class OfferGenerator
         $manifest['keitaro_campaign_id'] = $offer->keitaro_campaign_id;
         $manifest['keitaro_alias'] = $offer->keitaro_alias;
         $manifest['vitals_enabled'] = (bool) $offer->vitals_enabled;
+        $manifest['from_search_team'] = (bool) $offer->from_search_team;
         $manifest['folder'] = $offer->folder;
 
         File::put(

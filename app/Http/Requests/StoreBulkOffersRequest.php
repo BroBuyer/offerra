@@ -88,6 +88,7 @@ class StoreBulkOffersRequest extends FormRequest
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
+            'from_search_team' => ['boolean'],
             'infra_hestia' => ['boolean'],
             'infra_cloudflare_zone' => ['boolean'],
             'infra_cloudflare_dns' => ['boolean'],

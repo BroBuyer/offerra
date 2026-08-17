@@ -252,6 +252,7 @@ class OfferController extends Controller
             'initialBrand' => request()->string('brand')->toString() ?: null,
             'initialGeo' => request()->string('geo')->toString() ?: null,
             'initialLang' => request()->string('lang')->toString() ?: null,
+            'initialFromSearch' => request()->boolean('from_search'),
             'canProvisionInfrastructure' => InfrastructureProvisioner::settingsReady($settings),
         ]);
     }
@@ -274,6 +275,7 @@ class OfferController extends Controller
                 'template' => $request->string('template')->toString(),
                 'create_keitaro' => $request->boolean('create_keitaro'),
                 'vitals_enabled' => $request->boolean('vitals_enabled'),
+                'from_search_team' => $request->boolean('from_search_team'),
                 'infra_hestia' => $request->boolean('infra_hestia'),
                 'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
                 'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
@@ -321,6 +323,7 @@ class OfferController extends Controller
             'phone_countries' => $request->input('phone_countries', []),
             'create_keitaro' => $request->boolean('create_keitaro'),
             'vitals_enabled' => $request->boolean('vitals_enabled'),
+            'from_search_team' => $request->boolean('from_search_team'),
             'infra_hestia' => $request->boolean('infra_hestia'),
             'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
             'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),

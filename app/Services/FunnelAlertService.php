@@ -298,6 +298,7 @@ class FunnelAlertService
         $base = rtrim((string) config('app.url'), '/');
         $query = http_build_query([
             'fresh' => 1,
+            'from_search' => 1,
             'brand' => $brand,
             'geo' => $geo,
             'lang' => $lang,
