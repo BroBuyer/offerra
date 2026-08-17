@@ -82,9 +82,8 @@ Content-Type: application/json
         });
     };
 
-    const submitIgnoreBrand = (e) => {
-        e?.preventDefault?.();
-        const value = ignoreBrand.trim();
+    const ignoreBrandValue = (brand) => {
+        const value = (brand ?? '').trim();
         if (!value || ignoringBrand) {
             return;
         }
@@ -98,6 +97,11 @@ Content-Type: application/json
                 setIgnoreBrand('');
             },
         });
+    };
+
+    const submitIgnoreBrand = (e) => {
+        e?.preventDefault?.();
+        ignoreBrandValue(ignoreBrand);
     };
 
     const removeIgnoredBrand = (id) => {
@@ -346,6 +350,7 @@ Content-Type: application/json
                                     <th>Lang</th>
                                     <th>ID</th>
                                     <th>Статус</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -357,6 +362,18 @@ Content-Type: application/json
                                         <td>{event.lang}</td>
                                         <td>{event.external_id ?? '—'}</td>
                                         <td>{statusLabel(event)}</td>
+                                        <td>
+                                            {!event.ignored && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-secondary btn-sm"
+                                                    disabled={ignoringBrand}
+                                                    onClick={() => ignoreBrandValue(event.brand)}
+                                                >
+                                                    У чорний список
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
