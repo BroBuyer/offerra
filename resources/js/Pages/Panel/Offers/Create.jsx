@@ -46,6 +46,20 @@ function normalizeGeo(value) {
     return value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 }
 
+function domainNameWithoutZone(value) {
+    const host = String(value ?? '')
+        .trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//i, '')
+        .split(/[/?#]/)[0] ?? '';
+
+    if (!host.includes('.')) {
+        return host;
+    }
+
+    return host.split('.')[0] ?? host;
+}
+
 function resolveMarket(geo, geoPresets, availableLanguages) {
     const code = normalizeGeo(geo);
     const preset = geoPresets.find((item) => item.code === code);
@@ -409,7 +423,7 @@ export default function OffersCreate({
 
         setData((prev) => {
             let next = prev;
-            if (firstDomain && prev.domain !== firstDomain) {
+            if (!isBulkMode && firstDomain && prev.domain !== firstDomain) {
                 next = { ...next, domain: firstDomain };
             }
             if (!isBulkMode && firstTemplate && prev.template !== firstTemplate) {
@@ -870,8 +884,12 @@ export default function OffersCreate({
                 }
             }
 
-            if (primaryDomain) {
-                pickDomain(primaryDomain, { clearResults: false });
+            if (boughtCount > 0) {
+                setDomainSearchResults(null);
+                const nameOnly = domainNameWithoutZone(primaryDomain);
+                if (nameOnly) {
+                    update('domain', nameOnly);
+                }
             }
 
             const parts = [];
