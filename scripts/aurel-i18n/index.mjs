@@ -1,4 +1,5 @@
 import cs from './cs.mjs';
+import de from './de.mjs';
 
 export const LOCALES = {
   cs: {
@@ -93,4 +94,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { cs };
+export const PACKS = { cs, de };
