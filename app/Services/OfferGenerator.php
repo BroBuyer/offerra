@@ -65,7 +65,7 @@ class OfferGenerator
             File::copyDirectory($templatePath, $targetPath);
             $this->syncSharedIncludeFiles($targetPath, $template);
             $this->syncSharedIntegrationFiles($targetPath, $template);
-            $this->syncSharedStaticFiles($targetPath, $template);
+            $this->syncSharedStaticFiles($targetPath, $template, strtolower($input['lang']));
 
             if ($template === 'multilang') {
                 $this->pruneMultilangDuplicates($targetPath);
@@ -330,7 +330,7 @@ class OfferGenerator
         File::copyDirectory($templatePath, $targetPath);
         $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
-        $this->syncSharedStaticFiles($targetPath, $offer->template);
+        $this->syncSharedStaticFiles($targetPath, $offer->template, $offer->lang);
 
         if ($offer->template === 'multilang') {
             $this->pruneMultilangDuplicates($targetPath);
@@ -422,7 +422,7 @@ class OfferGenerator
         File::put($configPath, $this->configBuilder->build($input, $settings));
         $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
-        $this->syncSharedStaticFiles($targetPath, $offer->template);
+        $this->syncSharedStaticFiles($targetPath, $offer->template, $offer->lang);
         $this->migrateLegacyAssets($targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
@@ -641,23 +641,71 @@ class OfferGenerator
     }
 
     /**
-     * Language packs under langs/{code}/ omit static/; copy from the template root.
+     * Language packs under langs/{code}/ may omit static/; copy from template root
+     * or another lang pack (usually en).
      */
-    public function syncSharedStaticFiles(string $targetPath, string $templateId = 'default'): void
+    public function syncSharedStaticFiles(string $targetPath, string $templateId = 'default', ?string $lang = null): void
     {
-        $source = rtrim($this->templatesPath, DIRECTORY_SEPARATOR)
-            .DIRECTORY_SEPARATOR.$templateId
-            .DIRECTORY_SEPARATOR.'static';
+        $source = $this->resolveTemplateStaticSource($templateId, $lang);
 
-        if (! File::isDirectory($source)) {
+        if ($source === null) {
             return;
         }
 
         $destination = $targetPath.DIRECTORY_SEPARATOR.'static';
+        $marker = $templateId === 'thalora'
+            ? $destination.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'fonts.css'
+            : $destination.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'main.css';
 
-        if (! File::isDirectory($destination)) {
+        if (! File::isDirectory($destination) || ! File::isFile($marker)) {
             File::copyDirectory($source, $destination);
         }
+    }
+
+    private function resolveTemplateStaticSource(string $templateId, ?string $lang = null): ?string
+    {
+        $templateRoot = rtrim($this->templatesPath, DIRECTORY_SEPARATOR)
+            .DIRECTORY_SEPARATOR.$templateId;
+
+        $candidates = [];
+
+        if ($lang !== null && $lang !== '') {
+            $candidates[] = $templateRoot.DIRECTORY_SEPARATOR.'langs'
+                .DIRECTORY_SEPARATOR.strtolower($lang)
+                .DIRECTORY_SEPARATOR.'static';
+        }
+
+        $candidates[] = $templateRoot.DIRECTORY_SEPARATOR.'static';
+
+        foreach (['en', 'it', 'es', 'fr', 'de', 'pt', 'nl', 'da', 'no', 'hr'] as $fallbackLang) {
+            $candidates[] = $templateRoot.DIRECTORY_SEPARATOR.'langs'
+                .DIRECTORY_SEPARATOR.$fallbackLang
+                .DIRECTORY_SEPARATOR.'static';
+        }
+
+        $langsRoot = $templateRoot.DIRECTORY_SEPARATOR.'langs';
+
+        if (File::isDirectory($langsRoot)) {
+            foreach (File::directories($langsRoot) as $langDir) {
+                $candidates[] = $langDir.DIRECTORY_SEPARATOR.'static';
+            }
+        }
+
+        $seen = [];
+
+        foreach ($candidates as $candidate) {
+            if (isset($seen[$candidate])) {
+                continue;
+            }
+
+            $seen[$candidate] = true;
+
+            if (File::isDirectory($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 
     private function extractFormTokenSecret(string $configPath): string
