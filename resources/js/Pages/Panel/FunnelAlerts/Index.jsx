@@ -1,6 +1,9 @@
+import CopyReadonlyInput from '@/Components/CopyReadonlyInput';
 import SecretInput from '@/Components/SecretInput';
 import PanelLayout from '@/Layouts/PanelLayout';
 import { useForm, usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { useMemo, useState } from 'react';
 
 function statusLabel(event) {
     if (event.offer_found) {
@@ -16,12 +19,27 @@ function statusLabel(event) {
 
 export default function FunnelAlertsIndex({ settings, events }) {
     const { flash } = usePage().props;
+    const [webhookToken, setWebhookToken] = useState(settings.webhook_token);
+    const [regeneratingToken, setRegeneratingToken] = useState(false);
+    const [tokenRegenerated, setTokenRegenerated] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         tg_bot_token: '',
         tg_chat_ids: settings.tg_chat_ids?.length ? settings.tg_chat_ids : [''],
-        regenerate_webhook_token: false,
     });
+
+    const postbackExample = useMemo(() => `POST ${settings.postback_url}
+Authorization: Bearer ${webhookToken}
+Content-Type: application/json
+
+{
+  "event": "funnel.created",
+  "id": "stable-id-у-них",
+  "brand": "Yieldario",
+  "geo": "FR",
+  "lang": "fr",
+  "ts": "2026-08-17T08:00:00Z"
+}`, [settings.postback_url, webhookToken]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -29,9 +47,27 @@ export default function FunnelAlertsIndex({ settings, events }) {
             preserveScroll: true,
             onSuccess: () => {
                 setData('tg_bot_token', '');
-                setData('regenerate_webhook_token', false);
             },
         });
+    };
+
+    const regenerateToken = async () => {
+        if (! window.confirm('Згенерувати новий Bearer token? Старий перестане працювати.')) {
+            return;
+        }
+
+        setRegeneratingToken(true);
+        setTokenRegenerated(false);
+
+        try {
+            const { data: result } = await axios.post(route('funnel-alerts.regenerate-token'));
+            setWebhookToken(result.webhook_token);
+            setTokenRegenerated(true);
+        } catch {
+            window.alert('Не вдалося згенерувати новий token');
+        } finally {
+            setRegeneratingToken(false);
+        }
     };
 
     const updateChatId = (index, value) => {
@@ -67,22 +103,18 @@ export default function FunnelAlertsIndex({ settings, events }) {
                     <h3>Postback для їхньої системи</h3>
                     <div className="field">
                         <label htmlFor="postback-url">URL</label>
-                        <input
+                        <CopyReadonlyInput
                             id="postback-url"
-                            type="text"
-                            readOnly
                             value={settings.postback_url}
-                            onFocus={(e) => e.target.select()}
+                            label="URL"
                         />
                     </div>
                     <div className="field">
                         <label htmlFor="webhook-token">Bearer token</label>
-                        <input
+                        <CopyReadonlyInput
                             id="webhook-token"
-                            type="text"
-                            readOnly
-                            value={settings.webhook_token}
-                            onFocus={(e) => e.target.select()}
+                            value={webhookToken}
+                            label="Bearer token"
                         />
                         <p className="field-hint">
                             Заголовок: <code>Authorization: Bearer &lt;token&gt;</code>.
@@ -90,31 +122,22 @@ export default function FunnelAlertsIndex({ settings, events }) {
                         </p>
                     </div>
                     <div className="field">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={data.regenerate_webhook_token}
-                                onChange={(e) => setData('regenerate_webhook_token', e.target.checked)}
-                            />
-                            {' '}Згенерувати новий Bearer token
-                        </label>
-                        <p className="field-hint">
-                            Після збереження старий token перестане працювати — передай новий їхній системі.
-                        </p>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={regenerateToken}
+                            disabled={regeneratingToken}
+                        >
+                            {regeneratingToken ? 'Генерація…' : 'Перегенерувати token'}
+                        </button>
+                        {tokenRegenerated && (
+                            <p className="field-hint" style={{ marginTop: '0.5rem' }}>
+                                Новий token збережено — передай його їхній системі.
+                            </p>
+                        )}
                     </div>
                     <pre className="card-desc" style={{ whiteSpace: 'pre-wrap', marginTop: '0.75rem' }}>
-{`POST ${settings.postback_url}
-Authorization: Bearer ${settings.webhook_token}
-Content-Type: application/json
-
-{
-  "event": "funnel.created",
-  "id": "stable-id-у-них",
-  "brand": "Yieldario",
-  "geo": "FR",
-  "lang": "fr",
-  "ts": "2026-08-17T08:00:00Z"
-}`}
+                        {postbackExample}
                     </pre>
                 </section>
 

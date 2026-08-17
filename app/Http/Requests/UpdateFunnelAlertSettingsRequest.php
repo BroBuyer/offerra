@@ -20,7 +20,6 @@ class UpdateFunnelAlertSettingsRequest extends FormRequest
             'tg_bot_token' => ['nullable', 'string', 'max:255'],
             'tg_chat_ids' => ['nullable', 'array'],
             'tg_chat_ids.*' => ['nullable', 'string', 'max:64'],
-            'regenerate_webhook_token' => ['sometimes', 'boolean'],
         ];
     }
 }

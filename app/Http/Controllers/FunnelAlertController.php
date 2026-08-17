@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateFunnelAlertSettingsRequest;
 use App\Models\FunnelAlertEvent;
 use App\Models\FunnelAlertSetting;
 use App\Services\FunnelAlertService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -63,15 +64,22 @@ class FunnelAlertController extends Controller
             $payload['tg_bot_token'] = $request->string('tg_bot_token')->toString();
         }
 
-        if ($request->boolean('regenerate_webhook_token')) {
-            $payload['webhook_token'] = bin2hex(random_bytes(16));
-        }
-
         $settings->forceFill($payload)->save();
-        $alerts->ensureWebhookToken($settings);
 
         return redirect()
             ->route('funnel-alerts.index')
             ->with('success', 'Налаштування збережено');
+    }
+
+    public function regenerateToken(FunnelAlertService $alerts): JsonResponse
+    {
+        $settings = FunnelAlertSetting::current();
+        $token = bin2hex(random_bytes(16));
+
+        $settings->forceFill(['webhook_token' => $token])->save();
+
+        return response()->json([
+            'webhook_token' => $alerts->bearerToken($settings->fresh()),
+        ]);
     }
 }
