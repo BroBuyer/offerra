@@ -37,6 +37,7 @@ return [
         ['code' => 'sv', 'name' => 'Svenska'],
         ['code' => 'fi', 'name' => 'Suomi'],
         ['code' => 'el', 'name' => 'Ελληνικά'],
+        ['code' => 'ms', 'name' => 'Bahasa Melayu'],
     ],
 
     // ISO 4217 — вибір при створенні оффера
@@ -69,7 +70,7 @@ return [
         ['code' => 'JPY', 'name' => 'Японська єна (¥)'],
         ['code' => 'KRW', 'name' => 'Південнокорейська вона (₩)'],
         ['code' => 'SGD', 'name' => 'Сінгапурський долар'],
-        ['code' => 'MYR', 'name' => 'Малайзійський рингgit'],
+        ['code' => 'MYR', 'name' => 'Малайзійський ринггіт (RM)'],
         ['code' => 'THB', 'name' => 'Тайський бат (฿)'],
         ['code' => 'PHP', 'name' => 'Філіппінське песо'],
         ['code' => 'INR', 'name' => 'Індійська рупія (₹)'],
@@ -122,7 +123,7 @@ return [
         ['code' => 'JP', 'name' => 'Японія', 'lang' => 'en', 'phone' => 'jp'],
         ['code' => 'KR', 'name' => 'Південна Корея', 'lang' => 'en', 'phone' => 'kr'],
         ['code' => 'SG', 'name' => 'Сінгапур', 'lang' => 'en', 'phone' => 'sg'],
-        ['code' => 'MY', 'name' => 'Малайзія', 'lang' => 'en', 'phone' => 'my'],
+        ['code' => 'MY', 'name' => 'Малайзія', 'lang' => 'ms', 'phone' => 'my', 'currency' => 'MYR'],
         ['code' => 'TH', 'name' => 'Таїланд', 'lang' => 'en', 'phone' => 'th'],
         ['code' => 'PH', 'name' => 'Філіппіни', 'lang' => 'en', 'phone' => 'ph'],
         ['code' => 'NZ', 'name' => 'Нова Зеландія', 'lang' => 'en', 'phone' => 'nz'],

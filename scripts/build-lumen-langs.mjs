@@ -794,6 +794,13 @@ function render_schema(string $page = 'home', array $extra = []): void {
 `);
 }
 
-const langs = Object.keys(PACKS).filter((l) => l !== 'en');
-for (const lang of langs) buildLang(lang);
+const arg = process.argv[2];
+const langs = arg ? [arg] : Object.keys(PACKS).filter((l) => l !== 'en');
+for (const lang of langs) {
+  if (!PACKS[lang]) {
+    console.error(`Unknown lang pack: ${lang}`);
+    process.exit(1);
+  }
+  buildLang(lang);
+}
 console.log('built', langs.join(', '));

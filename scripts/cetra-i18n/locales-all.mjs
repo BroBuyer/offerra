@@ -168,4 +168,15 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' ₺',
   },
+  ms: {
+    siteLang: 'ms',
+    crmCountry: 'MY',
+    phoneCountry: 'my',
+    currency: 'MYR',
+    ogLocale: 'ms_MY',
+    phonePlaceholder: '12-345 6789',
+    moneyLocale: 'ms-MY',
+    moneyPrefix: '',
+    moneySuffix: ' RM',
+  },
 };

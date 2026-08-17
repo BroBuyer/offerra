@@ -1,5 +1,6 @@
 import fr from './fr.mjs';
 import it from './it.mjs';
+import ms from './ms.mjs';
 
 export const LOCALES = {
   fr: {
@@ -14,6 +15,12 @@ export const LOCALES = {
     phoneCountry: 'it',
     currency: 'EUR',
   },
+  ms: {
+    siteLang: 'ms',
+    crmCountry: 'MY',
+    phoneCountry: 'my',
+    currency: 'MYR',
+  },
 };
 
-export const PACKS = { fr, it };
+export const PACKS = { fr, it, ms };
