@@ -101,6 +101,15 @@ class DeployService
             return false;
         }
 
+        if (! $this->shouldAutoDeployAfterInfra($offer, $meta)) {
+            Log::info('Auto-deploy after infra skipped — already deployed on target Hestia', [
+                'offer' => $offer->id,
+                'domain' => $offer->domain,
+            ]);
+
+            return false;
+        }
+
         try {
             $this->enqueueDeploy($offer->user, $offer->fresh());
 
@@ -256,12 +265,16 @@ class DeployService
 
             Log::info('Deploy upload finished', ['offer' => $offer->id, 'files' => $uploaded]);
 
+            $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+            unset($meta['needs_redeploy']);
+
             $offer->update([
                 'status' => 'deployed',
                 'deploy_panel_name' => $settings->deploy_panel_name ?? 'Hestia',
                 'remote_path' => $remotePath,
                 'deployed_at' => now(),
                 'deploy_error' => null,
+                'infra_meta' => $meta !== [] ? $meta : $offer->infra_meta,
             ]);
 
             if (config('offerra.purge_local_after_deploy', true)) {
@@ -526,5 +539,21 @@ class DeployService
         }
 
         return 'hestia-deploy-host-'.md5($host !== '' ? $host : 'unknown');
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function shouldAutoDeployAfterInfra(Offer $offer, array $meta): bool
+    {
+        if (($meta['needs_redeploy'] ?? false) === true) {
+            return true;
+        }
+
+        if ($offer->status !== 'deployed') {
+            return true;
+        }
+
+        return ! filled($offer->remote_path);
     }
 }
