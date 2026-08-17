@@ -63,6 +63,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/funnel-alerts', [FunnelAlertController::class, 'update'])->name('funnel-alerts.update');
         Route::post('/funnel-alerts/retry-telegram', [FunnelAlertController::class, 'retryTelegram'])
             ->name('funnel-alerts.retry-telegram');
+        Route::post('/funnel-alerts/ignored-brands', [FunnelAlertController::class, 'ignoreBrand'])
+            ->name('funnel-alerts.ignored-brands.store');
+        Route::delete('/funnel-alerts/ignored-brands/{ignored}', [FunnelAlertController::class, 'unignoreBrand'])
+            ->name('funnel-alerts.ignored-brands.destroy');
         Route::post('/funnel-alerts/regenerate-token', [FunnelAlertController::class, 'regenerateToken'])
             ->name('funnel-alerts.regenerate-token');
     });

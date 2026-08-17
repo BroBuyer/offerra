@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFunnelAlertIgnoredBrandRequest;
 use App\Http\Requests\UpdateFunnelAlertSettingsRequest;
 use App\Models\FunnelAlertEvent;
+use App\Models\FunnelAlertIgnoredBrand;
 use App\Models\FunnelAlertSetting;
 use App\Services\FunnelAlertService;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +20,11 @@ class FunnelAlertController extends Controller
         $settings = FunnelAlertSetting::current();
         $token = $alerts->ensureWebhookToken($settings);
 
+        $ignoredBrands = $alerts->ignoredBrands();
+        $ignoredKeys = collect($ignoredBrands)
+            ->map(fn (array $row) => FunnelAlertIgnoredBrand::keyFor($row['brand']))
+            ->all();
+
         $events = FunnelAlertEvent::query()
             ->where('offer_found', false)
             ->latest('id')
@@ -31,6 +38,7 @@ class FunnelAlertController extends Controller
                 'geo' => $event->geo,
                 'lang' => $event->lang,
                 'offer_found' => $event->offer_found,
+                'ignored' => in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true),
                 'notified_at' => $event->notified_at?->format('Y-m-d H:i:s'),
                 'event_at' => $event->event_at?->format('Y-m-d H:i:s'),
                 'received_at' => $event->created_at?->format('Y-m-d H:i:s'),
@@ -44,6 +52,7 @@ class FunnelAlertController extends Controller
                 'tg_bot_token' => (string) ($settings->tg_bot_token ?? ''),
                 'tg_chat_ids' => $settings->chatIds() ?: [''],
             ],
+            'ignoredBrands' => $ignoredBrands,
             'events' => $events,
         ]);
     }
@@ -100,6 +109,27 @@ class FunnelAlertController extends Controller
         return redirect()
             ->route('funnel-alerts.index')
             ->with('success', 'Надіслано в Telegram: '.$result['sent']);
+    }
+
+    public function ignoreBrand(StoreFunnelAlertIgnoredBrandRequest $request, FunnelAlertService $alerts): RedirectResponse
+    {
+        $result = $alerts->ignoreBrand($request->string('brand')->toString());
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', $result['created']
+                ? "Бренд «{$result['brand']}» додано в ігнор — Telegram більше не піде"
+                : "Бренд «{$result['brand']}» уже в ігнорі");
+    }
+
+    public function unignoreBrand(FunnelAlertIgnoredBrand $ignored, FunnelAlertService $alerts): RedirectResponse
+    {
+        $brand = $ignored->brand;
+        $alerts->unignoreBrand($ignored);
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', "Бренд «{$brand}» прибрано з ігнору");
     }
 
     public function regenerateToken(FunnelAlertService $alerts): JsonResponse

@@ -9,6 +9,10 @@ function statusLabel(event) {
         return 'Оффер є';
     }
 
+    if (event.ignored) {
+        return 'Ігнор';
+    }
+
     if (event.notified_at) {
         return 'TG надіслано';
     }
@@ -16,10 +20,11 @@ function statusLabel(event) {
     return 'Очікує TG';
 }
 
-export default function FunnelAlertsIndex({ settings, events }) {
+export default function FunnelAlertsIndex({ settings, events, ignoredBrands = [] }) {
     const { flash, errors } = usePage().props;
     const [settingsOpen, setSettingsOpen] = useState(false);
-    const [retryingTelegram, setRetryingTelegram] = useState(false);
+    const [ignoreBrand, setIgnoreBrand] = useState('');
+    const [ignoringBrand, setIgnoringBrand] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         tg_bot_token: settings.tg_bot_token ?? '',
@@ -69,7 +74,7 @@ Content-Type: application/json
         setData('tg_chat_ids', next.length ? next : ['']);
     };
 
-    const pendingTelegramCount = events.filter((event) => !event.offer_found && !event.notified_at).length;
+    const pendingTelegramCount = events.filter((event) => !event.offer_found && !event.notified_at && !event.ignored).length;
 
     const retryTelegram = () => {
         setRetryingTelegram(true);
@@ -79,11 +84,33 @@ Content-Type: application/json
         });
     };
 
+    const submitIgnoreBrand = (brand) => {
+        const value = (brand ?? '').trim();
+        if (!value || ignoringBrand) {
+            return;
+        }
+
+        setIgnoringBrand(true);
+        router.post(route('funnel-alerts.ignored-brands.store'), { brand: value }, {
+            preserveScroll: true,
+            onFinish: () => {
+                setIgnoringBrand(false);
+                setIgnoreBrand('');
+            },
+        });
+    };
+
+    const removeIgnoredBrand = (id) => {
+        router.delete(route('funnel-alerts.ignored-brands.destroy', id), {
+            preserveScroll: true,
+        });
+    };
+
     return (
         <PanelLayout title="Алерти воронок" wide>
             <header className="page-header">
                 <h2>Алерти воронок</h2>
-                <p>Алерти тільки коли офер у базі не знайдено (offer_found=false). TG надсилається один раз на комбінацію.</p>
+                <p>TG лише якщо офера немає в базі і бренд не в ігнорі. Пуш один раз на комбінацію.</p>
                 <div className="offer-actions">
                     {pendingTelegramCount > 0 && (
                         <button
@@ -223,6 +250,45 @@ Content-Type: application/json
                 </div>
             )}
 
+            <section className="card" style={{ marginBottom: '1.5rem' }}>
+                <h3>Ігнор воронок</h3>
+                <p className="card-desc">По цих брендах Telegram не йде, навіть якщо офера в базі немає. Назва зберігається як є.</p>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        submitIgnoreBrand(ignoreBrand);
+                    }}
+                    className="field-row"
+                    style={{ marginBottom: ignoredBrands.length ? '0.85rem' : 0 }}
+                >
+                    <input
+                        type="text"
+                        value={ignoreBrand}
+                        onChange={(e) => setIgnoreBrand(e.target.value)}
+                        placeholder="Назва воронки / бренд"
+                    />
+                    <button type="submit" className="btn btn-secondary" disabled={ignoringBrand || !ignoreBrand.trim()}>
+                        {ignoringBrand ? 'Додаю…' : 'Додати в ігнор'}
+                    </button>
+                </form>
+                {ignoredBrands.length > 0 && (
+                    <ul className="ignored-brands-list">
+                        {ignoredBrands.map((item) => (
+                            <li key={item.id} className="ignored-brands-list__item">
+                                <span>{item.brand}</span>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary btn-sm"
+                                    onClick={() => removeIgnoredBrand(item.id)}
+                                >
+                                    Прибрати
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
+
             <section className="card">
                 <h3>Останні postback-и</h3>
                 {events.length === 0 ? (
@@ -238,6 +304,7 @@ Content-Type: application/json
                                     <th>Lang</th>
                                     <th>ID</th>
                                     <th>Статус</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -249,6 +316,18 @@ Content-Type: application/json
                                         <td>{event.lang}</td>
                                         <td>{event.external_id ?? '—'}</td>
                                         <td>{statusLabel(event)}</td>
+                                        <td>
+                                            {!event.ignored && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-secondary btn-sm"
+                                                    disabled={ignoringBrand}
+                                                    onClick={() => submitIgnoreBrand(event.brand)}
+                                                >
+                                                    Ігнорувати
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

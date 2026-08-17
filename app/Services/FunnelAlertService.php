@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\FunnelAlertEvent;
+use App\Models\FunnelAlertIgnoredBrand;
 use App\Models\FunnelAlertSetting;
 use App\Models\Offer;
 use Illuminate\Support\Carbon;
@@ -92,6 +93,10 @@ class FunnelAlertService
             return ['ok' => true];
         }
 
+        if ($this->brandIgnored($brand)) {
+            return ['ok' => true];
+        }
+
         $alreadyNotified = FunnelAlertEvent::query()
             ->where('match_key', $matchKey)
             ->whereNotNull('notified_at')
@@ -148,6 +153,10 @@ class FunnelAlertService
         $results = [];
 
         foreach ($events as $event) {
+            if ($this->brandIgnored($event->brand)) {
+                continue;
+            }
+
             $result = $this->notifyMissingOffer($settings, $event->brand, $event->geo, $event->lang);
 
             if ($result['ok'] ?? false) {
@@ -175,6 +184,60 @@ class FunnelAlertService
             'failed' => $failed,
             'results' => $results,
         ];
+    }
+
+    public function brandIgnored(string $brand): bool
+    {
+        $key = FunnelAlertIgnoredBrand::keyFor($brand);
+
+        if ($key === '') {
+            return false;
+        }
+
+        return FunnelAlertIgnoredBrand::query()->where('brand_key', $key)->exists();
+    }
+
+    /**
+     * @return array{created: bool, brand: string}
+     */
+    public function ignoreBrand(string $brand): array
+    {
+        $brand = trim($brand);
+        $key = FunnelAlertIgnoredBrand::keyFor($brand);
+
+        if ($key === '') {
+            return ['created' => false, 'brand' => $brand];
+        }
+
+        $row = FunnelAlertIgnoredBrand::query()->firstOrCreate(
+            ['brand_key' => $key],
+            ['brand' => $brand],
+        );
+
+        return [
+            'created' => $row->wasRecentlyCreated,
+            'brand' => $row->brand,
+        ];
+    }
+
+    public function unignoreBrand(FunnelAlertIgnoredBrand $ignored): void
+    {
+        $ignored->delete();
+    }
+
+    /**
+     * @return list<array{id: int, brand: string}>
+     */
+    public function ignoredBrands(): array
+    {
+        return FunnelAlertIgnoredBrand::query()
+            ->orderBy('brand')
+            ->get(['id', 'brand'])
+            ->map(fn (FunnelAlertIgnoredBrand $row) => [
+                'id' => $row->id,
+                'brand' => $row->brand,
+            ])
+            ->all();
     }
 
     private function offerExists(string $brand, string $geo, string $lang): bool
