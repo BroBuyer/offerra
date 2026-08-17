@@ -96,16 +96,20 @@ class InfrastructureProvisioner
         try {
             $this->runSteps($settings, $domain, $options, $meta);
 
-            if (! InfrastructureOptions::needsDnsWait($options) || $this->dnsLooksReady(
-                $domain,
-                $this->hestia->serverIp($settings),
-                is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [],
-            )) {
-                $meta['dns'] = InfrastructureOptions::needsDnsWait($options) ? 'done' : 'skipped';
+            $serverIp = $this->hestia->serverIp($settings);
+            $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+            $dnsVia = $this->publicReadiness($domain, $serverIp, $expectedNs);
+
+            if (! InfrastructureOptions::needsDnsWait($options)) {
+                $meta['dns'] = 'skipped';
+                unset($meta['dns_error'], $meta['dns_via']);
+            } elseif ($dnsVia !== null) {
+                $meta['dns'] = 'done';
+                $meta['dns_via'] = $dnsVia;
                 unset($meta['dns_error']);
             } else {
                 $meta['dns'] = 'pending';
-                unset($meta['dns_error']);
+                unset($meta['dns_error'], $meta['dns_via']);
             }
 
             $offer->update([
@@ -154,15 +158,7 @@ class InfrastructureProvisioner
 
         $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
 
-        if ($this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
-            $meta['dns'] = 'done';
-            unset($meta['dns_error']);
-            $offer->update([
-                'infra_status' => 'ready',
-                'infra_error' => null,
-                'infra_meta' => $meta,
-            ]);
-
+        if ($this->markDnsDoneIfReady($offer, $meta, $domain, $serverIp, $expectedNs)) {
             return;
         }
 
@@ -172,16 +168,8 @@ class InfrastructureProvisioner
         } catch (\Throwable $e) {
             $meta['dns_error'] = $e->getMessage();
 
-            // Якщо DNS уже реально встав — не блокуємо статус через збій повторного provision.
-            if ($this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
-                $meta['dns'] = 'done';
-                unset($meta['dns_error']);
-                $offer->update([
-                    'infra_status' => 'ready',
-                    'infra_error' => null,
-                    'infra_meta' => $meta,
-                ]);
-
+            // Якщо сайт уже живий — не блокуємо статус через збій повторного provision.
+            if ($this->markDnsDoneIfReady($offer, $meta, $domain, $serverIp, $expectedNs)) {
                 return;
             }
 
@@ -194,25 +182,64 @@ class InfrastructureProvisioner
             return;
         }
 
-        if (! $this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
-            unset($meta['dns_error']);
-            $offer->update([
-                'infra_status' => 'ready',
-                'infra_error' => null,
-                'infra_meta' => array_merge($meta, ['dns' => 'pending']),
-            ]);
-
+        if ($this->markDnsDoneIfReady($offer, $meta, $domain, $serverIp, $expectedNs)) {
             return;
         }
 
-        $meta['dns'] = 'done';
-        unset($meta['dns_error']);
+        unset($meta['dns_error'], $meta['dns_via']);
+        $offer->update([
+            'infra_status' => 'ready',
+            'infra_error' => null,
+            'infra_meta' => array_merge($meta, ['dns' => 'pending']),
+        ]);
+    }
 
+    /**
+     * @param  array<string, mixed>  $meta
+     * @param  list<string>  $expectedNs
+     */
+    private function markDnsDoneIfReady(
+        Offer $offer,
+        array $meta,
+        string $domain,
+        string $serverIp,
+        array $expectedNs,
+    ): bool {
+        $via = $this->publicReadiness($domain, $serverIp, $expectedNs);
+
+        if ($via === null) {
+            return false;
+        }
+
+        $meta['dns'] = 'done';
+        $meta['dns_via'] = $via;
+        unset($meta['dns_error']);
         $offer->update([
             'infra_status' => 'ready',
             'infra_error' => null,
             'infra_meta' => $meta,
         ]);
+
+        return true;
+    }
+
+    /**
+     * Stage 1: public NS/A records. Stage 2: live HTTPS.
+     * Either is enough — Google can crawl as soon as HTTPS answers.
+     *
+     * @param  list<string>  $expectedNs
+     */
+    private function publicReadiness(string $domain, string $serverIp, array $expectedNs): ?string
+    {
+        if ($this->dnsLooksReady($domain, $serverIp, $expectedNs)) {
+            return 'records';
+        }
+
+        if ($this->httpsLooksLive($domain)) {
+            return 'https';
+        }
+
+        return null;
     }
 
     /**
@@ -396,32 +423,36 @@ class InfrastructureProvisioner
             || str_starts_with($ip, '188.114.');
     }
 
-    private function siteResponds(string $domain): bool
+    private function httpsLooksLive(string $domain): bool
+    {
+        $domain = strtolower(trim($domain));
+
+        return $this->httpsHostResponds($domain) || $this->httpsHostResponds('www.'.$domain);
+    }
+
+    private function httpsHostResponds(string $host): bool
     {
         try {
-            // Не ходимо по redirect loop — дивимось першу відповідь.
-            $response = Http::timeout(12)
+            $response = Http::timeout(8)
                 ->withOptions([
-                    'verify' => false,
+                    'verify' => true,
                     'allow_redirects' => false,
                 ])
-                ->get('https://'.$domain.'/');
+                ->get('https://'.$host.'/');
 
             $status = $response->status();
             $location = strtolower((string) $response->header('Location'));
 
-            // HTTPS → HTTP разом із Always Use HTTPS = ERR_TOO_MANY_REDIRECTS.
             if (str_starts_with($location, 'http://')) {
                 return false;
             }
 
-            // Самопереадресація на той самий HTTPS URL — теж loop.
-            $self = 'https://'.strtolower($domain);
+            $self = 'https://'.$host;
             if ($status >= 300 && $status < 400 && rtrim($location, '/') === rtrim($self, '/')) {
                 return false;
             }
 
-            // 4xx (incl. Dynadot parking 410 Gone) must not count as live.
+            // 4xx (incl. Dynadot parking 410) must not count as live.
             return $status >= 200 && $status < 400;
         } catch (\Throwable) {
             return false;

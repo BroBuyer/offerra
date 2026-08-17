@@ -16,20 +16,23 @@ class RecheckInfrastructureDns extends Command
     {
         $offers = Offer::query()
             ->where('provision_infrastructure', true)
-            ->where(function ($query): void {
-                $query
-                    ->where('infra_status', 'dns_propagating')
-                    ->orWhere(function ($query): void {
-                        $query
-                            ->whereIn('infra_status', ['ready'])
-                            ->where('infra_meta->dns', 'pending');
-                    });
-            })
-            ->get(['id', 'domain']);
+            ->whereIn('infra_status', ['ready', 'dns_propagating'])
+            ->orderBy('id')
+            ->get(['id', 'domain', 'provision_infrastructure', 'infra_status', 'infra_meta']);
+
+        $queued = 0;
 
         foreach ($offers as $offer) {
+            if ($offer->dnsStatus() !== 'pending') {
+                continue;
+            }
+
             RecheckInfrastructureDnsJob::dispatch($offer->id);
             $this->line("queued: {$offer->domain}");
+
+            if (++$queued >= 40) {
+                break;
+            }
         }
 
         return self::SUCCESS;
