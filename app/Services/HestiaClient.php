@@ -105,27 +105,27 @@ class HestiaClient
 
     public function domainExists(UserSetting $settings, string $user, string $domain): bool
     {
+        $user = trim($user);
         $domain = strtolower(trim($domain));
-        $response = $this->apiRaw($settings, 'v-list-web-domains', [$user, 'json']);
 
-        if ($response === '' || $domain === '') {
+        if ($user === '' || $domain === '') {
+            return false;
+        }
+
+        try {
+            [$body, $code] = $this->apiCallOnce($settings, 'v-list-web-domain', [$user, $domain, 'json']);
+        } catch (RuntimeException) {
+            return false;
+        }
+
+        if ($code !== 0 || $body === '') {
             return false;
         }
 
         /** @var mixed $decoded */
-        $decoded = json_decode($response, true);
+        $decoded = json_decode($body, true);
 
-        if (! is_array($decoded)) {
-            return false;
-        }
-
-        foreach (array_keys($decoded) as $key) {
-            if (strtolower((string) $key) === $domain) {
-                return true;
-            }
-        }
-
-        return false;
+        return is_array($decoded) && $decoded !== [];
     }
 
     public function deleteWebDomain(UserSetting $settings, string $domain): void
@@ -290,7 +290,8 @@ class HestiaClient
         return str_contains($normalized, 'nginx restart failed')
             || str_contains($normalized, 'restart proxy failed')
             || str_contains($normalized, 'v-restart-proxy')
-            || str_contains($normalized, 'too many open files');
+            || str_contains($normalized, 'too many open files')
+            || (str_contains($normalized, 'php') && str_contains($normalized, 'restart failed'));
     }
 
     private function isRetryableConnectionError(string $message): bool
@@ -375,6 +376,7 @@ class HestiaClient
             ! str_contains($normalized, 'exists')
             && ! str_contains($normalized, 'already exist')
             && ! str_contains($normalized, 'object exist')
+            && ! str_contains($normalized, 'should not exist')
         ) {
             return false;
         }

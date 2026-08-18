@@ -196,6 +196,26 @@ class HestiaClientTest extends TestCase
         Http::assertSentCount(2);
     }
 
+    public function test_add_web_domain_treats_folder_should_not_exist_as_success(): void
+    {
+        Http::fake([
+            'https://10.0.0.1:8083/api/*' => Http::sequence()
+                ->push('', 200, ['hestia-exit-code' => '3'])
+                ->push('Error: Web domain folder for zeltix-ai-ro.com should not exist', 400),
+        ]);
+
+        $settings = new UserSetting([
+            'deploy_host' => '10.0.0.1',
+            'deploy_username' => 'user',
+            'deploy_api_access_key' => 'abcdefghij1234567890',
+            'deploy_api_secret_key' => 'secret1234567890123456789012345678901234',
+        ]);
+
+        (new HestiaClient)->addWebDomain($settings, 'zeltix-ai-ro.com');
+
+        Http::assertSentCount(2);
+    }
+
     public function test_domain_exists_is_case_insensitive(): void
     {
         Http::fake([
