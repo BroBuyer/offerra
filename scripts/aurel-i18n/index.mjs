@@ -1,5 +1,6 @@
 import cs from './cs.mjs';
 import de from './de.mjs';
+import ja from './ja.mjs';
 import el from './el.mjs';
 import fi from './fi.mjs';
 import hu from './hu.mjs';
@@ -100,6 +101,15 @@ export const LOCALES = {
     bcp47: 'tr-TR',
     areaServed: 'Turkey',
   },
+  ja: {
+    siteLang: 'ja',
+    crmCountry: 'JP',
+    phoneCountry: 'jp',
+    currency: 'JPY',
+    ogLocale: 'ja_JP',
+    bcp47: 'ja-JP',
+    areaServed: 'Japan',
+  },
 };
 
-export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr };
+export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja };

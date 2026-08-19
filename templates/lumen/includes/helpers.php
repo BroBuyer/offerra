@@ -23,6 +23,7 @@ function site_locale(): string
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
         'ms' => 'ms-MY',
+        'ja' => 'ja-JP',
     ];
     $lang = strtolower(SITE_LANG);
 

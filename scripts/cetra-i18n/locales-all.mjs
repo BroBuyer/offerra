@@ -179,4 +179,15 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' RM',
   },
+  ja: {
+    siteLang: 'ja',
+    crmCountry: 'JP',
+    phoneCountry: 'jp',
+    currency: 'JPY',
+    ogLocale: 'ja_JP',
+    phonePlaceholder: '90-1234-5678',
+    moneyLocale: 'ja-JP',
+    moneyPrefix: '',
+    moneySuffix: '円',
+  },
 };

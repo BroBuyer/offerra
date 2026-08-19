@@ -368,6 +368,14 @@ function patchTestimonialInitials(langDir, lang) {
       ['<div class="ini">G</div><div><b>Zeynep Çelik</b>', '<div class="ini">Z</div><div><b>Zeynep Çelik</b>'],
       ['<div class="ini">R</div><div><b>Emre Yıldız</b>', '<div class="ini">E</div><div><b>Emre Yıldız</b>'],
     ],
+    ja: [
+      ['<div class="ini">C</div><div><b>佐藤美咲</b>', '<div class="ini">佐</div><div><b>佐藤美咲</b>'],
+      ['<div class="ini">F</div><div><b>田中健太</b>', '<div class="ini">田</div><div><b>田中健太</b>'],
+      ['<div class="ini">B</div><div><b>鈴木陽子</b>', '<div class="ini">鈴</div><div><b>鈴木陽子</b>'],
+      ['<div class="ini">L</div><div><b>高橋翔</b>', '<div class="ini">高</div><div><b>高橋翔</b>'],
+      ['<div class="ini">G</div><div><b>伊藤彩</b>', '<div class="ini">伊</div><div><b>伊藤彩</b>'],
+      ['<div class="ini">R</div><div><b>渡辺大輔</b>', '<div class="ini">渡</div><div><b>渡辺大輔</b>'],
+    ],
   };
   const pairs = map[lang];
   if (!pairs) return;

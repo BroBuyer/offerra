@@ -21,4 +21,5 @@ export const META = {
   es: { siteLang: 'es', crmCountry: 'ES', phoneCountry: 'es', currency: 'EUR', ogLocale: 'es_ES', phonePlaceholder: '612 34 56 78' },
   pt: { siteLang: 'pt', crmCountry: 'BR', phoneCountry: 'br', currency: 'EUR', ogLocale: 'pt_BR', phonePlaceholder: '11 91234-5678' },
   ms: { siteLang: 'ms', crmCountry: 'MY', phoneCountry: 'my', currency: 'MYR', ogLocale: 'ms_MY', phonePlaceholder: '12-345 6789' },
+  ja: { siteLang: 'ja', crmCountry: 'JP', phoneCountry: 'jp', currency: 'JPY', ogLocale: 'ja_JP', phonePlaceholder: '90-1234-5678' },
 };

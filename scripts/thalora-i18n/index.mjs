@@ -8,6 +8,7 @@ import fr from './fr.mjs';
 import hr from './hr.mjs';
 import hu from './hu.mjs';
 import it from './it.mjs';
+import ja from './ja.mjs';
 import ms from './ms.mjs';
 import nl from './nl.mjs';
 import no from './no.mjs';
@@ -133,6 +134,12 @@ export const LOCALES = {
     phoneCountry: 'my',
     currency: 'MYR',
   },
+  ja: {
+    siteLang: 'ja',
+    crmCountry: 'JP',
+    phoneCountry: 'jp',
+    currency: 'JPY',
+  },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, ja };
