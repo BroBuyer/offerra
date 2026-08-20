@@ -1,16 +1,15 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
-import { clearWizardState, loadWizardState, saveWizardState } from '@/lib/offerWizardStorage';
+import { clearWizardState, loadWizardState, saveWizardState, stripFreshQueryParam } from '@/lib/offerWizardStorage';
 import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 const steps = ['Основне', 'Ринок і шаблони', 'Keitaro & інфра', 'Підсумок'];
 
 const INFRA_TASKS = [
-    { key: 'infra_hestia', label: 'Hestia — додати домен (vhost + public_html)' },
     { key: 'infra_cloudflare_zone', label: 'Cloudflare — створити DNS-зону' },
     { key: 'infra_cloudflare_dns', label: 'Cloudflare — A-записи @ і www', requiresZone: true },
     { key: 'infra_dynadot_ns', label: 'Dynadot — NS → Cloudflare', requiresZone: true },
@@ -21,7 +20,6 @@ const INFRA_TASKS = [
 
 function defaultInfraOptions(enabled = false) {
     return {
-        infra_hestia: enabled,
         infra_cloudflare_zone: enabled,
         infra_cloudflare_dns: enabled,
         infra_dynadot_ns: enabled,
@@ -224,17 +222,26 @@ export default function OffersCreate({
         [templates, initialFromSearch],
     );
     const skipPersist = useRef(false);
-    const initial = useMemo(() => (fresh ? { step: 0, data: defaults } : loadWizardState(defaults)), [fresh, defaults]);
+    const freshHandled = useRef(false);
+    const domainSearchResultsRef = useRef(null);
+    const offerBulkPackRef = useRef(null);
+    const lastPackHeightRef = useRef(0);
+    const initial = useMemo(() => (
+        fresh
+            ? { step: 0, data: defaults, bulkItems: [], domainPurchasedViaPanel: false }
+            : loadWizardState(defaults)
+    ), [fresh, defaults]);
     const [step, setStep] = useState(initial.step);
     const [domainSearching, setDomainSearching] = useState(false);
     const [domainPurchasing, setDomainPurchasing] = useState(null);
     const [domainBulkPurchasing, setDomainBulkPurchasing] = useState(false);
     const [domainSearchError, setDomainSearchError] = useState('');
     const [domainSearchResults, setDomainSearchResults] = useState(null);
+    const [domainSearchResultsVisible, setDomainSearchResultsVisible] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
-    const [domainPurchasedViaPanel, setDomainPurchasedViaPanel] = useState(false);
-    const [bulkItems, setBulkItems] = useState([]);
+    const [domainPurchasedViaPanel, setDomainPurchasedViaPanel] = useState(initial.domainPurchasedViaPanel);
+    const [bulkItems, setBulkItems] = useState(initial.bulkItems);
     const [bulkSubmitting, setBulkSubmitting] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
@@ -358,58 +365,63 @@ export default function OffersCreate({
     );
 
     useEffect(() => {
-        if (fresh) {
-            skipPersist.current = false;
-            clearWizardState();
-            setStep(0);
-            reset();
-            setBulkItems([]);
-            setBulkSubmitting(false);
-            setDomainPurchasedViaPanel(false);
+        if (!fresh || freshHandled.current) {
+            return;
+        }
 
-            if (initialTemplate && templates.some((item) => item.id === initialTemplate)) {
-                setData((prev) => ({
-                    ...prev,
-                    template: initialTemplate,
-                    ...(isMultilangTemplate(initialTemplate)
-                        ? { geo: MULTILANG_GEO, lang: 'en' }
-                        : {}),
-                }));
-            }
+        // Intentional "new funnel" once — then drop ?fresh so F5 restores the draft.
+        freshHandled.current = true;
+        skipPersist.current = false;
+        clearWizardState();
+        setStep(0);
+        reset();
+        setBulkItems([]);
+        setBulkSubmitting(false);
+        setDomainPurchasedViaPanel(false);
+        stripFreshQueryParam();
 
-            const brand = (initialBrand ?? '').trim();
-            const geo = normalizeGeo(initialGeo ?? '');
-            const lang = (initialLang ?? '').trim().toLowerCase();
+        if (initialTemplate && templates.some((item) => item.id === initialTemplate)) {
+            setData((prev) => ({
+                ...prev,
+                template: initialTemplate,
+                ...(isMultilangTemplate(initialTemplate)
+                    ? { geo: MULTILANG_GEO, lang: 'en' }
+                    : {}),
+            }));
+        }
 
-            if (brand || geo || lang) {
-                setData((prev) => {
-                    let next = { ...prev };
+        const brand = (initialBrand ?? '').trim();
+        const geo = normalizeGeo(initialGeo ?? '');
+        const lang = (initialLang ?? '').trim().toLowerCase();
 
-                    if (brand) {
-                        next = { ...next, brand };
-                    }
+        if (brand || geo || lang) {
+            setData((prev) => {
+                let next = { ...prev };
 
-                    if (geo) {
-                        const preset = geoPresets.find((item) => item.code === geo);
-                        next = {
-                            ...next,
-                            geo,
-                            lang: lang || preset?.lang || next.lang,
-                            phone: preset?.phone ?? geo.toLowerCase(),
-                            phone_countries: [preset?.phone ?? geo.toLowerCase()],
-                            ...(preset?.currency ? { currency: preset.currency } : {}),
-                        };
-                    } else if (lang) {
-                        next = { ...next, lang };
-                    }
+                if (brand) {
+                    next = { ...next, brand };
+                }
 
-                    return next;
-                });
-            }
+                if (geo) {
+                    const preset = geoPresets.find((item) => item.code === geo);
+                    next = {
+                        ...next,
+                        geo,
+                        lang: lang || preset?.lang || next.lang,
+                        phone: preset?.phone ?? geo.toLowerCase(),
+                        phone_countries: [preset?.phone ?? geo.toLowerCase()],
+                        ...(preset?.currency ? { currency: preset.currency } : {}),
+                    };
+                } else if (lang) {
+                    next = { ...next, lang };
+                }
 
-            if (initialFromSearch) {
-                setData((prev) => ({ ...prev, from_search_team: true }));
-            }
+                return next;
+            });
+        }
+
+        if (initialFromSearch) {
+            setData((prev) => ({ ...prev, from_search_team: true }));
         }
     }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, setData]);
 
@@ -418,18 +430,14 @@ export default function OffersCreate({
             return;
         }
 
-        const firstDomain = bulkItems[0]?.domain ?? '';
         const firstTemplate = bulkItems[0]?.template;
 
         setData((prev) => {
-            let next = prev;
-            if (!isBulkMode && firstDomain && prev.domain !== firstDomain) {
-                next = { ...next, domain: firstDomain };
-            }
             if (!isBulkMode && firstTemplate && prev.template !== firstTemplate) {
-                next = next === prev ? { ...prev, template: firstTemplate } : { ...next, template: firstTemplate };
+                return { ...prev, template: firstTemplate };
             }
-            return next;
+
+            return prev;
         });
     }, [bulkItems, isBulkMode, setData]);
 
@@ -438,8 +446,8 @@ export default function OffersCreate({
             return;
         }
 
-        saveWizardState(step, data);
-    }, [step, data, processing, bulkSubmitting]);
+        saveWizardState(step, data, { bulkItems, domainPurchasedViaPanel });
+    }, [step, data, bulkItems, domainPurchasedViaPanel, processing, bulkSubmitting]);
 
     const goToStep = (nextStep) => {
         setStep(nextStep);
@@ -590,6 +598,46 @@ export default function OffersCreate({
         return query.includes('.');
     }, [domainSearchQuery]);
 
+    useEffect(() => {
+        if (!domainSearchResults?.length || !domainSearchResultsVisible) {
+            return;
+        }
+
+        const hideResults = (event) => {
+            if (domainSearchResultsRef.current?.contains(event.target)) {
+                return;
+            }
+
+            setDomainSearchResultsVisible(false);
+        };
+
+        document.addEventListener('mousedown', hideResults);
+        document.addEventListener('touchstart', hideResults);
+
+        return () => {
+            document.removeEventListener('mousedown', hideResults);
+            document.removeEventListener('touchstart', hideResults);
+        };
+    }, [domainSearchResults, domainSearchResultsVisible]);
+
+    useLayoutEffect(() => {
+        const el = offerBulkPackRef.current;
+
+        if (!el || bulkItems.length === 0) {
+            lastPackHeightRef.current = 0;
+            return;
+        }
+
+        const height = el.offsetHeight;
+        const prev = lastPackHeightRef.current;
+
+        if (prev > 0 && height > prev) {
+            window.scrollBy(0, height - prev);
+        }
+
+        lastPackHeightRef.current = height;
+    }, [bulkItems]);
+
     const searchDomains = async () => {
         const query = domainSearchQuery;
 
@@ -601,6 +649,7 @@ export default function OffersCreate({
         setDomainSearching(true);
         setDomainSearchError('');
         setDomainSearchResults(null);
+        setDomainSearchResultsVisible(false);
 
         try {
             const { data: result } = await axios.post(route('domains.search'), { query });
@@ -609,19 +658,13 @@ export default function OffersCreate({
                 return;
             }
             setDomainSearchResults(result.results ?? []);
+            setDomainSearchResultsVisible(true);
         } catch (error) {
             setDomainSearchError(
                 error.response?.data?.message ?? 'Не вдалося виконати пошук доменів',
             );
         } finally {
             setDomainSearching(false);
-        }
-    };
-
-    const pickDomain = (domain, { clearResults = true } = {}) => {
-        update('domain', domain);
-        if (clearResults) {
-            setDomainSearchResults(null);
         }
     };
 
@@ -642,8 +685,6 @@ export default function OffersCreate({
             setDomainSearchError('');
             return [...prev, makePackItem(domain, searchItem, { owned })];
         });
-
-        pickDomain(domain, { clearResults: false });
     };
 
     const addAllAvailableToPack = () => {
@@ -688,11 +729,7 @@ export default function OffersCreate({
                 setDomainSearchError(`Додано до пакету: ${toAdd.map((item) => item.domain).join(', ')}`);
             }
 
-            const next = [...prev, ...toAdd];
-            if (next[0]?.domain) {
-                pickDomain(next[0].domain, { clearResults: false });
-            }
-            return next;
+            return [...prev, ...toAdd];
         });
     };
 
@@ -886,6 +923,7 @@ export default function OffersCreate({
 
             if (boughtCount > 0) {
                 setDomainSearchResults(null);
+                setDomainSearchResultsVisible(false);
                 const nameOnly = domainNameWithoutZone(primaryDomain);
                 if (nameOnly) {
                     update('domain', nameOnly);
@@ -1092,7 +1130,6 @@ export default function OffersCreate({
                 create_keitaro: data.create_keitaro,
                 vitals_enabled: data.vitals_enabled,
                 from_search_team: data.from_search_team,
-                infra_hestia: data.infra_hestia,
                 infra_cloudflare_zone: data.infra_cloudflare_zone,
                 infra_cloudflare_dns: data.infra_cloudflare_dns,
                 infra_dynadot_ns: data.infra_dynadot_ns,
@@ -1108,6 +1145,21 @@ export default function OffersCreate({
                 },
                 onFinish: () => {
                     setBulkSubmitting(false);
+                },
+            });
+            return;
+        }
+
+        if (bulkItems.length === 1) {
+            router.post(route('offers.store'), {
+                ...data,
+                domain: bulkItems[0].domain,
+                template: bulkItems[0].template || data.template,
+            }, {
+                preserveScroll: true,
+                onSuccess,
+                onError: () => {
+                    setStep(steps.length - 1);
                 },
             });
             return;
@@ -1190,7 +1242,7 @@ export default function OffersCreate({
                             {errors.brand && <p className="field-hint" style={{ color: '#f87171' }}>{errors.brand}</p>}
                         </div>
                         {bulkItems.length > 0 && (
-                            <div className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>
+                            <div ref={offerBulkPackRef} className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>
                                 <div className="offer-bulk-pack__head">
                                     <h3>Пакет доменів ({bulkItems.length})</h3>
                                     {packTotal && (
@@ -1291,6 +1343,7 @@ export default function OffersCreate({
                                     onChange={(e) => {
                                         update('domain', e.target.value);
                                         setDomainSearchResults(null);
+                                        setDomainSearchResultsVisible(false);
                                     }}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -1350,8 +1403,8 @@ export default function OffersCreate({
                             {domainSearchError && (
                                 <p className="field-hint" style={{ color: '#f87171' }}>{domainSearchError}</p>
                             )}
-                            {domainSearchResults && (
-                                <>
+                            {domainSearchResults && domainSearchResultsVisible && (
+                                <div ref={domainSearchResultsRef}>
                                     {availableNotInPackCount > 0 && (
                                         <div className="domain-bulk-bar">
                                             <span className="field-hint" style={{ margin: 0 }}>
@@ -1396,7 +1449,11 @@ export default function OffersCreate({
                                                     {item.message && item.status === 'error' && (
                                                         <span title={item.message}>{item.message}</span>
                                                     )}
-                                                    {item.price && <span>{item.price}</span>}
+                                                    {item.price && (
+                                                        <span className="domain-search-results__price" title={item.price}>
+                                                            {formatDomainPrice(item.price)}
+                                                        </span>
+                                                    )}
                                                     {item.available && (
                                                         <button
                                                             type="button"
@@ -1406,6 +1463,7 @@ export default function OffersCreate({
                                                                 || inPack
                                                                 || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
                                                             }
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => addDomainToPack(item)}
                                                         >
                                                             {inPack ? 'У пакеті' : 'Додати до пакету'}
@@ -1420,6 +1478,7 @@ export default function OffersCreate({
                                                                 || inPack
                                                                 || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
                                                             }
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => addDomainToPack(item, { owned: true })}
                                                             title="Додати як уже ваш домен (без купівлі)"
                                                         >
@@ -1431,7 +1490,7 @@ export default function OffersCreate({
                                         );
                                     })}
                                 </ul>
-                                </>
+                                </div>
                             )}
                             {data.domain.trim().includes('.') && !packInSearch.has(data.domain.trim().toLowerCase()) && (
                                 <div className="btn-row" style={{ marginTop: '0.75rem' }}>
