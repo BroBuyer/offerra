@@ -1,6 +1,7 @@
 import cs from './cs.mjs';
 import de from './de.mjs';
 import ja from './ja.mjs';
+import lv from './lv.mjs';
 import el from './el.mjs';
 import fi from './fi.mjs';
 import hu from './hu.mjs';
@@ -110,6 +111,15 @@ export const LOCALES = {
     bcp47: 'ja-JP',
     areaServed: 'Japan',
   },
+  lv: {
+    siteLang: 'lv',
+    crmCountry: 'LV',
+    phoneCountry: 'lv',
+    currency: 'EUR',
+    ogLocale: 'lv_LV',
+    bcp47: 'lv-LV',
+    areaServed: 'Latvia',
+  },
 };
 
-export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja };
+export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja, lv };

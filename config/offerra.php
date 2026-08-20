@@ -42,6 +42,7 @@ return [
         ['code' => 'el', 'name' => 'Ελληνικά'],
         ['code' => 'ms', 'name' => 'Bahasa Melayu'],
         ['code' => 'ja', 'name' => '日本語'],
+        ['code' => 'lv', 'name' => 'Latviešu'],
     ],
 
     // ISO 4217 — вибір при створенні оффера
@@ -111,6 +112,7 @@ return [
         ['code' => 'SE', 'name' => 'Швеція', 'lang' => 'sv', 'phone' => 'se', 'currency' => 'SEK'],
         ['code' => 'NO', 'name' => 'Норвегія', 'lang' => 'no', 'phone' => 'no'],
         ['code' => 'FI', 'name' => 'Фінляндія', 'lang' => 'fi', 'phone' => 'fi'],
+        ['code' => 'LV', 'name' => 'Латвія', 'lang' => 'lv', 'phone' => 'lv', 'currency' => 'EUR'],
         ['code' => 'ZA', 'name' => 'ПАР', 'lang' => 'en', 'phone' => 'za'],
         ['code' => 'NG', 'name' => 'Нігерія', 'lang' => 'en', 'phone' => 'ng', 'currency' => 'NGN'],
         ['code' => 'AR', 'name' => 'Аргентина', 'lang' => 'es', 'phone' => 'ar'],

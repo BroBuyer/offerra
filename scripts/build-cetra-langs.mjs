@@ -376,6 +376,14 @@ function patchTestimonialInitials(langDir, lang) {
       ['<div class="ini">G</div><div><b>伊藤彩</b>', '<div class="ini">伊</div><div><b>伊藤彩</b>'],
       ['<div class="ini">R</div><div><b>渡辺大輔</b>', '<div class="ini">渡</div><div><b>渡辺大輔</b>'],
     ],
+    lv: [
+      ['<div class="ini">C</div><div><b>Anna Kalniņa</b>', '<div class="ini">A</div><div><b>Anna Kalniņa</b>'],
+      ['<div class="ini">F</div><div><b>Jānis Bērziņš</b>', '<div class="ini">J</div><div><b>Jānis Bērziņš</b>'],
+      ['<div class="ini">B</div><div><b>Ilze Ozola</b>', '<div class="ini">I</div><div><b>Ilze Ozola</b>'],
+      ['<div class="ini">L</div><div><b>Mārtiņš Liepiņš</b>', '<div class="ini">M</div><div><b>Mārtiņš Liepiņš</b>'],
+      ['<div class="ini">G</div><div><b>Elīna Jansone</b>', '<div class="ini">E</div><div><b>Elīna Jansone</b>'],
+      ['<div class="ini">R</div><div><b>Andris Krūmiņš</b>', '<div class="ini">A</div><div><b>Andris Krūmiņš</b>'],
+    ],
   };
   const pairs = map[lang];
   if (!pairs) return;

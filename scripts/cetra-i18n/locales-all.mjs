@@ -190,4 +190,15 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: '円',
   },
+  lv: {
+    siteLang: 'lv',
+    crmCountry: 'LV',
+    phoneCountry: 'lv',
+    currency: 'EUR',
+    ogLocale: 'lv_LV',
+    phonePlaceholder: '21 234 567',
+    moneyLocale: 'lv-LV',
+    moneyPrefix: '',
+    moneySuffix: ' €',
+  },
 };

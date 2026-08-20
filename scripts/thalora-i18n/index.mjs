@@ -9,6 +9,7 @@ import hr from './hr.mjs';
 import hu from './hu.mjs';
 import it from './it.mjs';
 import ja from './ja.mjs';
+import lv from './lv.mjs';
 import ms from './ms.mjs';
 import nl from './nl.mjs';
 import no from './no.mjs';
@@ -140,6 +141,12 @@ export const LOCALES = {
     phoneCountry: 'jp',
     currency: 'JPY',
   },
+  lv: {
+    siteLang: 'lv',
+    crmCountry: 'LV',
+    phoneCountry: 'lv',
+    currency: 'EUR',
+  },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, ja };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, ja, lv };
