@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + erfarne menneskelige analytikere</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + erfarne menneskelige analytikere</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">En personlig finansanalytiker, understøttet af AI, der hjælper almindelige mennesker med at skabe ekstra indkomst uden tidligere erfaring. Din analytiker guider dig i hvert trin, mens dashboardet viser dig i realtid, hvordan din kapital arbejder.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Reguleret</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Adskilte midler</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 kunder</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> vurdering</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Start — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Sådan fungerer det</a>
+    <p class="roc33zb">En personlig finansanalytiker, understøttet af AI, der hjælper almindelige mennesker med at skabe ekstra indkomst uden tidligere erfaring. Din analytiker guider dig i hvert trin, mens dashboardet viser dig i realtid, hvordan din kapital arbejder.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Reguleret</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Adskilte midler</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 kunder</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> vurdering</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Start — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Sådan fungerer det</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL-beskyttelse</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Support 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Hurtig eksekvering</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Åbn din konto</h2>
-      <p class="pt6joj">Kom i gang på få minutter.</p>
+      <p class="amrqy">Kom i gang på få minutter.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Kom i gang nu';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33.000</b><span>Aktive brugere</span></div>
-      <div class="ohqkun7"><b>€0,6B</b><span>Handelsvolumen</span></div>
-      <div class="ohqkun7"><b>99,8%</b><span>Signaltilgængelighed</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Support</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33.000</b><span>Aktive brugere</span></div>
+      <div class="kstat"><b>€0,6B</b><span>Handelsvolumen</span></div>
+      <div class="kstat"><b>99,8%</b><span>Signaltilgængelighed</span></div>
+      <div class="kstat"><b>24/7</b><span>Support</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="På denne side">
     <summary class="eik0loi">På denne side</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Dit udgangspunkt</a></li>
       <li><a href="#nw3j7wd">Spørgsmål</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Start — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Start — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Hvad medlemmer siger</span>
+        <span class="odwy4o">Hvad medlemmer siger</span>
         <h2 id="es9pra">Hvad investorer siger</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Por qué <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Por qué <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Ingen regneark. Ingen skærme. Ingen sidste-øjebliks tvivl</h2>
         <p class="rmct9">Se hvordan <?= e(SITE_NAME) ?> sammenlignes med traditionelle mæglere og selv at handle.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Tildelt personlig manager</td><td class="bfe2o6f">✓</td><td class="byuav">begrænset åbningstid</td><td class="byuav">manuel</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Hvorfor os</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Hvorfor os</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Beskyttelse</span>
+            <span class="odwy4o">Beskyttelse</span>
             <h2 id="ykur4hl">Dine penge, beskyttet by design</h2>
             <p class="rmct9">Kundemidler deponeres hos regulerede betalingspartnere, adgang er verificeret, og hver udbetaling følger en dokumenteret rute tilbage til oprindelig konto.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Din personlige analytiker ved arbejdspladsen" width="760" height="520" decoding="async" title="Din personlige analytiker ved arbejdspladsen" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Din analytiker</span>
+            <span class="odwy4o">Din analytiker</span>
             <h2 id="iouvw">Din personlige finansanalytiker</h2>
             <p class="rmct9">Hvert medlem matches med en personlig finansanalytiker med mange års markeds erfaring. Med egen ekspertise, afprøvede analysemetoder og moderne AI-værktøjer hjælper de dig med at spotte lovende muligheder og følger dig i hvert trin.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Afkast</span>
+        <span class="odwy4o">Afkast</span>
         <h2 id="rq8es">Et eksempel med din indbetaling</h2>
         <p class="rmct9">Flyt skyderen for at simulere en større indbetaling: beløbene beregnes ud fra en repræsentativ plan med minimumsindbetalingen på <?= e(money_min()) ?>. Dette er et eksempel, ikke et løfte; dit reelle afkast afhænger af, hvor meget du investerer, og hvilken strategi du vælger sammen med din analytiker.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Forventet saldo</small>
           <b id="aowtjsf">€1.000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Åbn en konto</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Åbn en konto</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Dit udgangspunkt</span>
+        <span class="odwy4o">Dit udgangspunkt</span>
         <h2 id="dv0846">Tre spørgsmål og et foreslået startplan</h2>
         <p class="rmct9">Ingen score eller karakter: svarene fortæller kun din specialist, hvor I skal starte, så det første opkald ikke bruges på det grundlæggende.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Tilbage</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Tilbage</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Dine svar er klar: efterlad dine oplysninger, og en specialist gennemgår dem med dig.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Se mit startplan</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Se mit startplan</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Sådan fungerer det</span>
+        <span class="odwy4o">Sådan fungerer det</span>
         <h2 id="dl5sp">Sådan fungerer det</h2>
         <p class="rmct9">Moderne AI og en ægte menneskelig analytiker, der arbejder sammen for at hjælpe dig med at opbygge ekstra indkomst, guide dig i hvert trin og vise hver bevægelse af din kapital.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Definér din strategi</h3><p>Vælg dine mål; din analytiker tilpasser planen til dig.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Begynd at investere</h3><p>Følg de guidede signaler og følg din fremgang i realtid.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Læs den fulde guide</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Læs den fulde guide</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Live markeder</span>
+        <span class="odwy4o">Live markeder</span>
         <h2 id="rlolt2l">Handl med Bitcoin, Ethereum og meget mere</h2>
         <p class="rmct9">Realtidspriser, avancerede indikatorer og et professionelt overblik over de markeder, der interesserer dig.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">På enhver skærm</span>
+            <span class="odwy4o">På enhver skærm</span>
             <h2 id="jg778dx">Samme konto på din computer og i lommen</h2>
             <p class="rmct9">Én login, én saldo. Åbn den i computerens browser eller på mobilen: intet at installere og intet der kun virker på én enhed.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Se din konto i realtid</h2>
         <p class="rmct9">Hver handel din analytiker placerer, registreres her: indgange, udgange og verificerede resultater pr. par, live.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Spørgsmål</span>
+        <span class="odwy4o">Spørgsmål</span>
         <h2 id="wysa9hx">Ofte stillede spørgsmål</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Ver todas las preguntas</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Ver todas las preguntas</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Kundeanmeldelser" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">TROVÆRDIG</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Anmeldelser</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> anmeldelser · Baseret på <b style="color:var(--text,#fff)">4.902</b> vurderinger</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Kundeanmeldelser" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">TROVÆRDIG</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Anmeldelser</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> anmeldelser · Baseret på <b style="color:var(--text,#fff)">4.902</b> vurderinger</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Kom i gang nu</span>
+      <span class="odwy4o">Kom i gang nu</span>
       <h2 id="fglj2pf">Klar til at se din kapital i bevægelse?</h2>
       <p class="rmct9">Åbn din konto på få minutter, indbetal fra et beskedent minimum og følg din fremgang gennemsigtigt fra dag ét.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Opret din profil</h3>
-      <p class="pt6joj">Kom i gang på få minutter.</p>
+      <p class="amrqy">Kom i gang på få minutter.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

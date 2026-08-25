@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI＋経験豊富な人間のアナリスト</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI＋経験豊富な人間のアナリスト</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">AIに支えられた専任の金融アナリストが、経験のない方でも追加の収入源を築けるようお手伝いします。アナリストが各ステップで案内し、ダッシュボードでは資金の働きをリアルタイムで確認できます。</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>規制対象</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>分別管理資金</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39,600名のお客様</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> 評価</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">今すぐ始める — <?= e(money_min()) ?>から</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">仕組み</a>
+    <p class="roc33zb">AIに支えられた専任の金融アナリストが、経験のない方でも追加の収入源を築けるようお手伝いします。アナリストが各ステップで案内し、ダッシュボードでは資金の働きをリアルタイムで確認できます。</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>規制対象</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>分別管理資金</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39,600名のお客様</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> 評価</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">今すぐ始める — <?= e(money_min()) ?>から</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">仕組み</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL保護</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>24時間サポート</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>高速執行</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>口座を開設</h2>
-      <p class="pt6joj">数分で始められます。</p>
+      <p class="amrqy">数分で始められます。</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = '今すぐ始める';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>アクティブユーザー</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>取引高</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>シグナル稼働率</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>サポート</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>アクティブユーザー</span></div>
+      <div class="kstat"><b>€0.6B</b><span>取引高</span></div>
+      <div class="kstat"><b>99.8%</b><span>シグナル稼働率</span></div>
+      <div class="kstat"><b>24/7</b><span>サポート</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="このページ内">
     <summary class="eik0loi">このページ内</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">出発点</a></li>
       <li><a href="#nw3j7wd">ご質問</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">今すぐ始める — <?= e(money_min()) ?>から</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">今すぐ始める — <?= e(money_min()) ?>から</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">会員の声</span>
+        <span class="odwy4o">会員の声</span>
         <h2 id="es9pra">トレーダーの声</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">表計算も、複雑な画面も、直前の迷いもありません</h2>
         <p class="rmct9"> <?= e(SITE_NAME) ?> が従来のブローカーや自力での取引と比べてどう違うかをご覧ください。</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>専任のパーソナルマネージャー</td><td class="bfe2o6f">✓</td><td class="byuav">時間制限あり</td><td class="byuav">手動</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">選ばれる理由</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">選ばれる理由</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">保護</span>
+            <span class="odwy4o">保護</span>
             <h2 id="ykur4hl">設計から守られるお客様の資金</h2>
             <p class="rmct9">お客様の資金は規制された決済パートナーのもとで保管され、アクセスは確認され、すべての出金は入金元の口座へ文書化された経路で戻ります。</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="デスクにいる専任アナリスト" width="760" height="520" decoding="async" title="デスクにいる専任アナリスト" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">専任アナリスト</span>
+            <span class="odwy4o">専任アナリスト</span>
             <h2 id="iouvw">専任の金融アナリスト</h2>
             <p class="rmct9">すべての会員に、長年の市場経験を持つ専任の金融アナリストが付きます。専門知識、実証された分析手法、最新のAIツールで有望な機会を見つけ、各段階で寄り添います。</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">リターン</span>
+        <span class="odwy4o">リターン</span>
         <h2 id="rq8es">ご入金での例</h2>
         <p class="rmct9">スライダーを動かして、より大きな入金をシミュレートできます。数値は最低入金額 <?= e(money_min()) ?> の代表的なプランから算出しています。これは例であり約束ではありません。実際のリターンは投資額と、アナリストと選ぶ戦略によって異なります。</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>想定残高</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">口座を開設</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">口座を開設</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">出発点を見つける</span>
+        <span class="odwy4o">出発点を見つける</span>
         <h2 id="dv0846">3つの質問のあと、開始プランのご提案</h2>
         <p class="rmct9">点数も評価もありません。回答は担当者がどこから始めるかを知るためのもので、初回の通話が基礎説明で終わらないようにします。</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>戻る</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>戻る</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>回答の準備ができました。連絡先を残していただければ、担当者が内容を一緒に確認します。</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">開始プランを見る</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">開始プランを見る</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">仕組み</span>
+        <span class="odwy4o">仕組み</span>
         <h2 id="dl5sp">仕組み</h2>
         <p class="rmct9">最新のAIと実際の人間のアナリストが協力し、追加の収入源づくりを支援します。各ステップで案内し、資金の動きをすべてお見せします。</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>戦略を設定</h3><p>目標を選びます。アナリストがお客様に合わせて計画を組み立てます。</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>投資を始める</h3><p>案内付きのシグナルに沿い、進捗をリアルタイムで確認します。</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">ガイド全文を読む</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">ガイド全文を読む</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">ライブ市場</span>
+        <span class="odwy4o">ライブ市場</span>
         <h2 id="rlolt2l">ビットコイン、イーサリアムなど幅広く取引</h2>
         <p class="rmct9">リアルタイム価格、高度な指標、関心のある市場のプロフェッショナルな視点。</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">どの画面でも</span>
+            <span class="odwy4o">どの画面でも</span>
             <h2 id="jg778dx">デスクでもポケットでも、同じ口座</h2>
             <p class="rmct9">ログインも残高もひとつです。パソコンのブラウザでもスマートフォンでも開けます。インストールは不要で、1台だけでしか動かないものはありません。</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">口座をリアルタイムで確認</h2>
         <p class="rmct9">アナリストが発注するすべての取引がここに記録されます。エントリー、決済、各ペアの確認済み結果がライブで流れます。</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">ご質問</span>
+        <span class="odwy4o">ご質問</span>
         <h2 id="wysa9hx">よくある質問</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">すべての質問を見る</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">すべての質問を見る</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="お客様の評価" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">信頼</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> 件のレビュー</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> 件のレビュー · 対象 <b style="color:var(--text,#fff)">4,902</b> 件の評価</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="お客様の評価" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">信頼</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> 件のレビュー</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> 件のレビュー · 対象 <b style="color:var(--text,#fff)">4,902</b> 件の評価</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">始める</span>
+      <span class="odwy4o">始める</span>
       <h2 id="fglj2pf">資金の動きをご覧になりますか？</h2>
       <p class="rmct9">数分で口座を開設し、控えめな最低額から入金し、初日から進捗を透明に追跡できます。</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>プロフィールを作成</h3>
-      <p class="pt6joj">数分で始められます。</p>
+      <p class="amrqy">数分で始められます。</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

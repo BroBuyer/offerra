@@ -23,8 +23,10 @@ $active_page = $active_page ?? 'home';
 <link rel="apple-touch-icon" sizes="180x180" href="<?= asset('static/img/icons/apple-touch-icon.png') ?>" />
 <meta name="msapplication-TileImage" content="<?= asset('static/img/icons/icon-192.png') ?>" />
 <meta name="msapplication-TileColor" content="#0b1020" />
-<meta name="theme-color" content="#fcfcfd" />
-<meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#0a1019" />
+<meta name="color-scheme" content="dark" />
+<style>:root{color-scheme:dark only}</style>
+<meta name="color-scheme" content="dark" />
 <meta name="darkreader-lock" />
 <meta name="application-name" content="<?= e(SITE_NAME) ?>" />
 <meta name="apple-mobile-web-app-title" content="<?= e(SITE_NAME) ?>" />
@@ -66,4 +68,4 @@ window.OFFER_LOCALE = <?= json_encode(site_locale(), JSON_UNESCAPED_UNICODE) ?>;
 </head>
 <body>
 <?php require __DIR__ . '/icon-sprite.php'; ?>
-<a class="nd5hm" href="#top">Saltar al contenido</a>
+<a class="skip-link" href="#top">Saltar al contenido</a>

@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + skúsení ľudskí analytici</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + skúsení ľudskí analytici</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Osobný finančný analytik s podporou AI, ktorý pomáha bežným ľuďom vytvoriť ďalší zdroj príjmu — bez predchádzajúcich skúseností. Analytik vás vedie na každom kroku a panel v reálnom čase ukazuje, ako kapitál pracuje.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulované</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Oddelené prostriedky</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klientov</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> hodnotenie</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Začať — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Ako to funguje</a>
+    <p class="roc33zb">Osobný finančný analytik s podporou AI, ktorý pomáha bežným ľuďom vytvoriť ďalší zdroj príjmu — bez predchádzajúcich skúseností. Analytik vás vedie na každom kroku a panel v reálnom čase ukazuje, ako kapitál pracuje.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulované</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Oddelené prostriedky</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klientov</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> hodnotenie</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Začať — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Ako to funguje</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Ochrana SSL</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Podpora 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Rýchle vykonanie</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Otvorte účet</h2>
-      <p class="pt6joj">Začnite počas niekoľkých minút.</p>
+      <p class="amrqy">Začnite počas niekoľkých minút.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Začať teraz';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Aktívni používatelia</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Obchodovaný objem</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Dostupnosť signálov</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Podpora</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Aktívni používatelia</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Obchodovaný objem</span></div>
+      <div class="kstat"><b>99.8%</b><span>Dostupnosť signálov</span></div>
+      <div class="kstat"><b>24/7</b><span>Podpora</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Na tejto stránke">
     <summary class="eik0loi">Na tejto stránke</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Váš východiskový bod</a></li>
       <li><a href="#nw3j7wd">Otázky</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Začať — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Začať — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Čo hovoria členovia</span>
+        <span class="odwy4o">Čo hovoria členovia</span>
         <h2 id="es9pra">Čo hovoria obchodníci</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Žiadne tabuľky. Žiadne obrazovky. Žiadne pochybnosti na poslednú chvíľu</h2>
         <p class="rmct9">Pozrite sa, ako <?= e(SITE_NAME) ?> obstojí vedľa tradičných brokerov a obchodovania ručne.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Vyhradený osobný manažér</td><td class="bfe2o6f">✓</td><td class="byuav">obmedzené hodiny</td><td class="byuav">ručne</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Prečo my</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Prečo my</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Ochrana</span>
+            <span class="odwy4o">Ochrana</span>
             <h2 id="ykur4hl">Vaše peniaze, chránené od základu</h2>
             <p class="rmct9">Klientské prostriedky sú u regulovaných platobných partnerov, prístup je overený a každý výber ide zdokumentovanou cestou späť na účet, z ktorého prišli.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Váš osobný analytik pri stole" width="760" height="520" decoding="async" title="Váš osobný analytik pri stole" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Váš analytik</span>
+            <span class="odwy4o">Váš analytik</span>
             <h2 id="iouvw">Váš osobný finančný analytik</h2>
             <p class="rmct9">Každému členovi je priradený osobný finančný analytik s dlhoročnou praxou na trhoch. Vlastná odbornosť, overené metódy analýzy a moderné nástroje AI pomáhajú nájsť sľubné príležitosti — a zostať s vami v každej fáze.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Výnosy</span>
+        <span class="odwy4o">Výnosy</span>
         <h2 id="rq8es">Príklad s vaším vkladom</h2>
         <p class="rmct9">Posuňte posúvač a nasimulujte väčší vklad: čísla vychádzajú z reprezentatívneho plánu s minimálnym vkladom <?= e(money_min()) ?>. Ide o príklad, nie o sľub; skutočné výnosy závisia od toho, koľko investujete, a od stratégie, ktorú zvolíte s analytikom.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Odhadovaný zostatok</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Otvoriť účet</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Otvoriť účet</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Nájdite východiskový bod</span>
+        <span class="odwy4o">Nájdite východiskový bod</span>
         <h2 id="dv0846">Tri otázky a návrh východiskového plánu</h2>
         <p class="rmct9">Žiadne skóre, žiadna známka — odpovede špecialistovi len povedia, kde začať, aby prvý hovor nešiel na základy.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Späť</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Späť</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Odpovede sú pripravené — nechajte kontakt a špecialista ich s vami prejde.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Zobraziť východiskový plán</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Zobraziť východiskový plán</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ako to funguje</span>
+        <span class="odwy4o">Ako to funguje</span>
         <h2 id="dl5sp">Ako to funguje</h2>
         <p class="rmct9">Moderná AI a skutočný ľudský analytik spoločne pomáhajú vytvoriť ďalší zdroj príjmu, vedú vás na každom kroku a ukazujú každý pohyb kapitálu.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Nastavte stratégiu</h3><p>Zvoľte ciele; analytik plán prispôsobí vám.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Začnite investovať</h3><p>Sledujte vedené signály a pokrok v reálnom čase.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Prečítať celého sprievodcu</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Prečítať celého sprievodcu</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Trhy naživo</span>
+        <span class="odwy4o">Trhy naživo</span>
         <h2 id="rlolt2l">Obchodujte Bitcoin, Ethereum a oveľa viac</h2>
         <p class="rmct9">Ceny v reálnom čase, pokročilé indikátory a profesionálny pohľad na trhy, ktoré vás zaujímajú.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Na každej obrazovke</span>
+            <span class="odwy4o">Na každej obrazovke</span>
             <h2 id="jg778dx">Ten istý účet na stole aj vo vrecku</h2>
             <p class="rmct9">Jedno prihlásenie, jeden zostatok. Otvorte v prehliadači na počítači alebo v telefóne: nič na inštaláciu a nič, čo by fungovalo len na jednom zariadení.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Sledujte účet v reálnom čase</h2>
         <p class="rmct9">Každý obchod, ktorý analytik zadá, je tu zaznamenaný — vstupy, výstupy a overené výsledky na každom páre, naživo.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Otázky</span>
+        <span class="odwy4o">Otázky</span>
         <h2 id="wysa9hx">Často kladené otázky</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Zobraziť všetky otázky</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Zobraziť všetky otázky</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Hodnotenia klientov" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DÔVERYHODNÉ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzie</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzií · Na základe <b style="color:var(--text,#fff)">4,902</b> hodnotení</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Hodnotenia klientov" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DÔVERYHODNÉ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzie</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzií · Na základe <b style="color:var(--text,#fff)">4,902</b> hodnotení</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Začať</span>
+      <span class="odwy4o">Začať</span>
       <h2 id="fglj2pf">Chcete vidieť kapitál v pohybe?</h2>
       <p class="rmct9">Otvorte účet v priebehu minút, vložte skromné minimum a od prvého dňa sledujte pokrok transparentne.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Vytvorte profil</h3>
-      <p class="pt6joj">Začnite počas niekoľkých minút.</p>
+      <p class="amrqy">Začnite počas niekoľkých minút.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

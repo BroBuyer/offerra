@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + ervaren menselijke analisten</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + ervaren menselijke analisten</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Een persoonlijke financieel analist, ondersteund door AI, die gewone mensen helpt extra inkomen te genereren, zonder eerdere ervaring. Uw analist begeleidt u bij elke stap, terwijl het dashboard u in realtime laat zien hoe uw kapitaal werkt.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Gereguleerd</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Gescheiden fondsen</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 klanten</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> beoordeling</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Begin — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Hoe het werkt</a>
+    <p class="roc33zb">Een persoonlijke financieel analist, ondersteund door AI, die gewone mensen helpt extra inkomen te genereren, zonder eerdere ervaring. Uw analist begeleidt u bij elke stap, terwijl het dashboard u in realtime laat zien hoe uw kapitaal werkt.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Gereguleerd</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Gescheiden fondsen</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 klanten</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> beoordeling</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Begin — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Hoe het werkt</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL-beveiliging</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Support 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Snelle uitvoering</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Open uw account</h2>
-      <p class="pt6joj">Begin binnen enkele minuten.</p>
+      <p class="amrqy">Begin binnen enkele minuten.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Nu beginnen';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33.000</b><span>Actieve gebruikers</span></div>
-      <div class="ohqkun7"><b>€0,6B</b><span>Verhandeld volume</span></div>
-      <div class="ohqkun7"><b>99,8%</b><span>Signaalbeschikbaarheid</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Support</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33.000</b><span>Actieve gebruikers</span></div>
+      <div class="kstat"><b>€0,6B</b><span>Verhandeld volume</span></div>
+      <div class="kstat"><b>99,8%</b><span>Signaalbeschikbaarheid</span></div>
+      <div class="kstat"><b>24/7</b><span>Support</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Op deze pagina">
     <summary class="eik0loi">Op deze pagina</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Uw startpunt</a></li>
       <li><a href="#nw3j7wd">Vragen</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Begin — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Begin — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Wat leden zeggen</span>
+        <span class="odwy4o">Wat leden zeggen</span>
         <h2 id="es9pra">Wat beleggers zeggen</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Waarom <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Waarom <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Geen spreadsheets. Geen schermen. Geen last-minute twijfels</h2>
         <p class="rmct9">Ontdek hoe <?= e(SITE_NAME) ?> zich verhoudt tot traditionele brokers en zelf beleggen.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Toegewezen persoonlijk manager</td><td class="bfe2o6f">✓</td><td class="byuav">beperkte openingstijden</td><td class="byuav">handmatig</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Waarom wij</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Waarom wij</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Bescherming</span>
+            <span class="odwy4o">Bescherming</span>
             <h2 id="ykur4hl">Uw geld, beschermd by design</h2>
             <p class="rmct9">Klantfondsen worden gestort bij gereguleerde betalingspartners, toegang is geverifieerd en elke opname volgt een gedocumenteerd pad terug naar de oorspronkelijke rekening.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Uw persoonlijke analist aan het werk" width="760" height="520" decoding="async" title="Uw persoonlijke analist aan het werk" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Uw analist</span>
+            <span class="odwy4o">Uw analist</span>
             <h2 id="iouvw">Uw persoonlijke financieel analist</h2>
             <p class="rmct9">Elk lid wordt gekoppeld aan een persoonlijke financieel analist met jarenlange marktervaring. Met eigen expertise, bewezen analysemethoden en moderne AI-tools helpt hij u veelbelovende kansen te spotten en begeleidt u in elke fase.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Rendementen</span>
+        <span class="odwy4o">Rendementen</span>
         <h2 id="rq8es">Een voorbeeld met uw storting</h2>
         <p class="rmct9">Verschuif de schuifregelaar om een grotere storting te simuleren: de bedragen worden berekend op basis van een representatief plan met de minimale storting van <?= e(money_min()) ?>. Dit is een voorbeeld, geen belofte; uw werkelijke opbrengst hangt af van hoeveel u investeert en welke strategie u samen met uw analist kiest.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Verwacht saldo</small>
           <b id="aowtjsf">€1.000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Account openen</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Account openen</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Uw startpunt</span>
+        <span class="odwy4o">Uw startpunt</span>
         <h2 id="dv0846">Drie vragen en een voorgesteld startplan</h2>
         <p class="rmct9">Geen score of cijfer: de antwoorden geven uw specialist alleen aan waar te beginnen, zodat het eerste gesprek niet aan de basis wordt besteed.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Terug</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Terug</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Uw antwoorden zijn klaar: laat uw gegevens achter en een specialist bespreekt ze met u.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Mijn startplan bekijken</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Mijn startplan bekijken</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Hoe het werkt</span>
+        <span class="odwy4o">Hoe het werkt</span>
         <h2 id="dl5sp">Hoe het werkt</h2>
         <p class="rmct9">Moderne AI en een echte menselijke analist, samenwerkend om u te helpen extra inkomen op te bouwen, u bij elke stap te begeleiden en elke beweging van uw kapitaal te tonen.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Bepaal uw strategie</h3><p>Kies uw doelen; uw analist past het plan op u aan.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Begin met beleggen</h3><p>Volg de begeleide signalen en volg uw voortgang in realtime.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Lees de volledige gids</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Lees de volledige gids</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Live markten</span>
+        <span class="odwy4o">Live markten</span>
         <h2 id="rlolt2l">Handel in Bitcoin, Ethereum en meer</h2>
         <p class="rmct9">Realtime prijzen, geavanceerde indicatoren en een professioneel overzicht van de markten die u interesseren.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Op elk scherm</span>
+            <span class="odwy4o">Op elk scherm</span>
             <h2 id="jg778dx">Hetzelfde account op uw desktop en in uw zak</h2>
             <p class="rmct9">Eén login, één saldo. Open het via de browser op uw computer of op uw mobiel: niets te installeren en niets werkt alleen op één apparaat.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Bekijk uw account in realtime</h2>
         <p class="rmct9">Elke transactie die uw analist plaatst, wordt hier vastgelegd: instappen, uitstappen en geverifieerde resultaten per paar, live.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Vragen</span>
+        <span class="odwy4o">Vragen</span>
         <h2 id="wysa9hx">Veelgestelde vragen</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Alle vragen bekijken</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Alle vragen bekijken</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Klantbeoordelingen" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">BETROUWBARE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reviews</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reviews · Gebaseerd op <b style="color:var(--text,#fff)">4.902</b> beoordelingen</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Klantbeoordelingen" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">BETROUWBARE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reviews</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reviews · Gebaseerd op <b style="color:var(--text,#fff)">4.902</b> beoordelingen</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Begin nu</span>
+      <span class="odwy4o">Begin nu</span>
       <h2 id="fglj2pf">Klaar om uw kapitaal in beweging te zien?</h2>
       <p class="rmct9">Open uw account in enkele minuten, stort vanaf een bescheiden minimum en volg uw voortgang vanaf dag één transparant.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Maak uw profiel aan</h3>
-      <p class="pt6joj">Begin binnen enkele minuten.</p>
+      <p class="amrqy">Begin binnen enkele minuten.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

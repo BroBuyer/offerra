@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + doświadczeni analitycy</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + doświadczeni analitycy</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Osobisty analityk finansowy ze wsparciem AI, który pomaga zwykłym osobom zbudować dodatkowe źródło dochodu — bez wcześniejszego doświadczenia. Analityk prowadzi Państwa na każdym kroku, a panel w czasie rzeczywistym pokazuje, jak pracuje kapitał.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulowane</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Wydzielone środki</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klientów</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> ocena</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Zacznij — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Jak to działa</a>
+    <p class="roc33zb">Osobisty analityk finansowy ze wsparciem AI, który pomaga zwykłym osobom zbudować dodatkowe źródło dochodu — bez wcześniejszego doświadczenia. Analityk prowadzi Państwa na każdym kroku, a panel w czasie rzeczywistym pokazuje, jak pracuje kapitał.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulowane</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Wydzielone środki</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klientów</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> ocena</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Zacznij — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Jak to działa</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Ochrona SSL</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Wsparcie 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Szybka realizacja</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Otwórz konto</h2>
-      <p class="pt6joj">Zacznij w kilka minut.</p>
+      <p class="amrqy">Zacznij w kilka minut.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Zacznij teraz';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Aktywni użytkownicy</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Wolumen obrotu</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Dostępność sygnałów</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Wsparcie</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Aktywni użytkownicy</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Wolumen obrotu</span></div>
+      <div class="kstat"><b>99.8%</b><span>Dostępność sygnałów</span></div>
+      <div class="kstat"><b>24/7</b><span>Wsparcie</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Na tej stronie">
     <summary class="eik0loi">Na tej stronie</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Państwa punkt wyjścia</a></li>
       <li><a href="#nw3j7wd">Pytania</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Zacznij — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Zacznij — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Co mówią członkowie</span>
+        <span class="odwy4o">Co mówią członkowie</span>
         <h2 id="es9pra">Co mówią inwestorzy</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Bez arkuszy. Bez ekranów. Bez wątpliwości w ostatniej chwili</h2>
         <p class="rmct9">Zobacz, jak <?= e(SITE_NAME) ?> wypada na tle tradycyjnych brokerów i samodzielnego handlu.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Dedykowany opiekun</td><td class="bfe2o6f">✓</td><td class="byuav">ograniczone godziny</td><td class="byuav">ręcznie</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Dlaczego my</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Dlaczego my</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Zabezpieczenia</span>
+            <span class="odwy4o">Zabezpieczenia</span>
             <h2 id="ykur4hl">Państwa pieniądze, chronione od podstaw</h2>
             <p class="rmct9">Środki klientów są u regulowanych partnerów płatniczych, dostęp jest weryfikowany, a każda wypłata wraca udokumentowaną drogą na konto, z którego pochodziła.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Państwa osobisty analityk przy biurku" width="760" height="520" decoding="async" title="Państwa osobisty analityk przy biurku" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Państwa analityk</span>
+            <span class="odwy4o">Państwa analityk</span>
             <h2 id="iouvw">Państwa osobisty analityk finansowy</h2>
             <p class="rmct9">Każdemu członkowi przydzielany jest osobisty analityk finansowy z wieloletnim doświadczeniem rynkowym. Własna wiedza, sprawdzone metody analizy i nowoczesne narzędzia AI pomagają dostrzec obiecujące okazje — i towarzyszą Państwu na każdym etapie.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Wyniki</span>
+        <span class="odwy4o">Wyniki</span>
         <h2 id="rq8es">Przykład z Państwa wpłatą</h2>
         <p class="rmct9">Przesuń suwak, by zasymulować większą wpłatę: liczby wynikają z reprezentatywnego planu z minimalną wpłatą <?= e(money_min()) ?>. To przykład, nie obietnica; rzeczywiste wyniki zależą od kwoty inwestycji i strategii ustalonej z analitykiem.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Szacowane saldo</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Otwórz konto</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Otwórz konto</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Znajdź punkt wyjścia</span>
+        <span class="odwy4o">Znajdź punkt wyjścia</span>
         <h2 id="dv0846">Trzy pytania, potem propozycja planu startowego</h2>
         <p class="rmct9">Bez punktacji, bez oceny — odpowiedzi mówią specjaliście, od czego zacząć, by pierwsza rozmowa nie poszła na podstawy.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Wstecz</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Wstecz</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Odpowiedzi są gotowe — zostaw dane, a specjalista je omówi.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Zobacz plan startowy</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Zobacz plan startowy</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Jak to działa</span>
+        <span class="odwy4o">Jak to działa</span>
         <h2 id="dl5sp">Jak to działa</h2>
         <p class="rmct9">Nowoczesne AI i prawdziwy analityk razem pomagają zbudować dodatkowe źródło dochodu, prowadzą na każdym kroku i pokazują każdy ruch kapitału.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Ustal strategię</h3><p>Wybierz cele; analityk dopasuje plan do Państwa.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Zacznij inwestować</h3><p>Śledź prowadzone sygnały i postępy w czasie rzeczywistym.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Przeczytaj pełny przewodnik</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Przeczytaj pełny przewodnik</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Rynki na żywo</span>
+        <span class="odwy4o">Rynki na żywo</span>
         <h2 id="rlolt2l">Handluj Bitcoinem, Ethereum i wieloma innymi aktywami</h2>
         <p class="rmct9">Ceny w czasie rzeczywistym, zaawansowane wskaźniki i profesjonalny obraz rynków, które Państwa interesują.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Na każdym ekranie</span>
+            <span class="odwy4o">Na każdym ekranie</span>
             <h2 id="jg778dx">To samo konto na biurku i w kieszeni</h2>
             <p class="rmct9">Jedno logowanie, jedno saldo. Otwórz w przeglądarce na komputerze lub w telefonie: nic do instalacji i nic, co działa tylko na jednym urządzeniu.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Śledź konto w czasie rzeczywistym</h2>
         <p class="rmct9">Każda transakcja analityka jest tu zapisana — wejścia, wyjścia i zweryfikowane wyniki na każdej parze, na żywo.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Pytania</span>
+        <span class="odwy4o">Pytania</span>
         <h2 id="wysa9hx">Najczęściej zadawane pytania</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Zobacz wszystkie pytania</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Zobacz wszystkie pytania</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Oceny klientów" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUFANE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Opinii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> opinii · Na podstawie <b style="color:var(--text,#fff)">4,902</b> ocen</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Oceny klientów" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUFANE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Opinii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> opinii · Na podstawie <b style="color:var(--text,#fff)">4,902</b> ocen</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Zacznij</span>
+      <span class="odwy4o">Zacznij</span>
       <h2 id="fglj2pf">Chcą Państwo zobaczyć kapitał w ruchu?</h2>
       <p class="rmct9">Otwórz konto w kilka minut, wpłać skromne minimum i od pierwszego dnia śledź postępy przejrzyście.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Utwórz profil</h3>
-      <p class="pt6joj">Zacznij w kilka minut.</p>
+      <p class="amrqy">Zacznij w kilka minut.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

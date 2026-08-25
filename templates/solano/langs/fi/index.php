@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">Tekoäly + kokeneet ihmisanalyytikot</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">Tekoäly + kokeneet ihmisanalyytikot</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Henkilökohtainen rahoitusanalyytikko tekoälyn tukemana, joka auttaa tavallisia ihmisiä luomaan lisätulovirran — ilman aiempaa kokemusta. Analyytikko ohjaa teitä jokaisessa vaiheessa, ja koontinäyttö näyttää reaaliajassa, miten pääoma työskentelee.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Säännelty</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Erotellut varat</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 asiakasta</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> arvio</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Aloita — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Näin se toimii</a>
+    <p class="roc33zb">Henkilökohtainen rahoitusanalyytikko tekoälyn tukemana, joka auttaa tavallisia ihmisiä luomaan lisätulovirran — ilman aiempaa kokemusta. Analyytikko ohjaa teitä jokaisessa vaiheessa, ja koontinäyttö näyttää reaaliajassa, miten pääoma työskentelee.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Säännelty</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Erotellut varat</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 asiakasta</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> arvio</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Aloita — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Näin se toimii</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL-suojaus</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Tuki 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Nopea toteutus</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Avaa tilisi</h2>
-      <p class="pt6joj">Pääsette alkuun muutamassa minuutissa.</p>
+      <p class="amrqy">Pääsette alkuun muutamassa minuutissa.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Aloita nyt';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Aktiiviset käyttäjät</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Kaupankäyntivolyymi</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Signaalien käytettävyys</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Tuki</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Aktiiviset käyttäjät</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Kaupankäyntivolyymi</span></div>
+      <div class="kstat"><b>99.8%</b><span>Signaalien käytettävyys</span></div>
+      <div class="kstat"><b>24/7</b><span>Tuki</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Tällä sivulla">
     <summary class="eik0loi">Tällä sivulla</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Aloituspisteenne</a></li>
       <li><a href="#nw3j7wd">Kysymykset</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Aloita — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Aloita — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Mitä jäsenet sanovat</span>
+        <span class="odwy4o">Mitä jäsenet sanovat</span>
         <h2 id="es9pra">Mitä treidaajat sanovat</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Ei taulukoita. Ei näyttöjä. Ei viime hetken epäilyksiä</h2>
         <p class="rmct9">Katsokaa, miten <?= e(SITE_NAME) ?> pärjää perinteisille välittäjille ja käsin treidaamiselle.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Oma henkilökohtainen manageri</td><td class="bfe2o6f">✓</td><td class="byuav">rajoitetut tunnit</td><td class="byuav">manuaalisesti</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Miksi me</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Miksi me</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Suojaukset</span>
+            <span class="odwy4o">Suojaukset</span>
             <h2 id="ykur4hl">Rahenne, suojattu jo rakenteessa</h2>
             <p class="rmct9">Asiakasvarat ovat säännellyillä maksupartnereilla, pääsy on varmennettu, ja jokainen nosto palaa dokumentoitua reittiä tilille, josta se tuli.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Henkilökohtainen analyytikkonne työpöytänsä ääressä" width="760" height="520" decoding="async" title="Henkilökohtainen analyytikkonne työpöytänsä ääressä" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Analyytikkonne</span>
+            <span class="odwy4o">Analyytikkonne</span>
             <h2 id="iouvw">Henkilökohtainen rahoitusanalyytikkonne</h2>
             <p class="rmct9">Jokaiselle jäsenelle nimetään henkilökohtainen rahoitusanalyytikko, jolla on vuosien markkinakokemus. Oma asiantuntemus, koetellut analyysimenetelmät ja nykyaikaiset tekoälytyökalut auttavat tunnistamaan lupaavia tilaisuuksia — ja pysymään rinnallanne jokaisessa vaiheessa.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Tuotot</span>
+        <span class="odwy4o">Tuotot</span>
         <h2 id="rq8es">Esimerkki talletuksellanne</h2>
         <p class="rmct9">Siirtäkää liukusäädintä simuloidaksenne suuremman talletuksen: luvut lasketaan edustavasta suunnitelmasta, jonka vähimmäistalletus on <?= e(money_min()) ?>. Tämä on esimerkki, ei lupaus; todelliset tuotot riippuvat sijoittamastanne summasta ja strategiasta, jonka valitsette analyytikon kanssa.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Ennustettu saldo</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Avaa tili</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Avaa tili</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Löytäkää aloituspisteenne</span>
+        <span class="odwy4o">Löytäkää aloituspisteenne</span>
         <h2 id="dv0846">Kolme kysymystä ja ehdotettu aloitussuunnitelma</h2>
         <p class="rmct9">Ei pisteitä, ei arvosanaa — vastaukset kertovat asiantuntijalle, mistä aloittaa, jotta ensimmäinen puhelu ei kulu perusteisiin.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Takaisin</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Takaisin</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Vastauksenne ovat valmiina — jättäkää yhteystiedot, niin asiantuntija käy ne kanssanne läpi.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Näytä aloitussuunnitelmani</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Näytä aloitussuunnitelmani</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Näin se toimii</span>
+        <span class="odwy4o">Näin se toimii</span>
         <h2 id="dl5sp">Näin se toimii</h2>
         <p class="rmct9">Nykyaikainen tekoäly ja oikea ihmisanalyytikko yhdessä auttavat rakentamaan lisätulonlähteen, ohjaavat teitä jokaisessa vaiheessa ja näyttävät jokaisen pääoman liikkeen.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Asettakaa strategia</h3><p>Valitkaa tavoitteet; analyytikko muotoilee suunnitelman teidän ympärillenne.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Aloittakaa sijoittaminen</h3><p>Seuratkaa ohjattuja signaaleja ja edistymistänne reaaliajassa.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Lue koko opas</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Lue koko opas</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Markkinat livenä</span>
+        <span class="odwy4o">Markkinat livenä</span>
         <h2 id="rlolt2l">Käykää kauppaa Bitcoinilla, Ethereumilla ja paljolla muulla</h2>
         <p class="rmct9">Reaaliaikaiset hinnat, kehittyneet indikaattorit ja ammattitason näkymä markkinoihin, jotka kiinnostavat teitä.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Millä tahansa näytöllä</span>
+            <span class="odwy4o">Millä tahansa näytöllä</span>
             <h2 id="jg778dx">Sama tili työpöydällä ja taskussa</h2>
             <p class="rmct9">Yksi kirjautuminen, yksi saldo. Avatkaa se tietokoneen selaimesta tai puhelimesta: ei asennettavaa eikä mitään, mikä toimisi vain yhdellä laitteella.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Seuratkaa tiliänne reaaliajassa</h2>
         <p class="rmct9">Jokainen analyytikon tekemä kauppa kirjataan tähän — sisään- ja ulosmenot sekä varmennetut tulokset jokaisella parilla, livenä.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Kysymykset</span>
+        <span class="odwy4o">Kysymykset</span>
         <h2 id="wysa9hx">Usein kysytyt kysymykset</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Näytä kaikki kysymykset</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Näytä kaikki kysymykset</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Asiakasarviot" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">LUOTETTU</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Arvostelua</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> arvostelua · Perustuu <b style="color:var(--text,#fff)">4,902</b> arvioon</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Asiakasarviot" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">LUOTETTU</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Arvostelua</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> arvostelua · Perustuu <b style="color:var(--text,#fff)">4,902</b> arvioon</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Aloita</span>
+      <span class="odwy4o">Aloita</span>
       <h2 id="fglj2pf">Haluatteko nähdä pääoman liikkeessä?</h2>
       <p class="rmct9">Avatkaa tili minuuteissa, tallettakaa vaatimattomasta minimistä ja seuratkaa edistymistä läpinäkyvästi ensimmäisestä päivästä.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Luokaa profiilinne</h3>
-      <p class="pt6joj">Pääsette alkuun muutamassa minuutissa.</p>
+      <p class="amrqy">Pääsette alkuun muutamassa minuutissa.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

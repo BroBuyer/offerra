@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + iskusni ljudski analitičari</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + iskusni ljudski analitičari</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Osobni financijski analitičar, potpomognut AI-jem, koji pomaže običnim ljudima generirati dodatni izvor prihoda, bez prethodnog iskustva. Vaš analitičar vodi vas u svakom koraku, dok vam nadzorna ploča u stvarnom vremenu pokazuje kako vaš kapital radi.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulirano</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Odvojena sredstva</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 klijenata</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> ocjena</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Započnite — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Kako funkcionira</a>
+    <p class="roc33zb">Osobni financijski analitičar, potpomognut AI-jem, koji pomaže običnim ljudima generirati dodatni izvor prihoda, bez prethodnog iskustva. Vaš analitičar vodi vas u svakom koraku, dok vam nadzorna ploča u stvarnom vremenu pokazuje kako vaš kapital radi.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulirano</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Odvojena sredstva</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 klijenata</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> ocjena</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Započnite — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Kako funkcionira</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL zaštita</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Podrška 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Brzo izvršenje</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Otvorite račun</h2>
-      <p class="pt6joj">Započnite u nekoliko minuta.</p>
+      <p class="amrqy">Započnite u nekoliko minuta.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Započnite sada';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33.000</b><span>Aktivni korisnici</span></div>
-      <div class="ohqkun7"><b>€0,6B</b><span>Obujam trgovanja</span></div>
-      <div class="ohqkun7"><b>99,8%</b><span>Dostupnost signala</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Podrška</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33.000</b><span>Aktivni korisnici</span></div>
+      <div class="kstat"><b>€0,6B</b><span>Obujam trgovanja</span></div>
+      <div class="kstat"><b>99,8%</b><span>Dostupnost signala</span></div>
+      <div class="kstat"><b>24/7</b><span>Podrška</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Na ovoj stranici">
     <summary class="eik0loi">Na ovoj stranici</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Vaša polazna točka</a></li>
       <li><a href="#nw3j7wd">Pitanja</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Započnite — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Započnite — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Što kažu članovi</span>
+        <span class="odwy4o">Što kažu članovi</span>
         <h2 id="es9pra">Što kažu ulagači</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Por qué <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Por qué <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Bez proračunskih tablica. Bez ekrana. Bez sumnji u posljednjem trenutku</h2>
         <p class="rmct9">Otkrijte kako se <?= e(SITE_NAME) ?> uspoređuje s tradicionalnim brokerima i samostalnim trgovanjem.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Dodijeljeni osobni menadžer</td><td class="bfe2o6f">✓</td><td class="byuav">ograničeno radno vrijeme</td><td class="byuav">ručno</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Zašto mi</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Zašto mi</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Zaštite</span>
+            <span class="odwy4o">Zaštite</span>
             <h2 id="ykur4hl">Vaš novac, zaštićen dizajnom</h2>
             <p class="rmct9">Sredstva klijenata deponiraju se kod reguliranih platnih partnera, pristup je provjeren, a svaka isplata slijedi dokumentiran put natrag na izvorni račun.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Vaš osobni analitičar na radnom mjestu" width="760" height="520" decoding="async" title="Vaš osobni analitičar na radnom mjestu" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Vaš analitičar</span>
+            <span class="odwy4o">Vaš analitičar</span>
             <h2 id="iouvw">Vaš osobni financijski analitičar</h2>
             <p class="rmct9">Svaki se član povezuje s osobnim financijskim analitičarem s godinama iskustva na tržištima. Svojim iskustvom, provjerenim metodama analize i modernim AI alatima pomaže vam prepoznati obećavajuće prilike i prati vas u svakoj fazi.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Prinosi</span>
+        <span class="odwy4o">Prinosi</span>
         <h2 id="rq8es">Primjer s vašim depozitom</h2>
         <p class="rmct9">Pomaknite klizač kako biste simulirali veći depozit: iznosi se izračunavaju na temelju reprezentativnog plana s minimalnim depozitom od <?= e(money_min()) ?>. Ovo je primjer, a ne obećanje; vaš stvarni prihod ovisi o tome koliko ulažete i o strategiji koju odaberete sa svojim analitičarem.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Projicirani saldo</small>
           <b id="aowtjsf">€1.000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Otvoriti račun</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Otvoriti račun</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Vaša polazna točka</span>
+        <span class="odwy4o">Vaša polazna točka</span>
         <h2 id="dv0846">Tri pitanja i predloženi početni plan</h2>
         <p class="rmct9">Bez bodovanja ili ocjene: odgovori samo upućuju vašeg stručnjaka odakle početi, kako prvi poziv ne bi trošio vrijeme na osnovno.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Natrag</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Natrag</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Vaši odgovori su spremni: ostavite svoje podatke i stručnjak će ih s vama proći.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Pogledaj moj početni plan</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Pogledaj moj početni plan</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Kako funkcionira</span>
+        <span class="odwy4o">Kako funkcionira</span>
         <h2 id="dl5sp">Kako funkcionira</h2>
         <p class="rmct9">Moderni AI i stvarni ljudski analitičar, koji rade zajedno kako bi vam pomogli izgraditi dodatni izvor prihoda, vodeći vas u svakom koraku i pokazujući svaki pokret vašeg kapitala.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Definirajte strategiju</h3><p>Odaberite ciljeve; vaš analitičar prilagođava plan vama.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Počnite ulagati</h3><p>Pratite vođene signale i promatrajte napredak u stvarnom vremenu.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Pročitajte cijeli vodič</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Pročitajte cijeli vodič</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Tržišta uživo</span>
+        <span class="odwy4o">Tržišta uživo</span>
         <h2 id="rlolt2l">Trgujte Bitcoinom, Ethereumom i mnogo više</h2>
         <p class="rmct9">Cijene u stvarnom vremenu, napredni indikatori i profesionalni pregled tržišta koja vas zanimaju.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Na bilo kojem ekranu</span>
+            <span class="odwy4o">Na bilo kojem ekranu</span>
             <h2 id="jg778dx">Isti račun na računalu i u džepu</h2>
             <p class="rmct9">Jedan pristup, jedan saldo. Otvorite ga u pregledniku na računalu ili na mobitelu: nema ništa za instalirati niti ništa što radi samo na jednom uređaju.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Pogledajte račun u stvarnom vremenu</h2>
         <p class="rmct9">Svaka operacija koju postavi vaš analitičar ovdje je zabilježena: ulazi, izlazi i provjereni rezultati po paru, uživo.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Pitanja</span>
+        <span class="odwy4o">Pitanja</span>
         <h2 id="wysa9hx">Često postavljana pitanja</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Ver todas las preguntas</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Ver todas las preguntas</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Ocjene klijenata" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">POVJERLJIVO</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzije</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzija · Temeljeno na <b style="color:var(--text,#fff)">4.902</b> ocjena</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Ocjene klijenata" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">POVJERLJIVO</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzije</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzija · Temeljeno na <b style="color:var(--text,#fff)">4.902</b> ocjena</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Započnite odmah</span>
+      <span class="odwy4o">Započnite odmah</span>
       <h2 id="fglj2pf">Spremni vidjeti kako vaš kapital radi?</h2>
       <p class="rmct9">Otvorite račun u nekoliko minuta, uplatite od skromnog minimuma i od prvog dana transparentno pratite napredak.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Stvorite profil</h3>
-      <p class="pt6joj">Započnite u nekoliko minuta.</p>
+      <p class="amrqy">Započnite u nekoliko minuta.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

@@ -4,7 +4,7 @@ require_once __DIR__ . '/config.php';
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
 $form_submit = $form_submit ?? 'Inizia ora';
-$form_variant = $form_variant ?? 'band';
+$form_variant = $form_variant ?? 'stack';
 $form_class = trim(($form_class ?? 'leadform lead-form solano-form') . ($form_variant === 'stack' ? ' solano-stack' : ''));
 $form_subtitle = $form_subtitle ?? null;
 $phone_country = form_visitor_phone_country();
@@ -47,60 +47,60 @@ $is_stack = $form_variant === 'stack';
       <h3 class="form-card-title"><?= e($form_heading) ?></h3>
     <?php endif; ?>
     <?php if ($form_subtitle): ?>
-      <p class="pt6joj"><?= e($form_subtitle) ?></p>
+      <p class="amrqy"><?= e($form_subtitle) ?></p>
     <?php endif; ?>
 
 <?php if ($is_stack): ?>
-    <div class="xdzqh">
-      <div class="wxts7 field" data-field="fname">
+    <div class="rtjqp">
+      <div class="jn406 field" data-field="fname">
         <label class="field-label" for="<?= e($form_id) ?>-fname">Nome</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nome" required pattern="[^\d]+" autocomplete="given-name">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nome" required pattern="[^\d]+" autocomplete="given-name">
       </div>
-      <div class="wxts7 field" data-field="lname">
+      <div class="jn406 field" data-field="lname">
         <label class="field-label" for="<?= e($form_id) ?>-lname">Cognome</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Cognome" required pattern="[^\d]+" autocomplete="family-name">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Cognome" required pattern="[^\d]+" autocomplete="family-name">
       </div>
     </div>
-    <div class="wxts7 field" data-field="email">
+    <div class="jn406 field" data-field="email">
       <label class="field-label" for="<?= e($form_id) ?>-email">Email</label>
-      <input class="wnzxg input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
+      <input class="cm9aayi input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
     </div>
-    <div class="wxts7 field" data-field="phone">
+    <div class="jn406 field" data-field="phone">
       <label class="field-label" for="<?= e($form_id) ?>-phone">Telefono</label>
-      <input class="wnzxg input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="312 345 6789" autocomplete="tel" inputmode="tel">
+      <input class="cm9aayi input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="312 345 6789" autocomplete="tel" inputmode="tel">
       <span class="field-error hide" role="alert" aria-live="polite"></span>
     </div>
 <?php else: ?>
-    <div class="nc427f">
-      <div class="wxts7 field" data-field="fname">
+    <div class="rtjqp">
+      <div class="jn406 field" data-field="fname">
         <label class="field-label" for="<?= e($form_id) ?>-fname">Nome</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nome" required pattern="[^\d]+" autocomplete="given-name">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nome" required pattern="[^\d]+" autocomplete="given-name">
       </div>
-      <div class="wxts7 field" data-field="lname">
+      <div class="jn406 field" data-field="lname">
         <label class="field-label" for="<?= e($form_id) ?>-lname">Cognome</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Cognome" required pattern="[^\d]+" autocomplete="family-name">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Cognome" required pattern="[^\d]+" autocomplete="family-name">
       </div>
-      <div class="wxts7 field" data-field="email">
+      <div class="jn406 field" data-field="email">
         <label class="field-label" for="<?= e($form_id) ?>-email">Email</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
       </div>
-      <div class="wxts7 field" data-field="phone">
+      <div class="jn406 field" data-field="phone">
         <label class="field-label" for="<?= e($form_id) ?>-phone">Telefono</label>
-        <input class="wnzxg input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="312 345 6789" autocomplete="tel" inputmode="tel">
+        <input class="cm9aayi input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="312 345 6789" autocomplete="tel" inputmode="tel">
         <span class="field-error hide" role="alert" aria-live="polite"></span>
       </div>
     </div>
 <?php endif; ?>
 
-    <button type="submit" class="qou73xg fi3abjs submit"><?= e($form_submit) ?></button>
+    <button type="submit" class="rs0voj6 ggca24u submit" style="width:100%;justify-content:center"><?= e($form_submit) ?></button>
 
-    <div class="nmpf6" aria-label="Metodi di pagamento accettati">
-      <svg class="ajr3je" role="img" aria-label="Visa" viewBox="0 0 576 512"><use href="#i-cc-visa"/></svg>
-      <svg class="ajr3je" role="img" aria-label="Mastercard" viewBox="0 0 576 512"><use href="#i-cc-mastercard"/></svg>
-      <svg class="ajr3je" role="img" aria-label="PayPal" viewBox="0 0 576 512"><use href="#i-cc-paypal"/></svg>
-      <svg class="ajr3je" role="img" aria-label="Apple Pay" viewBox="0 0 576 512"><use href="#i-cc-apple-pay"/></svg>
-      <svg class="ajr3je" role="img" aria-label="Bonifico bancario" viewBox="0 0 512 512"><use href="#i-building-columns"/></svg>
-      <svg class="ajr3je kw4ijl" role="img" aria-label="Sicuro" viewBox="0 0 512 512"><use href="#i-shield-halved"/></svg>
+    <div class="payrow" aria-label="Metodi di pagamento accettati">
+      <svg class="fai" role="img" aria-label="Visa" viewBox="0 0 576 512"><use href="#i-cc-visa"/></svg>
+      <svg class="fai" role="img" aria-label="Mastercard" viewBox="0 0 576 512"><use href="#i-cc-mastercard"/></svg>
+      <svg class="fai" role="img" aria-label="PayPal" viewBox="0 0 576 512"><use href="#i-cc-paypal"/></svg>
+      <svg class="fai" role="img" aria-label="Apple Pay" viewBox="0 0 576 512"><use href="#i-cc-apple-pay"/></svg>
+      <svg class="fai" role="img" aria-label="Bonifico bancario" viewBox="0 0 512 512"><use href="#i-building-columns"/></svg>
+      <svg class="fai pay-ok" role="img" aria-label="Sicuro" viewBox="0 0 512 512"><use href="#i-shield-halved"/></svg>
     </div>
 
     <div class="form-message hidden" data-form-message role="alert">
@@ -108,7 +108,7 @@ $is_stack = $form_variant === 'stack';
       <div data-form-message-content></div>
     </div>
 
-    <p class="ac7ftax">
+    <p class="jvrey">
       Continuando accetti la nostra informativa sulla privacy e le condizioni d’uso.
       <a href="<?= page_url('privacy.php') ?>">Privacy</a>
       e

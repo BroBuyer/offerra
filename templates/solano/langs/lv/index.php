@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">MI + pieredzējuši cilvēku analītiķi</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">MI + pieredzējuši cilvēku analītiķi</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Personīgais finanšu analītiķis ar MI atbalstu, kas palīdz parastiem cilvēkiem radīt papildu ienākumu avotu — bez iepriekšējas pieredzes. Analītiķis jūs vada katrā solī, bet panelis reāllaikā rāda, kā strādā kapitāls.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulēts</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Nošķirti līdzekļi</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klienti</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> vērtējums</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Sākt — <?= e(money_min()) ?> no</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Kā tas darbojas</a>
+    <p class="roc33zb">Personīgais finanšu analītiķis ar MI atbalstu, kas palīdz parastiem cilvēkiem radīt papildu ienākumu avotu — bez iepriekšējas pieredzes. Analītiķis jūs vada katrā solī, bet panelis reāllaikā rāda, kā strādā kapitāls.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulēts</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Nošķirti līdzekļi</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39 600 klienti</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> vērtējums</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Sākt — <?= e(money_min()) ?> no</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Kā tas darbojas</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL aizsardzība</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Atbalsts 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Ātra izpilde</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Atveriet kontu</h2>
-      <p class="pt6joj">Sāciet dažu minūšu laikā.</p>
+      <p class="amrqy">Sāciet dažu minūšu laikā.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Sākt tagad';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Aktīvie lietotāji</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Tirdzniecības apjoms</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Signālu pieejamība</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Atbalsts</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Aktīvie lietotāji</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Tirdzniecības apjoms</span></div>
+      <div class="kstat"><b>99.8%</b><span>Signālu pieejamība</span></div>
+      <div class="kstat"><b>24/7</b><span>Atbalsts</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Šajā lapā">
     <summary class="eik0loi">Šajā lapā</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Jūsu sākuma punkts</a></li>
       <li><a href="#nw3j7wd">Jautājumi</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Sākt — <?= e(money_min()) ?> no</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Sākt — <?= e(money_min()) ?> no</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ko saka dalībnieki</span>
+        <span class="odwy4o">Ko saka dalībnieki</span>
         <h2 id="es9pra">Ko saka tirgotāji</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Bez izklājlapām. Bez ekrāniem. Bez šaubām pēdējā brīdī</h2>
         <p class="rmct9">Skatiet, kā <?= e(SITE_NAME) ?> salīdzināms ar tradicionālajiem brokeriem un tirdzniecību ar roku.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Personīgais menedžeris</td><td class="bfe2o6f">✓</td><td class="byuav">ierobežotas stundas</td><td class="byuav">ar roku</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Kāpēc mēs</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Kāpēc mēs</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Aizsardzība</span>
+            <span class="odwy4o">Aizsardzība</span>
             <h2 id="ykur4hl">Jūsu nauda, aizsargāta pēc būtības</h2>
             <p class="rmct9">Klientu līdzekļi atrodas pie regulētiem maksājumu partneriem, piekļuve ir verificēta, un katra izņemšana iet dokumentētu ceļu atpakaļ uz kontu, no kura nāca.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Jūsu personīgais analītiķis pie sava galda" width="760" height="520" decoding="async" title="Jūsu personīgais analītiķis pie sava galda" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Jūsu analītiķis</span>
+            <span class="odwy4o">Jūsu analītiķis</span>
             <h2 id="iouvw">Jūsu personīgais finanšu analītiķis</h2>
             <p class="rmct9">Katram dalībniekam tiek piešķirts personīgais finanšu analītiķis ar gadu pieredzi tirgos. Pašu ekspertīze, pārbaudītas analīzes metodes un moderni MI rīki palīdz atrast perspektīvas iespējas — un palikt ar jums katrā posmā.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ienesīgums</span>
+        <span class="odwy4o">Ienesīgums</span>
         <h2 id="rq8es">Piemērs ar jūsu iemaksu</h2>
         <p class="rmct9">Pārvietojiet slīdni, lai simulētu lielāku iemaksu: skaitļi aprēķināti no reprezentatīva plāna ar minimālo iemaksu <?= e(money_min()) ?>. Tas ir piemērs, ne solījums; faktiskais ienesīgums atkarīgs no ieguldītās summas un stratēģijas, ko izvēlaties ar analītiķi.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Prognozētais atlikums</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Atvērt kontu</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Atvērt kontu</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Atrodiet sākuma punktu</span>
+        <span class="odwy4o">Atrodiet sākuma punktu</span>
         <h2 id="dv0846">Trīs jautājumi un ieteiktais sākuma plāns</h2>
         <p class="rmct9">Bez punktu, bez atzīmes — atbildes speciālistam tikai pasaka, kur sākt, lai pirmais zvans neietu uz pamatiem.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Atpakaļ</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Atpakaļ</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Atbildes ir gatavas — atstājiet kontaktus, un speciālists tās ar jums izrunās.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Skatīt manu sākuma plānu</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Skatīt manu sākuma plānu</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Kā tas darbojas</span>
+        <span class="odwy4o">Kā tas darbojas</span>
         <h2 id="dl5sp">Kā tas darbojas</h2>
         <p class="rmct9">Moderns MI un īsts cilvēka analītiķis kopā palīdz veidot papildu ienākumu avotu, vada jūs katrā solī un rāda katru kapitāla kustību.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Iestatiet stratēģiju</h3><p>Izvēlieties mērķus; analītiķis plānu pielāgos jums.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Sāciet ieguldīt</h3><p>Sekojiet vadītajiem signāliem un vērojiet progresu reāllaikā.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Lasīt pilno ceļvedi</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Lasīt pilno ceļvedi</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Tirgi reāllaikā</span>
+        <span class="odwy4o">Tirgi reāllaikā</span>
         <h2 id="rlolt2l">Tirgojiet Bitcoin, Ethereum un daudz ko citu</h2>
         <p class="rmct9">Cenas reāllaikā, uzlaboti indikatori un profesionāls skats uz tirgiem, kas jūs interesē.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Uz jebkura ekrāna</span>
+            <span class="odwy4o">Uz jebkura ekrāna</span>
             <h2 id="jg778dx">Tas pats konts uz galda un kabatā</h2>
             <p class="rmct9">Viens pieteikšanās, viens atlikums. Atveriet pārlūkā datorā vai telefonā: nekas nav jāinstalē un nekas nedarbojas tikai uz vienas ierīces.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Sekojiet kontam reāllaikā</h2>
         <p class="rmct9">Katrs darījums, ko veic analītiķis, šeit tiek reģistrēts — ieejas, izejas un verificēti rezultāti katrā pārī, tiešraidē.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Jautājumi</span>
+        <span class="odwy4o">Jautājumi</span>
         <h2 id="wysa9hx">Bieži uzdotie jautājumi</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Skatīt visus jautājumus</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Skatīt visus jautājumus</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Klientu vērtējumi" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">UZTICAMS</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Atsauksmes</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> atsauksmes · Pamatojoties uz <b style="color:var(--text,#fff)">4,902</b> vērtējumiem</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Klientu vērtējumi" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">UZTICAMS</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Atsauksmes</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> atsauksmes · Pamatojoties uz <b style="color:var(--text,#fff)">4,902</b> vērtējumiem</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Sākt</span>
+      <span class="odwy4o">Sākt</span>
       <h2 id="fglj2pf">Vai esat gatavi redzēt kapitālu kustībā?</h2>
       <p class="rmct9">Atveriet kontu dažu minūšu laikā, iemaksājiet no pieticīga minimuma un no pirmās dienas caurspīdīgi sekojiet progresam.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Izveidojiet profilu</h3>
-      <p class="pt6joj">Sāciet dažu minūšu laikā.</p>
+      <p class="amrqy">Sāciet dažu minūšu laikā.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

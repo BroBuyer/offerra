@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">Τεχνητή νοημοσύνη + έμπειροι ανθρώπινοι αναλυτές</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">Τεχνητή νοημοσύνη + έμπειροι ανθρώπινοι αναλυτές</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Προσωπικός χρηματοοικονομικός αναλυτής, με υποστήριξη τεχνητής νοημοσύνης, που βοηθά καθημερινούς ανθρώπους να δημιουργήσουν επιπλέον εισόδημα — χωρίς προηγούμενη εμπειρία. Ο αναλυτής σας καθοδηγεί σε κάθε βήμα και ο πίνακας ελέγχου δείχνει σε πραγματικό χρόνο πώς εργάζεται το κεφάλαιό σας.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Ρυθμιζόμενη</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Διαχωρισμένα κεφάλαια</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 πελάτες</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> αξιολόγηση</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Ξεκινήστε — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Πώς λειτουργεί</a>
+    <p class="roc33zb">Προσωπικός χρηματοοικονομικός αναλυτής, με υποστήριξη τεχνητής νοημοσύνης, που βοηθά καθημερινούς ανθρώπους να δημιουργήσουν επιπλέον εισόδημα — χωρίς προηγούμενη εμπειρία. Ο αναλυτής σας καθοδηγεί σε κάθε βήμα και ο πίνακας ελέγχου δείχνει σε πραγματικό χρόνο πώς εργάζεται το κεφάλαιό σας.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Ρυθμιζόμενη</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Διαχωρισμένα κεφάλαια</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 πελάτες</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> αξιολόγηση</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Ξεκινήστε — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Πώς λειτουργεί</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Προστασία SSL</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Υποστήριξη 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Γρήγορη εκτέλεση</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Ανοίξτε λογαριασμό</h2>
-      <p class="pt6joj">Ξεκινήστε σε λίγα λεπτά.</p>
+      <p class="amrqy">Ξεκινήστε σε λίγα λεπτά.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Ξεκινήστε τώρα';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Ενεργοί χρήστες</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Όγκος συναλλαγών</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Διαθεσιμότητα σημάτων</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Υποστήριξη</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Ενεργοί χρήστες</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Όγκος συναλλαγών</span></div>
+      <div class="kstat"><b>99.8%</b><span>Διαθεσιμότητα σημάτων</span></div>
+      <div class="kstat"><b>24/7</b><span>Υποστήριξη</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Σε αυτή τη σελίδα">
     <summary class="eik0loi">Σε αυτή τη σελίδα</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Το σημείο εκκίνησής σας</a></li>
       <li><a href="#nw3j7wd">Ερωτήσεις</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Ξεκινήστε — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Ξεκινήστε — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Τι λένε τα μέλη</span>
+        <span class="odwy4o">Τι λένε τα μέλη</span>
         <h2 id="es9pra">Τι λένε οι επενδυτές</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Χωρίς υπολογιστικά φύλλα. Χωρίς οθόνες. Χωρίς αμφιβολίες της τελευταίας στιγμής</h2>
         <p class="rmct9">Δείτε πώς το <?= e(SITE_NAME) ?> συγκρίνεται με τους παραδοσιακούς brokers και με τις χειροκίνητες συναλλαγές.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Αποκλειστικός προσωπικός διαχειριστής</td><td class="bfe2o6f">✓</td><td class="byuav">περιορισμένο ωράριο</td><td class="byuav">χειροκίνητα</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Γιατί εμείς</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Γιατί εμείς</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Προστασία</span>
+            <span class="odwy4o">Προστασία</span>
             <h2 id="ykur4hl">Τα χρήματά σας, προστατευμένα εκ σχεδιασμού</h2>
             <p class="rmct9">Τα κεφάλαια των πελατών βρίσκονται σε ρυθμιζόμενους συνεργάτες πληρωμών, η πρόσβαση επαληθεύεται και κάθε ανάληψη ακολουθεί τεκμηριωμένη διαδρομή πίσω στον λογαριασμό από τον οποίο προήλθε.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Ο προσωπικός σας αναλυτής στο γραφείο του" width="760" height="520" decoding="async" title="Ο προσωπικός σας αναλυτής στο γραφείο του" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Ο αναλυτής σας</span>
+            <span class="odwy4o">Ο αναλυτής σας</span>
             <h2 id="iouvw">Ο προσωπικός σας χρηματοοικονομικός αναλυτής</h2>
             <p class="rmct9">Κάθε μέλος αντιστοιχίζεται με προσωπικό χρηματοοικονομικό αναλυτή με πολυετή εμπειρία στις αγορές. Με τη δική του τεχνογνωσία, δοκιμασμένες μεθόδους ανάλυσης και σύγχρονα εργαλεία τεχνητής νοημοσύνης, σας βοηθά να εντοπίσετε υποσχόμενες ευκαιρίες και μένει μαζί σας σε κάθε στάδιο.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Αποδόσεις</span>
+        <span class="odwy4o">Αποδόσεις</span>
         <h2 id="rq8es">Ένα παράδειγμα με την κατάθεσή σας</h2>
         <p class="rmct9">Μετακινήστε τον ολισθητήρα για να προσομοιώσετε μεγαλύτερη κατάθεση: τα νούμερα υπολογίζονται από αντιπροσωπευτικό πλάνο με ελάχιστη κατάθεση <?= e(money_min()) ?>. Πρόκειται για παράδειγμα, όχι για υπόσχεση· οι πραγματικές αποδόσεις εξαρτώνται από το ποσό που επενδύετε και από τη στρατηγική που επιλέγετε με τον αναλυτή σας.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Εκτιμώμενο υπόλοιπο</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Άνοιγμα λογαριασμού</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Άνοιγμα λογαριασμού</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Βρείτε το σημείο εκκίνησής σας</span>
+        <span class="odwy4o">Βρείτε το σημείο εκκίνησής σας</span>
         <h2 id="dv0846">Τρεις ερωτήσεις και ένα προτεινόμενο πλάνο έναρξης</h2>
         <p class="rmct9">Χωρίς βαθμολογία, χωρίς αξιολόγηση — οι απαντήσεις απλώς δείχνουν στον ειδικό από πού να ξεκινήσει, ώστε η πρώτη κλήση να μην αφιερωθεί στα βασικά.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Πίσω</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Πίσω</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Οι απαντήσεις σας είναι έτοιμες — αφήστε τα στοιχεία σας και ένας ειδικός θα τα συζητήσει μαζί σας.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Δείτε το πλάνο έναρξής μου</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Δείτε το πλάνο έναρξής μου</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Πώς λειτουργεί</span>
+        <span class="odwy4o">Πώς λειτουργεί</span>
         <h2 id="dl5sp">Πώς λειτουργεί</h2>
         <p class="rmct9">Σύγχρονη τεχνητή νοημοσύνη και πραγματικός ανθρώπινος αναλυτής, μαζί, για να σας βοηθήσουν να δημιουργήσετε επιπλέον πηγή εισοδήματος, καθοδηγώντας σας σε κάθε βήμα και δείχνοντάς σας κάθε κίνηση του κεφαλαίου σας.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Ορίστε τη στρατηγική σας</h3><p>Επιλέξτε τους στόχους σας· ο αναλυτής διαμορφώνει το πλάνο γύρω από εσάς.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Ξεκινήστε να επενδύετε</h3><p>Ακολουθήστε τα καθοδηγούμενα σήματα και παρακολουθήστε την πρόοδό σας σε πραγματικό χρόνο.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Διαβάστε τον πλήρη οδηγό</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Διαβάστε τον πλήρη οδηγό</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ζωντανές αγορές</span>
+        <span class="odwy4o">Ζωντανές αγορές</span>
         <h2 id="rlolt2l">Συναλλαγές σε Bitcoin, Ethereum και πολλά ακόμη</h2>
         <p class="rmct9">Τιμές σε πραγματικό χρόνο, προηγμένοι δείκτες και επαγγελματική εικόνα των αγορών που σας ενδιαφέρουν.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Σε κάθε οθόνη</span>
+            <span class="odwy4o">Σε κάθε οθόνη</span>
             <h2 id="jg778dx">Ο ίδιος λογαριασμός στο γραφείο και στην τσέπη σας</h2>
             <p class="rmct9">Μία σύνδεση, ένα υπόλοιπο. Ανοίξτε το από τον φυλλομετρητή του υπολογιστή ή από το τηλέφωνο: τίποτα προς εγκατάσταση και τίποτα που να λειτουργεί μόνο σε μία συσκευή.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Παρακολουθήστε τον λογαριασμό σας σε πραγματικό χρόνο</h2>
         <p class="rmct9">Κάθε συναλλαγή που τοποθετεί ο αναλυτής σας καταγράφεται εδώ — εισόδους, εξόδους και επαληθευμένα αποτελέσματα σε κάθε ζεύγος, σε ζωντανή ροή.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ερωτήσεις</span>
+        <span class="odwy4o">Ερωτήσεις</span>
         <h2 id="wysa9hx">Συχνές ερωτήσεις</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Δείτε όλες τις ερωτήσεις</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Δείτε όλες τις ερωτήσεις</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Αξιολογήσεις πελατών" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ΑΞΙΟΠΙΣΤΟ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Κριτικές</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> κριτικές · Βάσει <b style="color:var(--text,#fff)">4,902</b> αξιολογήσεις</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Αξιολογήσεις πελατών" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ΑΞΙΟΠΙΣΤΟ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Κριτικές</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> κριτικές · Βάσει <b style="color:var(--text,#fff)">4,902</b> αξιολογήσεις</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Ξεκινήστε</span>
+      <span class="odwy4o">Ξεκινήστε</span>
       <h2 id="fglj2pf">Έτοιμοι να δείτε το κεφάλαιό σας σε κίνηση;</h2>
       <p class="rmct9">Ανοίξτε λογαριασμό σε λίγα λεπτά, καταθέστε από ένα μέτριο ελάχιστο και παρακολουθήστε την πρόοδό σας με διαφάνεια από την πρώτη ημέρα.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Δημιουργήστε το προφίλ σας</h3>
-      <p class="pt6joj">Ξεκινήστε σε λίγα λεπτά.</p>
+      <p class="amrqy">Ξεκινήστε σε λίγα λεπτά.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

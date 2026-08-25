@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">YZ + uzman insan analistler</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">YZ + uzman insan analistler</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Yapay zekâ destekli kişisel bir finans analisti, deneyimi olmayan sıradan insanların ek bir gelir kaynağı oluşturmasına yardımcı olur. Analistiniz sizi her adımda yönlendirirken panel, sermayenizin gerçek zamanlı nasıl çalıştığını gösterir.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Düzenlemeye tabi</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Ayrılmış fonlar</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 müşteri</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> puan</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Başlayın — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Nasıl çalışır</a>
+    <p class="roc33zb">Yapay zekâ destekli kişisel bir finans analisti, deneyimi olmayan sıradan insanların ek bir gelir kaynağı oluşturmasına yardımcı olur. Analistiniz sizi her adımda yönlendirirken panel, sermayenizin gerçek zamanlı nasıl çalıştığını gösterir.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Düzenlemeye tabi</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Ayrılmış fonlar</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 müşteri</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> puan</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Başlayın — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Nasıl çalışır</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>SSL koruması</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>7/24 destek</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Hızlı yürütme</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Hesabınızı açın</h2>
-      <p class="pt6joj">Birkaç dakikada başlayın.</p>
+      <p class="amrqy">Birkaç dakikada başlayın.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Şimdi başlayın';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Aktif kullanıcılar</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>İşlem hacmi</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Sinyal kullanılabilirliği</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Destek</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Aktif kullanıcılar</span></div>
+      <div class="kstat"><b>€0.6B</b><span>İşlem hacmi</span></div>
+      <div class="kstat"><b>99.8%</b><span>Sinyal kullanılabilirliği</span></div>
+      <div class="kstat"><b>24/7</b><span>Destek</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Bu sayfada">
     <summary class="eik0loi">Bu sayfada</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Başlangıç noktanız</a></li>
       <li><a href="#nw3j7wd">Sorular</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Başlayın — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Başlayın — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Üyeler ne diyor</span>
+        <span class="odwy4o">Üyeler ne diyor</span>
         <h2 id="es9pra">Yatırımcılar ne diyor</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Tablo yok. Ekran yok. Son dakika şüphesi yok</h2>
         <p class="rmct9">Bakın, <?= e(SITE_NAME) ?> geleneksel aracı kurumlarla ve elle işlemle nasıl karşılaştırılıyor.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Özel kişisel yönetici</td><td class="bfe2o6f">✓</td><td class="byuav">sınırlı saatler</td><td class="byuav">elle</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">Neden biz</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Neden biz</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Korumalar</span>
+            <span class="odwy4o">Korumalar</span>
             <h2 id="ykur4hl">Paranız, tasarım gereği korumalı</h2>
             <p class="rmct9">Müşteri fonları düzenlemeye tabi ödeme ortaklarında durur, erişim doğrulanır ve her çekim geldiği hesaba belgelenmiş bir yolla döner.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Kişisel analistiniz masasında" width="760" height="520" decoding="async" title="Kişisel analistiniz masasında" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Analistiniz</span>
+            <span class="odwy4o">Analistiniz</span>
             <h2 id="iouvw">Kişisel finans analistiniz</h2>
             <p class="rmct9">Her üye, yılların piyasa deneyimine sahip kişisel bir finans analistiyle eşleştirilir. Kendi uzmanlığı, kanıtlanmış analiz yöntemleri ve modern yapay zekâ araçlarıyla umut vadeden fırsatları görmenize yardımcı olur ve her aşamada yanınızda kalır.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Getiriler</span>
+        <span class="odwy4o">Getiriler</span>
         <h2 id="rq8es">Yatırımınızla bir örnek</h2>
         <p class="rmct9">Daha büyük bir yatırımı simüle etmek için kaydırıcıyı hareket ettirin: rakamlar, şu minimum yatırım tutarlı temsili bir plandan hesaplanır: <?= e(money_min()) ?>. Bu bir örnektir, vaat değildir; fiili getirileriniz ne kadar yatırım yaptığınıza ve analistinizle seçtiğiniz stratejiye bağlıdır.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Tahmini bakiye</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Hesap açın</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Hesap açın</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Başlangıç noktanızı bulun</span>
+        <span class="odwy4o">Başlangıç noktanızı bulun</span>
         <h2 id="dv0846">Üç soru, ardından önerilen bir başlangıç planı</h2>
         <p class="rmct9">Puan yok, not yok — yanıtlar uzmanınıza nereden başlayacağını söyler; böylece ilk görüşme temellere harcanmaz.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Geri</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Geri</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Yanıtlarınız hazır — bilgilerinizi bırakın, bir uzman bunları sizinle konuşsun.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Başlangıç planımı görün</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Başlangıç planımı görün</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Nasıl çalışır</span>
+        <span class="odwy4o">Nasıl çalışır</span>
         <h2 id="dl5sp">Nasıl çalışır</h2>
         <p class="rmct9">Modern yapay zekâ ve gerçek bir insan analist birlikte çalışarak ek bir gelir kaynağı oluşturmanıza yardımcı olur; sizi her adımda yönlendirir ve sermayenizin her hareketini gösterir.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Stratejinizi belirleyin</h3><p>Hedeflerinizi seçin; analistiniz planı size göre şekillendirir.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Yatırıma başlayın</h3><p>Rehberli sinyalleri izleyin ve ilerlemenizi gerçek zamanlı görün.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Tam rehberi okuyun</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Tam rehberi okuyun</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Canlı piyasalar</span>
+        <span class="odwy4o">Canlı piyasalar</span>
         <h2 id="rlolt2l">Bitcoin, Ethereum ve çok daha fazlasıyla işlem yapın</h2>
         <p class="rmct9">Gerçek zamanlı fiyatlar, gelişmiş göstergeler ve ilgilendiğiniz piyasalara profesyonel bakış.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Her ekranda</span>
+            <span class="odwy4o">Her ekranda</span>
             <h2 id="jg778dx">Aynı hesap masanızda ve cebinizde</h2>
             <p class="rmct9">Tek giriş, tek bakiye. Bilgisayar tarayıcısından veya telefonunuzdan açın: kurulacak bir şey yok, yalnızca bir cihazda çalışan bir şey yok.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Hesabınızı gerçek zamanlı izleyin</h2>
         <p class="rmct9">Analistinizin verdiği her emir burada kaydedilir — her çiftte girişler, çıkışlar ve doğrulanmış sonuçlar, canlı.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Sorular</span>
+        <span class="odwy4o">Sorular</span>
         <h2 id="wysa9hx">Sıkça sorulan sorular</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Tüm soruları görün</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Tüm soruları görün</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Müşteri puanları" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">GÜVENİLİR</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> İnceleme</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> inceleme · Dayanak <b style="color:var(--text,#fff)">4,902</b> puan</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Müşteri puanları" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">GÜVENİLİR</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> İnceleme</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> inceleme · Dayanak <b style="color:var(--text,#fff)">4,902</b> puan</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Başlayın</span>
+      <span class="odwy4o">Başlayın</span>
       <h2 id="fglj2pf">Sermayenizi harekette görmeye hazır mısınız?</h2>
       <p class="rmct9">Hesabınızı dakikalar içinde açın, mütevazı bir minimumdan yatırın ve ilk günden ilerlemenizi şeffaf izlemeye başlayın.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Profilinizi oluşturun</h3>
-      <p class="pt6joj">Birkaç dakikada başlayın.</p>
+      <p class="amrqy">Birkaç dakikada başlayın.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;

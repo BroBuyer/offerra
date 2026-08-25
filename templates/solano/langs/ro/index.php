@@ -9,44 +9,54 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main id="top">
 
-<section class="tl154k" aria-labelledby="rrqdpt">
-  <div class="ggh3sm">
-    <span class="vd7z9k">AI + analiști umani experimentați</span>
+<section class="pnylsh" data-hero="split" aria-labelledby="rrqdpt">
+  <div class="nrzt44 qg0sgs">
+    <div class="nfb5z">
+    <span class="odwy4o">AI + analiști umani experimentați</span>
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
-    <p class="ymraes">Un analist financiar personal, susținut de AI, care ajută oamenii obișnuiți să genereze un venit suplimentar, fără experiență anterioară. Analistul vă ghidează la fiecare pas, iar panoul arată în timp real cum lucrează capitalul dumneavoastră.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Reglementat</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Fonduri segregate</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 clienți</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> evaluare</span></div>
-    <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Începeți — <?= e(money_min()) ?> min.</a>
-      <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Cum funcționează</a>
+    <p class="roc33zb">Un analist financiar personal, susținut de AI, care ajută oamenii obișnuiți să genereze un venit suplimentar, fără experiență anterioară. Analistul vă ghidează la fiecare pas, iar panoul arată în timp real cum lucrează capitalul dumneavoastră.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Reglementat</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Fonduri segregate</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 clienți</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span> evaluare</span></div>
+    <div class="do1sdty">
+      <a class="rs0voj6 ggca24u" href="#jsyo6">Începeți — <?= e(money_min()) ?> min.</a>
+      <a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Cum funcționează</a>
     </div>
-    <ul class="wxlxk">
+    <ul class="eok92u">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Protecție SSL</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Suport 24/7</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Executare rapidă</li>
     </ul>
 
-    <div class="hu2v3" id="nl3qm8" data-u="formband">
+    </div>
+
+
+    <div class="up98m" id="jsyo6" data-u="formband">
       <h2>Deschideți contul</h2>
-      <p class="pt6joj">Începeți în câteva minute.</p>
+      <p class="amrqy">Începeți în câteva minute.</p>
       <?php
   $form_id = 'lead-form-hero';
   $form_heading = null;
   $form_subtitle = null;
   $form_submit = 'Începeți acum';
   $form_class = 'leadform lead-form solano-form';
-  $form_variant = 'band';
+  $form_variant = 'stack';
   require __DIR__ . '/includes/form.php';
 ?>
     </div>
-    <div class="mcitl7d">
-      <div class="ohqkun7"><b>33,000</b><span>Utilizatori activi</span></div>
-      <div class="ohqkun7"><b>€0.6B</b><span>Volum tranzacționat</span></div>
-      <div class="ohqkun7"><b>99.8%</b><span>Disponibilitatea semnalelor</span></div>
-      <div class="ohqkun7"><b>24/7</b><span>Suport</span></div>
     </div>
-  </div>
 </section>
 
-<div class="ggh3sm jx8jnza">
+<section class="sec-sm" aria-label="Indicadores clave">
+ <div class="nrzt44">
+<div class="acd048l">
+      <div class="kstat"><b>33,000</b><span>Utilizatori activi</span></div>
+      <div class="kstat"><b>€0.6B</b><span>Volum tranzacționat</span></div>
+      <div class="kstat"><b>99.8%</b><span>Disponibilitatea semnalelor</span></div>
+      <div class="kstat"><b>24/7</b><span>Suport</span></div>
+    </div>
+  
+ </div>
+</section>
+
+<div class="nrzt44 jx8jnza">
   <details class="tjbln" open aria-label="Pe această pagină">
     <summary class="eik0loi">Pe această pagină</summary>
     <ol>
@@ -62,13 +72,13 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Punctul dumneavoastră de plecare</a></li>
       <li><a href="#nw3j7wd">Întrebări</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Începeți — <?= e(money_min()) ?> min.</a>
+    <a class="rs0voj6 ggca24u" href="#jsyo6">Începeți — <?= e(money_min()) ?> min.</a>
   </details>
 
   <div>
     <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Ce spun membrii</span>
+        <span class="odwy4o">Ce spun membrii</span>
         <h2 id="es9pra">Ce spun traderii</h2>
       </div>
       <div class="vdaz1q">
@@ -167,7 +177,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Fără tabele. Fără ecrane. Fără îndoieli de ultim moment</h2>
         <p class="rmct9">Vedeți cum <?= e(SITE_NAME) ?> se compară cu brokerii tradiționali și cu tranzacționarea manuală.</p>
       </div>
@@ -183,14 +193,14 @@ require __DIR__ . '/includes/header.php';
           <tr><td>Manager personal dedicat</td><td class="bfe2o6f">✓</td><td class="byuav">ore limitate</td><td class="byuav">manual</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('offer.php') ?>">De ce noi</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">De ce noi</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Măsuri de protecție</span>
+            <span class="odwy4o">Măsuri de protecție</span>
             <h2 id="ykur4hl">Banii dumneavoastră, protejați prin concepție</h2>
             <p class="rmct9">Fondurile clienților se află la parteneri de plată reglementați, accesul este verificat, iar fiecare retragere urmează un traseu documentat înapoi în contul din care a venit.</p>
           </div>
@@ -209,7 +219,7 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Analistul dumneavoastră personal la birou" width="760" height="520" decoding="async" title="Analistul dumneavoastră personal la birou" loading="lazy">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Analistul dumneavoastră</span>
+            <span class="odwy4o">Analistul dumneavoastră</span>
             <h2 id="iouvw">Analistul dumneavoastră financiar personal</h2>
             <p class="rmct9">Fiecare membru este asociat cu un analist financiar personal, cu ani de experiență pe piețe. Prin expertiza proprie, metode de analiză dovedite și instrumente AI moderne, vă ajută să identificați oportunități promițătoare și rămâne alături de dumneavoastră în fiecare etapă.</p>
           </div>
@@ -224,7 +234,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Randamente</span>
+        <span class="odwy4o">Randamente</span>
         <h2 id="rq8es">Un exemplu cu depunerea dumneavoastră</h2>
         <p class="rmct9">Deplasați glisorul pentru a simula o depunere mai mare: cifrele sunt calculate pe baza unui plan reprezentativ, cu depunerea minimă de <?= e(money_min()) ?>. Acesta este un exemplu, nu o promisiune; randamentele reale depind de cât investiți și de strategia pe care o alegeți împreună cu analistul.</p>
       </div>
@@ -244,14 +254,14 @@ require __DIR__ . '/includes/header.php';
         <div class="gbastl">
           <small>Sold estimat</small>
           <b id="aowtjsf">€1,000</b>
-          <a class="qou73xg fi3abjs" href="#nl3qm8" style="margin-top:14px;width:100%">Deschideți un cont</a>
+          <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Deschideți un cont</a>
         </div>
       </div>
     </section>
 
     <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Găsiți punctul de plecare</span>
+        <span class="odwy4o">Găsiți punctul de plecare</span>
         <h2 id="dv0846">Trei întrebări, apoi un plan de pornire sugerat</h2>
         <p class="rmct9">Fără punctaj, fără notă — răspunsurile îi arată specialistului de unde să înceapă, ca primul apel să nu se consume pe noțiuni de bază.</p>
       </div>
@@ -285,16 +295,16 @@ require __DIR__ . '/includes/header.php';
           </div>
         </fieldset>
         <div class="beqazp3">
-          <button class="qou73xg ec2hno sihas5z" type="button" hidden>Înapoi</button>
+          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Înapoi</button>
           <p class="ubn7i4v" id="bpisnbk" hidden>Răspunsurile sunt gata — lăsați datele de contact și un specialist le va trece în revistă împreună cu dumneavoastră.</p>
-          <a class="qou73xg fi3abjs pk4h2" href="#nl3qm8">Vedeți planul de pornire</a>
+          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Vedeți planul de pornire</a>
         </div>
       </form>
     </section>
 
     <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Cum funcționează</span>
+        <span class="odwy4o">Cum funcționează</span>
         <h2 id="dl5sp">Cum funcționează</h2>
         <p class="rmct9">AI modern și un analist uman real, care lucrează împreună pentru a vă ajuta să construiți o sursă suplimentară de venit, ghidându-vă la fiecare pas și arătându-vă fiecare mișcare a capitalului.</p>
       </div>
@@ -305,12 +315,12 @@ require __DIR__ . '/includes/header.php';
         <li><span class="vpx6kk">04</span><div><h3>Stabiliți strategia</h3><p>Alegeți obiectivele; analistul modelează planul în jurul dumneavoastră.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Începeți să investiți</h3><p>Urmați semnalele ghidate și urmăriți progresul în timp real.</p></div></li>
       </ol>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Citiți ghidul complet</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Citiți ghidul complet</a></p>
     </section>
 
     <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Piețe live</span>
+        <span class="odwy4o">Piețe live</span>
         <h2 id="rlolt2l">Tranzacționați Bitcoin, Ethereum și multe altele</h2>
         <p class="rmct9">Prețuri în timp real, indicatori avansați și o privire de nivel profesional asupra piețelor care vă interesează.</p>
       </div>
@@ -330,7 +340,7 @@ require __DIR__ . '/includes/header.php';
       <div class="tsgf5eq">
         <div>
           <div class="wdsnx3j">
-            <span class="vd7z9k">Pe orice ecran</span>
+            <span class="odwy4o">Pe orice ecran</span>
             <h2 id="jg778dx">Același cont pe birou și în buzunar</h2>
             <p class="rmct9">O autentificare, un sold. Deschideți-l din browserul calculatorului sau de pe telefon: nimic de instalat și nimic care să funcționeze doar pe un dispozitiv.</p>
           </div>
@@ -347,7 +357,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
       <div class="wdsnx3j">
-        <span class="vd7z9k"><?= e(SITE_NAME) ?></span>
+        <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Urmăriți-vă contul în timp real</h2>
         <p class="rmct9">Fiecare tranzacție plasată de analist este înregistrată aici — intrări, ieșiri și rezultate verificate pe fiecare pereche, în direct.</p>
       </div>
@@ -364,7 +374,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Întrebări</span>
+        <span class="odwy4o">Întrebări</span>
         <h2 id="wysa9hx">Întrebări frecvente</h2>
       </div>
       <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
@@ -453,15 +463,15 @@ require __DIR__ . '/includes/header.php';
           </div>
         </details>
       </div>
-      <p style="margin-top:22px"><a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Vedeți toate întrebările</a></p>
+      <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Vedeți toate întrebările</a></p>
     </section>
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Evaluări ale clienților" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE ÎNCREDERE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzii · Pe baza a <b style="color:var(--text,#fff)">4,902</b> evaluări</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
-  <div class="ggh3sm kdbtf1i">
+<!--reviews-block--><section aria-label="Evaluări ale clienților" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE ÎNCREDERE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzii · Pe baza a <b style="color:var(--text,#fff)">4,902</b> evaluări</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 kdbtf1i">
     <div>
-      <span class="vd7z9k">Începeți</span>
+      <span class="odwy4o">Începeți</span>
       <h2 id="fglj2pf">Sunteți gata să vedeți capitalul în mișcare?</h2>
       <p class="rmct9">Deschideți contul în câteva minute, depuneți un minim modest și începeți să urmăriți progresul transparent, din prima zi.</p>
       <ul class="ibiqy0k" style="margin-top:16px">
@@ -472,7 +482,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="bv1ft5">
       <h3>Creați-vă profilul</h3>
-      <p class="pt6joj">Începeți în câteva minute.</p>
+      <p class="amrqy">Începeți în câteva minute.</p>
       <?php
   $form_id = 'lead-form-cta';
   $form_heading = null;
