@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Mit tarthat a portfóliójában</h2>
     <p>Egyetlen fiók több eszközosztályt fed le, így nem kell második platformot nyitnia, amint érdeklődése bővül.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Eszközosztály</th><th scope="col">Példák</th><th scope="col">Jó tudni</th></tr></thead>
       <tbody>
         <tr><td>Kriptovaluták</td><td>BTC, ETH, SOL, XRP</td><td>Nonstop kereskedés, hétvégén is.</td></tr>

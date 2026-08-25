@@ -579,3 +579,16 @@ background:transparent;border:0;padding:.2rem 0 .2rem .6rem}}
 .qyv6pbo>*{flex:1 1 320px;min-width:0}
 .qyv6pbo img,.qyv6pbo picture{width:100%;max-width:100%}
 .qyv6pbo img{border-radius:var(--r);border:1px solid var(--border);aspect-ratio:4/3;object-fit:cover;object-position:center;filter:saturate(.85) brightness(.92);transform:none}
+
+/* harden broken remaps / overlaps */
+.rho9v16{list-style:none;padding-left:0}
+.rho9v16 li{list-style:none}
+.kzp7d0j .no0qnp small{display:block}
+.kzp7d0j caption{position:static;caption-side:top;display:table-caption;margin:0 0 12px;padding:0;color:var(--muted)}
+.gvdhnr{display:table;width:100%;border-collapse:collapse;table-layout:auto}
+.gvdhnr th,.gvdhnr td{position:static}
+.fizujuq legend{float:none;display:block;width:auto;max-width:100%;margin:0 0 10px;padding:0;position:relative;transform:none}
+.qs49y{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.th0yrt{font-variant-numeric:tabular-nums}
+.mg1jree.ixupo,.ixupo{color:var(--neg)}
+.mg1jree.roa0i8y,.roa0i8y{color:var(--pos)}

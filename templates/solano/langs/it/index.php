@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Niente fogli di calcolo. Niente schermi. Niente dubbi dell’ultimo minuto</h2>
         <p class="etpy2">Scopri come <?= e(SITE_NAME) ?> si confronta con i broker tradizionali e con il trading in autonomia.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Niente fogli di calcolo. Niente schermi. Niente dubbi dell’ultimo minuto"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Niente fogli di calcolo. Niente schermi. Niente dubbi dell’ultimo minuto"><table class="gvdhnr">
         <thead><tr><th scope="col">Piattaforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Broker tradizionale</th><th scope="col">Trading in autonomia</th></tr></thead>
         <tbody>
           <tr><td>Esecuzione degli ordini con IA</td><td class="yd552">✓</td><td class="aty3riz">orari limitati</td><td class="aty3riz">manuale</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="di"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Quanta esperienza hai già negli investimenti?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Nessuna</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Un po’, da sola/o</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Investo regolarmente</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Cosa conta di più per te in questo momento?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Tenere il rischio basso</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Una crescita costante</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Capire come funziona</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Quanto tempo puoi dedicargli?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Quasi nessuno</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Qualche minuto al giorno</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Mi piace seguire i mercati</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Indietro</button>
-          <p class="jyvec" id="bpisnbk" hidden>Le tue risposte sono pronte: lascia i tuoi dati e uno specialista le ripercorrerà con te.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Vedi il mio piano iniziale</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Indietro</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Le tue risposte sono pronte: lascia i tuoi dati e uno specialista le ripercorrerà con te.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Vedi il mio piano iniziale</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Come funziona</h2>
         <p class="etpy2">Un’IA moderna e un analista umano reale, che lavorano insieme per aiutarti a costruire una fonte di reddito aggiuntiva, guidandoti a ogni passo e mostrandoti ogni movimento del tuo capitale.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Crea il tuo conto</h3><p>Registrati in pochi minuti solo con la tua e-mail.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Verifica la tua e-mail</h3><p>Conferma l’indirizzo per proteggere il tuo conto.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Deposita fondi</h3><p>Aggiungi capitale a partire da <?= e(money_min()) ?> con il metodo che preferisci.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Opera con Bitcoin, Ethereum e molto altro</h2>
         <p class="etpy2">Prezzi in tempo reale, indicatori avanzati e una visione di livello professionale dei mercati che ti interessano.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Opera con Bitcoin, Ethereum e molto altro"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Opera con Bitcoin, Ethereum e molto altro"><table class="kzp7d0j">
         <caption>I prezzi si aggiornano automaticamente mentre la pagina è aperta.</caption>
         <thead><tr><th scope="col">Asset</th><th scope="col">Prezzo</th><th scope="col">24 h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64.671</td><td class="py9af zuh4exq">-1,06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1.881</td><td class="py9af zuh4exq">-2,55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76,62</td><td class="py9af zuh4exq">-1,72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1,11</td><td class="py9af zuh4exq">-0,97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64.671</td><td class="mg1jree ixupo">-1,06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1.881</td><td class="mg1jree ixupo">-2,55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76,62</td><td class="mg1jree ixupo">-1,72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1,11</td><td class="mg1jree ixupo">-0,97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobile — saldi, posizioni e prelievi ovunque tu sia</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="La stessa vista del portafoglio sullo schermo di un telefono" title="La stessa vista del portafoglio sullo schermo di un telefono" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Segui il tuo conto in tempo reale</h2>
         <p class="etpy2">Ogni operazione piazzata dal tuo analista è registrata qui: ingressi, uscite e risultati verificati su ogni coppia, in diretta.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Esecuzione in meno di un secondo su ogni mercato collegato</h3><p><?= e(SITE_NAME) ?> mantiene connessioni API permanenti a bassa latenza con ogni exchange supportato. Quando il modello genera un segnale, l’ordine viene inviato, eseguito e registrato sul tuo pannello prima del tick successivo.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Funziona 24/7, in ogni sessione di mercato</h3><p>Le crypto non riposano, e <?= e(SITE_NAME) ?> nemmeno. Il motore continua ad analizzare le coppie nei weekend e nei giorni festivi perché un’opportunità non venga persa.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Report multi-valuta</h3><p>Ogni saldo, ogni operazione e ogni prelievo viene mostrato nella tua valuta locale. Nessun passaggio di conversione nascosto in nessun momento.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Domande</span>
         <h2 id="wysa9hx">Domande frequenti</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Qual è il deposito minimo per iniziare?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

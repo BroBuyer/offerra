@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Bez izklājlapām. Bez ekrāniem. Bez šaubām pēdējā brīdī</h2>
         <p class="etpy2">Skatiet, kā <?= e(SITE_NAME) ?> salīdzināms ar tradicionālajiem brokeriem un tirdzniecību ar roku.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Bez izklājlapām. Bez ekrāniem. Bez šaubām pēdējā brīdī"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Bez izklājlapām. Bez ekrāniem. Bez šaubām pēdējā brīdī"><table class="gvdhnr">
         <thead><tr><th scope="col">Platforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Tradicionālais brokeris</th><th scope="col">Tirdzniecība pašam</th></tr></thead>
         <tbody>
           <tr><td>MI rīkojumu izpilde</td><td class="yd552">✓</td><td class="aty3riz">ierobežotas stundas</td><td class="aty3riz">ar roku</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="no"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Cik daudz esat ieguldījuši iepriekš?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Nemaz</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Nedaudz, pats</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Ieguldu regulāri</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Kas jums šobrīd ir vissvarīgākais?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Saglabāt zemu risku</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabils pieaugums</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Saprast, kā tas darbojas</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Cik daudz laika varat tam veltīt?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Gandrīz nemaz</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Dažas minūtes dienā</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Man patīk sekot tirgiem</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Atpakaļ</button>
-          <p class="jyvec" id="bpisnbk" hidden>Atbildes ir gatavas — atstājiet kontaktus, un speciālists tās ar jums izrunās.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Skatīt manu sākuma plānu</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Atpakaļ</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Atbildes ir gatavas — atstājiet kontaktus, un speciālists tās ar jums izrunās.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Skatīt manu sākuma plānu</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Kā tas darbojas</h2>
         <p class="etpy2">Moderns MI un īsts cilvēka analītiķis kopā palīdz veidot papildu ienākumu avotu, vada jūs katrā solī un rāda katru kapitāla kustību.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Izveidojiet kontu</h3><p>Reģistrācija aizņem dažas minūtes — pietiek ar e-pastu.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Apstipriniet e-pastu</h3><p>Apstipriniet adresi, lai aizsargātu kontu.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Iemaksājiet līdzekļus</h3><p>Iemaksājiet kapitālu no <?= e(money_min()) ?> ar jums ērtāko metodi.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Tirgojiet Bitcoin, Ethereum un daudz ko citu</h2>
         <p class="etpy2">Cenas reāllaikā, uzlaboti indikatori un profesionāls skats uz tirgiem, kas jūs interesē.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Tirgojiet Bitcoin, Ethereum un daudz ko citu"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Tirgojiet Bitcoin, Ethereum un daudz ko citu"><table class="kzp7d0j">
         <caption>Cenas atjauninās automātiski, kamēr lapa ir atvērta.</caption>
         <thead><tr><th scope="col">Aktīvs</th><th scope="col">Cena</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobilais — atlikumi, pozīcijas un izņemšanas, kur vien esat</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Tas pats portfeļa skats telefona ekrānā" title="Tas pats portfeļa skats telefona ekrānā" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Sekojiet kontam reāllaikā</h2>
         <p class="etpy2">Katrs darījums, ko veic analītiķis, šeit tiek reģistrēts — ieejas, izejas un verificēti rezultāti katrā pārī, tiešraidē.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Izpilde zem sekundes katrā pievienotajā tirgū</h3><p><?= e(SITE_NAME) ?> uztur pastāvīgus zema latentuma API savienojumus ar katru atbalstīto biržu. Kad modelis ģenerē signālu, rīkojums tiek nosūtīts, izpildīts un ierakstīts panelī pirms nākamā tikša.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Darbojas 24/7, katrā tirgus sesijā</h3><p>Kriptovalūta neatpūšas, un arī <?= e(SITE_NAME) ?> ne. Dzinējs analizē pārus arī nedēļas nogalēs un svētkos, lai iespēja netiktu palaista garām.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Vairāku valūtu pārskati</h3><p>Katrs atlikums, katrs darījums un katra izņemšana tiek rādīta vietējā valūtā. Nekādu slēptu konversijas soļu.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Jautājumi</span>
         <h2 id="wysa9hx">Bieži uzdotie jautājumi</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Kāda ir minimālā iemaksa, lai sāktu?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

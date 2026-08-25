@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Tablo yok. Ekran yok. Son dakika şüphesi yok</h2>
         <p class="etpy2">Bakın, <?= e(SITE_NAME) ?> geleneksel aracı kurumlarla ve elle işlemle nasıl karşılaştırılıyor.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Tablo yok. Ekran yok. Son dakika şüphesi yok"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Tablo yok. Ekran yok. Son dakika şüphesi yok"><table class="gvdhnr">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Geleneksel aracı kurum</th><th scope="col">Kendi başınıza işlem</th></tr></thead>
         <tbody>
           <tr><td>YZ emir yürütmesi</td><td class="yd552">✓</td><td class="aty3riz">sınırlı saatler</td><td class="aty3riz">elle</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="/"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Daha önce ne kadar yatırım yaptınız?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Hiç yok</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Biraz, kendi başıma</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Düzenli yatırım yapıyorum</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Şu anda sizin için en önemlisi nedir?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Riski düşük tutmak</span></label>
             <label><input type="radio" name="q2" value="2"/><span>İstikrarlı büyüme</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Nasıl çalıştığını öğrenmek</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Ne kadar zaman ayırabilirsiniz?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Neredeyse hiç</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Günde birkaç dakika</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Piyasaları takip etmeyi severim</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Geri</button>
-          <p class="jyvec" id="bpisnbk" hidden>Yanıtlarınız hazır — bilgilerinizi bırakın, bir uzman bunları sizinle konuşsun.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Başlangıç planımı görün</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Geri</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Yanıtlarınız hazır — bilgilerinizi bırakın, bir uzman bunları sizinle konuşsun.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Başlangıç planımı görün</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Nasıl çalışır</h2>
         <p class="etpy2">Modern yapay zekâ ve gerçek bir insan analist birlikte çalışarak ek bir gelir kaynağı oluşturmanıza yardımcı olur; sizi her adımda yönlendirir ve sermayenizin her hareketini gösterir.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Hesabınızı oluşturun</h3><p>Yalnızca e-postanızla birkaç dakikada kaydolun.</p></div></li>
         <li><span class="vio04">02</span><div><h3>E-postanızı doğrulayın</h3><p>Hesabınızı korumak için adresinizi onaylayın.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Fon yatırın</h3><p>Şu tutardan sermaye ekleyin: <?= e(money_min()) ?> tercih ettiğiniz yöntemle.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Bitcoin, Ethereum ve çok daha fazlasıyla işlem yapın</h2>
         <p class="etpy2">Gerçek zamanlı fiyatlar, gelişmiş göstergeler ve ilgilendiğiniz piyasalara profesyonel bakış.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Bitcoin, Ethereum ve çok daha fazlasıyla işlem yapın"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Bitcoin, Ethereum ve çok daha fazlasıyla işlem yapın"><table class="kzp7d0j">
         <caption>Sayfa açıkken fiyatlar otomatik güncellenir.</caption>
         <thead><tr><th scope="col">Varlık</th><th scope="col">Fiyat</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — bakiyeler, pozisyonlar ve çekimler, nerede olursanız olun</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Telefon ekranında aynı portföy görünümü" title="Telefon ekranında aynı portföy görünümü" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Hesabınızı gerçek zamanlı izleyin</h2>
         <p class="etpy2">Analistinizin verdiği her emir burada kaydedilir — her çiftte girişler, çıkışlar ve doğrulanmış sonuçlar, canlı.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Bağlı her piyasada saniyenin altında yürütme</h3><p><?= e(SITE_NAME) ?> desteklenen her borsayla kalıcı, düşük gecikmeli API bağlantıları tutar. Model sinyal ürettiğinde emir bir sonraki tick’ten önce gönderilir, gerçekleşir ve panelinize kaydedilir.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Her piyasa seansında 7/24 çalışır</h3><p>Kripto durmaz, <?= e(SITE_NAME) ?> da durmaz. Motor, bir fırsatın kaçmaması için hafta sonları ve tatillerde de çiftleri analiz etmeye devam eder.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Çoklu para biriminde raporlama</h3><p>Her bakiye, her işlem ve her çekim yerel para biriminizde gösterilir. Hiçbir noktada gizli dönüşüm adımı yoktur.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Sorular</span>
         <h2 id="wysa9hx">Sıkça sorulan sorular</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Başlamak için minimum yatırım tutarı nedir?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

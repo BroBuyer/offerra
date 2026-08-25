@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Waar kosten kunnen ontstaan</h2>
     <p>Dit zijn de enige punten waar geld uw saldo verlaat voor iets anders dan een door u gekozen investering.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Onderdeel</th><th scope="col">Wordt in rekening gebracht door</th><th scope="col">Opmerking</th></tr></thead>
       <tbody>
         <tr><td>Account openen</td><td>—</td><td>Gratis.</td></tr>

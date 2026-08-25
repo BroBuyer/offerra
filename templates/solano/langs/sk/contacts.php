@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Ako nás kontaktovať</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kanál</th><th scope="col">Najlepšie pre</th><th scope="col">Odozva</th></tr></thead>
       <tbody>
         <tr><td>E-mailová podpora — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Otázky k účtu, overenie, výbery</td><td>Zvyčajne odpovieme do jedného pracovného dňa.</td></tr>

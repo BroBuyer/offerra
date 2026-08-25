@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Hol jelenhetnek meg költségek</h2>
     <p>Ezek az egyetlen pontok, ahol a pénz az egyenleget a választott befektetésen kívül másért hagyja el.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Tétel</th><th scope="col">Felszámolja</th><th scope="col">Megjegyzés</th></tr></thead>
       <tbody>
         <tr><td>Fióknyitás</td><td>—</td><td>Ingyenes.</td></tr>

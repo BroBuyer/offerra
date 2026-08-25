@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Wat u in uw portefeuille kunt hebben</h2>
     <p>Eén account dekt meerdere activaklassen, dus u hoeft geen tweede platform te openen zodra u uw interesses uitbreidt.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Activaklasse</th><th scope="col">Voorbeelden</th><th scope="col">Goed om te weten</th></tr></thead>
       <tbody>
         <tr><td>Cryptocurrency</td><td>BTC, ETH, SOL, XRP</td><td>24 uur per dag verhandelbaar, inclusief in het weekend.</td></tr>

@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Where costs can appear</h2>
     <p>These are the only points where money leaves your balance for something other than an investment you have chosen.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Item</th><th scope="col">Charged by</th><th scope="col">Note</th></tr></thead>
       <tbody>
         <tr><td>Account opening</td><td>—</td><td>Free.</td></tr>

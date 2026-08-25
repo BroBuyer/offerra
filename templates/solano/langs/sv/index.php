@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Inga kalkylark. Inga skärmar. Inga sista-minuten-tvivel</h2>
         <p class="etpy2">Se hur <?= e(SITE_NAME) ?> står sig mot traditionella mäklare och handel för hand.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Inga kalkylark. Inga skärmar. Inga sista-minuten-tvivel"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Inga kalkylark. Inga skärmar. Inga sista-minuten-tvivel"><table class="gvdhnr">
         <thead><tr><th scope="col">Plattform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Traditionell mäklare</th><th scope="col">Handel på egen hand</th></tr></thead>
         <tbody>
           <tr><td>AI-orderutförande</td><td class="yd552">✓</td><td class="aty3riz">begränsade tider</td><td class="aty3riz">manuellt</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="av"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Hur mycket har du investerat tidigare?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Inte alls</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Lite, på egen hand</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Jag investerar regelbundet</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Vad är viktigast för dig just nu?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Hålla risken låg</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabil tillväxt</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Förstå hur det fungerar</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Hur mycket tid kan du lägga?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Nästan ingen</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Några minuter om dagen</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Jag gillar att följa marknader</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Tillbaka</button>
-          <p class="jyvec" id="bpisnbk" hidden>Dina svar är klara — lämna dina uppgifter så går en specialist igenom dem med dig.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Visa mitt startupplägg</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Tillbaka</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Dina svar är klara — lämna dina uppgifter så går en specialist igenom dem med dig.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Visa mitt startupplägg</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Så fungerar det</h2>
         <p class="etpy2">Modern AI och en riktig mänsklig analytiker, som tillsammans hjälper dig att bygga en extra inkomstkälla, guidar dig i varje steg och visar varje rörelse i ditt kapital.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Skapa ditt konto</h3><p>Registrera dig på några minuter med bara din e-post.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Verifiera din e-post</h3><p>Bekräfta din adress för att skydda ditt konto.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Sätt in medel</h3><p>Lägg till kapital från <?= e(money_min()) ?> med den metod du föredrar.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Handla Bitcoin, Ethereum och mycket mer</h2>
         <p class="etpy2">Priser i realtid, avancerade indikatorer och en professionell bild av de marknader som intresserar dig.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Handla Bitcoin, Ethereum och mycket mer"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Handla Bitcoin, Ethereum och mycket mer"><table class="kzp7d0j">
         <caption>Priserna uppdateras automatiskt så länge sidan är öppen.</caption>
         <thead><tr><th scope="col">Tillgång</th><th scope="col">Pris</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — saldon, positioner och uttag var du än är</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Samma portföljvy på en telefonskärm" title="Samma portföljvy på en telefonskärm" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Följ ditt konto i realtid</h2>
         <p class="etpy2">Varje affär din analytiker lägger loggas här — ingångar, utgångar och verifierade resultat på varje par, live.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Utförande under en sekund på varje ansluten marknad</h3><p><?= e(SITE_NAME) ?> håller permanenta API-anslutningar med låg latens till varje stödd börs. När modellen genererar en signal skickas ordern, fylls och loggas i din översikt före nästa tick.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Den körs dygnet runt, genom varje marknadssession</h3><p>Krypto vilar inte, och det gör inte heller <?= e(SITE_NAME) ?>. Motorn fortsätter att analysera par under helger och helgdagar så att en möjlighet inte missas.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Rapportering i flera valutor</h3><p>Varje saldo, varje affär och varje uttag visas i din lokala valuta. Inga dolda växlingsteg någonstans.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Frågor</span>
         <h2 id="wysa9hx">Vanliga frågor</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Vilken är minsta insättning för att komma igång?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

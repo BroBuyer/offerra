@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">No spreadsheets. No screens. No last-minute doubts</h2>
         <p class="etpy2">See how <?= e(SITE_NAME) ?> compares with traditional brokers and with trading by hand.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="No spreadsheets. No screens. No last-minute doubts"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="No spreadsheets. No screens. No last-minute doubts"><table class="gvdhnr">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Traditional broker</th><th scope="col">Trading on your own</th></tr></thead>
         <tbody>
           <tr><td>AI order execution</td><td class="yd552">✓</td><td class="aty3riz">limited hours</td><td class="aty3riz">manual</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="of"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. How much investing have you done before?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>None at all</span></label>
             <label><input type="radio" name="q1" value="2"/><span>A little, on my own</span></label>
             <label><input type="radio" name="q1" value="3"/><span>I invest regularly</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. What matters most to you right now?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Keeping risk low</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Steady growth</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Learning how it works</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. How much time can you give it?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Almost none</span></label>
             <label><input type="radio" name="q3" value="2"/><span>A few minutes a day</span></label>
             <label><input type="radio" name="q3" value="3"/><span>I like following markets</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Back</button>
-          <p class="jyvec" id="bpisnbk" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">See my starting plan</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Back</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">See my starting plan</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Cara ia berfungsi</h2>
         <p class="etpy2">Modern AI and a real human analyst, working together, to help you build an additional source of income, guiding you at every step and showing you every movement of your capital.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Cipta akaun anda</h3><p>Register in a few minutes with your email only.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Sahkan e-mel anda</h3><p>Confirm your address to protect your account.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Deposit funds</h3><p>Add capital from <?= e(money_min()) ?> with the method you prefer.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Trade Bitcoin, Ethereum and much more</h2>
         <p class="etpy2">Real-time prices, advanced indicators and a professional-level view of the markets that interest you.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Trade Bitcoin, Ethereum and much more"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Trade Bitcoin, Ethereum and much more"><table class="kzp7d0j">
         <caption>Prices update automatically while the page is open.</caption>
         <thead><tr><th scope="col">Asset</th><th scope="col">Price</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobile — balances, positions and withdrawals wherever you are</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="The same portfolio view on a phone screen" title="The same portfolio view on a phone screen" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Watch your account in real time</h2>
         <p class="etpy2">Every trade your analyst places is logged here — entries, exits and verified results on every pair, streaming live.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Sub-second execution on every connected market</h3><p><?= e(SITE_NAME) ?> keeps permanent low-latency API connections with every supported exchange. When the model generates a signal, the order is sent, filled and logged on your dashboard before the next tick.</p></div></li>
         <li><span class="vio04">02</span><div><h3>It runs 24/7, through every market session</h3><p>Crypto does not rest, and neither does <?= e(SITE_NAME) ?>. The engine keeps analysing pairs through weekends and holidays so an opportunity is not missed.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Multi-currency reporting</h3><p>Every balance, every trade and every withdrawal is shown in your local currency. No hidden conversion steps at any point.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Questions</span>
         <h2 id="wysa9hx">Soalan lazim</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">What is the minimum deposit to get started?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

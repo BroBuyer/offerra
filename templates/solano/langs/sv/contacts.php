@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Hur du kontaktar oss</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kanal</th><th scope="col">Bäst för</th><th scope="col">Svar</th></tr></thead>
       <tbody>
         <tr><td>E-postsupport — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Kontofrågor, verifiering, uttag</td><td>Vi svarar vanligtvis inom en arbetsdag.</td></tr>

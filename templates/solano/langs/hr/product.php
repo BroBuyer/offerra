@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Što možete imati u portfelju</h2>
     <p>Jedan račun pokriva više klasa imovine, pa ne morate otvarati drugu platformu čim proširite interese.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Klasa imovine</th><th scope="col">Primjeri</th><th scope="col">Dobro je znati</th></tr></thead>
       <tbody>
         <tr><td>Kriptovalute</td><td>BTC, ETH, SOL, XRP</td><td>Trguje se 24 sata, uključujući vikende.</td></tr>

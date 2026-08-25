@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Nincsenek táblázatok. Nincsenek zsúfolt képernyők. Nincs utolsó pillanatos kétely</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Hagyományos bróker</th><th scope="col">Önálló kereskedés</th></tr></thead>
       <tbody>
         <tr><td>MI-megbízás-végrehajtás</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">korlátozott órák</td><td style="color:var(--muted)">kézzel</td></tr>

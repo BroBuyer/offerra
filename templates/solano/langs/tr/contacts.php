@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Bize nasıl ulaşılır</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kanal</th><th scope="col">En uygun olduğu yer</th><th scope="col">Yanıt</th></tr></thead>
       <tbody>
         <tr><td>E-posta desteği — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Hesap soruları, doğrulama, çekimler</td><td>Genellikle bir iş günü içinde yanıtlarız.</td></tr>

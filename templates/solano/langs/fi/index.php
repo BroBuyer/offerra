@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Ei taulukoita. Ei näyttöjä. Ei viime hetken epäilyksiä</h2>
         <p class="etpy2">Katsokaa, miten <?= e(SITE_NAME) ?> pärjää perinteisille välittäjille ja käsin treidaamiselle.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Ei taulukoita. Ei näyttöjä. Ei viime hetken epäilyksiä"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Ei taulukoita. Ei näyttöjä. Ei viime hetken epäilyksiä"><table class="gvdhnr">
         <thead><tr><th scope="col">Alusta</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Perinteinen välittäjä</th><th scope="col">Kaupankäynti itse</th></tr></thead>
         <tbody>
           <tr><td>Tekoälyn toimeksiantojen toteutus</td><td class="yd552">✓</td><td class="aty3riz">rajoitetut tunnit</td><td class="aty3riz">manuaalisesti</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="/"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Kuinka paljon olette sijoittaneet aiemmin?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Ei lainkaan</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Hieman, itse</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Sijoitan säännöllisesti</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Mikä on teille juuri nyt tärkeintä?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Pitää riski matalana</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Vakaa kasvu</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Ymmärtää, miten se toimii</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Kuinka paljon aikaa voitte sille antaa?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Lähes ei lainkaan</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Muutama minuutti päivässä</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Seuraan mielelläni markkinoita</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Takaisin</button>
-          <p class="jyvec" id="bpisnbk" hidden>Vastauksenne ovat valmiina — jättäkää yhteystiedot, niin asiantuntija käy ne kanssanne läpi.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Näytä aloitussuunnitelmani</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Takaisin</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Vastauksenne ovat valmiina — jättäkää yhteystiedot, niin asiantuntija käy ne kanssanne läpi.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Näytä aloitussuunnitelmani</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Näin se toimii</h2>
         <p class="etpy2">Nykyaikainen tekoäly ja oikea ihmisanalyytikko yhdessä auttavat rakentamaan lisätulonlähteen, ohjaavat teitä jokaisessa vaiheessa ja näyttävät jokaisen pääoman liikkeen.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Luo tilisi</h3><p>Rekisteröitykää muutamassa minuutissa pelkällä sähköpostilla.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Vahvistakaa sähköposti</h3><p>Vahvistakaa osoite suojataksenne tilinne.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Tallettakaa varoja</h3><p>Lisätkää pääomaa alkaen <?= e(money_min()) ?> haluamallanne tavalla.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Käykää kauppaa Bitcoinilla, Ethereumilla ja paljolla muulla</h2>
         <p class="etpy2">Reaaliaikaiset hinnat, kehittyneet indikaattorit ja ammattitason näkymä markkinoihin, jotka kiinnostavat teitä.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Käykää kauppaa Bitcoinilla, Ethereumilla ja paljolla muulla"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Käykää kauppaa Bitcoinilla, Ethereumilla ja paljolla muulla"><table class="kzp7d0j">
         <caption>Hinnat päivittyvät automaattisesti, kun sivu on auki.</caption>
         <thead><tr><th scope="col">Omaisuuserä</th><th scope="col">Hinta</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobiili — saldot, positiot ja nostot missä tahansa olette</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Sama salkkunäkymä puhelimen näytöllä" title="Sama salkkunäkymä puhelimen näytöllä" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Seuratkaa tiliänne reaaliajassa</h2>
         <p class="etpy2">Jokainen analyytikon tekemä kauppa kirjataan tähän — sisään- ja ulosmenot sekä varmennetut tulokset jokaisella parilla, livenä.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Alle sekunnin toteutus jokaisella yhdistetyllä markkinalla</h3><p><?= e(SITE_NAME) ?> pitää pysyvät matalan viiveen API-yhteydet jokaiseen tuettuun pörssiin. Kun malli tuottaa signaalin, toimeksianto lähetetään, toteutetaan ja kirjataan koontinäyttöön ennen seuraavaa tikkiä.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Se toimii 24/7, jokaisessa markkinaistunnossa</h3><p>Krypto ei lepää, eikä myöskään <?= e(SITE_NAME) ?>. Moottori analysoi pareja viikonloppuisin ja pyhäpäivinä, jotta tilaisuus ei jää väliin.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Monivaluuttaraportointi</h3><p>Jokainen saldo, kauppa ja nosto näytetään paikallisessa valuutassanne. Ei piilotettuja muunnosvaiheita missään kohdassa.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Kysymykset</span>
         <h2 id="wysa9hx">Usein kysytyt kysymykset</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Mikä on vähimmäistalletus aloitukseen?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

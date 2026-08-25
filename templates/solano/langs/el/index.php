@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Χωρίς υπολογιστικά φύλλα. Χωρίς οθόνες. Χωρίς αμφιβολίες της τελευταίας στιγμής</h2>
         <p class="etpy2">Δείτε πώς το <?= e(SITE_NAME) ?> συγκρίνεται με τους παραδοσιακούς brokers και με τις χειροκίνητες συναλλαγές.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Χωρίς υπολογιστικά φύλλα. Χωρίς οθόνες. Χωρίς αμφιβολίες της τελευταίας στιγμής"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Χωρίς υπολογιστικά φύλλα. Χωρίς οθόνες. Χωρίς αμφιβολίες της τελευταίας στιγμής"><table class="gvdhnr">
         <thead><tr><th scope="col">Πλατφόρμα</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Παραδοσιακός broker</th><th scope="col">Συναλλαγές μόνοι σας</th></tr></thead>
         <tbody>
           <tr><td>Εκτέλεση εντολών με τεχνητή νοημοσύνη</td><td class="yd552">✓</td><td class="aty3riz">περιορισμένο ωράριο</td><td class="aty3riz">χειροκίνητα</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="από"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Πόσο έχετε επενδύσει στο παρελθόν;</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Καθόλου</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Λίγο, μόνος μου</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Επενδύω τακτικά</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Τι έχει μεγαλύτερη σημασία για εσάς αυτή τη στιγμή;</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Να διατηρήσω τον κίνδυνο χαμηλά</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Σταθερή ανάπτυξη</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Να κατανοήσω πώς λειτουργεί</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Πόσο χρόνο μπορείτε να διαθέσετε;</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Σχεδόν καθόλου</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Λίγα λεπτά την ημέρα</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Μου αρέσει να παρακολουθώ τις αγορές</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Πίσω</button>
-          <p class="jyvec" id="bpisnbk" hidden>Οι απαντήσεις σας είναι έτοιμες — αφήστε τα στοιχεία σας και ένας ειδικός θα τα συζητήσει μαζί σας.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Δείτε το πλάνο έναρξής μου</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Πίσω</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Οι απαντήσεις σας είναι έτοιμες — αφήστε τα στοιχεία σας και ένας ειδικός θα τα συζητήσει μαζί σας.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Δείτε το πλάνο έναρξής μου</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Πώς λειτουργεί</h2>
         <p class="etpy2">Σύγχρονη τεχνητή νοημοσύνη και πραγματικός ανθρώπινος αναλυτής, μαζί, για να σας βοηθήσουν να δημιουργήσετε επιπλέον πηγή εισοδήματος, καθοδηγώντας σας σε κάθε βήμα και δείχνοντάς σας κάθε κίνηση του κεφαλαίου σας.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Δημιουργήστε τον λογαριασμό σας</h3><p>Εγγραφείτε σε λίγα λεπτά μόνο με το email σας.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Επαληθεύστε το email σας</h3><p>Επιβεβαιώστε τη διεύθυνσή σας για να προστατεύσετε τον λογαριασμό.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Καταθέστε κεφάλαια</h3><p>Προσθέστε κεφάλαιο από <?= e(money_min()) ?> με τη μέθοδο που προτιμάτε.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Συναλλαγές σε Bitcoin, Ethereum και πολλά ακόμη</h2>
         <p class="etpy2">Τιμές σε πραγματικό χρόνο, προηγμένοι δείκτες και επαγγελματική εικόνα των αγορών που σας ενδιαφέρουν.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Συναλλαγές σε Bitcoin, Ethereum και πολλά ακόμη"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Συναλλαγές σε Bitcoin, Ethereum και πολλά ακόμη"><table class="kzp7d0j">
         <caption>Οι τιμές ενημερώνονται αυτόματα όσο η σελίδα είναι ανοιχτή.</caption>
         <thead><tr><th scope="col">Περιουσιακό στοιχείο</th><th scope="col">Τιμή</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Κινητό — υπόλοιπα, θέσεις και αναλήψεις όπου κι αν βρίσκεστε</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Η ίδια εικόνα χαρτοφυλακίου στην οθόνη του τηλεφώνου" title="Η ίδια εικόνα χαρτοφυλακίου στην οθόνη του τηλεφώνου" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Παρακολουθήστε τον λογαριασμό σας σε πραγματικό χρόνο</h2>
         <p class="etpy2">Κάθε συναλλαγή που τοποθετεί ο αναλυτής σας καταγράφεται εδώ — εισόδους, εξόδους και επαληθευμένα αποτελέσματα σε κάθε ζεύγος, σε ζωντανή ροή.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Εκτέλεση κάτω από ένα δευτερόλεπτο σε κάθε συνδεδεμένη αγορά</h3><p><?= e(SITE_NAME) ?> διατηρεί μόνιμες συνδέσεις API χαμηλής καθυστέρησης με κάθε υποστηριζόμενο χρηματιστήριο. Όταν το μοντέλο παράγει σήμα, η εντολή αποστέλλεται, εκτελείται και καταγράφεται στον πίνακα ελέγχου πριν από το επόμενο tick.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Λειτουργεί 24/7, σε κάθε συνεδρία αγοράς</h3><p>Τα κρυπτονομίσματα δεν ξεκουράζονται, ούτε το <?= e(SITE_NAME) ?>. Η μηχανή συνεχίζει να αναλύει ζεύγη τα σαββατοκύριακα και τις αργίες, ώστε να μην χάνεται ευκαιρία.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Αναφορές σε πολλά νομίσματα</h3><p>Κάθε υπόλοιπο, κάθε συναλλαγή και κάθε ανάληψη εμφανίζεται στο τοπικό σας νόμισμα. Χωρίς κρυφά βήματα μετατροπής σε κανένα σημείο.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Ερωτήσεις</span>
         <h2 id="wysa9hx">Συχνές ερωτήσεις</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Ποια είναι η ελάχιστη κατάθεση για να ξεκινήσετε;</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Geen spreadsheets. Geen schermen. Geen last-minute twijfels</h2>
         <p class="etpy2">Ontdek hoe <?= e(SITE_NAME) ?> zich verhoudt tot traditionele brokers en zelf beleggen.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Geen spreadsheets. Geen schermen. Geen last-minute twijfels"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Geen spreadsheets. Geen schermen. Geen last-minute twijfels"><table class="gvdhnr">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Traditionele broker</th><th scope="col">Zelf beleggen</th></tr></thead>
         <tbody>
           <tr><td>Orderuitvoering met AI</td><td class="yd552">✓</td><td class="aty3riz">beperkte openingstijden</td><td class="aty3riz">handmatig</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="van"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Hoeveel ervaring heeft u met beleggen?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Geen</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Een beetje, op eigen houtje</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Ik beleg regelmatig</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Wat is nu het belangrijkst voor u?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Risico laag houden</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabiele groei</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Begrijpen hoe het werkt</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Hoeveel tijd kunt u eraan besteden?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Bijna niets</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Een paar minuten per dag</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Ik volg graag de markten</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Terug</button>
-          <p class="jyvec" id="bpisnbk" hidden>Uw antwoorden zijn klaar: laat uw gegevens achter en een specialist bespreekt ze met u.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Mijn startplan bekijken</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Terug</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Uw antwoorden zijn klaar: laat uw gegevens achter en een specialist bespreekt ze met u.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Mijn startplan bekijken</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Hoe het werkt</h2>
         <p class="etpy2">Moderne AI en een echte menselijke analist, samenwerkend om u te helpen extra inkomen op te bouwen, u bij elke stap te begeleiden en elke beweging van uw kapitaal te tonen.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Maak uw account aan</h3><p>Registreer u binnen enkele minuten met alleen uw e-mailadres.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Verifieer uw e-mail</h3><p>Bevestig uw adres om uw account te beschermen.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Stort geld</h3><p>Voeg kapitaal toe vanaf <?= e(money_min()) ?>, met de methode die u verkiest.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Handel in Bitcoin, Ethereum en meer</h2>
         <p class="etpy2">Realtime prijzen, geavanceerde indicatoren en een professioneel overzicht van de markten die u interesseren.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Handel in Bitcoin, Ethereum en meer"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Handel in Bitcoin, Ethereum en meer"><table class="kzp7d0j">
         <caption>Prijzen worden automatisch bijgewerkt zolang de pagina open is.</caption>
         <thead><tr><th scope="col">Activa</th><th scope="col">Prijs</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64.671</td><td class="py9af zuh4exq">-1,06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1.881</td><td class="py9af zuh4exq">-2,55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76,62</td><td class="py9af zuh4exq">-1,72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1,11</td><td class="py9af zuh4exq">-0,97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64.671</td><td class="mg1jree ixupo">-1,06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1.881</td><td class="mg1jree ixupo">-2,55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76,62</td><td class="mg1jree ixupo">-1,72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1,11</td><td class="mg1jree ixupo">-0,97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobiel — saldi, posities en opnames waar u ook bent</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Hetzelfde portefeuilleoverzicht op een mobiel scherm" title="Hetzelfde portefeuilleoverzicht op een mobiel scherm" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Bekijk uw account in realtime</h2>
         <p class="etpy2">Elke transactie die uw analist plaatst, wordt hier vastgelegd: instappen, uitstappen en geverifieerde resultaten per paar, live.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Uitvoering in minder dan een seconde op elke verbonden markt</h3><p><?= e(SITE_NAME) ?> onderhoudt permanente low-latency API-verbindingen met elke ondersteunde exchange. Wanneer het model een signaal genereert, wordt de order verzonden, uitgevoerd en in uw dashboard geregistreerd vóór de volgende tick.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Werkt 24/7, in elke marktsessie</h3><p>Cryptocurrency rust nooit, en <?= e(SITE_NAME) ?> ook niet. De engine blijft paren analyseren in weekenden en op feestdagen zodat u geen kans mist.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Rapporten in meerdere valuta</h3><p>Elk saldo, elke transactie en elke opname wordt in uw lokale valuta getoond. Geen verborgen conversiestappen op enig moment.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Vragen</span>
         <h2 id="wysa9hx">Veelgestelde vragen</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Wat is de minimale storting om te beginnen?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

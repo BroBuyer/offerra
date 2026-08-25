@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>費用が発生し得る箇所</h2>
     <p>ご自身で選んだ投資以外で残高から資金が出るのは、次の点だけです。</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">項目</th><th scope="col">請求元</th><th scope="col">備考</th></tr></thead>
       <tbody>
         <tr><td>口座開設</td><td>—</td><td>無料。</td></tr>

@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Bez proračunskih tablica. Bez ekrana. Bez sumnji u posljednjem trenutku</h2>
         <p class="etpy2">Otkrijte kako se <?= e(SITE_NAME) ?> uspoređuje s tradicionalnim brokerima i samostalnim trgovanjem.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Bez proračunskih tablica. Bez ekrana. Bez sumnji u posljednjem trenutku"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Bez proračunskih tablica. Bez ekrana. Bez sumnji u posljednjem trenutku"><table class="gvdhnr">
         <thead><tr><th scope="col">Platforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Tradicionalni broker</th><th scope="col">Trgovati samostalno</th></tr></thead>
         <tbody>
           <tr><td>Izvršenje naloga s AI-jem</td><td class="yd552">✓</td><td class="aty3riz">ograničeno radno vrijeme</td><td class="aty3riz">ručno</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="od"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Koliko iskustva imate s ulaganjem?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Nimalo</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Malo, samostalno</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Redovito ulažem</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Što vam je sada najvažnije?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Držati rizik niskim</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stalan rast</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Razumjeti kako funkcionira</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Koliko vremena možete posvetiti?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Gotovo ništa</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Nekoliko minuta dnevno</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Volim pratiti tržišta</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Natrag</button>
-          <p class="jyvec" id="bpisnbk" hidden>Vaši odgovori su spremni: ostavite svoje podatke i stručnjak će ih s vama proći.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Pogledaj moj početni plan</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Natrag</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Vaši odgovori su spremni: ostavite svoje podatke i stručnjak će ih s vama proći.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Pogledaj moj početni plan</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Kako funkcionira</h2>
         <p class="etpy2">Moderni AI i stvarni ljudski analitičar, koji rade zajedno kako bi vam pomogli izgraditi dodatni izvor prihoda, vodeći vas u svakom koraku i pokazujući svaki pokret vašeg kapitala.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Otvorite račun</h3><p>Registrirajte se u nekoliko minuta samo s vašom e-poštom.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Potvrdite e-poštu</h3><p>Potvrdite adresu kako biste zaštitili račun.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Uplatite sredstva</h3><p>Dodajte kapital od <?= e(money_min()) ?>, načinom koji vam odgovara.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Trgujte Bitcoinom, Ethereumom i mnogo više</h2>
         <p class="etpy2">Cijene u stvarnom vremenu, napredni indikatori i profesionalni pregled tržišta koja vas zanimaju.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Trgujte Bitcoinom, Ethereumom i mnogo više"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Trgujte Bitcoinom, Ethereumom i mnogo više"><table class="kzp7d0j">
         <caption>Cijene se automatski ažuriraju dok je stranica otvorena.</caption>
         <thead><tr><th scope="col">Imovina</th><th scope="col">Cijena</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64.671</td><td class="py9af zuh4exq">-1,06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1.881</td><td class="py9af zuh4exq">-2,55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76,62</td><td class="py9af zuh4exq">-1,72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1,11</td><td class="py9af zuh4exq">-0,97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64.671</td><td class="mg1jree ixupo">-1,06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1.881</td><td class="mg1jree ixupo">-2,55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76,62</td><td class="mg1jree ixupo">-1,72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1,11</td><td class="mg1jree ixupo">-0,97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobitel — salda, pozicije i isplate gdje god ste</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Isti pregled portfelja na ekranu mobitela" title="Isti pregled portfelja na ekranu mobitela" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Pogledajte račun u stvarnom vremenu</h2>
         <p class="etpy2">Svaka operacija koju postavi vaš analitičar ovdje je zabilježena: ulazi, izlazi i provjereni rezultati po paru, uživo.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Izvršenje u manje od sekunde na svakom povezanom tržištu</h3><p><?= e(SITE_NAME) ?> održava stalne API veze niske latencije sa svakom podržanom burzom. Kad model generira signal, nalog se šalje, izvršava i bilježi na vašoj ploči prije sljedećeg ticka.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Radi 24/7, u svakoj tržišnoj sesiji</h3><p>Kriptovalute ne odmaraju, i <?= e(SITE_NAME) ?> također ne. Motor nastavlja analizirati parove tijekom vikenda i praznika kako vam prilika ne bi promakla.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Izvješća u više valuta</h3><p>Svaki saldo, svaka operacija i svaka isplata prikazuju se u vašoj lokalnoj valuti. Bez skrivenih koraka konverzije u bilo kojem trenutku.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Pitanja</span>
         <h2 id="wysa9hx">Često postavljana pitanja</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Koliki je minimalni depozit za početak?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Fără tabele. Fără ecrane. Fără îndoieli de ultim moment</h2>
         <p class="etpy2">Vedeți cum <?= e(SITE_NAME) ?> se compară cu brokerii tradiționali și cu tranzacționarea manuală.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Fără tabele. Fără ecrane. Fără îndoieli de ultim moment"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Fără tabele. Fără ecrane. Fără îndoieli de ultim moment"><table class="gvdhnr">
         <thead><tr><th scope="col">Platformă</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Broker tradițional</th><th scope="col">Tranzacționare pe cont propriu</th></tr></thead>
         <tbody>
           <tr><td>Executarea ordinelor de către AI</td><td class="yd552">✓</td><td class="aty3riz">ore limitate</td><td class="aty3riz">manual</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="din"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Cât de mult ați investit până acum?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Deloc</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Puțin, pe cont propriu</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Investesc regulat</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Ce contează cel mai mult pentru dumneavoastră acum?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Să țin riscul scăzut</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Creștere constantă</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Să înțeleg cum funcționează</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Cât timp îi puteți dedica?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Aproape deloc</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Câteva minute pe zi</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Îmi place să urmăresc piețele</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Înapoi</button>
-          <p class="jyvec" id="bpisnbk" hidden>Răspunsurile sunt gata — lăsați datele de contact și un specialist le va trece în revistă împreună cu dumneavoastră.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Vedeți planul de pornire</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Înapoi</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Răspunsurile sunt gata — lăsați datele de contact și un specialist le va trece în revistă împreună cu dumneavoastră.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Vedeți planul de pornire</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Cum funcționează</h2>
         <p class="etpy2">AI modern și un analist uman real, care lucrează împreună pentru a vă ajuta să construiți o sursă suplimentară de venit, ghidându-vă la fiecare pas și arătându-vă fiecare mișcare a capitalului.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Creați-vă contul</h3><p>Înregistrați-vă în câteva minute, doar cu e-mailul.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Verificați e-mailul</h3><p>Confirmați adresa pentru a vă proteja contul.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Depuneți fonduri</h3><p>Adăugați capital de la <?= e(money_min()) ?> cu metoda pe care o preferați.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Tranzacționați Bitcoin, Ethereum și multe altele</h2>
         <p class="etpy2">Prețuri în timp real, indicatori avansați și o privire de nivel profesional asupra piețelor care vă interesează.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Tranzacționați Bitcoin, Ethereum și multe altele"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Tranzacționați Bitcoin, Ethereum și multe altele"><table class="kzp7d0j">
         <caption>Prețurile se actualizează automat cât timp pagina este deschisă.</caption>
         <thead><tr><th scope="col">Activ</th><th scope="col">Preț</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — solduri, poziții și retrageri, oriunde v-ați afla</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Aceeași imagine a portofoliului pe ecranul telefonului" title="Aceeași imagine a portofoliului pe ecranul telefonului" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Urmăriți-vă contul în timp real</h2>
         <p class="etpy2">Fiecare tranzacție plasată de analist este înregistrată aici — intrări, ieșiri și rezultate verificate pe fiecare pereche, în direct.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Executare sub o secundă pe fiecare piață conectată</h3><p><?= e(SITE_NAME) ?> menține conexiuni API permanente, cu latență redusă, cu fiecare bursă acceptată. Când modelul generează un semnal, ordinul este trimis, executat și înregistrat pe panou înainte de următorul tick.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Rulează 24/7, în fiecare sesiune de piață</h3><p>Crypto nu se odihnește, iar <?= e(SITE_NAME) ?> nici el. Motorul analizează perechile și în weekenduri și sărbători, ca o oportunitate să nu fie ratată.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Raportare în mai multe valute</h3><p>Fiecare sold, fiecare tranzacție și fiecare retragere sunt afișate în moneda locală. Fără pași de conversie ascunși, nicăieri.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Întrebări</span>
         <h2 id="wysa9hx">Întrebări frecvente</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Care este depunerea minimă pentru a începe?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

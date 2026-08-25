@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Gdje se mogu pojaviti troškovi</h2>
     <p>Ovo su jedina mjesta gdje novac napušta saldo zbog nečega što nije vaše odabrano ulaganje.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Stavka</th><th scope="col">Naplaćuje</th><th scope="col">Napomena</th></tr></thead>
       <tbody>
         <tr><td>Otvaranje računa</td><td>—</td><td>Besplatno.</td></tr>

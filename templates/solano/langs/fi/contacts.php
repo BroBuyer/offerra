@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Miten otatte meihin yhteyttä</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kanava</th><th scope="col">Paras kun</th><th scope="col">Vastaus</th></tr></thead>
       <tbody>
         <tr><td>Sähköpostituki — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Kysymykset tilistä, vahvistuksesta, nostoista</td><td>Vastaamme yleensä yhden arkipäivän kuluessa.</td></tr>

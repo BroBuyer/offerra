@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Žiadne tabuľky. Žiadne preplnené obrazovky. Žiadne pochybnosti na poslednú chvíľu</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Platforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Tradičný broker</th><th scope="col">Obchodovanie na vlastnú päsť</th></tr></thead>
       <tbody>
         <tr><td>Vykonávanie príkazov AI</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">obmedzené hodiny</td><td style="color:var(--muted)">ručne</td></tr>

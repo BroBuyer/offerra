@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Wo Kosten entstehen können</h2>
     <p>Das sind die einzigen Stellen, an denen Geld Ihr Guthaben verlässt für etwas anderes als eine von Ihnen gewählte Anlage.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Position</th><th scope="col">Berechnet von</th><th scope="col">Hinweis</th></tr></thead>
       <tbody>
         <tr><td>Kontoeröffnung</td><td>—</td><td>Kostenlos.</td></tr>

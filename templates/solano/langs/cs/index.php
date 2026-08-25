@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Žádné tabulky. Žádné obrazovky. Žádné pochybnosti na poslední chvíli</h2>
         <p class="etpy2">Podívejte se, jak <?= e(SITE_NAME) ?> obstojí vedle tradičních brokerů a obchodování ručně.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Žádné tabulky. Žádné obrazovky. Žádné pochybnosti na poslední chvíli"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Žádné tabulky. Žádné obrazovky. Žádné pochybnosti na poslední chvíli"><table class="gvdhnr">
         <thead><tr><th scope="col">Platforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Tradiční broker</th><th scope="col">Obchodování na vlastní pěst</th></tr></thead>
         <tbody>
           <tr><td>Provádění pokynů AI</td><td class="yd552">✓</td><td class="aty3riz">omezené hodiny</td><td class="aty3riz">ručně</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="z"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Kolik jste už investovali?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Vůbec nic</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Trochu, sám/sama</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Investuji pravidelně</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Co je pro vás teď nejdůležitější?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Udržet riziko nízko</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabilní růst</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Pochopit, jak to funguje</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Kolik času tomu můžete věnovat?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Téměř žádný</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Pár minut denně</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Rád/a sleduji trhy</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Zpět</button>
-          <p class="jyvec" id="bpisnbk" hidden>Odpovědi jsou připravené — nechte kontakt a specialista je s vámi projde.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Zobrazit výchozí plán</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Zpět</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>Odpovědi jsou připravené — nechte kontakt a specialista je s vámi projde.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Zobrazit výchozí plán</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Jak to funguje</h2>
         <p class="etpy2">Moderní AI a skutečný lidský analytik společně pomáhají vytvořit další zdroj příjmu, vedou vás na každém kroku a ukazují každý pohyb kapitálu.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Vytvořte účet</h3><p>Registrace trvá pár minut a stačí e-mail.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Ověřte e-mail</h3><p>Potvrďte adresu a chraňte účet.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Vložte prostředky</h3><p>Vložte kapitál od <?= e(money_min()) ?> metodou, kterou preferujete.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Obchodujte Bitcoin, Ethereum a mnohem víc</h2>
         <p class="etpy2">Ceny v reálném čase, pokročilé indikátory a profesionální pohled na trhy, které vás zajímají.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Obchodujte Bitcoin, Ethereum a mnohem víc"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Obchodujte Bitcoin, Ethereum a mnohem víc"><table class="kzp7d0j">
         <caption>Ceny se aktualizují automaticky, dokud je stránka otevřená.</caption>
         <thead><tr><th scope="col">Aktivum</th><th scope="col">Cena</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — zůstatky, pozice a výběry kdekoli jste</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Stejný pohled na portfolio na telefonu" title="Stejný pohled na portfolio na telefonu" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Sledujte účet v reálném čase</h2>
         <p class="etpy2">Každý obchod, který analytik zadá, je tu zaznamenán — vstupy, výstupy a ověřené výsledky na každém páru, živě.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Provádění pod sekundu na každém připojeném trhu</h3><p><?= e(SITE_NAME) ?> udržuje trvalá API spojení s nízkou latencí ke každé podporované burze. Když model vygeneruje signál, pokyn je odeslán, vyplněn a zapsán na panelu ještě před dalším tikem.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Běží 24/7, v každé tržní seanci</h3><p>Krypto nespí a <?= e(SITE_NAME) ?> také ne. Engine analyzuje páry i o víkendech a svátcích, aby příležitost neunikla.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Více měn v reportech</h3><p>Každý zůstatek, každý obchod i výběr je v místní měně. Žádné skryté kroky konverze.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Otázky</span>
         <h2 id="wysa9hx">Často kladené otázky</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Jaký je minimální vklad pro začátek?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">表計算も、複雑な画面も、直前の迷いもありません</h2>
         <p class="etpy2"> <?= e(SITE_NAME) ?> が従来のブローカーや自力での取引と比べてどう違うかをご覧ください。</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="表計算も、複雑な画面も、直前の迷いもありません"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="表計算も、複雑な画面も、直前の迷いもありません"><table class="gvdhnr">
         <thead><tr><th scope="col">プラットフォーム</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">従来のブローカー</th><th scope="col">自力での取引</th></tr></thead>
         <tbody>
           <tr><td>AIによる注文執行</td><td class="yd552">✓</td><td class="aty3riz">時間制限あり</td><td class="aty3riz">手動</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="／"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. これまでにどのくらい投資したことがありますか？</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>まったくない</span></label>
             <label><input type="radio" name="q1" value="2"/><span>少し、独学で</span></label>
             <label><input type="radio" name="q1" value="3"/><span>定期的に投資している</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. 今、最も大切なことは何ですか？</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>リスクを低く保つこと</span></label>
             <label><input type="radio" name="q2" value="2"/><span>安定した成長</span></label>
             <label><input type="radio" name="q2" value="3"/><span>仕組みを理解すること</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. どのくらい時間を使えますか？</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>ほとんどない</span></label>
             <label><input type="radio" name="q3" value="2"/><span>1日数分</span></label>
             <label><input type="radio" name="q3" value="3"/><span>市場を追うのが好き</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>戻る</button>
-          <p class="jyvec" id="bpisnbk" hidden>回答の準備ができました。連絡先を残していただければ、担当者が内容を一緒に確認します。</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">開始プランを見る</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>戻る</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>回答の準備ができました。連絡先を残していただければ、担当者が内容を一緒に確認します。</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">開始プランを見る</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">仕組み</h2>
         <p class="etpy2">最新のAIと実際の人間のアナリストが協力し、追加の収入源づくりを支援します。各ステップで案内し、資金の動きをすべてお見せします。</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>口座を作成</h3><p>メールアドレスだけで、数分で登録できます。</p></div></li>
         <li><span class="vio04">02</span><div><h3>メールを確認</h3><p>口座を守るため、アドレスを確認してください。</p></div></li>
         <li><span class="vio04">03</span><div><h3>資金を入金</h3><p> <?= e(money_min()) ?> から、ご希望の方法で資金を追加できます。</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">ビットコイン、イーサリアムなど幅広く取引</h2>
         <p class="etpy2">リアルタイム価格、高度な指標、関心のある市場のプロフェッショナルな視点。</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="ビットコイン、イーサリアムなど幅広く取引"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="ビットコイン、イーサリアムなど幅広く取引"><table class="kzp7d0j">
         <caption>ページを開いている間、価格は自動で更新されます。</caption>
         <thead><tr><th scope="col">資産</th><th scope="col">価格</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>モバイル — どこにいても残高、ポジション、出金</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="スマートフォン画面でも同じポートフォリオ表示" title="スマートフォン画面でも同じポートフォリオ表示" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">口座をリアルタイムで確認</h2>
         <p class="etpy2">アナリストが発注するすべての取引がここに記録されます。エントリー、決済、各ペアの確認済み結果がライブで流れます。</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>接続されたすべての市場で1秒未満の執行</h3><p><?= e(SITE_NAME) ?> は対応するすべての取引所と低遅延のAPI接続を常時維持します。モデルがシグナルを生成すると、次のティックの前に注文が送信・約定され、ダッシュボードに記録されます。</p></div></li>
         <li><span class="vio04">02</span><div><h3>すべての市場セッションを通じ、24時間稼働します</h3><p>暗号資産は休まず、 <?= e(SITE_NAME) ?> も休みません。エンジンは週末や祝日もペアを分析し、機会を逃しません。</p></div></li>
         <li><span class="vio04">03</span><div><h3>多通貨レポート</h3><p>残高、取引、出金はすべて現地通貨で表示されます。隠れた換算ステップはありません。</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">ご質問</span>
         <h2 id="wysa9hx">よくある質問</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">始めるための最低入金額はいくらですか？</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

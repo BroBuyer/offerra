@@ -182,7 +182,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="mzn56z">Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely</h2>
         <p class="etpy2">Nézze meg, hogyan áll a <?= e(SITE_NAME) ?> a hagyományos brókerekhez és a kézi kereskedéshez képest.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely"><table class="ycxlw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely"><table class="gvdhnr">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Hagyományos bróker</th><th scope="col">Önálló kereskedés</th></tr></thead>
         <tbody>
           <tr><td>MI-megbízás-végrehajtás</td><td class="yd552">✓</td><td class="aty3riz">korlátozott órák</td><td class="aty3riz">kézzel</td></tr>
@@ -273,7 +273,7 @@ require __DIR__ . '/includes/header.php';
            data-of="/"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Mennyit fektetett be korábban?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q1" value="1"/><span>Egyáltalán semmit</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Egy keveset, önállóan</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Rendszeresen fektetek be</span></label>
@@ -281,7 +281,7 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Mi a legfontosabb Önnek most?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q2" value="1"/><span>Alacsonyan tartani a kockázatot</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabil növekedés</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Megérteni, hogyan működik</span></label>
@@ -289,16 +289,16 @@ require __DIR__ . '/includes/header.php';
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Mennyi időt tud rá szánni?</legend>
-          <div class="ltouuo">
+          <div class="qs49y">
             <label><input type="radio" name="q3" value="1"/><span>Szinte semennyit</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Néhány perc naponta</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Szeretem követni a piacokat</span></label>
           </div>
         </fieldset>
-        <div class="rho9v16">
-          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Vissza</button>
-          <p class="jyvec" id="bpisnbk" hidden>A válaszok készen állnak — hagyja meg adatait, és egy szakértő átbeszéli őket Önnel.</p>
-          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">A kezdőtervem megtekintése</a>
+        <div class="zuh4exq">
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Vissza</button>
+          <p class="vrwbx90" id="bpisnbk" hidden>A válaszok készen állnak — hagyja meg adatait, és egy szakértő átbeszéli őket Önnel.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">A kezdőtervem megtekintése</a>
         </div>
       </form>
     </section>
@@ -309,7 +309,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="dl5sp">Hogyan működik</h2>
         <p class="etpy2">Modern MI és valódi emberi elemző együtt dolgozik, hogy extra jövedelemforrást építsen, minden lépésnél vezeti, és megmutatja tőkéje minden mozgását.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Hozza létre a fiókját</h3><p>Regisztráljon percek alatt, csak e-maillel.</p></div></li>
         <li><span class="vio04">02</span><div><h3>Erősítse meg e-mailjét</h3><p>Erősítse meg a címét a fiók védelméhez.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Helyezzen be forrásokat</h3><p>Adjon hozzá tőkét <?= e(money_min()) ?> az Ön által választott módon.</p></div></li>
@@ -325,14 +325,14 @@ require __DIR__ . '/includes/header.php';
         <h2 id="rlolt2l">Kereskedjen Bitcoinnal, Ethereummal és még sok mással</h2>
         <p class="etpy2">Valós idejű árak, fejlett indikátorok és professzionális kép az Önt érdeklő piacokról.</p>
       </div>
-      <div class="jvlvb1" role="region" tabindex="0" aria-label="Kereskedjen Bitcoinnal, Ethereummal és még sok mással"><table class="xxzsw">
+      <div class="ltouuo" role="region" tabindex="0" aria-label="Kereskedjen Bitcoinnal, Ethereummal és még sok mással"><table class="kzp7d0j">
         <caption>Az árak automatikusan frissülnek, amíg az oldal nyitva van.</caption>
         <thead><tr><th scope="col">Eszköz</th><th scope="col">Ár</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64,671</td><td class="mg1jree ixupo">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1,881</td><td class="mg1jree ixupo">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="no0qnp">Solana<small>SOL/USDT</small></span></td><td class="th0yrt">€76.62</td><td class="mg1jree ixupo">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="no0qnp">XRP<small>XRP/USDT</small></span></td><td class="th0yrt">€1.11</td><td class="mg1jree ixupo">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -350,7 +350,7 @@ require __DIR__ . '/includes/header.php';
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — egyenlegek, pozíciók és kifizetések, bárhol is van</span></li>
           </ul>
         </div>
-        <figure class="kzp7d0j">
+        <figure class="snozao">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Ugyanaz a portfóliónézet a telefon képernyőjén" title="Ugyanaz a portfóliónézet a telefon képernyőjén" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
@@ -362,7 +362,7 @@ require __DIR__ . '/includes/header.php';
         <h2 id="onidtj">Kövesse fiókját valós időben</h2>
         <p class="etpy2">Minden, az elemzője által leadott ügylet itt naplózódik — belépések, kilépések és ellenőrzött eredmények minden párra, élőben.</p>
       </div>
-      <ol class="snozao">
+      <ol class="rho9v16">
         <li><span class="vio04">01</span><div><h3>Másodperctöredéknyi végrehajtás minden csatlakoztatott piacon</h3><p><?= e(SITE_NAME) ?> tartós, alacsony késleltetésű API-kapcsolatokat tart fenn minden támogatott tőzsdével. Amikor a modell jelet ad, a megbízás elküldésre, teljesítésre és az irányítópulton naplózásra kerül a következő tick előtt.</p></div></li>
         <li><span class="vio04">02</span><div><h3>24/7 működik, minden piaci szekcióban</h3><p>A kriptó nem pihen, és a(z) <?= e(SITE_NAME) ?> sem. A motor hétvégéken és ünnepnapokon is elemzi a párokat, hogy egy lehetőség se maradjon ki.</p></div></li>
         <li><span class="vio04">03</span><div><h3>Többvalutás jelentés</h3><p>Minden egyenleg, minden ügylet és minden kifizetés a helyi valutájában jelenik meg. Nincs rejtett átváltási lépés.</p></div></li>
@@ -378,7 +378,7 @@ require __DIR__ . '/includes/header.php';
         <span class="odwy4o">Kérdések</span>
         <h2 id="wysa9hx">Gyakran ismételt kérdések</h2>
       </div>
-      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="vzs2fc" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Mennyi a minimális befizetés a kezdéshez?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">

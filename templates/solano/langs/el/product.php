@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Τι μπορείτε να έχετε στο χαρτοφυλάκιό σας</h2>
     <p>Ένας λογαριασμός καλύπτει πολλές κατηγορίες περιουσιακών στοιχείων, ώστε να μην χρειάζεται δεύτερη πλατφόρμα μόλις διευρυνθούν τα ενδιαφέροντά σας.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Κατηγορία στοιχείων</th><th scope="col">Παραδείγματα</th><th scope="col">Καλό να γνωρίζετε</th></tr></thead>
       <tbody>
         <tr><td>Κρυπτονομίσματα</td><td>BTC, ETH, SOL, XRP</td><td>Συναλλαγές όλο το εικοσιτετράωρο, συμπεριλαμβανομένων των σαββατοκύριακων.</td></tr>

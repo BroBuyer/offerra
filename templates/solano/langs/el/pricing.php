@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Πού μπορεί να εμφανιστούν κόστη</h2>
     <p>Αυτά είναι τα μόνα σημεία όπου χρήματα φεύγουν από το υπόλοιπό σας για κάτι άλλο εκτός από επένδυση που έχετε επιλέξει.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Στοιχείο</th><th scope="col">Χρεώνει</th><th scope="col">Σημείωση</th></tr></thead>
       <tbody>
         <tr><td>Άνοιγμα λογαριασμού</td><td>—</td><td>Δωρεάν.</td></tr>

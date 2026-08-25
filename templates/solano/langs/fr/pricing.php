@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Où des coûts peuvent apparaître</h2>
     <p>Voici les seuls moments où de l’argent quitte votre solde pour autre chose qu’un investissement que vous avez choisi.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Élément</th><th scope="col">Facturé par</th><th scope="col">Remarque</th></tr></thead>
       <tbody>
         <tr><td>Ouverture de compte</td><td>—</td><td>Gratuit.</td></tr>

@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>表計算も、散らかった画面も、直前の迷いもありません</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">プラットフォーム</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">従来のブローカー</th><th scope="col">自力での取引</th></tr></thead>
       <tbody>
         <tr><td>AIによる注文執行</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">時間制限あり</td><td style="color:var(--muted)">手動</td></tr>

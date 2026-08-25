@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>お問い合わせ方法</h2>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">チャネル</th><th scope="col">適している用途</th><th scope="col">対応</th></tr></thead>
       <tbody>
         <tr><td>メールサポート — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>口座に関するご質問、本人確認、出金</td><td>通常、1営業日以内に返信します。</td></tr>

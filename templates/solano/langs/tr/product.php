@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Portföyünüzde neler tutabilirsiniz</h2>
     <p>Tek bir hesap birkaç varlık sınıfını kapsar; ilgileriniz genişler genişlemez ikinci bir platform açmanız gerekmez.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Varlık sınıfı</th><th scope="col">Örnekler</th><th scope="col">Bilmekte fayda var</th></tr></thead>
       <tbody>
         <tr><td>Kripto paralar</td><td>BTC, ETH, SOL, XRP</td><td>Hafta sonları dahil günün her saati işlem görür.</td></tr>

@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Ce puteți deține în portofoliu</h2>
     <p>Un singur cont acoperă mai multe clase de active, deci nu va trebui să deschideți o a doua platformă de îndată ce interesele se lărgesc.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Clasă de active</th><th scope="col">Exemple</th><th scope="col">Bine de știut</th></tr></thead>
       <tbody>
         <tr><td>Criptomonede</td><td>BTC, ETH, SOL, XRP</td><td>Se tranzacționează non-stop, inclusiv în weekend.</td></tr>

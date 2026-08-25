@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Missä kuluja voi ilmaantua</h2>
     <p>Nämä ovat ainoat kohdat, joissa rahaa lähtee saldosta johonkin muuhun kuin valitsemaanne sijoitukseen.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kohta</th><th scope="col">Veloittaa</th><th scope="col">Huomautus</th></tr></thead>
       <tbody>
         <tr><td>Tilin avaus</td><td>—</td><td>Maksuton.</td></tr>

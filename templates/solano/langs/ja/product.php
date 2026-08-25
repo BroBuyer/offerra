@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>ポートフォリオに持てるもの</h2>
     <p>ひとつの口座で複数の資産クラスをカバーするため、関心が広がってもすぐに別のプラットフォームを開く必要はありません。</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">資産クラス</th><th scope="col">例</th><th scope="col">参考情報</th></tr></thead>
       <tbody>
         <tr><td>暗号資産</td><td>BTC, ETH, SOL, XRP</td><td>週末を含め、終日取引されます。</td></tr>

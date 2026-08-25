@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Co můžete mít v portfoliu</h2>
     <p>Jeden účet pokrývá několik tříd aktiv, takže nemusíte otevírat druhou platformu, jakmile se zájem rozšíří.</p>
-    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
+    <div class="ltouuo" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Třída aktiv</th><th scope="col">Příklady</th><th scope="col">Dobré vědět</th></tr></thead>
       <tbody>
         <tr><td>Kryptoměny</td><td>BTC, ETH, SOL, XRP</td><td>Obchoduje se nonstop, včetně víkendů.</td></tr>
