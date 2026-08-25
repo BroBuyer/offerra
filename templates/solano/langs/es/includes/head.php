@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
-$page_title = $page_title ?? (SITE_NAME . ' ᐉ Control total de tu inversión en vivo');
-$page_description = $page_description ?? ('Sigue en tiempo real cómo trabaja tu capital con ' . SITE_NAME . ': informes claros, analista personal e IA. Genera ingresos adicionales desde ' . money_min());
+$page_title = $page_title ?? (SITE_NAME . ' ᐉ un ingreso extra con análisis con IA');
+$page_description = $page_description ?? ('Un analista financiero personal, apoyado en IA, te acompaña para construir un ingreso adicional con ' . SITE_NAME . '. Genera ingresos desde ' . money_min() . '.');
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 ?><!doctype html>
@@ -21,17 +21,10 @@ $active_page = $active_page ?? 'home';
 <link rel="icon" type="image/png" sizes="16x16" href="<?= asset('static/img/icons/favicon-16.png') ?>" />
 <link rel="shortcut icon" href="<?= asset('static/img/icons/favicon.ico') ?>" />
 <link rel="apple-touch-icon" sizes="180x180" href="<?= asset('static/img/icons/apple-touch-icon.png') ?>" />
-<meta name="msapplication-TileImage" content="<?= asset('static/img/icons/icon-192.png') ?>" />
-<meta name="msapplication-TileColor" content="#0b1020" />
 <meta name="theme-color" content="#0a1019" />
 <meta name="color-scheme" content="dark" />
 <style>:root{color-scheme:dark only}</style>
-<meta name="color-scheme" content="dark" />
 <meta name="darkreader-lock" />
-<meta name="application-name" content="<?= e(SITE_NAME) ?>" />
-<meta name="apple-mobile-web-app-title" content="<?= e(SITE_NAME) ?>" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="mobile-web-app-capable" content="yes" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="es_ES" />
 <meta property="og:site_name" content="<?= e(SITE_NAME) ?>" />
@@ -39,17 +32,8 @@ $active_page = $active_page ?? 'home';
 <meta property="og:description" content="<?= e($page_description) ?>" />
 <meta property="og:url" content="<?= e($page_canonical) ?>" />
 <meta property="og:image" content="<?= e(page_url('static/img/og.webp')) ?>" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/webp" />
-<meta property="og:image:alt" content="<?= e(SITE_NAME) ?>" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="<?= e($page_title) ?>" />
-<meta name="twitter:description" content="<?= e($page_description) ?>" />
-<meta name="twitter:image" content="<?= e(page_url('static/img/og.webp')) ?>" />
-<meta name="twitter:image:alt" content="<?= e(SITE_NAME) ?>" />
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" href="<?= asset_version('static/fonts/40a9cfc5225f/f.css') ?>" />
+<link rel="stylesheet" href="<?= asset_version('static/fonts/66f3f89ececa/f.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('static/css/main.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('integration/default-integration.css') ?>" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />
@@ -68,4 +52,3 @@ window.OFFER_LOCALE = <?= json_encode(site_locale(), JSON_UNESCAPED_UNICODE) ?>;
 </head>
 <body>
 <?php require __DIR__ . '/icon-sprite.php'; ?>
-<a class="skip-link" href="#top">Saltar al contenido</a>

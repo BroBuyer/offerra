@@ -49,7 +49,7 @@ $active_page = $active_page ?? 'home';
 <meta name="twitter:image" content="<?= e(page_url('static/img/og.webp')) ?>" />
 <meta name="twitter:image:alt" content="<?= e(SITE_NAME) ?>" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" href="<?= asset_version('static/fonts/40a9cfc5225f/f.css') ?>" />
+<link rel="stylesheet" href="<?= asset_version('static/fonts/66f3f89ececa/f.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('static/css/main.css') ?>" />
 <link rel="stylesheet" href="<?= asset_version('integration/default-integration.css') ?>" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css" />

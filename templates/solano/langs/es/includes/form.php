@@ -3,14 +3,13 @@ require_once __DIR__ . '/config.php';
 
 $form_id = $form_id ?? 'lead-form';
 $form_heading = $form_heading ?? null;
-$form_submit = $form_submit ?? 'Empezar ahora';
+$form_submit = $form_submit ?? 'Empezar';
 $form_variant = $form_variant ?? 'stack';
-$form_class = trim(($form_class ?? 'leadform lead-form solano-form') . ($form_variant === 'stack' ? ' solano-stack' : ''));
+$form_class = trim(($form_class ?? 'leadform lead-form solano-form') . ' solano-stack');
 $form_subtitle = $form_subtitle ?? null;
 $phone_country = form_visitor_phone_country();
 $allowed_countries = form_allowed_countries();
 $lead_cookie = site_slug() . '_lead';
-$is_stack = $form_variant === 'stack';
 ?>
 <form
   name="form"
@@ -19,6 +18,7 @@ $is_stack = $form_variant === 'stack';
   class="<?= e($form_class) ?>"
   action="<?= asset('integration/send.php') ?>"
   data-form
+  data-leadform
   data-lead-cookie="<?= e($lead_cookie) ?>"
   data-cookie-days="<?= (int) FORM_LEAD_COOKIE_DAYS ?>"
 >
@@ -39,18 +39,8 @@ $is_stack = $form_variant === 'stack';
 <?php endif; ?>
     <input type="hidden" name="form_token" value="" autocomplete="off">
 
-    <div class="form-preloader hidden" aria-hidden="true">
-      <div class="spinner"></div>
-    </div>
+    <div class="form-preloader hidden" aria-hidden="true"><div class="spinner"></div></div>
 
-    <?php if ($form_heading): ?>
-      <h3 class="form-card-title"><?= e($form_heading) ?></h3>
-    <?php endif; ?>
-    <?php if ($form_subtitle): ?>
-      <p class="amrqy"><?= e($form_subtitle) ?></p>
-    <?php endif; ?>
-
-<?php if ($is_stack): ?>
     <div class="rtjqp">
       <div class="jn406 field" data-field="fname">
         <label class="field-label" for="<?= e($form_id) ?>-fname">Nombre</label>
@@ -70,27 +60,6 @@ $is_stack = $form_variant === 'stack';
         <span class="field-error hide" role="alert" aria-live="polite"></span>
       </div>
     </div>
-<?php else: ?>
-    <div class="rtjqp">
-      <div class="jn406 field" data-field="fname">
-        <label class="field-label" for="<?= e($form_id) ?>-fname">Nombre</label>
-        <input class="cm9aayi input" id="<?= e($form_id) ?>-fname" type="text" name="fname" placeholder="Nombre" required pattern="[^\d]+" autocomplete="given-name">
-      </div>
-      <div class="jn406 field" data-field="lname">
-        <label class="field-label" for="<?= e($form_id) ?>-lname">Apellidos</label>
-        <input class="cm9aayi input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Apellidos" required pattern="[^\d]+" autocomplete="family-name">
-      </div>
-      <div class="jn406 field" data-field="email">
-        <label class="field-label" for="<?= e($form_id) ?>-email">Correo electrónico</label>
-        <input class="cm9aayi input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="Correo electrónico" required autocomplete="email" inputmode="email">
-      </div>
-      <div class="jn406 field" data-field="phone">
-        <label class="field-label" for="<?= e($form_id) ?>-phone">Teléfono</label>
-        <input class="cm9aayi input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="612 34 56 78" autocomplete="tel" inputmode="tel">
-        <span class="field-error hide" role="alert" aria-live="polite"></span>
-      </div>
-    </div>
-<?php endif; ?>
 
     <button type="submit" class="rs0voj6 ggca24u submit" style="width:100%;justify-content:center"><?= e($form_submit) ?></button>
 
@@ -109,13 +78,12 @@ $is_stack = $form_variant === 'stack';
     </div>
 
     <p class="jvrey">
-      Al continuar, aceptas la política de privacidad y las condiciones de uso.
+      Al continuar, aceptas nuestros Términos y la Política de Privacidad.
       <a href="<?= page_url('privacy.php') ?>">Privacidad</a>
-      y
+      &amp;
       <a href="<?= page_url('conditions.php') ?>">Condiciones de uso</a>.
     </p>
   </div>
 </form>
 <?php
-unset($form_id, $form_heading, $form_submit, $form_class, $form_subtitle, $form_variant, $is_stack);
-?>
+// intl-tel-input bootstrapped at page end via footer include

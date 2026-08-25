@@ -18,7 +18,7 @@ var d=document.getElementById('lsm9on'),m=document.getElementById('gqz8w'),
     dv=document.getElementById('csezcv1'),mv=document.getElementById('ywprvgd'),out=document.getElementById('aowtjsf');
 if(!d||!m||!out)return;
 var cur=window.OFFER_CURRENCY_SYMBOL||'€';
-var loc=window.OFFER_LOCALE||'ro-RO';
+var loc=window.OFFER_LOCALE||'es-ES';
 function fmt(n){return cur+Math.round(n).toLocaleString(loc);}
 function calc(){var dep=+d.value,mon=+m.value;if(dv)dv.textContent=fmt(dep);if(mv)mv.textContent=mon;out.textContent=fmt(dep*Math.pow(1.035,mon));}
 d.addEventListener('input',calc);m.addEventListener('input',calc);calc();
@@ -26,7 +26,7 @@ d.addEventListener('input',calc);m.addEventListener('input',calc);calc();
 
 (function(){
 var cur=window.OFFER_CURRENCY_SYMBOL||'€';
-var loc=window.OFFER_LOCALE||'ro-RO';
+var loc=window.OFFER_LOCALE||'es-ES';
 function money(n){n=+n;return cur+n.toLocaleString(loc,{maximumFractionDigits:n>=1000?0:(n>=1?2:4)});}
 function apply(rates){rates.forEach(function(r){document.querySelectorAll('[data-sym="'+r.sym+'"]').forEach(function(el){var px=el.querySelector('.qsd2h'),chg=el.querySelector('.dprrq');if(px)px.textContent=money(r.price);if(chg){var up=(+r.pct)>=0;chg.textContent=(up?'+':'')+Number(r.pct).toFixed(2)+'%';chg.className='chg '+(up?'up':'down');}});});}
 function load(){fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22,%22SOLUSDT%22,%22XRPUSDT%22%5D').then(function(r){return r.json();}).then(function(rows){
