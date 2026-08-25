@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Uzticība un drošība</span>
     <h1>Ziņot par ļaunprātīgu izmantošanu</h1>
-    <p class="rmct9">Palīdziet mums uzturēt <?= e(SITE_NAME) ?> drošu. Ziņojiet par aizdomām par krāpniecību, uzdošanos par mums vai platformas vai zīmola ļaunprātīgu izmantošanu.</p>
+    <p class="etpy2">Palīdziet mums uzturēt <?= e(SITE_NAME) ?> drošu. Ziņojiet par aizdomām par krāpniecību, uzdošanos par mums vai platformas vai zīmola ļaunprātīgu izmantošanu.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Trust and Safety e-pasts</b>
         <span>Trust and Safety komandu sasniedziet caur kontaktu lapu. Ziņojumus šķirojam vienas darba dienas laikā.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Drošības ievainojamības ziņojums</b>
         <span>Atbildīgai mūsu sistēmu ievainojamību izpaušanai sazinieties ar mums, pirms detaļas publiskojat.</span>

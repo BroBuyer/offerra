@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Kur var rasties izmaksas</h2>
     <p>Tās ir vienīgās vietas, kur nauda atstāj atlikumu kaut kam citam, nevis jūsu izvēlētajam ieguldījumam.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Pozīcija</th><th scope="col">Ieturēšanas veicējs</th><th scope="col">Piezīme</th></tr></thead>
       <tbody>
         <tr><td>Konta atvēršana</td><td>—</td><td>Bezmaksas.</td></tr>

@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Pas de tableurs. Pas d’écrans surchargés. Pas de doutes de dernière minute</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Plateforme</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Courtier traditionnel</th><th scope="col">Trading en autonomie</th></tr></thead>
       <tbody>
         <tr><td>Exécution des ordres par IA</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">horaires limités</td><td style="color:var(--muted)">manuel</td></tr>

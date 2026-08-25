@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Ingen regneark. Ingen skjermer. Ingen sidste-øjebliks tvivl</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Plattform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Traditionel megler</th><th scope="col">Handle selv</th></tr></thead>
       <tbody>
         <tr><td>Ordreutførelse med AI</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">begrænset åpningstid</td><td style="color:var(--muted)">manuel</td></tr>

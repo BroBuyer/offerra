@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Important</span>
     <h1>Risk disclosure</h1>
-    <p class="rmct9">Please read this notice carefully before using <?= e(SITE_NAME) ?> or any related service.</p>
+    <p class="etpy2">Please read this notice carefully before using <?= e(SITE_NAME) ?> or any related service.</p>
   </div>
 </section>
 

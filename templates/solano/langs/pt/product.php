@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>O que pode ter na sua carteira</h2>
     <p>Uma única conta cobre várias classes de ativos, pelo que não terá de abrir uma segunda plataforma assim que alargar os seus interesses.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Classe de ativo</th><th scope="col">Exemplos</th><th scope="col">Convém saber</th></tr></thead>
       <tbody>
         <tr><td>Criptomoedas</td><td>BTC, ETH, SOL, XRP</td><td>Opera-se 24 horas por dia, incluindo fins de semana.</td></tr>

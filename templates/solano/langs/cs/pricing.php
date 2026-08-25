@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Kde se mohou objevit náklady</h2>
     <p>To jsou jediná místa, kde peníze opouštějí zůstatek kvůli něčemu jinému než zvolené investici.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Položka</th><th scope="col">Účtuje</th><th scope="col">Poznámka</th></tr></thead>
       <tbody>
         <tr><td>Otevření účtu</td><td>—</td><td>Zdarma.</td></tr>

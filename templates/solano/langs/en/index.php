@@ -44,21 +44,21 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<section class="sec-sm" aria-label="Indicadores clave">
+<section aria-label="Indicadores clave">
  <div class="nrzt44">
 <div class="acd048l">
-      <div class="kstat"><b>33,000</b><span>Active users</span></div>
-      <div class="kstat"><b>€0.6B</b><span>Traded volume</span></div>
-      <div class="kstat"><b>99.8%</b><span>Signal uptime</span></div>
-      <div class="kstat"><b>24/7</b><span>Support</span></div>
+      <div class="xnpe0qx"><b>33,000</b><span>Active users</span></div>
+      <div class="xnpe0qx"><b>€0.6B</b><span>Traded volume</span></div>
+      <div class="xnpe0qx"><b>99.8%</b><span>Signal uptime</span></div>
+      <div class="xnpe0qx"><b>24/7</b><span>Support</span></div>
     </div>
   
  </div>
 </section>
 
-<div class="nrzt44 jx8jnza">
-  <details class="tjbln" open aria-label="On this page">
-    <summary class="eik0loi">On this page</summary>
+<div class="nrzt44 jlt10">
+  <details class="tte22iu" open aria-label="On this page">
+    <summary class="gem14">On this page</summary>
     <ol>
       <li><a href="#exd9dmd">Live markets</a></li>
       <li><a href="#sor9s"><?= e(SITE_NAME) ?></a></li>
@@ -74,18 +74,19 @@ require __DIR__ . '/includes/header.php';
     </ol>
     <a class="rs0voj6 ggca24u" href="#jsyo6">Start — <?= e(money_min()) ?> min.</a>
   </details>
+</div>
 
-  <div>
-    <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
-      <div class="wdsnx3j">
+<div class="nrzt44 ldrp4m">
+    <section class="zx4mx9v" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
+      <div class="tewtadh">
         <span class="odwy4o">What members say</span>
         <h2 id="es9pra">What traders are saying</h2>
       </div>
-      <div class="vdaz1q">
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+      <div class="royrs">
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>My analyst explained every step. I set my goals once, and now I can see exactly how my capital is working, without second-guessing every decision.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -97,10 +98,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>I had never invested — my analyst designed the strategy and explained every move. No empty promises, no pressure, and withdrawals arrive when I expect them.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -112,10 +113,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>I started small to try it out. The genuine transparency and ongoing support gave me the confidence to grow from there.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -127,10 +128,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>The proposals come to me — I approve or adjust in minutes. It fits around my working life without becoming an obsession.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -142,10 +143,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>What convinced me was the total clarity: every decision is justified, and I see the reasoning before anything happens.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -157,10 +158,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+€2,200 in 4 months</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+€2,200 in 4 months</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Customer service is real and reachable. My first analysis was personalised, and the platform has been stable and predictable ever since.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -175,36 +176,36 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
+      <div class="tewtadh">
         <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">No spreadsheets. No screens. No last-minute doubts</h2>
-        <p class="rmct9">See how <?= e(SITE_NAME) ?> compares with traditional brokers and with trading by hand.</p>
+        <p class="etpy2">See how <?= e(SITE_NAME) ?> compares with traditional brokers and with trading by hand.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="No spreadsheets. No screens. No last-minute doubts"><table class="by635s">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="No spreadsheets. No screens. No last-minute doubts"><table class="ycxlw">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Traditional broker</th><th scope="col">Trading on your own</th></tr></thead>
         <tbody>
-          <tr><td>AI order execution</td><td class="bfe2o6f">✓</td><td class="byuav">limited hours</td><td class="byuav">manual</td></tr>
-          <tr><td>24/7 coverage across all markets</td><td class="bfe2o6f">✓</td><td class="byuav">paperwork</td><td class="byuav">on your own</td></tr>
-          <tr><td>Sub-second order routing</td><td class="bfe2o6f">✓</td><td class="byuav">by tier only</td><td class="byuav">manual</td></tr>
-          <tr><td>Multi-currency reporting</td><td class="bfe2o6f">✓</td><td class="byuav">limited hours</td><td class="byuav">on your own</td></tr>
-          <tr><td>Paperless account opening</td><td class="bfe2o6f">✓</td><td class="byuav">paperwork</td><td class="byuav">manual</td></tr>
-          <tr><td>Cross-exchange arbitrage</td><td class="bfe2o6f">✓</td><td class="byuav">by tier only</td><td class="byuav">on your own</td></tr>
-          <tr><td>Dedicated personal manager</td><td class="bfe2o6f">✓</td><td class="byuav">limited hours</td><td class="byuav">manual</td></tr>
+          <tr><td>AI order execution</td><td class="yd552">✓</td><td class="aty3riz">limited hours</td><td class="aty3riz">manual</td></tr>
+          <tr><td>24/7 coverage across all markets</td><td class="yd552">✓</td><td class="aty3riz">paperwork</td><td class="aty3riz">on your own</td></tr>
+          <tr><td>Sub-second order routing</td><td class="yd552">✓</td><td class="aty3riz">by tier only</td><td class="aty3riz">manual</td></tr>
+          <tr><td>Multi-currency reporting</td><td class="yd552">✓</td><td class="aty3riz">limited hours</td><td class="aty3riz">on your own</td></tr>
+          <tr><td>Paperless account opening</td><td class="yd552">✓</td><td class="aty3riz">paperwork</td><td class="aty3riz">manual</td></tr>
+          <tr><td>Cross-exchange arbitrage</td><td class="yd552">✓</td><td class="aty3riz">by tier only</td><td class="aty3riz">on your own</td></tr>
+          <tr><td>Dedicated personal manager</td><td class="yd552">✓</td><td class="aty3riz">limited hours</td><td class="aty3riz">manual</td></tr>
         </tbody>
       </table></div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Why us</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Safeguards</span>
             <h2 id="ykur4hl">Your money, protected by design</h2>
-            <p class="rmct9">Client funds sit with regulated payment partners, access is verified, and every withdrawal follows a documented route back to the account it came from.</p>
+            <p class="etpy2">Client funds sit with regulated payment partners, access is verified, and every withdrawal follows a documented route back to the account it came from.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Real-time candlestick charts and market depth, on any device</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>One-tap orders with instant confirmation</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Watchlists and price alerts that follow you everywhere</span></li>
@@ -214,16 +215,16 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vatll" aria-labelledby="iouvw">
-      <div class="tsgf5eq mudjf">
+    <section class="zx4mx9v" data-u="sec" id="vatll" aria-labelledby="iouvw">
+      <div class="qyv6pbo qjjus96">
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Your personal analyst at their desk" width="760" height="520" decoding="async" title="Your personal analyst at their desk" loading="lazy">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Your analyst</span>
             <h2 id="iouvw">Your personal financial analyst</h2>
-            <p class="rmct9">Every member is paired with a personal financial analyst with years of market experience. With their own expertise, proven analysis methods and modern AI tools, they help you spot promising opportunities and stay with you at every stage.</p>
+            <p class="etpy2">Every member is paired with a personal financial analyst with years of market experience. With their own expertise, proven analysis methods and modern AI tools, they help you spot promising opportunities and stay with you at every stage.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Years of practical market experience</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>A strategy designed around your goals, risk and capital</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Close support at every step</span></li>
@@ -232,26 +233,26 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="esypwbx" aria-labelledby="rq8es">
+      <div class="tewtadh">
         <span class="odwy4o">Returns</span>
         <h2 id="rq8es">An example with your deposit</h2>
-        <p class="rmct9">Move the slider to simulate a larger deposit: the figures are calculated from a representative plan with the minimum deposit of <?= e(money_min()) ?>. This is an example, not a promise; your actual returns depend on how much you invest and the strategy you choose with your analyst.</p>
+        <p class="etpy2">Move the slider to simulate a larger deposit: the figures are calculated from a representative plan with the minimum deposit of <?= e(money_min()) ?>. This is an example, not a promise; your actual returns depend on how much you invest and the strategy you choose with your analyst.</p>
       </div>
-      <div class="wmuyc">
+      <div class="gvcm8u">
         <div>
           <?php
             $calc_min = max(1, (int) MIN_DEPOSIT);
             $calc_max = 10000;
             $calc_default = min($calc_max, max($calc_min, 1000));
           ?>
-          <div class="vcf9ca"><label for="calc-dep">Starting amount</label><span class="cj9i15q" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
+          <div class="bvo3uq"><label for="calc-dep">Starting amount</label><span class="wjcv4" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
           <input id="lsm9on" type="range" min="<?= (int) $calc_min ?>" max="<?= (int) $calc_max ?>" step="50" value="<?= (int) $calc_default ?>" aria-label="Starting amount"/>
-          <div class="vcf9ca"><label for="calc-mon">Months</label><span class="cj9i15q" id="ywprvgd">6</span></div>
+          <div class="bvo3uq"><label for="calc-mon">Months</label><span class="wjcv4" id="ywprvgd">6</span></div>
           <input id="gqz8w" type="range" min="1" max="24" step="1" value="6" aria-label="Months"/>
-          <p class="ifuciwq">The figures are illustrative. Your actual returns depend on the amount you invest and the strategy you choose with your analyst.</p>
+          <p class="adqah3">The figures are illustrative. Your actual returns depend on the amount you invest and the strategy you choose with your analyst.</p>
         </div>
-        <div class="gbastl">
+        <div class="arsqprf">
           <small>Projected balance</small>
           <b id="aowtjsf">€1,000</b>
           <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Open an account</a>
@@ -259,125 +260,125 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="rb8p3" aria-labelledby="dv0846">
+      <div class="tewtadh">
         <span class="odwy4o">Find your starting point</span>
         <h2 id="dv0846">Three questions, then a suggested starting plan</h2>
-        <p class="rmct9">No score, no grade — the answers just tell your specialist where to begin so the first call is not spent on basics.</p>
+        <p class="etpy2">No score, no grade — the answers just tell your specialist where to begin so the first call is not spent on basics.</p>
       </div>
-      <form class="yw6xmlm" id="sqw38g" novalidate>
-        <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
-        <p class="sdahnb" hidden aria-live="polite" role="status"
+      <form class="mwky634" id="sqw38g" novalidate>
+        <div class="rr65q" hidden aria-hidden="true"><i></i></div>
+        <p class="dvusc" hidden aria-live="polite" role="status"
            data-l="Question"
            data-of="of"></p>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. How much investing have you done before?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q1" value="1"/><span>None at all</span></label>
             <label><input type="radio" name="q1" value="2"/><span>A little, on my own</span></label>
             <label><input type="radio" name="q1" value="3"/><span>I invest regularly</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. What matters most to you right now?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q2" value="1"/><span>Keeping risk low</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Steady growth</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Learning how it works</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. How much time can you give it?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q3" value="1"/><span>Almost none</span></label>
             <label><input type="radio" name="q3" value="2"/><span>A few minutes a day</span></label>
             <label><input type="radio" name="q3" value="3"/><span>I like following markets</span></label>
           </div>
         </fieldset>
-        <div class="beqazp3">
-          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Back</button>
-          <p class="ubn7i4v" id="bpisnbk" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
-          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">See my starting plan</a>
+        <div class="rho9v16">
+          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Back</button>
+          <p class="jyvec" id="bpisnbk" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
+          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">See my starting plan</a>
         </div>
       </form>
     </section>
 
-    <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
+      <div class="tewtadh">
         <span class="odwy4o">How it works</span>
         <h2 id="dl5sp">How it works</h2>
-        <p class="rmct9">Modern AI and a real human analyst, working together, to help you build an additional source of income, guiding you at every step and showing you every movement of your capital.</p>
+        <p class="etpy2">Modern AI and a real human analyst, working together, to help you build an additional source of income, guiding you at every step and showing you every movement of your capital.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Create your account</h3><p>Register in a few minutes with your email only.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>Verify your email</h3><p>Confirm your address to protect your account.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Deposit funds</h3><p>Add capital from <?= e(money_min()) ?> with the method you prefer.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Set your strategy</h3><p>Choose your goals; your analyst shapes the plan around you.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Start investing</h3><p>Follow the guided signals and watch your progress in real time.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Create your account</h3><p>Register in a few minutes with your email only.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>Verify your email</h3><p>Confirm your address to protect your account.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Deposit funds</h3><p>Add capital from <?= e(money_min()) ?> with the method you prefer.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Set your strategy</h3><p>Choose your goals; your analyst shapes the plan around you.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Start investing</h3><p>Follow the guided signals and watch your progress in real time.</p></div></li>
       </ol>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Read the full guide</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
+      <div class="tewtadh">
         <span class="odwy4o">Live markets</span>
         <h2 id="rlolt2l">Trade Bitcoin, Ethereum and much more</h2>
-        <p class="rmct9">Real-time prices, advanced indicators and a professional-level view of the markets that interest you.</p>
+        <p class="etpy2">Real-time prices, advanced indicators and a professional-level view of the markets that interest you.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="Trade Bitcoin, Ethereum and much more"><table class="nd3owbf">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="Trade Bitcoin, Ethereum and much more"><table class="xxzsw">
         <caption>Prices update automatically while the page is open.</caption>
         <thead><tr><th scope="col">Asset</th><th scope="col">Price</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="jtcrzrj">Bitcoin<small>BTC/USDT</small></span></td><td class="qsd2h">€64,671</td><td class="dprrq gv5fw2">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="jtcrzrj">Ethereum<small>ETH/USDT</small></span></td><td class="qsd2h">€1,881</td><td class="dprrq gv5fw2">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="jtcrzrj">Solana<small>SOL/USDT</small></span></td><td class="qsd2h">€76.62</td><td class="dprrq gv5fw2">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="jtcrzrj">XRP<small>XRP/USDT</small></span></td><td class="qsd2h">€1.11</td><td class="dprrq gv5fw2">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">On any screen</span>
             <h2 id="jg778dx">The same account on your desk and in your pocket</h2>
-            <p class="rmct9">One login, one balance. Open it from a computer browser or from your phone: nothing to install and nothing that only works on one device.</p>
+            <p class="etpy2">One login, one balance. Open it from a computer browser or from your phone: nothing to install and nothing that only works on one device.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Desktop — full dashboard, charts and reports</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobile — balances, positions and withdrawals wherever you are</span></li>
           </ul>
         </div>
-        <figure class="nb2zw0m">
+        <figure class="kzp7d0j">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="The same portfolio view on a phone screen" title="The same portfolio view on a phone screen" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="sor9s" aria-labelledby="onidtj">
+      <div class="tewtadh">
         <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Watch your account in real time</h2>
-        <p class="rmct9">Every trade your analyst places is logged here — entries, exits and verified results on every pair, streaming live.</p>
+        <p class="etpy2">Every trade your analyst places is logged here — entries, exits and verified results on every pair, streaming live.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Sub-second execution on every connected market</h3><p><?= e(SITE_NAME) ?> keeps permanent low-latency API connections with every supported exchange. When the model generates a signal, the order is sent, filled and logged on your dashboard before the next tick.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>It runs 24/7, through every market session</h3><p>Crypto does not rest, and neither does <?= e(SITE_NAME) ?>. The engine keeps analysing pairs through weekends and holidays so an opportunity is not missed.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Multi-currency reporting</h3><p>Every balance, every trade and every withdrawal is shown in your local currency. No hidden conversion steps at any point.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Segregated capital</h3><p>Your funds stay in your own account. <?= e(SITE_NAME) ?> never holds them: the engine only has permission to send orders.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Bank-grade security</h3><p>TLS encryption across the platform, two-step verification by default, and quarterly third-party infrastructure audits. Trade receipts logged on-chain.</p></div></li>
-        <li><span class="vpx6kk">06</span><div><h3>Three asset classes, one platform</h3><p>Most retail platforms limit you to a single market. <?= e(SITE_NAME) ?> trades cryptocurrencies, listed shares and the major currency pairs from the same dashboard.</p></div></li>
-        <li><span class="vpx6kk">07</span><div><h3>Pre-set risk limits on every position</h3><p>Stop-loss, maximum accepted loss and capital-allocation caps are configured by asset class. The engine automatically closes any trade that breaches a threshold, and the event is logged in your audit history.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Sub-second execution on every connected market</h3><p><?= e(SITE_NAME) ?> keeps permanent low-latency API connections with every supported exchange. When the model generates a signal, the order is sent, filled and logged on your dashboard before the next tick.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>It runs 24/7, through every market session</h3><p>Crypto does not rest, and neither does <?= e(SITE_NAME) ?>. The engine keeps analysing pairs through weekends and holidays so an opportunity is not missed.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Multi-currency reporting</h3><p>Every balance, every trade and every withdrawal is shown in your local currency. No hidden conversion steps at any point.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Segregated capital</h3><p>Your funds stay in your own account. <?= e(SITE_NAME) ?> never holds them: the engine only has permission to send orders.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Bank-grade security</h3><p>TLS encryption across the platform, two-step verification by default, and quarterly third-party infrastructure audits. Trade receipts logged on-chain.</p></div></li>
+        <li><span class="vio04">06</span><div><h3>Three asset classes, one platform</h3><p>Most retail platforms limit you to a single market. <?= e(SITE_NAME) ?> trades cryptocurrencies, listed shares and the major currency pairs from the same dashboard.</p></div></li>
+        <li><span class="vio04">07</span><div><h3>Pre-set risk limits on every position</h3><p>Stop-loss, maximum accepted loss and capital-allocation caps are configured by asset class. The engine automatically closes any trade that breaches a threshold, and the event is logged in your audit history.</p></div></li>
       </ol>
     </section>
 
-    <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="nw3j7wd" aria-labelledby="wysa9hx">
+      <div class="tewtadh">
         <span class="odwy4o">Questions</span>
         <h2 id="wysa9hx">Frequently asked questions</h2>
       </div>
-      <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">What is the minimum deposit to get started?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
@@ -465,22 +466,21 @@ require __DIR__ . '/includes/header.php';
       </div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">See all questions</a></p>
     </section>
-  </div>
 </div>
 
-<!--reviews-block--><section aria-label="Client ratings" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">TRUSTED</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reviews</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reviews · Based on <b style="color:var(--text,#fff)">4,902</b> ratings</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
-  <div class="nrzt44 kdbtf1i">
+<!--reviews-block--><section aria-label="Client ratings" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">TRUSTED</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Reviews</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> reviews · Based on <b style="color:var(--text,#fff)">4,902</b> ratings</div></div></section><section class="lk9wh0" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 bxx9mk3">
     <div>
       <span class="odwy4o">Get started</span>
       <h2 id="fglj2pf">Ready to see your capital in motion?</h2>
-      <p class="rmct9">Open your account in minutes, deposit from a modest minimum and start tracking your progress transparently from day one.</p>
-      <ul class="ibiqy0k" style="margin-top:16px">
+      <p class="etpy2">Open your account in minutes, deposit from a modest minimum and start tracking your progress transparently from day one.</p>
+      <ul class="tso61aq" style="margin-top:16px">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An email address you actually read.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>A phone number, so a specialist can reach you.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>An identity document, for the verification step later.</span></li>
       </ul>
     </div>
-    <div class="bv1ft5">
+    <div class="prxev6">
       <h3>Create your profile</h3>
       <p class="amrqy">Get started in a few minutes.</p>
       <?php

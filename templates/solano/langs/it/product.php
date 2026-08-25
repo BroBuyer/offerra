@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Cosa puoi detenere nel portafoglio</h2>
     <p>Un solo conto copre più classi di asset, così non dovrai aprire una seconda piattaforma appena si ampliano i tuoi interessi.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Classe di asset</th><th scope="col">Esempi</th><th scope="col">Buono a sapersi</th></tr></thead>
       <tbody>
         <tr><td>Criptovalute</td><td>BTC, ETH, SOL, XRP</td><td>Negoziazione 24 ore su 24, anche nei weekend.</td></tr>

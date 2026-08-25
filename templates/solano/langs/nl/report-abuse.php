@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Vertrouwen en veiligheid</span>
     <h1>Misbruik melden</h1>
-    <p class="rmct9">Help ons <?= e(SITE_NAME) ?> veilig te houden. Meld verdachte fraude, identiteitsfraude of misbruik van ons platform of merk.</p>
+    <p class="etpy2">Help ons <?= e(SITE_NAME) ?> veilig te houden. Meld verdachte fraude, identiteitsfraude of misbruik van ons platform of merk.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-mail Trust & Safety</b>
         <span>Gebruik de contactpagina om contact op te nemen met ons Trust & Safety-team. Meldingen worden binnen één werkdag geclassificeerd.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Security disclosure</b>
         <span>Voor responsible disclosure van beveiligingskwetsbaarheden in onze systemen, neem contact met ons op voordat u details publiek deelt.</span>

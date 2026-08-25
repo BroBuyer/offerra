@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Trust and safety</span>
     <h1>Laporkan penyalahgunaan</h1>
-    <p class="rmct9">Help us keep <?= e(SITE_NAME) ?> safe. Report suspected fraud, impersonation or misuse of our platform or brand.</p>
+    <p class="etpy2">Help us keep <?= e(SITE_NAME) ?> safe. Report suspected fraud, impersonation or misuse of our platform or brand.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Trust and Safety email</b>
         <span>Use the contact page to reach our Trust and Safety team. Reports are triaged within one working day.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Keselamatan disclosure</b>
         <span>For responsible disclosure of security vulnerabilities affecting our systems, contact us before sharing details publicly.</span>

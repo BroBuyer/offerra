@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Oikeudelliset tiedot</span>
     <h1>Tietosuojakäytäntö</h1>
-    <p class="rmct9">Miten <?= e(SITE_NAME) ?> kerää, käyttää ja suojaa henkilötietojanne.</p>
+    <p class="etpy2">Miten <?= e(SITE_NAME) ?> kerää, käyttää ja suojaa henkilötietojanne.</p>
   </div>
 </section>
 

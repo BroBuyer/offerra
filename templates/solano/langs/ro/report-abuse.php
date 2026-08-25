@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Încredere și siguranță</span>
     <h1>Raportați un abuz</h1>
-    <p class="rmct9">Ajutați-ne să menținem <?= e(SITE_NAME) ?> în siguranță. Raportați suspiciuni de fraudă, impersonare sau folosire abuzivă a platformei ori a mărcii.</p>
+    <p class="etpy2">Ajutați-ne să menținem <?= e(SITE_NAME) ?> în siguranță. Raportați suspiciuni de fraudă, impersonare sau folosire abuzivă a platformei ori a mărcii.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-mail Încredere și siguranță</b>
         <span>Folosiți pagina de contact pentru a ajunge la echipa Încredere și siguranță. Rapoartele sunt triate în termen de o zi lucrătoare.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Dezvăluirea vulnerabilităților</b>
         <span>Pentru dezvăluirea responsabilă a vulnerabilităților de securitate care afectează sistemele noastre, contactați-ne înainte de a împărtăși detaliile public.</span>

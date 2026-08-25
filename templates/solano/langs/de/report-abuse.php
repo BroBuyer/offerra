@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Vertrauen und Sicherheit</span>
     <h1>Missbrauch melden</h1>
-    <p class="rmct9">Helfen Sie uns, <?= e(SITE_NAME) ?> sicher zu halten. Melden Sie vermuteten Betrug, Identitätsmissbrauch oder Missbrauch unserer Plattform oder Marke.</p>
+    <p class="etpy2">Helfen Sie uns, <?= e(SITE_NAME) ?> sicher zu halten. Melden Sie vermuteten Betrug, Identitätsmissbrauch oder Missbrauch unserer Plattform oder Marke.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-Mail an Trust and Safety</b>
         <span>Nutzen Sie die Kontaktseite, um unser Trust-and-Safety-Team zu erreichen. Meldungen werden innerhalb eines Arbeitstags vorsortiert.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Sicherheitsmeldung</b>
         <span>Für eine verantwortungsvolle Meldung von Sicherheitslücken in unseren Systemen kontaktieren Sie uns, bevor Sie Details öffentlich machen.</span>

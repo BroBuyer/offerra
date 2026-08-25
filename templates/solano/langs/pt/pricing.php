@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Onde podem aparecer custos</h2>
     <p>Estes são os únicos pontos onde o dinheiro sai do seu saldo por algo que não seja um investimento escolhido por si.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Conceito</th><th scope="col">Quem cobra</th><th scope="col">Nota</th></tr></thead>
       <tbody>
         <tr><td>Abertura de conta</td><td>—</td><td>Gratuito.</td></tr>

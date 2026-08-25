@@ -44,21 +44,21 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<section class="sec-sm" aria-label="Indicadores clave">
+<section aria-label="Indicadores clave">
  <div class="nrzt44">
 <div class="acd048l">
-      <div class="kstat"><b>33,000</b><span>Utilizatori activi</span></div>
-      <div class="kstat"><b>€0.6B</b><span>Volum tranzacționat</span></div>
-      <div class="kstat"><b>99.8%</b><span>Disponibilitatea semnalelor</span></div>
-      <div class="kstat"><b>24/7</b><span>Suport</span></div>
+      <div class="xnpe0qx"><b>33,000</b><span>Utilizatori activi</span></div>
+      <div class="xnpe0qx"><b>€0.6B</b><span>Volum tranzacționat</span></div>
+      <div class="xnpe0qx"><b>99.8%</b><span>Disponibilitatea semnalelor</span></div>
+      <div class="xnpe0qx"><b>24/7</b><span>Suport</span></div>
     </div>
   
  </div>
 </section>
 
-<div class="nrzt44 jx8jnza">
-  <details class="tjbln" open aria-label="Pe această pagină">
-    <summary class="eik0loi">Pe această pagină</summary>
+<div class="nrzt44 jlt10">
+  <details class="tte22iu" open aria-label="Pe această pagină">
+    <summary class="gem14">Pe această pagină</summary>
     <ol>
       <li><a href="#exd9dmd">Piețe live</a></li>
       <li><a href="#sor9s"><?= e(SITE_NAME) ?></a></li>
@@ -74,18 +74,19 @@ require __DIR__ . '/includes/header.php';
     </ol>
     <a class="rs0voj6 ggca24u" href="#jsyo6">Începeți — <?= e(money_min()) ?> min.</a>
   </details>
+</div>
 
-  <div>
-    <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
-      <div class="wdsnx3j">
+<div class="nrzt44 ldrp4m">
+    <section class="zx4mx9v" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
+      <div class="tewtadh">
         <span class="odwy4o">Ce spun membrii</span>
         <h2 id="es9pra">Ce spun traderii</h2>
       </div>
-      <div class="vdaz1q">
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+      <div class="royrs">
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Analistul meu mi-a explicat fiecare pas. Mi-am stabilit obiectivele o dată și acum văd exact cum lucrează capitalul, fără să pun la îndoială fiecare decizie.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -97,10 +98,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Nu investisem niciodată — analistul a conceput strategia și a explicat fiecare mișcare. Fără promisiuni goale, fără presiune, iar retragerile sosesc când le aștept.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -112,10 +113,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Am început cu o sumă mică, ca să încerc. Transparența reală și suportul continuu mi-au dat încrederea să cresc de acolo.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -127,10 +128,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Propunerile îmi vin mie — aprob sau ajustez în câteva minute. Se potrivește vieții mele profesionale, fără să devină o obsesie.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -142,10 +143,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>M-a convins claritatea totală: fiecare decizie este justificată, iar raționamentul îl văd înainte să se întâmple ceva.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -157,10 +158,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2.200 € în 4 luni</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2.200 € în 4 luni</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Serviciul clienți este real și accesibil. Prima analiză a fost personalizată, iar platforma a fost de atunci stabilă și previzibilă.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -175,36 +176,36 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
+      <div class="tewtadh">
         <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Fără tabele. Fără ecrane. Fără îndoieli de ultim moment</h2>
-        <p class="rmct9">Vedeți cum <?= e(SITE_NAME) ?> se compară cu brokerii tradiționali și cu tranzacționarea manuală.</p>
+        <p class="etpy2">Vedeți cum <?= e(SITE_NAME) ?> se compară cu brokerii tradiționali și cu tranzacționarea manuală.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="Fără tabele. Fără ecrane. Fără îndoieli de ultim moment"><table class="by635s">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="Fără tabele. Fără ecrane. Fără îndoieli de ultim moment"><table class="ycxlw">
         <thead><tr><th scope="col">Platformă</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Broker tradițional</th><th scope="col">Tranzacționare pe cont propriu</th></tr></thead>
         <tbody>
-          <tr><td>Executarea ordinelor de către AI</td><td class="bfe2o6f">✓</td><td class="byuav">ore limitate</td><td class="byuav">manual</td></tr>
-          <tr><td>Acoperire 24/7 pe toate piețele</td><td class="bfe2o6f">✓</td><td class="byuav">birocrație</td><td class="byuav">pe cont propriu</td></tr>
-          <tr><td>Dirijarea ordinelor sub o secundă</td><td class="bfe2o6f">✓</td><td class="byuav">doar pe niveluri</td><td class="byuav">manual</td></tr>
-          <tr><td>Raportare în mai multe valute</td><td class="bfe2o6f">✓</td><td class="byuav">ore limitate</td><td class="byuav">pe cont propriu</td></tr>
-          <tr><td>Deschiderea contului fără hârtii</td><td class="bfe2o6f">✓</td><td class="byuav">birocrație</td><td class="byuav">manual</td></tr>
-          <tr><td>Arbitraj între burse</td><td class="bfe2o6f">✓</td><td class="byuav">doar pe niveluri</td><td class="byuav">pe cont propriu</td></tr>
-          <tr><td>Manager personal dedicat</td><td class="bfe2o6f">✓</td><td class="byuav">ore limitate</td><td class="byuav">manual</td></tr>
+          <tr><td>Executarea ordinelor de către AI</td><td class="yd552">✓</td><td class="aty3riz">ore limitate</td><td class="aty3riz">manual</td></tr>
+          <tr><td>Acoperire 24/7 pe toate piețele</td><td class="yd552">✓</td><td class="aty3riz">birocrație</td><td class="aty3riz">pe cont propriu</td></tr>
+          <tr><td>Dirijarea ordinelor sub o secundă</td><td class="yd552">✓</td><td class="aty3riz">doar pe niveluri</td><td class="aty3riz">manual</td></tr>
+          <tr><td>Raportare în mai multe valute</td><td class="yd552">✓</td><td class="aty3riz">ore limitate</td><td class="aty3riz">pe cont propriu</td></tr>
+          <tr><td>Deschiderea contului fără hârtii</td><td class="yd552">✓</td><td class="aty3riz">birocrație</td><td class="aty3riz">manual</td></tr>
+          <tr><td>Arbitraj între burse</td><td class="yd552">✓</td><td class="aty3riz">doar pe niveluri</td><td class="aty3riz">pe cont propriu</td></tr>
+          <tr><td>Manager personal dedicat</td><td class="yd552">✓</td><td class="aty3riz">ore limitate</td><td class="aty3riz">manual</td></tr>
         </tbody>
       </table></div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">De ce noi</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Măsuri de protecție</span>
             <h2 id="ykur4hl">Banii dumneavoastră, protejați prin concepție</h2>
-            <p class="rmct9">Fondurile clienților se află la parteneri de plată reglementați, accesul este verificat, iar fiecare retragere urmează un traseu documentat înapoi în contul din care a venit.</p>
+            <p class="etpy2">Fondurile clienților se află la parteneri de plată reglementați, accesul este verificat, iar fiecare retragere urmează un traseu documentat înapoi în contul din care a venit.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Grafice candlestick și adâncimea pieței în timp real, pe orice dispozitiv</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Ordine dintr-o atingere, cu confirmare instantanee</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Liste de urmărire și alerte de preț care vă însoțesc oriunde</span></li>
@@ -214,16 +215,16 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vatll" aria-labelledby="iouvw">
-      <div class="tsgf5eq mudjf">
+    <section class="zx4mx9v" data-u="sec" id="vatll" aria-labelledby="iouvw">
+      <div class="qyv6pbo qjjus96">
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Analistul dumneavoastră personal la birou" width="760" height="520" decoding="async" title="Analistul dumneavoastră personal la birou" loading="lazy">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Analistul dumneavoastră</span>
             <h2 id="iouvw">Analistul dumneavoastră financiar personal</h2>
-            <p class="rmct9">Fiecare membru este asociat cu un analist financiar personal, cu ani de experiență pe piețe. Prin expertiza proprie, metode de analiză dovedite și instrumente AI moderne, vă ajută să identificați oportunități promițătoare și rămâne alături de dumneavoastră în fiecare etapă.</p>
+            <p class="etpy2">Fiecare membru este asociat cu un analist financiar personal, cu ani de experiență pe piețe. Prin expertiza proprie, metode de analiză dovedite și instrumente AI moderne, vă ajută să identificați oportunități promițătoare și rămâne alături de dumneavoastră în fiecare etapă.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Ani de experiență practică pe piețe</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>O strategie concepută în jurul obiectivelor, riscului și capitalului dumneavoastră</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Suport apropiat la fiecare pas</span></li>
@@ -232,26 +233,26 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="esypwbx" aria-labelledby="rq8es">
+      <div class="tewtadh">
         <span class="odwy4o">Randamente</span>
         <h2 id="rq8es">Un exemplu cu depunerea dumneavoastră</h2>
-        <p class="rmct9">Deplasați glisorul pentru a simula o depunere mai mare: cifrele sunt calculate pe baza unui plan reprezentativ, cu depunerea minimă de <?= e(money_min()) ?>. Acesta este un exemplu, nu o promisiune; randamentele reale depind de cât investiți și de strategia pe care o alegeți împreună cu analistul.</p>
+        <p class="etpy2">Deplasați glisorul pentru a simula o depunere mai mare: cifrele sunt calculate pe baza unui plan reprezentativ, cu depunerea minimă de <?= e(money_min()) ?>. Acesta este un exemplu, nu o promisiune; randamentele reale depind de cât investiți și de strategia pe care o alegeți împreună cu analistul.</p>
       </div>
-      <div class="wmuyc">
+      <div class="gvcm8u">
         <div>
           <?php
             $calc_min = max(1, (int) MIN_DEPOSIT);
             $calc_max = 10000;
             $calc_default = min($calc_max, max($calc_min, 1000));
           ?>
-          <div class="vcf9ca"><label for="calc-dep">Suma de pornire</label><span class="cj9i15q" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
+          <div class="bvo3uq"><label for="calc-dep">Suma de pornire</label><span class="wjcv4" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
           <input id="lsm9on" type="range" min="<?= (int) $calc_min ?>" max="<?= (int) $calc_max ?>" step="50" value="<?= (int) $calc_default ?>" aria-label="Suma de pornire"/>
-          <div class="vcf9ca"><label for="calc-mon">Luni</label><span class="cj9i15q" id="ywprvgd">6</span></div>
+          <div class="bvo3uq"><label for="calc-mon">Luni</label><span class="wjcv4" id="ywprvgd">6</span></div>
           <input id="gqz8w" type="range" min="1" max="24" step="1" value="6" aria-label="Luni"/>
-          <p class="ifuciwq">Cifrele sunt ilustrative. Randamentele reale depind de suma pe care o investiți și de strategia aleasă cu analistul.</p>
+          <p class="adqah3">Cifrele sunt ilustrative. Randamentele reale depind de suma pe care o investiți și de strategia aleasă cu analistul.</p>
         </div>
-        <div class="gbastl">
+        <div class="arsqprf">
           <small>Sold estimat</small>
           <b id="aowtjsf">€1,000</b>
           <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Deschideți un cont</a>
@@ -259,125 +260,125 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="rb8p3" aria-labelledby="dv0846">
+      <div class="tewtadh">
         <span class="odwy4o">Găsiți punctul de plecare</span>
         <h2 id="dv0846">Trei întrebări, apoi un plan de pornire sugerat</h2>
-        <p class="rmct9">Fără punctaj, fără notă — răspunsurile îi arată specialistului de unde să înceapă, ca primul apel să nu se consume pe noțiuni de bază.</p>
+        <p class="etpy2">Fără punctaj, fără notă — răspunsurile îi arată specialistului de unde să înceapă, ca primul apel să nu se consume pe noțiuni de bază.</p>
       </div>
-      <form class="yw6xmlm" id="sqw38g" novalidate>
-        <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
-        <p class="sdahnb" hidden aria-live="polite" role="status"
+      <form class="mwky634" id="sqw38g" novalidate>
+        <div class="rr65q" hidden aria-hidden="true"><i></i></div>
+        <p class="dvusc" hidden aria-live="polite" role="status"
            data-l="Întrebarea"
            data-of="din"></p>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Cât de mult ați investit până acum?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q1" value="1"/><span>Deloc</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Puțin, pe cont propriu</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Investesc regulat</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Ce contează cel mai mult pentru dumneavoastră acum?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q2" value="1"/><span>Să țin riscul scăzut</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Creștere constantă</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Să înțeleg cum funcționează</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Cât timp îi puteți dedica?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q3" value="1"/><span>Aproape deloc</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Câteva minute pe zi</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Îmi place să urmăresc piețele</span></label>
           </div>
         </fieldset>
-        <div class="beqazp3">
-          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Înapoi</button>
-          <p class="ubn7i4v" id="bpisnbk" hidden>Răspunsurile sunt gata — lăsați datele de contact și un specialist le va trece în revistă împreună cu dumneavoastră.</p>
-          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">Vedeți planul de pornire</a>
+        <div class="rho9v16">
+          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Înapoi</button>
+          <p class="jyvec" id="bpisnbk" hidden>Răspunsurile sunt gata — lăsați datele de contact și un specialist le va trece în revistă împreună cu dumneavoastră.</p>
+          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">Vedeți planul de pornire</a>
         </div>
       </form>
     </section>
 
-    <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
+      <div class="tewtadh">
         <span class="odwy4o">Cum funcționează</span>
         <h2 id="dl5sp">Cum funcționează</h2>
-        <p class="rmct9">AI modern și un analist uman real, care lucrează împreună pentru a vă ajuta să construiți o sursă suplimentară de venit, ghidându-vă la fiecare pas și arătându-vă fiecare mișcare a capitalului.</p>
+        <p class="etpy2">AI modern și un analist uman real, care lucrează împreună pentru a vă ajuta să construiți o sursă suplimentară de venit, ghidându-vă la fiecare pas și arătându-vă fiecare mișcare a capitalului.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Creați-vă contul</h3><p>Înregistrați-vă în câteva minute, doar cu e-mailul.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>Verificați e-mailul</h3><p>Confirmați adresa pentru a vă proteja contul.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Depuneți fonduri</h3><p>Adăugați capital de la <?= e(money_min()) ?> cu metoda pe care o preferați.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Stabiliți strategia</h3><p>Alegeți obiectivele; analistul modelează planul în jurul dumneavoastră.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Începeți să investiți</h3><p>Urmați semnalele ghidate și urmăriți progresul în timp real.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Creați-vă contul</h3><p>Înregistrați-vă în câteva minute, doar cu e-mailul.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>Verificați e-mailul</h3><p>Confirmați adresa pentru a vă proteja contul.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Depuneți fonduri</h3><p>Adăugați capital de la <?= e(money_min()) ?> cu metoda pe care o preferați.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Stabiliți strategia</h3><p>Alegeți obiectivele; analistul modelează planul în jurul dumneavoastră.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Începeți să investiți</h3><p>Urmați semnalele ghidate și urmăriți progresul în timp real.</p></div></li>
       </ol>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">Citiți ghidul complet</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
+      <div class="tewtadh">
         <span class="odwy4o">Piețe live</span>
         <h2 id="rlolt2l">Tranzacționați Bitcoin, Ethereum și multe altele</h2>
-        <p class="rmct9">Prețuri în timp real, indicatori avansați și o privire de nivel profesional asupra piețelor care vă interesează.</p>
+        <p class="etpy2">Prețuri în timp real, indicatori avansați și o privire de nivel profesional asupra piețelor care vă interesează.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="Tranzacționați Bitcoin, Ethereum și multe altele"><table class="nd3owbf">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="Tranzacționați Bitcoin, Ethereum și multe altele"><table class="xxzsw">
         <caption>Prețurile se actualizează automat cât timp pagina este deschisă.</caption>
         <thead><tr><th scope="col">Activ</th><th scope="col">Preț</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="jtcrzrj">Bitcoin<small>BTC/USDT</small></span></td><td class="qsd2h">€64,671</td><td class="dprrq gv5fw2">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="jtcrzrj">Ethereum<small>ETH/USDT</small></span></td><td class="qsd2h">€1,881</td><td class="dprrq gv5fw2">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="jtcrzrj">Solana<small>SOL/USDT</small></span></td><td class="qsd2h">€76.62</td><td class="dprrq gv5fw2">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="jtcrzrj">XRP<small>XRP/USDT</small></span></td><td class="qsd2h">€1.11</td><td class="dprrq gv5fw2">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Pe orice ecran</span>
             <h2 id="jg778dx">Același cont pe birou și în buzunar</h2>
-            <p class="rmct9">O autentificare, un sold. Deschideți-l din browserul calculatorului sau de pe telefon: nimic de instalat și nimic care să funcționeze doar pe un dispozitiv.</p>
+            <p class="etpy2">O autentificare, un sold. Deschideți-l din browserul calculatorului sau de pe telefon: nimic de instalat și nimic care să funcționeze doar pe un dispozitiv.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Desktop — panou complet, grafice și rapoarte</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — solduri, poziții și retrageri, oriunde v-ați afla</span></li>
           </ul>
         </div>
-        <figure class="nb2zw0m">
+        <figure class="kzp7d0j">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Aceeași imagine a portofoliului pe ecranul telefonului" title="Aceeași imagine a portofoliului pe ecranul telefonului" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="sor9s" aria-labelledby="onidtj">
+      <div class="tewtadh">
         <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Urmăriți-vă contul în timp real</h2>
-        <p class="rmct9">Fiecare tranzacție plasată de analist este înregistrată aici — intrări, ieșiri și rezultate verificate pe fiecare pereche, în direct.</p>
+        <p class="etpy2">Fiecare tranzacție plasată de analist este înregistrată aici — intrări, ieșiri și rezultate verificate pe fiecare pereche, în direct.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Executare sub o secundă pe fiecare piață conectată</h3><p><?= e(SITE_NAME) ?> menține conexiuni API permanente, cu latență redusă, cu fiecare bursă acceptată. Când modelul generează un semnal, ordinul este trimis, executat și înregistrat pe panou înainte de următorul tick.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>Rulează 24/7, în fiecare sesiune de piață</h3><p>Crypto nu se odihnește, iar <?= e(SITE_NAME) ?> nici el. Motorul analizează perechile și în weekenduri și sărbători, ca o oportunitate să nu fie ratată.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Raportare în mai multe valute</h3><p>Fiecare sold, fiecare tranzacție și fiecare retragere sunt afișate în moneda locală. Fără pași de conversie ascunși, nicăieri.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Capital segregat</h3><p>Fondurile rămân în contul dumneavoastră. <?= e(SITE_NAME) ?> nu le deține niciodată: motorul are doar permisiunea de a trimite ordine.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Securitate de nivel bancar</h3><p>Criptare TLS pe întreaga platformă, verificare în doi pași implicită și audituri trimestriale ale infrastructurii, de către terți. Confirmările tranzacțiilor sunt înregistrate on-chain.</p></div></li>
-        <li><span class="vpx6kk">06</span><div><h3>Trei clase de active, o singură platformă</h3><p>Majoritatea platformelor de retail vă limitează la o singură piață. <?= e(SITE_NAME) ?> tranzacționează criptomonede, acțiuni cotate și principalele perechi valutare din același panou.</p></div></li>
-        <li><span class="vpx6kk">07</span><div><h3>Limite de risc prestabilite pe fiecare poziție</h3><p>Stop-loss, pierderea maximă acceptată și plafoanele de alocare a capitalului sunt configurate pe clasa de active. Motorul închide automat orice tranzacție care depășește un prag, iar evenimentul este înregistrat în istoricul de audit.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Executare sub o secundă pe fiecare piață conectată</h3><p><?= e(SITE_NAME) ?> menține conexiuni API permanente, cu latență redusă, cu fiecare bursă acceptată. Când modelul generează un semnal, ordinul este trimis, executat și înregistrat pe panou înainte de următorul tick.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>Rulează 24/7, în fiecare sesiune de piață</h3><p>Crypto nu se odihnește, iar <?= e(SITE_NAME) ?> nici el. Motorul analizează perechile și în weekenduri și sărbători, ca o oportunitate să nu fie ratată.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Raportare în mai multe valute</h3><p>Fiecare sold, fiecare tranzacție și fiecare retragere sunt afișate în moneda locală. Fără pași de conversie ascunși, nicăieri.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Capital segregat</h3><p>Fondurile rămân în contul dumneavoastră. <?= e(SITE_NAME) ?> nu le deține niciodată: motorul are doar permisiunea de a trimite ordine.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Securitate de nivel bancar</h3><p>Criptare TLS pe întreaga platformă, verificare în doi pași implicită și audituri trimestriale ale infrastructurii, de către terți. Confirmările tranzacțiilor sunt înregistrate on-chain.</p></div></li>
+        <li><span class="vio04">06</span><div><h3>Trei clase de active, o singură platformă</h3><p>Majoritatea platformelor de retail vă limitează la o singură piață. <?= e(SITE_NAME) ?> tranzacționează criptomonede, acțiuni cotate și principalele perechi valutare din același panou.</p></div></li>
+        <li><span class="vio04">07</span><div><h3>Limite de risc prestabilite pe fiecare poziție</h3><p>Stop-loss, pierderea maximă acceptată și plafoanele de alocare a capitalului sunt configurate pe clasa de active. Motorul închide automat orice tranzacție care depășește un prag, iar evenimentul este înregistrat în istoricul de audit.</p></div></li>
       </ol>
     </section>
 
-    <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="nw3j7wd" aria-labelledby="wysa9hx">
+      <div class="tewtadh">
         <span class="odwy4o">Întrebări</span>
         <h2 id="wysa9hx">Întrebări frecvente</h2>
       </div>
-      <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Care este depunerea minimă pentru a începe?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
@@ -465,22 +466,21 @@ require __DIR__ . '/includes/header.php';
       </div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Vedeți toate întrebările</a></p>
     </section>
-  </div>
 </div>
 
-<!--reviews-block--><section aria-label="Evaluări ale clienților" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE ÎNCREDERE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzii · Pe baza a <b style="color:var(--text,#fff)">4,902</b> evaluări</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
-  <div class="nrzt44 kdbtf1i">
+<!--reviews-block--><section aria-label="Evaluări ale clienților" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">DE ÎNCREDERE</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Recenzii</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> recenzii · Pe baza a <b style="color:var(--text,#fff)">4,902</b> evaluări</div></div></section><section class="lk9wh0" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 bxx9mk3">
     <div>
       <span class="odwy4o">Începeți</span>
       <h2 id="fglj2pf">Sunteți gata să vedeți capitalul în mișcare?</h2>
-      <p class="rmct9">Deschideți contul în câteva minute, depuneți un minim modest și începeți să urmăriți progresul transparent, din prima zi.</p>
-      <ul class="ibiqy0k" style="margin-top:16px">
+      <p class="etpy2">Deschideți contul în câteva minute, depuneți un minim modest și începeți să urmăriți progresul transparent, din prima zi.</p>
+      <ul class="tso61aq" style="margin-top:16px">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>O adresă de e-mail pe care o citiți cu adevărat.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un număr de telefon, ca un specialist să vă poată contacta.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un act de identitate, pentru pasul de verificare de mai târziu.</span></li>
       </ul>
     </div>
-    <div class="bv1ft5">
+    <div class="prxev6">
       <h3>Creați-vă profilul</h3>
       <p class="amrqy">Începeți în câteva minute.</p>
       <?php

@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Právne informácie</span>
     <h1>Zásady ochrany súkromia</h1>
-    <p class="rmct9">Ako <?= e(SITE_NAME) ?> zhromažďuje, používa a chráni vaše osobné údaje.</p>
+    <p class="etpy2">Ako <?= e(SITE_NAME) ?> zhromažďuje, používa a chráni vaše osobné údaje.</p>
   </div>
 </section>
 

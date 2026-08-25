@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Undang-undang</span>
     <h1>Terma Penggunaan</h1>
-    <p class="rmct9">The rules that apply when you access or use <?= e(SITE_NAME) ?>.</p>
+    <p class="etpy2">The rules that apply when you access or use <?= e(SITE_NAME) ?>.</p>
   </div>
 </section>
 

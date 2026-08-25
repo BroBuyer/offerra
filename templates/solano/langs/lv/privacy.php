@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Juridiskā informācija</span>
     <h1>Privātuma politika</h1>
-    <p class="rmct9">Kā <?= e(SITE_NAME) ?> vāc, izmanto un aizsargā jūsu personas datus.</p>
+    <p class="etpy2">Kā <?= e(SITE_NAME) ?> vāc, izmanto un aizsargā jūsu personas datus.</p>
   </div>
 </section>
 

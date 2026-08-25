@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Fără tabele. Fără ecrane aglomerate. Fără îndoieli de ultim moment</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Platformă</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Broker tradițional</th><th scope="col">Tranzacționare pe cont propriu</th></tr></thead>
       <tbody>
         <tr><td>Executarea ordinelor de către AI</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">ore limitate</td><td style="color:var(--muted)">manual</td></tr>

@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Ko varat turēt portfelī</h2>
     <p>Viens konts aptver vairākas aktīvu klases, tāpēc nav jāatver otra platforma, tiklīdz intereses paplašinās.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Aktīvu klase</th><th scope="col">Piemēri</th><th scope="col">Labi zināt</th></tr></thead>
       <tbody>
         <tr><td>Kriptovalūtas</td><td>BTC, ETH, SOL, XRP</td><td>Tirgojas nonstop, arī nedēļas nogalēs.</td></tr>

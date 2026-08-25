@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Tillid og sikkerhed</span>
     <h1>Anmeld misbrug</h1>
-    <p class="rmct9">Hjælp os med at holde <?= e(SITE_NAME) ?> sikkert. Anmeld mistænkelig svindel, identitetstyveri eller misbrug af vores platform eller brand.</p>
+    <p class="etpy2">Hjælp os med at holde <?= e(SITE_NAME) ?> sikkert. Anmeld mistænkelig svindel, identitetstyveri eller misbrug af vores platform eller brand.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-mail Trust & Safety</b>
         <span>Brug kontaktsiden for at nå vores Trust & Safety-team. Anmeldelser klassificeres inden for én hverdag.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Sikkerhedsoplysning</b>
         <span>For ansvarlig offentliggørelse af sikkerhedssårbarheder i vores systemer, kontakt os før du deler detaljer offentligt.</span>

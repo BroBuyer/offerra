@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Mitä voitte pitää salkussa</h2>
     <p>Yksi tili kattaa useita omaisuusluokkia, joten teidän ei tarvitse avata toista alustaa heti kun kiinnostuksenne laajenee.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Omaisuusluokka</th><th scope="col">Esimerkkejä</th><th scope="col">Hyvä tietää</th></tr></thead>
       <tbody>
         <tr><td>Kryptovaluutat</td><td>BTC, ETH, SOL, XRP</td><td>Kauppaa ympäri vuorokauden, myös viikonloppuisin.</td></tr>

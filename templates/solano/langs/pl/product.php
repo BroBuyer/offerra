@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Co można mieć w portfelu</h2>
     <p>Jedno konto obejmuje kilka klas aktywów, więc nie trzeba otwierać drugiej platformy, gdy zainteresowania się poszerzą.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Klasa aktywów</th><th scope="col">Przykłady</th><th scope="col">Warto wiedzieć</th></tr></thead>
       <tbody>
         <tr><td>Kryptowaluty</td><td>BTC, ETH, SOL, XRP</td><td>Handel przez całą dobę, także w weekendy.</td></tr>

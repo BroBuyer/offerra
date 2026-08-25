@@ -44,21 +44,21 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<section class="sec-sm" aria-label="Indicadores clave">
+<section aria-label="Indicadores clave">
  <div class="nrzt44">
 <div class="acd048l">
-      <div class="kstat"><b>33,000</b><span>Aktív felhasználók</span></div>
-      <div class="kstat"><b>€0.6B</b><span>Kereskedett volumen</span></div>
-      <div class="kstat"><b>99.8%</b><span>Jelzések rendelkezésre állása</span></div>
-      <div class="kstat"><b>24/7</b><span>Támogatás</span></div>
+      <div class="xnpe0qx"><b>33,000</b><span>Aktív felhasználók</span></div>
+      <div class="xnpe0qx"><b>€0.6B</b><span>Kereskedett volumen</span></div>
+      <div class="xnpe0qx"><b>99.8%</b><span>Jelzések rendelkezésre állása</span></div>
+      <div class="xnpe0qx"><b>24/7</b><span>Támogatás</span></div>
     </div>
   
  </div>
 </section>
 
-<div class="nrzt44 jx8jnza">
-  <details class="tjbln" open aria-label="Ezen az oldalon">
-    <summary class="eik0loi">Ezen az oldalon</summary>
+<div class="nrzt44 jlt10">
+  <details class="tte22iu" open aria-label="Ezen az oldalon">
+    <summary class="gem14">Ezen az oldalon</summary>
     <ol>
       <li><a href="#exd9dmd">Élő piacok</a></li>
       <li><a href="#sor9s"><?= e(SITE_NAME) ?></a></li>
@@ -74,18 +74,19 @@ require __DIR__ . '/includes/header.php';
     </ol>
     <a class="rs0voj6 ggca24u" href="#jsyo6">Kezdés — <?= e(money_min()) ?> min.</a>
   </details>
+</div>
 
-  <div>
-    <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
-      <div class="wdsnx3j">
+<div class="nrzt44 ldrp4m">
+    <section class="zx4mx9v" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
+      <div class="tewtadh">
         <span class="odwy4o">Mit mondanak a tagok</span>
         <h2 id="es9pra">Mit mondanak a kereskedők</h2>
       </div>
-      <div class="vdaz1q">
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+      <div class="royrs">
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Az elemzőm minden lépést elmagyarázott. Egyszer állítottam be a céljaimat, és most pontosan látom, hogyan dolgozik a tőkém — anélkül, hogy minden döntést megkérdőjeleznék.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -97,10 +98,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Soha nem fektettem be korábban — az elemzőm megtervezte a stratégiát, és minden lépést elmagyarázott. Nincs üres ígéret, nincs nyomás, és a kifizetések akkor érkeznek, amikor várom őket.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -112,10 +113,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Kicsiben kezdtem, hogy kipróbáljam. Az őszinte átláthatóság és a folyamatos támogatás adott magabiztosságot a továbblépéshez.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -127,10 +128,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>A javaslatok hozzám érkeznek — perceken belül jóváhagyom vagy módosítom. Beilleszkedik a munkámba, anélkül hogy megszállottsággá válna.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -142,10 +143,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>A teljes átláthatóság győzött meg: minden döntés indokolt, és a gondolatmenetet látom, mielőtt bármi történne.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -157,10 +158,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">+2 200 € 4 hónap alatt</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">+2 200 € 4 hónap alatt</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>Az ügyfélszolgálat valódi és elérhető. Az első elemzésem személyre szabott volt, és a platform azóta stabil és kiszámítható.</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -175,36 +176,36 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
+      <div class="tewtadh">
         <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely</h2>
-        <p class="rmct9">Nézze meg, hogyan áll a <?= e(SITE_NAME) ?> a hagyományos brókerekhez és a kézi kereskedéshez képest.</p>
+        <p class="etpy2">Nézze meg, hogyan áll a <?= e(SITE_NAME) ?> a hagyományos brókerekhez és a kézi kereskedéshez képest.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely"><table class="by635s">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="Nincsenek táblázatok. Nincsenek képernyők. Nincs utolsó pillanatos kétely"><table class="ycxlw">
         <thead><tr><th scope="col">Platform</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Hagyományos bróker</th><th scope="col">Önálló kereskedés</th></tr></thead>
         <tbody>
-          <tr><td>MI-megbízás-végrehajtás</td><td class="bfe2o6f">✓</td><td class="byuav">korlátozott órák</td><td class="byuav">kézzel</td></tr>
-          <tr><td>24/7 lefedettség minden piacon</td><td class="bfe2o6f">✓</td><td class="byuav">papírmunka</td><td class="byuav">önállóan</td></tr>
-          <tr><td>Másodperctöredéknyi megbízásirányítás</td><td class="bfe2o6f">✓</td><td class="byuav">csak csomag szerint</td><td class="byuav">kézzel</td></tr>
-          <tr><td>Többvalutás jelentés</td><td class="bfe2o6f">✓</td><td class="byuav">korlátozott órák</td><td class="byuav">önállóan</td></tr>
-          <tr><td>Papírmentes fióknyitás</td><td class="bfe2o6f">✓</td><td class="byuav">papírmunka</td><td class="byuav">kézzel</td></tr>
-          <tr><td>Tőzsdék közötti arbitrázs</td><td class="bfe2o6f">✓</td><td class="byuav">csak csomag szerint</td><td class="byuav">önállóan</td></tr>
-          <tr><td>Dedikált személyes menedzser</td><td class="bfe2o6f">✓</td><td class="byuav">korlátozott órák</td><td class="byuav">kézzel</td></tr>
+          <tr><td>MI-megbízás-végrehajtás</td><td class="yd552">✓</td><td class="aty3riz">korlátozott órák</td><td class="aty3riz">kézzel</td></tr>
+          <tr><td>24/7 lefedettség minden piacon</td><td class="yd552">✓</td><td class="aty3riz">papírmunka</td><td class="aty3riz">önállóan</td></tr>
+          <tr><td>Másodperctöredéknyi megbízásirányítás</td><td class="yd552">✓</td><td class="aty3riz">csak csomag szerint</td><td class="aty3riz">kézzel</td></tr>
+          <tr><td>Többvalutás jelentés</td><td class="yd552">✓</td><td class="aty3riz">korlátozott órák</td><td class="aty3riz">önállóan</td></tr>
+          <tr><td>Papírmentes fióknyitás</td><td class="yd552">✓</td><td class="aty3riz">papírmunka</td><td class="aty3riz">kézzel</td></tr>
+          <tr><td>Tőzsdék közötti arbitrázs</td><td class="yd552">✓</td><td class="aty3riz">csak csomag szerint</td><td class="aty3riz">önállóan</td></tr>
+          <tr><td>Dedikált személyes menedzser</td><td class="yd552">✓</td><td class="aty3riz">korlátozott órák</td><td class="aty3riz">kézzel</td></tr>
         </tbody>
       </table></div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">Miért mi</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Védelem</span>
             <h2 id="ykur4hl">Az Ön pénze, eleve védetten</h2>
-            <p class="rmct9">Az ügyfélforrások szabályozott fizetési partnereknél vannak, a hozzáférés ellenőrzött, és minden kifizetés dokumentált úton tér vissza arra a számlára, ahonnan érkezett.</p>
+            <p class="etpy2">Az ügyfélforrások szabályozott fizetési partnereknél vannak, a hozzáférés ellenőrzött, és minden kifizetés dokumentált úton tér vissza arra a számlára, ahonnan érkezett.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Valós idejű gyertyadiagramok és piaci mélység, bármely eszközön</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Megbízások egy koppintással, azonnali visszaigazolással</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Figyelőlisták és árriasztások, amelyek mindenhol követik Önt</span></li>
@@ -214,16 +215,16 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vatll" aria-labelledby="iouvw">
-      <div class="tsgf5eq mudjf">
+    <section class="zx4mx9v" data-u="sec" id="vatll" aria-labelledby="iouvw">
+      <div class="qyv6pbo qjjus96">
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="Személyes elemzője az asztalánál" width="760" height="520" decoding="async" title="Személyes elemzője az asztalánál" loading="lazy">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Az Ön elemzője</span>
             <h2 id="iouvw">Az Ön személyes pénzügyi elemzője</h2>
-            <p class="rmct9">Minden tagnak személyes pénzügyi elemzőt rendelünk, évek piaci tapasztalatával. Saját szakértelmük, bevált elemzési módszereik és modern MI-eszközeik segítenek ígéretes lehetőségeket felismerni — és minden szakaszban Önnel maradnak.</p>
+            <p class="etpy2">Minden tagnak személyes pénzügyi elemzőt rendelünk, évek piaci tapasztalatával. Saját szakértelmük, bevált elemzési módszereik és modern MI-eszközeik segítenek ígéretes lehetőségeket felismerni — és minden szakaszban Önnel maradnak.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Évek gyakorlati piaci tapasztalata</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Stratégia az Ön céljai, kockázata és tőkéje köré tervezve</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Közeli támogatás minden lépésnél</span></li>
@@ -232,26 +233,26 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="esypwbx" aria-labelledby="rq8es">
+      <div class="tewtadh">
         <span class="odwy4o">Hozamok</span>
         <h2 id="rq8es">Példa az Ön befizetésével</h2>
-        <p class="rmct9">Mozgassa a csúszkát egy nagyobb befizetés szimulálásához: a számok egy reprezentatív tervből készülnek, a minimális befizetés <?= e(money_min()) ?>. Ez példa, nem ígéret; a tényleges hozam attól függ, mennyit fektet be, és milyen stratégiát választ elemzőjével.</p>
+        <p class="etpy2">Mozgassa a csúszkát egy nagyobb befizetés szimulálásához: a számok egy reprezentatív tervből készülnek, a minimális befizetés <?= e(money_min()) ?>. Ez példa, nem ígéret; a tényleges hozam attól függ, mennyit fektet be, és milyen stratégiát választ elemzőjével.</p>
       </div>
-      <div class="wmuyc">
+      <div class="gvcm8u">
         <div>
           <?php
             $calc_min = max(1, (int) MIN_DEPOSIT);
             $calc_max = 10000;
             $calc_default = min($calc_max, max($calc_min, 1000));
           ?>
-          <div class="vcf9ca"><label for="calc-dep">Kezdő összeg</label><span class="cj9i15q" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
+          <div class="bvo3uq"><label for="calc-dep">Kezdő összeg</label><span class="wjcv4" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
           <input id="lsm9on" type="range" min="<?= (int) $calc_min ?>" max="<?= (int) $calc_max ?>" step="50" value="<?= (int) $calc_default ?>" aria-label="Kezdő összeg"/>
-          <div class="vcf9ca"><label for="calc-mon">Hónapok</label><span class="cj9i15q" id="ywprvgd">6</span></div>
+          <div class="bvo3uq"><label for="calc-mon">Hónapok</label><span class="wjcv4" id="ywprvgd">6</span></div>
           <input id="gqz8w" type="range" min="1" max="24" step="1" value="6" aria-label="Hónapok"/>
-          <p class="ifuciwq">A számok szemléltetőek. A tényleges hozam a befektetett összegtől és az elemzőjével választott stratégiától függ.</p>
+          <p class="adqah3">A számok szemléltetőek. A tényleges hozam a befektetett összegtől és az elemzőjével választott stratégiától függ.</p>
         </div>
-        <div class="gbastl">
+        <div class="arsqprf">
           <small>Várható egyenleg</small>
           <b id="aowtjsf">€1,000</b>
           <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">Nyisson fiókot</a>
@@ -259,125 +260,125 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="rb8p3" aria-labelledby="dv0846">
+      <div class="tewtadh">
         <span class="odwy4o">Találja meg a kiindulópontját</span>
         <h2 id="dv0846">Három kérdés, majd javasolt kezdőterv</h2>
-        <p class="rmct9">Nincs pontszám, nincs osztályzat — a válaszok csak azt mondják meg a szakértőnek, hol kezdjen, hogy az első hívás ne az alapokra menjen el.</p>
+        <p class="etpy2">Nincs pontszám, nincs osztályzat — a válaszok csak azt mondják meg a szakértőnek, hol kezdjen, hogy az első hívás ne az alapokra menjen el.</p>
       </div>
-      <form class="yw6xmlm" id="sqw38g" novalidate>
-        <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
-        <p class="sdahnb" hidden aria-live="polite" role="status"
+      <form class="mwky634" id="sqw38g" novalidate>
+        <div class="rr65q" hidden aria-hidden="true"><i></i></div>
+        <p class="dvusc" hidden aria-live="polite" role="status"
            data-l="Kérdés"
            data-of="/"></p>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. Mennyit fektetett be korábban?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q1" value="1"/><span>Egyáltalán semmit</span></label>
             <label><input type="radio" name="q1" value="2"/><span>Egy keveset, önállóan</span></label>
             <label><input type="radio" name="q1" value="3"/><span>Rendszeresen fektetek be</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. Mi a legfontosabb Önnek most?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q2" value="1"/><span>Alacsonyan tartani a kockázatot</span></label>
             <label><input type="radio" name="q2" value="2"/><span>Stabil növekedés</span></label>
             <label><input type="radio" name="q2" value="3"/><span>Megérteni, hogyan működik</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. Mennyi időt tud rá szánni?</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q3" value="1"/><span>Szinte semennyit</span></label>
             <label><input type="radio" name="q3" value="2"/><span>Néhány perc naponta</span></label>
             <label><input type="radio" name="q3" value="3"/><span>Szeretem követni a piacokat</span></label>
           </div>
         </fieldset>
-        <div class="beqazp3">
-          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>Vissza</button>
-          <p class="ubn7i4v" id="bpisnbk" hidden>A válaszok készen állnak — hagyja meg adatait, és egy szakértő átbeszéli őket Önnel.</p>
-          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">A kezdőtervem megtekintése</a>
+        <div class="rho9v16">
+          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>Vissza</button>
+          <p class="jyvec" id="bpisnbk" hidden>A válaszok készen állnak — hagyja meg adatait, és egy szakértő átbeszéli őket Önnel.</p>
+          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">A kezdőtervem megtekintése</a>
         </div>
       </form>
     </section>
 
-    <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
+      <div class="tewtadh">
         <span class="odwy4o">Hogyan működik</span>
         <h2 id="dl5sp">Hogyan működik</h2>
-        <p class="rmct9">Modern MI és valódi emberi elemző együtt dolgozik, hogy extra jövedelemforrást építsen, minden lépésnél vezeti, és megmutatja tőkéje minden mozgását.</p>
+        <p class="etpy2">Modern MI és valódi emberi elemző együtt dolgozik, hogy extra jövedelemforrást építsen, minden lépésnél vezeti, és megmutatja tőkéje minden mozgását.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Hozza létre a fiókját</h3><p>Regisztráljon percek alatt, csak e-maillel.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>Erősítse meg e-mailjét</h3><p>Erősítse meg a címét a fiók védelméhez.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Helyezzen be forrásokat</h3><p>Adjon hozzá tőkét <?= e(money_min()) ?> az Ön által választott módon.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Állítsa be a stratégiáját</h3><p>Válassza ki a céljait; elemzője köréjük szabja a tervet.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Kezdjen befektetni</h3><p>Kövesse a vezetett jeleket, és nézze a haladást valós időben.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Hozza létre a fiókját</h3><p>Regisztráljon percek alatt, csak e-maillel.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>Erősítse meg e-mailjét</h3><p>Erősítse meg a címét a fiók védelméhez.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Helyezzen be forrásokat</h3><p>Adjon hozzá tőkét <?= e(money_min()) ?> az Ön által választott módon.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Állítsa be a stratégiáját</h3><p>Válassza ki a céljait; elemzője köréjük szabja a tervet.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Kezdjen befektetni</h3><p>Kövesse a vezetett jeleket, és nézze a haladást valós időben.</p></div></li>
       </ol>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">A teljes útmutató elolvasása</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
+      <div class="tewtadh">
         <span class="odwy4o">Élő piacok</span>
         <h2 id="rlolt2l">Kereskedjen Bitcoinnal, Ethereummal és még sok mással</h2>
-        <p class="rmct9">Valós idejű árak, fejlett indikátorok és professzionális kép az Önt érdeklő piacokról.</p>
+        <p class="etpy2">Valós idejű árak, fejlett indikátorok és professzionális kép az Önt érdeklő piacokról.</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="Kereskedjen Bitcoinnal, Ethereummal és még sok mással"><table class="nd3owbf">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="Kereskedjen Bitcoinnal, Ethereummal és még sok mással"><table class="xxzsw">
         <caption>Az árak automatikusan frissülnek, amíg az oldal nyitva van.</caption>
         <thead><tr><th scope="col">Eszköz</th><th scope="col">Ár</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="jtcrzrj">Bitcoin<small>BTC/USDT</small></span></td><td class="qsd2h">€64,671</td><td class="dprrq gv5fw2">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="jtcrzrj">Ethereum<small>ETH/USDT</small></span></td><td class="qsd2h">€1,881</td><td class="dprrq gv5fw2">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="jtcrzrj">Solana<small>SOL/USDT</small></span></td><td class="qsd2h">€76.62</td><td class="dprrq gv5fw2">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="jtcrzrj">XRP<small>XRP/USDT</small></span></td><td class="qsd2h">€1.11</td><td class="dprrq gv5fw2">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">Bármely képernyőn</span>
             <h2 id="jg778dx">Ugyanaz a fiók az asztalon és a zsebében</h2>
-            <p class="rmct9">Egy bejelentkezés, egy egyenleg. Nyissa meg számítógépes böngészőből vagy telefonról: nincs mit telepíteni, és semmi sem kötődik egyetlen eszközhöz.</p>
+            <p class="etpy2">Egy bejelentkezés, egy egyenleg. Nyissa meg számítógépes böngészőből vagy telefonról: nincs mit telepíteni, és semmi sem kötődik egyetlen eszközhöz.</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Asztali — teljes irányítópult, grafikonok és jelentések</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Mobil — egyenlegek, pozíciók és kifizetések, bárhol is van</span></li>
           </ul>
         </div>
-        <figure class="nb2zw0m">
+        <figure class="kzp7d0j">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="Ugyanaz a portfóliónézet a telefon képernyőjén" title="Ugyanaz a portfóliónézet a telefon képernyőjén" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="sor9s" aria-labelledby="onidtj">
+      <div class="tewtadh">
         <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">Kövesse fiókját valós időben</h2>
-        <p class="rmct9">Minden, az elemzője által leadott ügylet itt naplózódik — belépések, kilépések és ellenőrzött eredmények minden párra, élőben.</p>
+        <p class="etpy2">Minden, az elemzője által leadott ügylet itt naplózódik — belépések, kilépések és ellenőrzött eredmények minden párra, élőben.</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Másodperctöredéknyi végrehajtás minden csatlakoztatott piacon</h3><p><?= e(SITE_NAME) ?> tartós, alacsony késleltetésű API-kapcsolatokat tart fenn minden támogatott tőzsdével. Amikor a modell jelet ad, a megbízás elküldésre, teljesítésre és az irányítópulton naplózásra kerül a következő tick előtt.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>24/7 működik, minden piaci szekcióban</h3><p>A kriptó nem pihen, és a(z) <?= e(SITE_NAME) ?> sem. A motor hétvégéken és ünnepnapokon is elemzi a párokat, hogy egy lehetőség se maradjon ki.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Többvalutás jelentés</h3><p>Minden egyenleg, minden ügylet és minden kifizetés a helyi valutájában jelenik meg. Nincs rejtett átváltási lépés.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Elkülönített tőke</h3><p>Az Ön forrásai a saját fiókjában maradnak. <?= e(SITE_NAME) ?> soha nem tartja őket: a motor csak megbízások küldésére jogosult.</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>Banki szintű biztonság</h3><p>TLS-titkosítás a teljes platformon, alapértelmezett kétlépcsős hitelesítés és negyedéves harmadik fél infrastruktúra-auditok. Kereskedési bizonylatok a láncon rögzítve.</p></div></li>
-        <li><span class="vpx6kk">06</span><div><h3>Három eszközosztály, egy platform</h3><p>A legtöbb lakossági platform egyetlen piacra korlátozza. <?= e(SITE_NAME) ?> kriptovalutákkal, tőzsdei részvényekkel és a főbb devizapárokkal kereskedik ugyanarról az irányítópultról.</p></div></li>
-        <li><span class="vpx6kk">07</span><div><h3>Előre beállított kockázati limitek minden pozíción</h3><p>A stop-loss, a maximálisan elfogadott veszteség és a tőkeallokációs plafonok eszközosztályonként vannak beállítva. A motor automatikusan lezár minden küszöböt átlépő ügyletet, és az esemény bekerül az auditnaplóba.</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>Másodperctöredéknyi végrehajtás minden csatlakoztatott piacon</h3><p><?= e(SITE_NAME) ?> tartós, alacsony késleltetésű API-kapcsolatokat tart fenn minden támogatott tőzsdével. Amikor a modell jelet ad, a megbízás elküldésre, teljesítésre és az irányítópulton naplózásra kerül a következő tick előtt.</p></div></li>
+        <li><span class="vio04">02</span><div><h3>24/7 működik, minden piaci szekcióban</h3><p>A kriptó nem pihen, és a(z) <?= e(SITE_NAME) ?> sem. A motor hétvégéken és ünnepnapokon is elemzi a párokat, hogy egy lehetőség se maradjon ki.</p></div></li>
+        <li><span class="vio04">03</span><div><h3>Többvalutás jelentés</h3><p>Minden egyenleg, minden ügylet és minden kifizetés a helyi valutájában jelenik meg. Nincs rejtett átváltási lépés.</p></div></li>
+        <li><span class="vio04">04</span><div><h3>Elkülönített tőke</h3><p>Az Ön forrásai a saját fiókjában maradnak. <?= e(SITE_NAME) ?> soha nem tartja őket: a motor csak megbízások küldésére jogosult.</p></div></li>
+        <li><span class="vio04">05</span><div><h3>Banki szintű biztonság</h3><p>TLS-titkosítás a teljes platformon, alapértelmezett kétlépcsős hitelesítés és negyedéves harmadik fél infrastruktúra-auditok. Kereskedési bizonylatok a láncon rögzítve.</p></div></li>
+        <li><span class="vio04">06</span><div><h3>Három eszközosztály, egy platform</h3><p>A legtöbb lakossági platform egyetlen piacra korlátozza. <?= e(SITE_NAME) ?> kriptovalutákkal, tőzsdei részvényekkel és a főbb devizapárokkal kereskedik ugyanarról az irányítópultról.</p></div></li>
+        <li><span class="vio04">07</span><div><h3>Előre beállított kockázati limitek minden pozíción</h3><p>A stop-loss, a maximálisan elfogadott veszteség és a tőkeallokációs plafonok eszközosztályonként vannak beállítva. A motor automatikusan lezár minden küszöböt átlépő ügyletet, és az esemény bekerül az auditnaplóba.</p></div></li>
       </ol>
     </section>
 
-    <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="nw3j7wd" aria-labelledby="wysa9hx">
+      <div class="tewtadh">
         <span class="odwy4o">Kérdések</span>
         <h2 id="wysa9hx">Gyakran ismételt kérdések</h2>
       </div>
-      <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Mennyi a minimális befizetés a kezdéshez?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
@@ -465,22 +466,21 @@ require __DIR__ . '/includes/header.php';
       </div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">Minden kérdés megtekintése</a></p>
     </section>
-  </div>
 </div>
 
-<!--reviews-block--><section aria-label="Ügyfélértékelések" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">MEGBÍZHATÓ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Értékelés</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> értékelés · Alapja <b style="color:var(--text,#fff)">4,902</b> értékelés</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
-  <div class="nrzt44 kdbtf1i">
+<!--reviews-block--><section aria-label="Ügyfélértékelések" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">MEGBÍZHATÓ</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Értékelés</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> értékelés · Alapja <b style="color:var(--text,#fff)">4,902</b> értékelés</div></div></section><section class="lk9wh0" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 bxx9mk3">
     <div>
       <span class="odwy4o">Kezdés</span>
       <h2 id="fglj2pf">Készen áll, hogy mozgásban lássa a tőkéjét?</h2>
-      <p class="rmct9">Nyissa meg a fiókját percek alatt, fizessen be szerény minimumtól, és kövesse a haladást átláthatóan már az első naptól.</p>
-      <ul class="ibiqy0k" style="margin-top:16px">
+      <p class="etpy2">Nyissa meg a fiókját percek alatt, fizessen be szerény minimumtól, és kövesse a haladást átláthatóan már az első naptól.</p>
+      <ul class="tso61aq" style="margin-top:16px">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Egy e-mail-cím, amelyet valóban olvas.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Egy telefonszám, hogy a szakértő elérje Önt.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Egy személyazonosító okmány a későbbi ellenőrzéshez.</span></li>
       </ul>
     </div>
-    <div class="bv1ft5">
+    <div class="prxev6">
       <h3>Hozza létre a profilját</h3>
       <p class="amrqy">Kezdjen néhány perc alatt.</p>
       <?php

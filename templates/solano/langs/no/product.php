@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Hva du kan have i porteføljen din</h2>
     <p>Én konto dækker flere aktivaklasser, så du ikke behøver åbne en anden plattform, når du udvider interessene dine.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Aktivaklasse</th><th scope="col">Eksempler</th><th scope="col">Greit å vite</th></tr></thead>
       <tbody>
         <tr><td>Kryptovaluta</td><td>BTC, ETH, SOL, XRP</td><td>Handles 24 timer i døgnet, inklusive helger.</td></tr>

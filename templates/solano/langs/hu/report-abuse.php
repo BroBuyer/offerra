@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Bizalom és biztonság</span>
     <h1>Visszaélés bejelentése</h1>
-    <p class="rmct9">Segítsen biztonságban tartani a(z) <?= e(SITE_NAME) ?> platformot. Jelentse a gyanús csalást, megszemélyesítést vagy platformunk, illetve márkánk visszaélését.</p>
+    <p class="etpy2">Segítsen biztonságban tartani a(z) <?= e(SITE_NAME) ?> platformot. Jelentse a gyanús csalást, megszemélyesítést vagy platformunk, illetve márkánk visszaélését.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Trust and Safety e-mail</b>
         <span>A Trust and Safety csapatot a kapcsolati oldalon éri el. A jelentéseket egy munkanapon belül triázzuk.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Biztonsági bejelentés</b>
         <span>Rendszereinket érintő biztonsági sérülékenységek felelős bejelentéséhez lépjen kapcsolatba velünk, mielőtt a részleteket nyilvánosságra hozná.</span>

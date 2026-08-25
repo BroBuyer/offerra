@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Dôvera a bezpečnosť</span>
     <h1>Nahlásiť zneužitie</h1>
-    <p class="rmct9">Pomôžte nám udržať <?= e(SITE_NAME) ?> v bezpečí. Nahláste podozrenie na podvod, vydávanie sa za nás alebo zneužitie platformy či značky.</p>
+    <p class="etpy2">Pomôžte nám udržať <?= e(SITE_NAME) ?> v bezpečí. Nahláste podozrenie na podvod, vydávanie sa za nás alebo zneužitie platformy či značky.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-mail Trust and Safety</b>
         <span>Tím Trust and Safety zastihnete cez kontaktnú stránku. Hlásenia triedime do jedného pracovného dňa.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Nahlásenie zraniteľnosti</b>
         <span>Pre zodpovedné nahlásenie zraniteľností našich systémov nás kontaktujte skôr, ako detaily zverejníte.</span>

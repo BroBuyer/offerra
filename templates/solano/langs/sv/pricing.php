@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Var kostnader kan uppstå</h2>
     <p>Det här är de enda ställena där pengar lämnar saldot för något annat än en investering du har valt.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Post</th><th scope="col">Debiteras av</th><th scope="col">Kommentar</th></tr></thead>
       <tbody>
         <tr><td>Kontoöppning</td><td>—</td><td>Gratis.</td></tr>

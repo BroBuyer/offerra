@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Νομικά</span>
     <h1>Όροι χρήσης</h1>
-    <p class="rmct9">Οι κανόνες που ισχύουν όταν αποκτάτε πρόσβαση ή χρησιμοποιείτε το <?= e(SITE_NAME) ?>.</p>
+    <p class="etpy2">Οι κανόνες που ισχύουν όταν αποκτάτε πρόσβαση ή χρησιμοποιείτε το <?= e(SITE_NAME) ?>.</p>
   </div>
 </section>
 

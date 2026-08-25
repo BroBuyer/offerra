@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">信頼と安全</span>
     <h1>不正利用を報告</h1>
-    <p class="rmct9"><?= e(SITE_NAME) ?> の安全維持にご協力ください。詐欺、なりすまし、プラットフォームやブランドの不正使用の疑いを報告してください。</p>
+    <p class="etpy2"><?= e(SITE_NAME) ?> の安全維持にご協力ください。詐欺、なりすまし、プラットフォームやブランドの不正使用の疑いを報告してください。</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>信頼と安全チームのメール</b>
         <span>お問い合わせページから信頼と安全チームにご連絡ください。報告は1営業日以内に振り分けます。</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>セキュリティの開示</b>
         <span>当社システムに影響するセキュリティ脆弱性の責任ある開示については、詳細を公開する前にご連絡ください。</span>

@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Kā ar mums sazināties</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kanāls</th><th scope="col">Labākais priekš</th><th scope="col">Atbilde</th></tr></thead>
       <tbody>
         <tr><td>E-pasta atbalsts — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Jautājumi par kontu, verifikācija, izņemšanas</td><td>Parasti atbildam vienas darba dienas laikā.</td></tr>

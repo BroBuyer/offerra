@@ -35,7 +35,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Como contactar-nos</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Channel</th><th scope="col">Best for</th><th scope="col">Response</th></tr></thead>
       <tbody>
         <tr><td>Apoio por correio eletrónico — <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></td><td>Perguntas sobre a conta, verificação, reembolsos</td><td>Normalmente respondemos num dia útil.</td></tr>

@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Νομικές πληροφορίες</span>
     <h1>Πολιτική απορρήτου</h1>
-    <p class="rmct9">Πώς το <?= e(SITE_NAME) ?> συλλέγει, χρησιμοποιεί και προστατεύει τα προσωπικά σας στοιχεία.</p>
+    <p class="etpy2">Πώς το <?= e(SITE_NAME) ?> συλλέγει, χρησιμοποιεί και προστατεύει τα προσωπικά σας στοιχεία.</p>
   </div>
 </section>
 

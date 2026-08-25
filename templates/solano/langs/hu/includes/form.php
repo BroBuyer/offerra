@@ -18,7 +18,9 @@ $is_stack = $form_variant === 'stack';
   id="<?= e($form_id) ?>"
   class="<?= e($form_class) ?>"
   action="<?= asset('integration/send.php') ?>"
+ 
   data-form
+  data-leadform
   data-lead-cookie="<?= e($lead_cookie) ?>"
   data-cookie-days="<?= (int) FORM_LEAD_COOKIE_DAYS ?>"
 >
@@ -60,8 +62,7 @@ $is_stack = $form_variant === 'stack';
         <label class="field-label" for="<?= e($form_id) ?>-lname">Vezetéknév</label>
         <input class="cm9aayi input" id="<?= e($form_id) ?>-lname" type="text" name="lname" placeholder="Vezetéknév" required pattern="[^\d]+" autocomplete="family-name">
       </div>
-    </div>
-    <div class="jn406 field" data-field="email">
+      <div class="jn406 field" data-field="email">
       <label class="field-label" for="<?= e($form_id) ?>-email">E-mail</label>
       <input class="cm9aayi input" id="<?= e($form_id) ?>-email" type="email" name="email" placeholder="E-mail" required autocomplete="email" inputmode="email">
     </div>
@@ -69,6 +70,7 @@ $is_stack = $form_variant === 'stack';
       <label class="field-label" for="<?= e($form_id) ?>-phone">Telefon</label>
       <input class="cm9aayi input" id="<?= e($form_id) ?>-phone" type="tel" name="fullphone" placeholder="7123 456789" autocomplete="tel" inputmode="tel">
       <span class="field-error hide" role="alert" aria-live="polite"></span>
+    </div>
     </div>
 <?php else: ?>
     <div class="rtjqp">

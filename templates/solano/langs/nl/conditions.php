@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Juridisch</span>
     <h1>Gebruiksvoorwaarden</h1>
-    <p class="rmct9">De regels die gelden wanneer u <?= e(SITE_NAME) ?> bezoekt of gebruikt.</p>
+    <p class="etpy2">De regels die gelden wanneer u <?= e(SITE_NAME) ?> bezoekt of gebruikt.</p>
   </div>
 </section>
 

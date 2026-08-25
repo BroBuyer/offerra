@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Luottamus ja turvallisuus</span>
     <h1>Ilmoita väärinkäytöstä</h1>
-    <p class="rmct9">Auttakaa meitä pitämään <?= e(SITE_NAME) ?> turvassa. Ilmoittakaa epäillystä petoksesta, tekeytymisestä tai alustamme tai merkkimme väärinkäytöstä.</p>
+    <p class="etpy2">Auttakaa meitä pitämään <?= e(SITE_NAME) ?> turvassa. Ilmoittakaa epäillystä petoksesta, tekeytymisestä tai alustamme tai merkkimme väärinkäytöstä.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Trust and Safety -sähköposti</b>
         <span>Tavoittakaa Trust and Safety -tiimi yhteystietosivulta. Ilmoitukset luokitellaan yhden arkipäivän kuluessa.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Tietoturvailmoitus</b>
         <span>Vastuulliseen järjestelmiimme vaikuttavien haavoittuvuuksien ilmoittamiseen ottakaa meihin yhteyttä ennen kuin jaatte yksityiskohtia julkisesti.</span>

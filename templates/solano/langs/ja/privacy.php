@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">法務情報</span>
     <h1>プライバシーポリシー</h1>
-    <p class="rmct9"><?= e(SITE_NAME) ?> が個人情報を収集、利用、保護する方法。</p>
+    <p class="etpy2"><?= e(SITE_NAME) ?> が個人情報を収集、利用、保護する方法。</p>
   </div>
 </section>
 

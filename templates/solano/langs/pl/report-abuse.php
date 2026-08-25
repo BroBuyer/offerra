@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Zaufanie i bezpieczeństwo</span>
     <h1>Zgłoś nadużycie</h1>
-    <p class="rmct9">Pomóż utrzymać <?= e(SITE_NAME) ?> w bezpieczeństwie. Zgłoś podejrzenie oszustwa, podszywania się lub nadużycia platformy albo marki.</p>
+    <p class="etpy2">Pomóż utrzymać <?= e(SITE_NAME) ?> w bezpieczeństwie. Zgłoś podejrzenie oszustwa, podszywania się lub nadużycia platformy albo marki.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-mail Trust and Safety</b>
         <span>Zespół Trust and Safety można zastać przez stronę kontaktową. Zgłoszenia sortujemy w ciągu jednego dnia roboczego.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Zgłoszenie luki bezpieczeństwa</b>
         <span>W sprawie odpowiedzialnego zgłoszenia luk w naszych systemach prosimy o kontakt, zanim szczegóły trafią do publicznej wiadomości.</span>

@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Fontos</span>
     <h1>Kockázati tájékoztató</h1>
-    <p class="rmct9">Olvassa el figyelmesen ezt a tájékoztatót, mielőtt a(z) <?= e(SITE_NAME) ?> vagy bármely kapcsolódó szolgáltatást használná.</p>
+    <p class="etpy2">Olvassa el figyelmesen ezt a tájékoztatót, mielőtt a(z) <?= e(SITE_NAME) ?> vagy bármely kapcsolódó szolgáltatást használná.</p>
   </div>
 </section>
 

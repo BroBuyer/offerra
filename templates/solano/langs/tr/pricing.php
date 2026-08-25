@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Maliyetler nerede ortaya çıkabilir</h2>
     <p>Paranın, seçtiğiniz bir yatırım dışında bakiyenizden çıktığı tek noktalar bunlardır.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Kalem</th><th scope="col">Ücreti alan</th><th scope="col">Not</th></tr></thead>
       <tbody>
         <tr><td>Hesap açılışı</td><td>—</td><td>Ücretsiz.</td></tr>

@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>What you can hold in your portfolio</h2>
     <p>A single account covers several asset classes, so you will not need to open a second platform as soon as your interests widen.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Asset class</th><th scope="col">Examples</th><th scope="col">Good to know</th></tr></thead>
       <tbody>
         <tr><td>Cryptocurrencies</td><td>BTC, ETH, SOL, XRP</td><td>Trades around the clock, including weekends.</td></tr>

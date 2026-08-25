@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Povjerenje i sigurnost</span>
     <h1>Prijavi zlouporabu</h1>
-    <p class="rmct9">Pomozite nam održati <?= e(SITE_NAME) ?> sigurnim. Prijavite sumnjivu prijevaru, krađu identiteta ili zlouporabu naše platforme ili brenda.</p>
+    <p class="etpy2">Pomozite nam održati <?= e(SITE_NAME) ?> sigurnim. Prijavite sumnjivu prijevaru, krađu identiteta ili zlouporabu naše platforme ili brenda.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-pošta povjerenja i sigurnosti</b>
         <span>Koristite stranicu za kontakt kako biste došli do našeg tima za povjerenje i sigurnost. Izvješća se razvrstavaju u roku od jednog radnog dana.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Objava sigurnosti</b>
         <span>Za odgovornu objavu sigurnosnih ranjivosti koje utječu na naše sustave, kontaktirajte nas prije javnog dijeljenja detalja.</span>

@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Förtroende och säkerhet</span>
     <h1>Anmäl missbruk</h1>
-    <p class="rmct9">Hjälp oss att hålla <?= e(SITE_NAME) ?> säkert. Anmäl misstänkt bedrägeri, efterlikning eller missbruk av vår plattform eller vårt varumärke.</p>
+    <p class="etpy2">Hjälp oss att hålla <?= e(SITE_NAME) ?> säkert. Anmäl misstänkt bedrägeri, efterlikning eller missbruk av vår plattform eller vårt varumärke.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>E-post till Trust and Safety</b>
         <span>Använd kontaktsidan för att nå vårt Trust and Safety-team. Rapporter prioriteras inom en arbetsdag.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Sårbarhetsanmälan</b>
         <span>För ansvarsfull rapportering av säkerhetsbrister som påverkar våra system, kontakta oss innan du delar detaljer offentligt.</span>

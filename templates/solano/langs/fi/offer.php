@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Ei taulukoita. Ei täyteen ahdettuja näyttöjä. Ei viime hetken epäilyksiä</h2>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Alusta</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Perinteinen välittäjä</th><th scope="col">Kaupankäynti itse</th></tr></thead>
       <tbody>
         <tr><td>Tekoälyn toimeksiantojen toteutus</td><td style="color:var(--pos)">✓</td><td style="color:var(--muted)">rajoitetut tunnit</td><td style="color:var(--muted)">manuaalisesti</td></tr>

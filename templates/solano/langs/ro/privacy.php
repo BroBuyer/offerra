@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Informații juridice</span>
     <h1>Politica de confidențialitate</h1>
-    <p class="rmct9">Cum <?= e(SITE_NAME) ?> colectează, folosește și protejează datele dumneavoastră personale.</p>
+    <p class="etpy2">Cum <?= e(SITE_NAME) ?> colectează, folosește și protejează datele dumneavoastră personale.</p>
   </div>
 </section>
 

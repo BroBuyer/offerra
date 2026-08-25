@@ -55,7 +55,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Was Sie im Portfolio halten können</h2>
     <p>Ein Konto deckt mehrere Anlageklassen ab, sodass Sie keine zweite Plattform brauchen, sobald sich Ihre Interessen erweitern.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Anlageklasse</th><th scope="col">Beispiele</th><th scope="col">Gut zu wissen</th></tr></thead>
       <tbody>
         <tr><td>Kryptowährungen</td><td>BTC, ETH, SOL, XRP</td><td>Handel rund um die Uhr, auch am Wochenende.</td></tr>

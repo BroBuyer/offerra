@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>02</b><i></i></div>
     <h2>Unde pot apărea costuri</h2>
     <p>Acestea sunt singurele puncte în care banii părăsesc soldul pentru altceva decât o investiție aleasă de dumneavoastră.</p>
-    <div class="smnsm2" role="region" tabindex="0"><table class="wcle1">
+    <div class="jvlvb1" role="region" tabindex="0"><table class="wcle1">
       <thead><tr><th scope="col">Element</th><th scope="col">Perceput de</th><th scope="col">Notă</th></tr></thead>
       <tbody>
         <tr><td>Deschiderea contului</td><td>—</td><td>Gratuit.</td></tr>

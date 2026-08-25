@@ -44,21 +44,21 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<section class="sec-sm" aria-label="Indicadores clave">
+<section aria-label="Indicadores clave">
  <div class="nrzt44">
 <div class="acd048l">
-      <div class="kstat"><b>33,000</b><span>アクティブユーザー</span></div>
-      <div class="kstat"><b>€0.6B</b><span>取引高</span></div>
-      <div class="kstat"><b>99.8%</b><span>シグナル稼働率</span></div>
-      <div class="kstat"><b>24/7</b><span>サポート</span></div>
+      <div class="xnpe0qx"><b>33,000</b><span>アクティブユーザー</span></div>
+      <div class="xnpe0qx"><b>€0.6B</b><span>取引高</span></div>
+      <div class="xnpe0qx"><b>99.8%</b><span>シグナル稼働率</span></div>
+      <div class="xnpe0qx"><b>24/7</b><span>サポート</span></div>
     </div>
   
  </div>
 </section>
 
-<div class="nrzt44 jx8jnza">
-  <details class="tjbln" open aria-label="このページ内">
-    <summary class="eik0loi">このページ内</summary>
+<div class="nrzt44 jlt10">
+  <details class="tte22iu" open aria-label="このページ内">
+    <summary class="gem14">このページ内</summary>
     <ol>
       <li><a href="#exd9dmd">ライブ市場</a></li>
       <li><a href="#sor9s"><?= e(SITE_NAME) ?></a></li>
@@ -74,18 +74,19 @@ require __DIR__ . '/includes/header.php';
     </ol>
     <a class="rs0voj6 ggca24u" href="#jsyo6">今すぐ始める — <?= e(money_min()) ?>から</a>
   </details>
+</div>
 
-  <div>
-    <section class="xrn58" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
-      <div class="wdsnx3j">
+<div class="nrzt44 ldrp4m">
+    <section class="zx4mx9v" data-u="sec" id="br1y4s" aria-labelledby="es9pra">
+      <div class="tewtadh">
         <span class="odwy4o">会員の声</span>
         <h2 id="es9pra">トレーダーの声</h2>
       </div>
-      <div class="vdaz1q">
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+      <div class="royrs">
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>アナリストがすべてのステップを説明してくれました。目標は一度設定するだけで、今では資金の働きを正確に把握でき、毎回の判断に迷うことがありません。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -97,10 +98,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>投資は未経験でした。アナリストが戦略を設計し、すべての動きを説明してくれました。空約束も圧力もなく、出金は予定どおり届きます。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -112,10 +113,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>試しに少額から始めました。誠実な透明性と継続的なサポートのおかげで、そこから増やす自信が持てました。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -127,10 +128,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>提案が届き、数分で承認または調整できます。仕事の生活に収まり、執着にはなりません。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -142,10 +143,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>決め手は徹底した明確さです。すべての判断に根拠があり、何かが起こる前に理由を確認できます。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -157,10 +158,10 @@ require __DIR__ . '/includes/header.php';
           </div>
           <span itemprop="itemReviewed" itemscope itemtype="https://schema.org/Organization" itemid="<?= e(rtrim(SITE_URL, '/')) ?>/#org" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/><link itemprop="url" href="<?= e(rtrim(SITE_URL, '/')) ?>/"/></span>
         </figure>
-        <figure class="qkl7dd8" itemscope itemtype="https://schema.org/Review">
-          <div class="dnjuv">
-            <span class="cc91z" aria-label="5/5">★★★★★</span>
-            <span class="ue1r1">4か月で+2,200€</span>
+        <figure class="zyrnf" itemscope itemtype="https://schema.org/Review">
+          <div class="spupxy">
+            <span class="kgx9y" aria-label="5/5">★★★★★</span>
+            <span class="qwur9r3">4か月で+2,200€</span>
           </div>
           <blockquote style="margin:0" itemprop="reviewBody"><p>カスタマーサービスは実在し、連絡が取れます。最初の分析は個別対応で、それ以降プラットフォームは安定し、予測しやすいです。</p></blockquote>
           <figcaption itemprop="author" itemscope itemtype="https://schema.org/Person">
@@ -175,36 +176,36 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
+      <div class="tewtadh">
         <span class="odwy4o">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">表計算も、複雑な画面も、直前の迷いもありません</h2>
-        <p class="rmct9"> <?= e(SITE_NAME) ?> が従来のブローカーや自力での取引と比べてどう違うかをご覧ください。</p>
+        <p class="etpy2"> <?= e(SITE_NAME) ?> が従来のブローカーや自力での取引と比べてどう違うかをご覧ください。</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="表計算も、複雑な画面も、直前の迷いもありません"><table class="by635s">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="表計算も、複雑な画面も、直前の迷いもありません"><table class="ycxlw">
         <thead><tr><th scope="col">プラットフォーム</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">従来のブローカー</th><th scope="col">自力での取引</th></tr></thead>
         <tbody>
-          <tr><td>AIによる注文執行</td><td class="bfe2o6f">✓</td><td class="byuav">時間制限あり</td><td class="byuav">手動</td></tr>
-          <tr><td>すべての市場を24時間カバー</td><td class="bfe2o6f">✓</td><td class="byuav">書類手続き</td><td class="byuav">ご自身で</td></tr>
-          <tr><td>1秒未満の注文ルーティング</td><td class="bfe2o6f">✓</td><td class="byuav">プランによる</td><td class="byuav">手動</td></tr>
-          <tr><td>多通貨レポート</td><td class="bfe2o6f">✓</td><td class="byuav">時間制限あり</td><td class="byuav">ご自身で</td></tr>
-          <tr><td>ペーパーレスの口座開設</td><td class="bfe2o6f">✓</td><td class="byuav">書類手続き</td><td class="byuav">手動</td></tr>
-          <tr><td>取引所間アービトラージ</td><td class="bfe2o6f">✓</td><td class="byuav">プランによる</td><td class="byuav">ご自身で</td></tr>
-          <tr><td>専任のパーソナルマネージャー</td><td class="bfe2o6f">✓</td><td class="byuav">時間制限あり</td><td class="byuav">手動</td></tr>
+          <tr><td>AIによる注文執行</td><td class="yd552">✓</td><td class="aty3riz">時間制限あり</td><td class="aty3riz">手動</td></tr>
+          <tr><td>すべての市場を24時間カバー</td><td class="yd552">✓</td><td class="aty3riz">書類手続き</td><td class="aty3riz">ご自身で</td></tr>
+          <tr><td>1秒未満の注文ルーティング</td><td class="yd552">✓</td><td class="aty3riz">プランによる</td><td class="aty3riz">手動</td></tr>
+          <tr><td>多通貨レポート</td><td class="yd552">✓</td><td class="aty3riz">時間制限あり</td><td class="aty3riz">ご自身で</td></tr>
+          <tr><td>ペーパーレスの口座開設</td><td class="yd552">✓</td><td class="aty3riz">書類手続き</td><td class="aty3riz">手動</td></tr>
+          <tr><td>取引所間アービトラージ</td><td class="yd552">✓</td><td class="aty3riz">プランによる</td><td class="aty3riz">ご自身で</td></tr>
+          <tr><td>専任のパーソナルマネージャー</td><td class="yd552">✓</td><td class="aty3riz">時間制限あり</td><td class="aty3riz">手動</td></tr>
         </tbody>
       </table></div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('offer.php') ?>">選ばれる理由</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="evp8w6d" aria-labelledby="ykur4hl">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">保護</span>
             <h2 id="ykur4hl">設計から守られるお客様の資金</h2>
-            <p class="rmct9">お客様の資金は規制された決済パートナーのもとで保管され、アクセスは確認され、すべての出金は入金元の口座へ文書化された経路で戻ります。</p>
+            <p class="etpy2">お客様の資金は規制された決済パートナーのもとで保管され、アクセスは確認され、すべての出金は入金元の口座へ文書化された経路で戻ります。</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>どの端末でも、リアルタイムのローソク足チャートと板情報</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>ワンタップ注文ですぐに確認</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>どこにいても届くウォッチリストと価格アラート</span></li>
@@ -214,16 +215,16 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="vatll" aria-labelledby="iouvw">
-      <div class="tsgf5eq mudjf">
+    <section class="zx4mx9v" data-u="sec" id="vatll" aria-labelledby="iouvw">
+      <div class="qyv6pbo qjjus96">
         <img src="<?= asset('static/img/platform.webp') ?>" srcset="<?= asset('static/img/platform-640.webp') ?> 640w, <?= asset('static/img/platform.webp') ?> 800w" sizes="(max-width: 768px) 92vw, 680px" alt="デスクにいる専任アナリスト" width="760" height="520" decoding="async" title="デスクにいる専任アナリスト" loading="lazy">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">専任アナリスト</span>
             <h2 id="iouvw">専任の金融アナリスト</h2>
-            <p class="rmct9">すべての会員に、長年の市場経験を持つ専任の金融アナリストが付きます。専門知識、実証された分析手法、最新のAIツールで有望な機会を見つけ、各段階で寄り添います。</p>
+            <p class="etpy2">すべての会員に、長年の市場経験を持つ専任の金融アナリストが付きます。専門知識、実証された分析手法、最新のAIツールで有望な機会を見つけ、各段階で寄り添います。</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>長年の実務的な市場経験</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>目標、リスク、資金に合わせて設計された戦略</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>各ステップでの丁寧なサポート</span></li>
@@ -232,26 +233,26 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="esypwbx" aria-labelledby="rq8es">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="esypwbx" aria-labelledby="rq8es">
+      <div class="tewtadh">
         <span class="odwy4o">リターン</span>
         <h2 id="rq8es">ご入金での例</h2>
-        <p class="rmct9">スライダーを動かして、より大きな入金をシミュレートできます。数値は最低入金額 <?= e(money_min()) ?> の代表的なプランから算出しています。これは例であり約束ではありません。実際のリターンは投資額と、アナリストと選ぶ戦略によって異なります。</p>
+        <p class="etpy2">スライダーを動かして、より大きな入金をシミュレートできます。数値は最低入金額 <?= e(money_min()) ?> の代表的なプランから算出しています。これは例であり約束ではありません。実際のリターンは投資額と、アナリストと選ぶ戦略によって異なります。</p>
       </div>
-      <div class="wmuyc">
+      <div class="gvcm8u">
         <div>
           <?php
             $calc_min = max(1, (int) MIN_DEPOSIT);
             $calc_max = 10000;
             $calc_default = min($calc_max, max($calc_min, 1000));
           ?>
-          <div class="vcf9ca"><label for="calc-dep">開始金額</label><span class="cj9i15q" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
+          <div class="bvo3uq"><label for="calc-dep">開始金額</label><span class="wjcv4" id="csezcv1"><?= e(currency_symbol() . number_format($calc_default, 0)) ?></span></div>
           <input id="lsm9on" type="range" min="<?= (int) $calc_min ?>" max="<?= (int) $calc_max ?>" step="50" value="<?= (int) $calc_default ?>" aria-label="開始金額"/>
-          <div class="vcf9ca"><label for="calc-mon">月数</label><span class="cj9i15q" id="ywprvgd">6</span></div>
+          <div class="bvo3uq"><label for="calc-mon">月数</label><span class="wjcv4" id="ywprvgd">6</span></div>
           <input id="gqz8w" type="range" min="1" max="24" step="1" value="6" aria-label="月数"/>
-          <p class="ifuciwq">数値は例示です。実際のリターンは投資額と、アナリストと選ぶ戦略によって異なります。</p>
+          <p class="adqah3">数値は例示です。実際のリターンは投資額と、アナリストと選ぶ戦略によって異なります。</p>
         </div>
-        <div class="gbastl">
+        <div class="arsqprf">
           <small>想定残高</small>
           <b id="aowtjsf">€1,000</b>
           <a class="rs0voj6 ggca24u" href="#jsyo6" style="margin-top:14px;width:100%">口座を開設</a>
@@ -259,125 +260,125 @@ require __DIR__ . '/includes/header.php';
       </div>
     </section>
 
-    <section class="xrn58" id="rb8p3" aria-labelledby="dv0846">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="rb8p3" aria-labelledby="dv0846">
+      <div class="tewtadh">
         <span class="odwy4o">出発点を見つける</span>
         <h2 id="dv0846">3つの質問のあと、開始プランのご提案</h2>
-        <p class="rmct9">点数も評価もありません。回答は担当者がどこから始めるかを知るためのもので、初回の通話が基礎説明で終わらないようにします。</p>
+        <p class="etpy2">点数も評価もありません。回答は担当者がどこから始めるかを知るためのもので、初回の通話が基礎説明で終わらないようにします。</p>
       </div>
-      <form class="yw6xmlm" id="sqw38g" novalidate>
-        <div class="jpmo5sl" hidden aria-hidden="true"><i></i></div>
-        <p class="sdahnb" hidden aria-live="polite" role="status"
+      <form class="mwky634" id="sqw38g" novalidate>
+        <div class="rr65q" hidden aria-hidden="true"><i></i></div>
+        <p class="dvusc" hidden aria-live="polite" role="status"
            data-l="質問"
            data-of="／"></p>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>01. これまでにどのくらい投資したことがありますか？</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q1" value="1"/><span>まったくない</span></label>
             <label><input type="radio" name="q1" value="2"/><span>少し、独学で</span></label>
             <label><input type="radio" name="q1" value="3"/><span>定期的に投資している</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>02. 今、最も大切なことは何ですか？</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q2" value="1"/><span>リスクを低く保つこと</span></label>
             <label><input type="radio" name="q2" value="2"/><span>安定した成長</span></label>
             <label><input type="radio" name="q2" value="3"/><span>仕組みを理解すること</span></label>
           </div>
         </fieldset>
-        <fieldset class="hpwy9" data-u="quizq" tabindex="-1">
+        <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
           <legend>03. どのくらい時間を使えますか？</legend>
-          <div class="bjatk">
+          <div class="ltouuo">
             <label><input type="radio" name="q3" value="1"/><span>ほとんどない</span></label>
             <label><input type="radio" name="q3" value="2"/><span>1日数分</span></label>
             <label><input type="radio" name="q3" value="3"/><span>市場を追うのが好き</span></label>
           </div>
         </fieldset>
-        <div class="beqazp3">
-          <button class="rs0voj6 krccqy8 sihas5z" type="button" hidden>戻る</button>
-          <p class="ubn7i4v" id="bpisnbk" hidden>回答の準備ができました。連絡先を残していただければ、担当者が内容を一緒に確認します。</p>
-          <a class="rs0voj6 ggca24u pk4h2" href="#jsyo6">開始プランを見る</a>
+        <div class="rho9v16">
+          <button class="rs0voj6 krccqy8 yie67c" type="button" hidden>戻る</button>
+          <p class="jyvec" id="bpisnbk" hidden>回答の準備ができました。連絡先を残していただければ、担当者が内容を一緒に確認します。</p>
+          <a class="rs0voj6 ggca24u asfgav8" href="#jsyo6">開始プランを見る</a>
         </div>
       </form>
     </section>
 
-    <section class="xrn58" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="dmobczk" aria-labelledby="dl5sp">
+      <div class="tewtadh">
         <span class="odwy4o">仕組み</span>
         <h2 id="dl5sp">仕組み</h2>
-        <p class="rmct9">最新のAIと実際の人間のアナリストが協力し、追加の収入源づくりを支援します。各ステップで案内し、資金の動きをすべてお見せします。</p>
+        <p class="etpy2">最新のAIと実際の人間のアナリストが協力し、追加の収入源づくりを支援します。各ステップで案内し、資金の動きをすべてお見せします。</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>口座を作成</h3><p>メールアドレスだけで、数分で登録できます。</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>メールを確認</h3><p>口座を守るため、アドレスを確認してください。</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>資金を入金</h3><p> <?= e(money_min()) ?> から、ご希望の方法で資金を追加できます。</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>戦略を設定</h3><p>目標を選びます。アナリストがお客様に合わせて計画を組み立てます。</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>投資を始める</h3><p>案内付きのシグナルに沿い、進捗をリアルタイムで確認します。</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>口座を作成</h3><p>メールアドレスだけで、数分で登録できます。</p></div></li>
+        <li><span class="vio04">02</span><div><h3>メールを確認</h3><p>口座を守るため、アドレスを確認してください。</p></div></li>
+        <li><span class="vio04">03</span><div><h3>資金を入金</h3><p> <?= e(money_min()) ?> から、ご希望の方法で資金を追加できます。</p></div></li>
+        <li><span class="vio04">04</span><div><h3>戦略を設定</h3><p>目標を選びます。アナリストがお客様に合わせて計画を組み立てます。</p></div></li>
+        <li><span class="vio04">05</span><div><h3>投資を始める</h3><p>案内付きのシグナルに沿い、進捗をリアルタイムで確認します。</p></div></li>
       </ol>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('product.php') ?>">ガイド全文を読む</a></p>
     </section>
 
-    <section class="xrn58" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="exd9dmd" aria-labelledby="rlolt2l">
+      <div class="tewtadh">
         <span class="odwy4o">ライブ市場</span>
         <h2 id="rlolt2l">ビットコイン、イーサリアムなど幅広く取引</h2>
-        <p class="rmct9">リアルタイム価格、高度な指標、関心のある市場のプロフェッショナルな視点。</p>
+        <p class="etpy2">リアルタイム価格、高度な指標、関心のある市場のプロフェッショナルな視点。</p>
       </div>
-      <div class="smnsm2" role="region" tabindex="0" aria-label="ビットコイン、イーサリアムなど幅広く取引"><table class="nd3owbf">
+      <div class="jvlvb1" role="region" tabindex="0" aria-label="ビットコイン、イーサリアムなど幅広く取引"><table class="xxzsw">
         <caption>ページを開いている間、価格は自動で更新されます。</caption>
         <thead><tr><th scope="col">資産</th><th scope="col">価格</th><th scope="col">24h</th></tr></thead>
         <tbody>
-          <tr data-sym="BTC"><td><span class="jtcrzrj">Bitcoin<small>BTC/USDT</small></span></td><td class="qsd2h">€64,671</td><td class="dprrq gv5fw2">-1.06%</td></tr>
-          <tr data-sym="ETH"><td><span class="jtcrzrj">Ethereum<small>ETH/USDT</small></span></td><td class="qsd2h">€1,881</td><td class="dprrq gv5fw2">-2.55%</td></tr>
-          <tr data-sym="SOL"><td><span class="jtcrzrj">Solana<small>SOL/USDT</small></span></td><td class="qsd2h">€76.62</td><td class="dprrq gv5fw2">-1.72%</td></tr>
-          <tr data-sym="XRP"><td><span class="jtcrzrj">XRP<small>XRP/USDT</small></span></td><td class="qsd2h">€1.11</td><td class="dprrq gv5fw2">-0.97%</td></tr>
+          <tr data-sym="BTC"><td><span class="vrwbx90">Bitcoin<small>BTC/USDT</small></span></td><td class="xhsak28">€64,671</td><td class="py9af zuh4exq">-1.06%</td></tr>
+          <tr data-sym="ETH"><td><span class="vrwbx90">Ethereum<small>ETH/USDT</small></span></td><td class="xhsak28">€1,881</td><td class="py9af zuh4exq">-2.55%</td></tr>
+          <tr data-sym="SOL"><td><span class="vrwbx90">Solana<small>SOL/USDT</small></span></td><td class="xhsak28">€76.62</td><td class="py9af zuh4exq">-1.72%</td></tr>
+          <tr data-sym="XRP"><td><span class="vrwbx90">XRP<small>XRP/USDT</small></span></td><td class="xhsak28">€1.11</td><td class="py9af zuh4exq">-0.97%</td></tr>
         </tbody>
       </table></div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
-      <div class="tsgf5eq">
+    <section class="zx4mx9v" data-u="sec" id="gp0nit" aria-labelledby="jg778dx">
+      <div class="qyv6pbo">
         <div>
-          <div class="wdsnx3j">
+          <div class="tewtadh">
             <span class="odwy4o">どの画面でも</span>
             <h2 id="jg778dx">デスクでもポケットでも、同じ口座</h2>
-            <p class="rmct9">ログインも残高もひとつです。パソコンのブラウザでもスマートフォンでも開けます。インストールは不要で、1台だけでしか動かないものはありません。</p>
+            <p class="etpy2">ログインも残高もひとつです。パソコンのブラウザでもスマートフォンでも開けます。インストールは不要で、1台だけでしか動かないものはありません。</p>
           </div>
-          <ul class="ibiqy0k">
+          <ul class="tso61aq">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>デスクトップ — フルのダッシュボード、チャート、レポート</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>モバイル — どこにいても残高、ポジション、出金</span></li>
           </ul>
         </div>
-        <figure class="nb2zw0m">
+        <figure class="kzp7d0j">
           <img src="<?= asset('static/img/phone.webp') ?>" alt="スマートフォン画面でも同じポートフォリオ表示" title="スマートフォン画面でも同じポートフォリオ表示" width="896" height="1200" decoding="async" loading="lazy">
         </figure>
       </div>
     </section>
 
-    <section class="xrn58" data-u="sec" id="sor9s" aria-labelledby="onidtj">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" data-u="sec" id="sor9s" aria-labelledby="onidtj">
+      <div class="tewtadh">
         <span class="odwy4o"><?= e(SITE_NAME) ?></span>
         <h2 id="onidtj">口座をリアルタイムで確認</h2>
-        <p class="rmct9">アナリストが発注するすべての取引がここに記録されます。エントリー、決済、各ペアの確認済み結果がライブで流れます。</p>
+        <p class="etpy2">アナリストが発注するすべての取引がここに記録されます。エントリー、決済、各ペアの確認済み結果がライブで流れます。</p>
       </div>
-      <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>接続されたすべての市場で1秒未満の執行</h3><p><?= e(SITE_NAME) ?> は対応するすべての取引所と低遅延のAPI接続を常時維持します。モデルがシグナルを生成すると、次のティックの前に注文が送信・約定され、ダッシュボードに記録されます。</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>すべての市場セッションを通じ、24時間稼働します</h3><p>暗号資産は休まず、 <?= e(SITE_NAME) ?> も休みません。エンジンは週末や祝日もペアを分析し、機会を逃しません。</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>多通貨レポート</h3><p>残高、取引、出金はすべて現地通貨で表示されます。隠れた換算ステップはありません。</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>分別管理された資金</h3><p>資金はお客様ご自身の口座に残ります。 <?= e(SITE_NAME) ?> が資金を保有することはありません。エンジンには注文送信の権限のみがあります。</p></div></li>
-        <li><span class="vpx6kk">05</span><div><h3>銀行水準のセキュリティ</h3><p>プラットフォーム全体のTLS暗号化、既定の二段階認証、四半期ごとの第三者インフラ監査。取引レシートはオンチェーンに記録されます。</p></div></li>
-        <li><span class="vpx6kk">06</span><div><h3>3つの資産クラス、ひとつのプラットフォーム</h3><p>多くの個人向けプラットフォームは単一市場に限定します。 <?= e(SITE_NAME) ?> は同じダッシュボードから暗号資産、上場株式、主要通貨ペアを取引します。</p></div></li>
-        <li><span class="vpx6kk">07</span><div><h3>すべてのポジションに事前設定のリスク限度</h3><p>ストップロス、許容最大損失、資金配分の上限は資産クラスごとに設定されます。閾値を超えた取引はエンジンが自動で決済し、監査履歴に記録されます。</p></div></li>
+      <ol class="snozao">
+        <li><span class="vio04">01</span><div><h3>接続されたすべての市場で1秒未満の執行</h3><p><?= e(SITE_NAME) ?> は対応するすべての取引所と低遅延のAPI接続を常時維持します。モデルがシグナルを生成すると、次のティックの前に注文が送信・約定され、ダッシュボードに記録されます。</p></div></li>
+        <li><span class="vio04">02</span><div><h3>すべての市場セッションを通じ、24時間稼働します</h3><p>暗号資産は休まず、 <?= e(SITE_NAME) ?> も休みません。エンジンは週末や祝日もペアを分析し、機会を逃しません。</p></div></li>
+        <li><span class="vio04">03</span><div><h3>多通貨レポート</h3><p>残高、取引、出金はすべて現地通貨で表示されます。隠れた換算ステップはありません。</p></div></li>
+        <li><span class="vio04">04</span><div><h3>分別管理された資金</h3><p>資金はお客様ご自身の口座に残ります。 <?= e(SITE_NAME) ?> が資金を保有することはありません。エンジンには注文送信の権限のみがあります。</p></div></li>
+        <li><span class="vio04">05</span><div><h3>銀行水準のセキュリティ</h3><p>プラットフォーム全体のTLS暗号化、既定の二段階認証、四半期ごとの第三者インフラ監査。取引レシートはオンチェーンに記録されます。</p></div></li>
+        <li><span class="vio04">06</span><div><h3>3つの資産クラス、ひとつのプラットフォーム</h3><p>多くの個人向けプラットフォームは単一市場に限定します。 <?= e(SITE_NAME) ?> は同じダッシュボードから暗号資産、上場株式、主要通貨ペアを取引します。</p></div></li>
+        <li><span class="vio04">07</span><div><h3>すべてのポジションに事前設定のリスク限度</h3><p>ストップロス、許容最大損失、資金配分の上限は資産クラスごとに設定されます。閾値を超えた取引はエンジンが自動で決済し、監査履歴に記録されます。</p></div></li>
       </ol>
     </section>
 
-    <section class="xrn58" id="nw3j7wd" aria-labelledby="wysa9hx">
-      <div class="wdsnx3j">
+    <section class="zx4mx9v" id="nw3j7wd" aria-labelledby="wysa9hx">
+      <div class="tewtadh">
         <span class="odwy4o">ご質問</span>
         <h2 id="wysa9hx">よくある質問</h2>
       </div>
-      <div class="hnxh4ir" itemscope itemtype="https://schema.org/FAQPage">
+      <div class="qs49y" itemscope itemtype="https://schema.org/FAQPage">
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">始めるための最低入金額はいくらですか？</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
@@ -465,22 +466,21 @@ require __DIR__ . '/includes/header.php';
       </div>
       <p style="margin-top:22px"><a class="rs0voj6 krccqy8" href="<?= page_url('faq.php') ?>">すべての質問を見る</a></p>
     </section>
-  </div>
 </div>
 
-<!--reviews-block--><section aria-label="お客様の評価" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">信頼</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> 件のレビュー</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> 件のレビュー · 対象 <b style="color:var(--text,#fff)">4,902</b> 件の評価</div></div></section><section class="bjiwuc" id="signup" aria-labelledby="fglj2pf">
-  <div class="nrzt44 kdbtf1i">
+<!--reviews-block--><section aria-label="お客様の評価" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">信頼</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> 件のレビュー</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b> 件のレビュー · 対象 <b style="color:var(--text,#fff)">4,902</b> 件の評価</div></div></section><section class="lk9wh0" id="signup" aria-labelledby="fglj2pf">
+  <div class="nrzt44 bxx9mk3">
     <div>
       <span class="odwy4o">始める</span>
       <h2 id="fglj2pf">資金の動きをご覧になりますか？</h2>
-      <p class="rmct9">数分で口座を開設し、控えめな最低額から入金し、初日から進捗を透明に追跡できます。</p>
-      <ul class="ibiqy0k" style="margin-top:16px">
+      <p class="etpy2">数分で口座を開設し、控えめな最低額から入金し、初日から進捗を透明に追跡できます。</p>
+      <ul class="tso61aq" style="margin-top:16px">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>実際に確認するメールアドレス。</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>担当者が連絡できる電話番号。</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>後の確認ステップ用の本人確認書類。</span></li>
       </ul>
     </div>
-    <div class="bv1ft5">
+    <div class="prxev6">
       <h3>プロフィールを作成</h3>
       <p class="amrqy">数分で始められます。</p>
       <?php

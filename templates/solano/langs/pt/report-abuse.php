@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Confiança e segurança</span>
     <h1>Denunciar abuso</h1>
-    <p class="rmct9">Ajude-nos a manter <?= e(SITE_NAME) ?> seguro. Denuncie fraude suspeito, usurpação de identidade ou uso indevido da nossa plataforma ou marca.</p>
+    <p class="etpy2">Ajude-nos a manter <?= e(SITE_NAME) ?> seguro. Denuncie fraude suspeito, usurpação de identidade ou uso indevido da nossa plataforma ou marca.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Correio eletrónico de Confiança e Segurança</b>
         <span>Utilize a página de contacto para comunicar com a nossa equipa de Confiança e Segurança. Os relatórios são classificados num prazo de um dia útil.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Divulgação de segurança</b>
         <span>Para a divulgação responsável de vulnerabilidades de segurança que afetem os nossos sistemas, contacte-nos antes de partilhar publicamente os detalhes.</span>

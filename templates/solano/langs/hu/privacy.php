@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Jogi információk</span>
     <h1>Adatvédelmi irányelvek</h1>
-    <p class="rmct9">Hogyan gyűjti, használja és védi a(z) <?= e(SITE_NAME) ?> az Ön személyes adatait.</p>
+    <p class="etpy2">Hogyan gyűjti, használja és védi a(z) <?= e(SITE_NAME) ?> az Ön személyes adatait.</p>
   </div>
 </section>
 

@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="vd7z9k">Güven ve güvenlik</span>
     <h1>Kötüye kullanımı bildirin</h1>
-    <p class="rmct9"><?= e(SITE_NAME) ?> platformunu güvende tutmamıza yardımcı olun. Şüpheli dolandırıcılık, kimliğe bürünme veya platformumuzun ya da markamızın kötüye kullanımını bildirin.</p>
+    <p class="etpy2"><?= e(SITE_NAME) ?> platformunu güvende tutmamıza yardımcı olun. Şüpheli dolandırıcılık, kimliğe bürünme veya platformumuzun ya da markamızın kötüye kullanımını bildirin.</p>
   </div>
 </section>
 
@@ -39,12 +39,12 @@ require __DIR__ . '/includes/header.php';
     </ul>
 
     <div class="ziavo">
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel bf48erp"></i></div>
         <b>Güven ve Güvenlik e-postası</b>
         <span>Güven ve Güvenlik ekibimize ulaşmak için iletişim sayfasını kullanın. Bildirimler bir iş günü içinde önceliklendirilir.</span>
       </div>
-      <div class="bv1ft5">
+      <div class="ws86ccr">
         <div class="qpw9z"><i class="erhel ou4vm"></i></div>
         <b>Güvenlik bildirimi</b>
         <span>Sistemlerimizi etkileyen güvenlik açıklarının sorumlu açıklaması için ayrıntıları kamuya paylaşmadan önce bizimle iletişime geçin.</span>
