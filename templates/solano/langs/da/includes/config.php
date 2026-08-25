@@ -1,6 +1,6 @@
-<?php
-define('SITE_NAME', 'Aurel');
-define('SITE_URL', 'https://aurel.local');
+﻿<?php
+define('SITE_NAME', 'Solano');
+define('SITE_URL', 'https://solano.local');
 define('SITE_LANG', 'da');
 define('MIN_DEPOSIT', '220');
 define('CURRENCY', 'DKK');
@@ -8,7 +8,7 @@ define('CURRENCY', 'DKK');
 define('CRM_API_URL', 'https://yourleads.org/api/affiliates/v2/leads');
 define('CRM_API_KEY', 'b15dtss21lmvlch8zheq1eukzb8840nw');
 define('CRM_AFFILIATE_ID', 'BRO');
-define('CRM_FUNNEL', 'aurel');
+define('CRM_FUNNEL', 'solano');
 define('CRM_COUNTRY', 'DK');
 
 define('CRM_AFF_SUB', '');

@@ -1,4 +1,4 @@
-
+﻿
 :root{
   --bg:#080b12; --surface:#0d1119; --surface-2:#111722; --panel:#0d1119;
   --text:#b4bccb; --heading:#f2f5f9; --muted:#77808f; --fog:#98a2b3;
@@ -592,3 +592,24 @@ background:transparent;border:0;padding:.2rem 0 .2rem .6rem}}
 .th0yrt{font-variant-numeric:tabular-nums}
 .mg1jree.ixupo,.ixupo{color:var(--neg)}
 .mg1jree.roa0i8y,.roa0i8y{color:var(--pos)}
+
+/* form inputs + intl-tel-input full width */
+.leadform .jn406,.solano-form .jn406{width:100%}
+.leadform .iti,.leadform .iti--allow-dropdown,
+.solano-form .iti,.solano-form .iti--allow-dropdown{width:100%!important;display:block;max-width:100%}
+.leadform .iti input.cm9aayi,
+.leadform .iti input[type=tel],
+.solano-form .iti input.cm9aayi,
+.solano-form .iti input[type=tel]{width:100%!important;max-width:100%;box-sizing:border-box}
+.cm9aayi,.leadform input.cm9aayi,.solano-form input.cm9aayi{
+  background:var(--surface-2,#121d2b)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  color:var(--heading,#f3f6f8)!important;
+}
+.cm9aayi::placeholder{color:#8a94a3!important;opacity:1}
+.cm9aayi:focus{
+  border-color:var(--accent,#50ebcb)!important;
+  outline:1px solid var(--accent,#50ebcb);
+  background:var(--surface,#0e1622)!important;
+}
+.prxev6 .cm9aayi,.up98m .cm9aayi{background:var(--bg,#0a1019)!important}
