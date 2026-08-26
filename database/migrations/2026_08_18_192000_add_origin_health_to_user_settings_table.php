@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (! Schema::hasColumn('user_settings', 'deploy_driver')) {
             Schema::table('user_settings', function (Blueprint $table) {
-                $table->string('deploy_driver', 16)->default('hestia');
+                $table->string('deploy_driver', 16)->default('ubuntu');
             });
         }
 

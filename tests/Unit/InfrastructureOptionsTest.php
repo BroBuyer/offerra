@@ -10,7 +10,6 @@ class InfrastructureOptionsTest extends TestCase
     public function test_from_input_maps_request_fields(): void
     {
         $options = InfrastructureOptions::fromInput([
-            'infra_hestia' => true,
             'infra_cloudflare_zone' => false,
             'infra_cloudflare_dns' => true,
             'infra_dynadot_ns' => false,
@@ -19,7 +18,6 @@ class InfrastructureOptionsTest extends TestCase
             'infra_cloudflare_www_redirect' => true,
         ]);
 
-        $this->assertTrue($options['hestia']);
         $this->assertFalse($options['cloudflare_zone']);
         $this->assertTrue($options['cloudflare_dns']);
         $this->assertTrue($options['cloudflare_ssl']);
@@ -36,7 +34,6 @@ class InfrastructureOptionsTest extends TestCase
             'cloudflare_https' => false,
             'cloudflare_www_redirect' => false,
             'dynadot_ns' => false,
-            'hestia' => false,
         ]));
     }
 }

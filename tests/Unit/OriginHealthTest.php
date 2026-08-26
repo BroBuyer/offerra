@@ -10,10 +10,10 @@ use Tests\TestCase;
 
 class OriginHealthTest extends TestCase
 {
-    public function test_ubuntu_driver_switches_default_path(): void
+    public function test_default_path_falls_back_to_ubuntu(): void
     {
-        $this->assertSame(DeployDriver::UBUNTU_PATH, DeployDriver::pathForDriver('ubuntu', DeployDriver::HESTIA_PATH));
-        $this->assertSame(DeployDriver::HESTIA_PATH, DeployDriver::pathForDriver('hestia', DeployDriver::UBUNTU_PATH));
+        $this->assertSame(DeployDriver::UBUNTU_PATH, DeployDriver::pathForDriver('ubuntu', null));
+        $this->assertSame(DeployDriver::UBUNTU_PATH, DeployDriver::pathForDriver('ubuntu', ''));
         $this->assertSame('/custom/{domain}', DeployDriver::pathForDriver('ubuntu', '/custom/{domain}'));
     }
 

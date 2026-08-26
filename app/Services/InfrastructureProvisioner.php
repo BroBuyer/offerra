@@ -235,7 +235,6 @@ class InfrastructureProvisioner
         if (($meta['origin'] ?? '') !== 'done') {
             $this->origin->ensureWebRoot($settings, $domain);
             $meta['origin'] = 'done';
-            $meta['hestia'] = 'done';
         }
 
         $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');

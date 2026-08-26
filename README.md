@@ -71,7 +71,7 @@ npm run preview              # Laravel без Vite dev
 | Оффери (метадані) | таблиця `offers` |
 | Файли лендів | `../offers-v1/{folder}/` |
 
-**Наступний етап:** деплой SFTP на Hestia.
+**Деплой:** SFTP на Ubuntu/nginx origin (`/var/www/offers/{domain}/public_html`).
 
 - `resources/js/Pages/Panel/` — сторінки панелі (React)
 - `resources/css/panel.css` — тема з прототипу

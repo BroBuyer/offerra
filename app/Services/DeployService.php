@@ -90,7 +90,7 @@ class DeployService
 
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
 
-        if (($meta['origin'] ?? $meta['hestia'] ?? '') !== 'done') {
+        if (($meta['origin'] ?? '') !== 'done') {
             return false;
         }
 
@@ -132,7 +132,7 @@ class DeployService
 
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
 
-        if (($meta['origin'] ?? $meta['hestia'] ?? '') !== 'done') {
+        if (($meta['origin'] ?? '') !== 'done') {
             return false;
         }
 
