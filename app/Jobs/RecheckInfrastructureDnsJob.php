@@ -4,11 +4,12 @@ namespace App\Jobs;
 
 use App\Models\Offer;
 use App\Services\InfrastructureProvisioner;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
-class RecheckInfrastructureDnsJob implements ShouldQueue
+class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
@@ -16,7 +17,19 @@ class RecheckInfrastructureDnsJob implements ShouldQueue
 
     public int $tries = 1;
 
+    /**
+     * One queued recheck per offer at a time — a perpetually-pending domain must
+     * never accumulate duplicate jobs (this is what flooded the queue to 8k+).
+     * The lock self-releases after this window even if a worker dies mid-run.
+     */
+    public int $uniqueFor = 900;
+
     public function __construct(public int $offerId) {}
+
+    public function uniqueId(): string
+    {
+        return (string) $this->offerId;
+    }
 
     public function handle(InfrastructureProvisioner $provisioner): void
     {
