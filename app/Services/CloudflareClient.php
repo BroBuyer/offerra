@@ -165,7 +165,7 @@ class CloudflareClient
     }
 
     /**
-     * Edge SSL + HTTPS + www→apex via Cloudflare (без Let's Encrypt на Hestia).
+     * Edge SSL + HTTPS + www→apex via Cloudflare (без Let's Encrypt на origin).
      *
      * @param  array{cloudflare_ssl?: bool, cloudflare_https?: bool, cloudflare_www_redirect?: bool}  $options
      */
@@ -277,7 +277,7 @@ class CloudflareClient
 
     /**
      * Full — якщо origin HTTPS відповідає нормально.
-     * Flexible — якщо origin HTTPS редіректить на HTTP (типово admin Hestia без LE),
+     * Flexible — якщо origin HTTPS редіректить на HTTP (типово origin без LE),
      * інакше Full + Always Use HTTPS дає ERR_TOO_MANY_REDIRECTS.
      */
     private function preferredSslMode(UserSetting $settings, string $domain): string

@@ -142,10 +142,10 @@ function formatOfferError(message) {
         const match = text.match(/connect to ([^\s]+) port (\d+)/i);
 
         if (match) {
-            return `Hestia API не відповідає (${match[1]}:${match[2]}). Перевір IP і що порт відкритий для панелі.`;
+            return `Сервер не відповідає (${match[1]}:${match[2]}). Перевір IP і що порт відкритий для панелі.`;
         }
 
-        return 'Hestia API не відповідає (таймаут). Перевір IP і порт 8083 у налаштуваннях.';
+        return 'Сервер не відповідає (таймаут). Перевір IP і SSH-порт у налаштуваннях Server.';
     }
 
     return text;
@@ -576,7 +576,7 @@ export default function OffersIndex({
     const archiveOffer = (offer) => {
         const ok = window.confirm(
             `Архівувати ${offer.domain}?\n\n`
-            + 'Сайт буде знято з Hestia і Cloudflare. Домен лишиться в Dynadot для перепродажу.',
+            + 'Сайт буде знято з origin-сервера і Cloudflare. Домен лишиться в Dynadot для перепродажу.',
         );
         if (!ok) {
             return;
@@ -714,7 +714,7 @@ export default function OffersIndex({
                         className="btn btn-ghost btn-sm btn-archive"
                         disabled={archivingId === offer.id || offer.status === 'deploying'}
                         onClick={() => archiveOffer(offer)}
-                        title="Архівувати: зняти з Hestia/Cloudflare (домен лишиться в Dynadot)"
+                        title="Архівувати: зняти з origin/Cloudflare (домен лишиться в Dynadot)"
                         aria-label={`Архівувати ${offer.domain}`}
                     >
                         {archivingId === offer.id ? (

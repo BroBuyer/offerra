@@ -276,8 +276,7 @@ class OfferController extends Controller
                 'create_keitaro' => $request->boolean('create_keitaro'),
                 'vitals_enabled' => $request->boolean('vitals_enabled'),
                 'from_search_team' => $request->boolean('from_search_team'),
-                'infra_hestia' => $request->boolean('infra_hestia'),
-                'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
+                                'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
                 'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
                 'infra_dynadot_ns' => $request->boolean('infra_dynadot_ns'),
                 'infra_cloudflare_ssl' => $request->boolean('infra_cloudflare_ssl'),
@@ -324,8 +323,7 @@ class OfferController extends Controller
             'create_keitaro' => $request->boolean('create_keitaro'),
             'vitals_enabled' => $request->boolean('vitals_enabled'),
             'from_search_team' => $request->boolean('from_search_team'),
-            'infra_hestia' => $request->boolean('infra_hestia'),
-            'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
+                        'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
             'infra_cloudflare_dns' => $request->boolean('infra_cloudflare_dns'),
             'infra_dynadot_ns' => $request->boolean('infra_dynadot_ns'),
             'infra_cloudflare_ssl' => $request->boolean('infra_cloudflare_ssl'),
@@ -573,7 +571,7 @@ class OfferController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', "Архівація запущена: {$offer->domain}. Hestia і Cloudflare будуть прибрані, домен лишиться в Dynadot.");
+            ->with('success', "Архівація запущена: {$offer->domain}. Origin і Cloudflare будуть прибрані, домен лишиться в Dynadot.");
     }
 
     public function retryArchive(Offer $offer, OfferTeardownService $teardown): RedirectResponse
