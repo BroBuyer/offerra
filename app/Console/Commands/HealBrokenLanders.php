@@ -18,27 +18,6 @@ class HealBrokenLanders extends Command
 
     protected $description = 'Знайти зламані лендінги на origin-серверах (втрачені функції шаблону) і перевилити їх; опційно прибрати осиротілі вебрути';
 
-    /**
-     * Detects deployed landers whose head.php calls canonical_url() while the
-     * accompanying helpers.php no longer defines it — the exact failure mode that
-     * makes a lander return HTTP 500. Checks both the base includes/ and every
-     * langs/<lang>/includes/. The trailing `true` guarantees exit code 0 so the
-     * SSH wrapper does not treat an empty (no-match) result as a failure.
-     */
-    private const SCAN = <<<'SH'
-for d in /var/www/offers/*/public_html; do
-  dom=$(basename "$(dirname "$d")"); broken=0
-  for inc in "$d/includes" "$d"/langs/*/includes; do
-    [ -f "$inc/head.php" ] || continue
-    if grep -q 'canonical_url' "$inc/head.php" 2>/dev/null; then
-      grep -q 'function canonical_url' "$inc/helpers.php" 2>/dev/null || { broken=1; break; }
-    fi
-  done
-  [ "$broken" = "1" ] && echo "$dom"
-done
-true
-SH;
-
     public function handle(OriginHostService $origin, DeployService $deploy, TelegramNotifier $telegram): int
     {
         $dryRun = (bool) $this->option('dry-run');
@@ -60,7 +39,7 @@ SH;
 
         foreach ($hosts as $host => $settings) {
             try {
-                $output = $origin->exec($settings, self::SCAN, 120);
+                $domains = $origin->findBrokenLanders($settings);
             } catch (\Throwable $e) {
                 $this->error("{$host}: scan failed — {$e->getMessage()}");
                 Log::warning('heal-landers: scan failed', ['host' => $host, 'error' => $e->getMessage()]);
@@ -68,7 +47,6 @@ SH;
                 continue;
             }
 
-            $domains = array_values(array_filter(array_map('trim', explode("\n", $output))));
             $this->line("{$host}: broken=".count($domains));
 
             foreach ($domains as $domain) {

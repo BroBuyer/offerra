@@ -33,6 +33,36 @@ class OriginHostService
     }
 
     /**
+     * Return deployed offer domains on this origin whose head.php calls
+     * canonical_url() while helpers.php no longer defines it — the exact state
+     * that makes a lander return HTTP 500. Checks the base includes/ and every
+     * langs/<lang>/includes/. The trailing `true` keeps the exit code at 0 so an
+     * empty (no-match) result is not treated as a failure.
+     *
+     * @return list<string>
+     */
+    public function findBrokenLanders(UserSetting $settings, int $timeout = 120): array
+    {
+        $scan = <<<'SH'
+for d in /var/www/offers/*/public_html; do
+  dom=$(basename "$(dirname "$d")"); broken=0
+  for inc in "$d/includes" "$d"/langs/*/includes; do
+    [ -f "$inc/head.php" ] || continue
+    if grep -q 'canonical_url' "$inc/head.php" 2>/dev/null; then
+      grep -q 'function canonical_url' "$inc/helpers.php" 2>/dev/null || { broken=1; break; }
+    fi
+  done
+  [ "$broken" = "1" ] && echo "$dom"
+done
+true
+SH;
+
+        $output = $this->exec($settings, $scan, $timeout);
+
+        return array_values(array_filter(array_map('trim', explode("\n", $output))));
+    }
+
+    /**
      * Pack the local offer folder into tar.gz, upload once, unpack on origin.
      *
      * @param  list<string>  $skipFiles
