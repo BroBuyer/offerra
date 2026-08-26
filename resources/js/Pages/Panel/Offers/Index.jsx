@@ -734,7 +734,7 @@ export default function OffersIndex({
             <header className="page-header offers-page-header">
                 <div>
                     <h2>Оффери</h2>
-                    <p>Каталог згенерованих лендів — деплой на Hestia через SFTP</p>
+                    <p>Каталог згенерованих лендів — деплой на сервер</p>
                 </div>
                 <Link
                     href={route('offers.create', { fresh: 1 })}
