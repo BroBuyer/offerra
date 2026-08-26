@@ -40,7 +40,10 @@ class OfferTeardownService
             ],
         ]);
 
-        ArchiveOfferJob::dispatch($offer->id);
+        // Archiving is user-initiated and must not be starved behind the
+        // background DNS-recheck backlog on the "default" queue. Route it to the
+        // "deploy" queue, which has dedicated workers (same as provisioning/deploy).
+        ArchiveOfferJob::dispatch($offer->id)->onQueue('deploy');
     }
 
     public function run(Offer $offer): void
