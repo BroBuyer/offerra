@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Http;
 class InfrastructureProvisioner
 {
     public function __construct(
-        private readonly HestiaClient $hestia,
         private readonly CloudflareClient $cloudflare,
         private readonly DynadotClient $dynadot,
+        private readonly OriginHostService $origin,
     ) {}
 
     public static function settingsReady(?UserSetting $settings): bool
@@ -24,23 +24,10 @@ class InfrastructureProvisioner
 
         return filled($settings->deploy_host)
             && filled($settings->deploy_username)
-            && self::hestiaApiReady($settings)
+            && filled($settings->deploy_password)
             && filled($settings->cloudflare_api_token)
             && filled($settings->cloudflare_account_id)
             && filled($settings->dynadot_api_key);
-    }
-
-    public static function hestiaApiReady(?UserSetting $settings): bool
-    {
-        if ($settings === null) {
-            return false;
-        }
-
-        if (filled($settings->deploy_api_access_key) && filled($settings->deploy_api_secret_key)) {
-            return true;
-        }
-
-        return filled($settings->deploy_password);
     }
 
     public function enqueue(Offer $offer): void
@@ -70,7 +57,7 @@ class InfrastructureProvisioner
         if (! $settings || ! self::settingsReady($settings)) {
             $offer->update([
                 'infra_status' => 'failed',
-                'infra_error' => 'Заповніть Hestia, Cloudflare і Dynadot у налаштуваннях.',
+                'infra_error' => 'Заповніть SSH, Cloudflare і Dynadot у налаштуваннях.',
             ]);
 
             return;
@@ -96,7 +83,7 @@ class InfrastructureProvisioner
         try {
             $this->runSteps($settings, $domain, $options, $meta);
 
-            $serverIp = $this->hestia->serverIp($settings);
+            $serverIp = $this->origin->originIp($settings);
             $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
             $dnsVia = $this->publicReadiness($domain, $serverIp, $expectedNs);
 
@@ -140,7 +127,7 @@ class InfrastructureProvisioner
         $options = InfrastructureOptions::forOffer($offer);
         $meta = array_merge($offer->infra_meta ?? [], ['options' => $options]);
         $domain = strtolower(trim($offer->domain));
-        $serverIp = $this->hestia->serverIp($settings);
+        $serverIp = $this->origin->originIp($settings);
 
         // Спочатку лише перевірка DNS/HTTPS — без повторного проходження Cloudflare/Dynadot.
         // Інакше тимчасові таймаути API тримають статус «Очікується DNS», хоча сайт уже живий.
@@ -235,10 +222,6 @@ class InfrastructureProvisioner
             return 'records';
         }
 
-        if ($this->httpsLooksLive($domain)) {
-            return 'https';
-        }
-
         return null;
     }
 
@@ -248,11 +231,11 @@ class InfrastructureProvisioner
      */
     private function runSteps(UserSetting $settings, string $domain, array $options, array &$meta): void
     {
-        if ($options['hestia'] ?? false) {
-            if (($meta['hestia'] ?? '') !== 'done') {
-                $this->hestia->addWebDomain($settings, $domain);
-                $meta['hestia'] = 'done';
-            }
+        // Ubuntu origin: always create /var/www/offers/{domain}/public_html before DNS/edge.
+        if (($meta['origin'] ?? '') !== 'done') {
+            $this->origin->ensureWebRoot($settings, $domain);
+            $meta['origin'] = 'done';
+            $meta['hestia'] = 'done';
         }
 
         $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
@@ -278,7 +261,7 @@ class InfrastructureProvisioner
             }
         }
 
-        $serverIp = $this->hestia->serverIp($settings);
+        $serverIp = $this->origin->originIp($settings);
 
         if (($options['cloudflare_dns'] ?? false) && $zoneId !== '') {
             $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
@@ -291,8 +274,10 @@ class InfrastructureProvisioner
         }
 
         if (($options['dynadot_ns'] ?? false) && $nameservers !== []) {
-            $this->dynadot->setNameservers($settings, $domain, $nameservers);
-            $meta['dynadot_ns'] = 'done';
+            if (($meta['dynadot_ns'] ?? '') !== 'done') {
+                $this->dynadot->setNameservers($settings, $domain, $nameservers);
+                $meta['dynadot_ns'] = 'done';
+            }
         }
     }
 
@@ -307,7 +292,13 @@ class InfrastructureProvisioner
         array $options,
         array &$meta,
     ): void {
-        $this->cloudflare->configureEdgeSecurity($settings, $zoneId, $domain, $options);
+        $edgeOptions = $options;
+        if ($options['cloudflare_geo_overflow'] ?? false) {
+            $edgeOptions['geo_overflow_hub'] = trim((string) ($meta['geo_overflow_hub'] ?? ''));
+            $edgeOptions['geo_overflow_country'] = trim((string) ($meta['geo_overflow_country'] ?? ''));
+        }
+
+        $this->cloudflare->configureEdgeSecurity($settings, $zoneId, $domain, $edgeOptions);
 
         $meta['cloudflare_edge'] = 'done';
 
@@ -321,6 +312,18 @@ class InfrastructureProvisioner
 
         if ($options['cloudflare_www_redirect'] ?? false) {
             $meta['www_redirect'] = 'done';
+        }
+
+        if ($options['cloudflare_geo_overflow'] ?? false) {
+            $hub = trim((string) ($meta['geo_overflow_hub'] ?? ''));
+            $country = trim((string) ($meta['geo_overflow_country'] ?? ''));
+            if ($hub !== '' && $country !== '' && strtoupper($country) !== 'ML') {
+                $meta['geo_overflow'] = 'done';
+                $meta['geo_overflow_hub'] = strtolower($hub);
+                $meta['geo_overflow_country'] = strtoupper($country);
+            } else {
+                $meta['geo_overflow'] = 'skipped';
+            }
         }
 
         $meta['ssl_hsts'] = 'skipped';
@@ -459,6 +462,93 @@ class InfrastructureProvisioner
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    /**
+     * Enable/disable GEO→hub Dynamic Redirect on an existing offer (edit modal).
+     */
+    public function syncGeoOverflowRedirect(Offer $offer, bool $enabled, ?string $hubDomain = null): void
+    {
+        $offer->loadMissing('user.settings');
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $options = InfrastructureOptions::fromMeta($meta);
+        $country = strtoupper(trim((string) $offer->geo));
+        $hub = strtolower(trim((string) ($hubDomain ?? $meta['geo_overflow_hub'] ?? '')));
+        $isHubOffer = $offer->template === 'multilang' || $country === 'ML';
+        $hadOverflow = (bool) ($options['cloudflare_geo_overflow'] ?? false)
+            || (($meta['geo_overflow'] ?? '') === 'done');
+
+        if ($isHubOffer) {
+            $enabled = false;
+        }
+
+        // Edit without touching overflow — do not require Cloudflare credentials.
+        if (! $enabled && ! $hadOverflow) {
+            if ($hub !== '' && $hub !== strtolower(trim((string) ($meta['geo_overflow_hub'] ?? '')))) {
+                $meta['geo_overflow_hub'] = $hub;
+                $offer->update(['infra_meta' => $meta]);
+            }
+
+            return;
+        }
+
+        $settings = $this->providerSettings($offer);
+
+        if ($settings === null) {
+            throw new RuntimeException('Немає налаштувань Cloudflare для цього офера.');
+        }
+
+        $zoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
+
+        if ($zoneId === '' && ($enabled || $hadOverflow)) {
+            $zone = $this->cloudflare->findZone($settings, strtolower(trim($offer->domain)));
+            if ($zone !== null) {
+                $zoneId = trim((string) ($zone['zone_id'] ?? ''));
+                $meta['cloudflare_zone_id'] = $zoneId;
+                if (is_array($zone['nameservers'] ?? null)) {
+                    $meta['nameservers'] = $zone['nameservers'];
+                }
+            }
+        }
+
+        $ruleDescription = 'Offerra: geo overflow to hub';
+
+        if ($enabled) {
+            if ($hub === '') {
+                throw new RuntimeException('Вкажіть multilang hub (домен).');
+            }
+            if ($zoneId === '') {
+                throw new RuntimeException('Немає Cloudflare zone для домена — спочатку підніміть інфру (DNS-зону).');
+            }
+            if (! preg_match('/^[A-Z]{2}$/', $country)) {
+                throw new RuntimeException('GEO офера має бути ISO2 (наприклад FR).');
+            }
+
+            $this->cloudflare->ensureGeoOverflowRedirectRule($settings, $zoneId, $country, $hub);
+            $options['cloudflare_geo_overflow'] = true;
+            $meta['options'] = $options;
+            $meta['geo_overflow_hub'] = $hub;
+            $meta['geo_overflow_country'] = $country;
+            $meta['geo_overflow'] = 'done';
+            unset($meta['geo_overflow_error']);
+        } else {
+            if ($zoneId !== '') {
+                $this->cloudflare->removeDynamicRedirectRule($settings, $zoneId, $ruleDescription);
+            }
+            $options['cloudflare_geo_overflow'] = false;
+            $meta['options'] = $options;
+            $meta['geo_overflow'] = 'off';
+            if ($hub !== '') {
+                $meta['geo_overflow_hub'] = $hub;
+            }
+            unset($meta['geo_overflow_error']);
+        }
+
+        $offer->update([
+            'provision_infrastructure' => $offer->provision_infrastructure || $enabled,
+            'infra_meta' => $meta,
+        ]);
     }
 
     private function providerSettings(Offer $offer): ?UserSetting

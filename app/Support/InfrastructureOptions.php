@@ -7,23 +7,23 @@ use App\Models\Offer;
 class InfrastructureOptions
 {
     public const INPUT_KEYS = [
-        'infra_hestia',
         'infra_cloudflare_zone',
         'infra_cloudflare_dns',
         'infra_dynadot_ns',
         'infra_cloudflare_ssl',
         'infra_cloudflare_https',
         'infra_cloudflare_www_redirect',
+        'infra_cloudflare_geo_overflow',
     ];
 
     public const META_KEYS = [
-        'hestia',
         'cloudflare_zone',
         'cloudflare_dns',
         'dynadot_ns',
         'cloudflare_ssl',
         'cloudflare_https',
         'cloudflare_www_redirect',
+        'cloudflare_geo_overflow',
     ];
 
     /**
@@ -31,7 +31,11 @@ class InfrastructureOptions
      */
     public static function defaults(): array
     {
-        return array_fill_keys(self::META_KEYS, true);
+        $options = array_fill_keys(self::META_KEYS, true);
+        // Opt-in: only when pack has a multilang hub + user enables it.
+        $options['cloudflare_geo_overflow'] = false;
+
+        return $options;
     }
 
     /**
@@ -41,13 +45,13 @@ class InfrastructureOptions
     public static function fromInput(array $input): array
     {
         $map = [
-            'infra_hestia' => 'hestia',
             'infra_cloudflare_zone' => 'cloudflare_zone',
             'infra_cloudflare_dns' => 'cloudflare_dns',
             'infra_dynadot_ns' => 'dynadot_ns',
             'infra_cloudflare_ssl' => 'cloudflare_ssl',
             'infra_cloudflare_https' => 'cloudflare_https',
             'infra_cloudflare_www_redirect' => 'cloudflare_www_redirect',
+            'infra_cloudflare_geo_overflow' => 'cloudflare_geo_overflow',
         ];
 
         $options = [];
@@ -116,6 +120,7 @@ class InfrastructureOptions
             || ($options['cloudflare_ssl'] ?? false)
             || ($options['cloudflare_https'] ?? false)
             || ($options['cloudflare_www_redirect'] ?? false)
+            || ($options['cloudflare_geo_overflow'] ?? false)
             || ($options['dynadot_ns'] ?? false);
     }
 
@@ -134,6 +139,7 @@ class InfrastructureOptions
     {
         return ($options['cloudflare_ssl'] ?? false)
             || ($options['cloudflare_https'] ?? false)
-            || ($options['cloudflare_www_redirect'] ?? false);
+            || ($options['cloudflare_www_redirect'] ?? false)
+            || ($options['cloudflare_geo_overflow'] ?? false);
     }
 }

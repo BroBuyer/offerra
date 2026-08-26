@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\CloudflareClient;
+use App\Support\DeployDriver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -20,15 +21,15 @@ class UserSetting extends Model
         'tg_group_chat_id',
         'mirror_probe_token',
         'sales_postback_token',
+        'deploy_driver',
         'deploy_panel_name',
         'deploy_host',
         'deploy_port',
         'deploy_username',
         'deploy_password',
         'deploy_path_template',
-        'deploy_panel_url',
-        'deploy_api_access_key',
-        'deploy_api_secret_key',
+        'origin_health',
+        'origin_health_alerts',
         'dynadot_api_key',
         'dynadot_api_secret',
         'dynadot_contact_id',
@@ -49,7 +50,6 @@ class UserSetting extends Model
             'crm_api_key' => 'encrypted',
             'tg_bot_token' => 'encrypted',
             'deploy_password' => 'encrypted',
-            'deploy_api_secret_key' => 'encrypted',
             'dynadot_api_key' => 'encrypted',
             'dynadot_api_secret' => 'encrypted',
             'cloudflare_api_token' => 'encrypted',
@@ -57,12 +57,42 @@ class UserSetting extends Model
             'dynadot_sandbox' => 'boolean',
             'dynadot_default_years' => 'integer',
             'cloudflare_default_proxied' => 'boolean',
+            'origin_health_alerts' => 'boolean',
+            'origin_health' => 'array',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function isUbuntuDriver(): bool
+    {
+        return DeployDriver::isUbuntu($this->deploy_driver);
+    }
+
+    public function hasOriginCredentials(): bool
+    {
+        return filled($this->deploy_host)
+            && filled($this->deploy_username)
+            && filled($this->deploy_password);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function originHealthForPanel(): array
+    {
+        $health = is_array($this->origin_health) ? $this->origin_health : [];
+
+        return [
+            'status' => (string) ($health['status'] ?? 'unchecked'),
+            'checked_at' => $health['checked_at'] ?? null,
+            'fail_streak' => (int) ($health['fail_streak'] ?? 0),
+            'message' => $health['message'] ?? null,
+            'metrics' => is_array($health['metrics'] ?? null) ? $health['metrics'] : null,
+        ];
     }
 
     /**
@@ -80,15 +110,16 @@ class UserSetting extends Model
             'has_keitaro_api_key' => filled($this->keitaro_api_key),
             'has_crm_api_key' => filled($this->crm_api_key),
             'has_tg_bot_token' => filled($this->tg_bot_token),
-            'deploy_panel_name' => $this->deploy_panel_name ?? 'Hestia',
+            'deploy_driver' => DeployDriver::normalize($this->deploy_driver),
+            'deploy_panel_name' => $this->deploy_panel_name ?? '',
             'deploy_host' => $this->deploy_host ?? '',
             'deploy_port' => $this->deploy_port ?? 22,
             'deploy_username' => $this->deploy_username ?? '',
-            'deploy_path_template' => $this->deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
-            'deploy_panel_url' => $this->deploy_panel_url ?? '',
+            'deploy_path_template' => $this->deploy_path_template
+                ?: DeployDriver::defaultPath($this->deploy_driver),
+            'origin_health' => $this->originHealthForPanel(),
+            'origin_health_alerts' => (bool) ($this->origin_health_alerts ?? true),
             'has_deploy_password' => filled($this->deploy_password),
-            'deploy_api_access_key' => $this->deploy_api_access_key ?? '',
-            'has_deploy_api_secret_key' => filled($this->deploy_api_secret_key),
             'has_dynadot_api_key' => filled($this->dynadot_api_key),
             'has_dynadot_contact_id' => filled($this->dynadot_contact_id),
             'dynadot_contact_id' => $this->dynadot_contact_id ?? '',
@@ -146,7 +177,6 @@ class UserSetting extends Model
             'crm_api_key' => $this->crm_api_key ?? '',
             'tg_bot_token' => $this->tg_bot_token ?? '',
             'deploy_password' => $this->deploy_password ?? '',
-            'deploy_api_secret_key' => $this->deploy_api_secret_key ?? '',
             'dynadot_api_key' => $this->dynadot_api_key ?? '',
             'dynadot_api_secret' => $this->dynadot_api_secret ?? '',
             'cloudflare_api_token' => $this->cloudflare_api_token ?? '',

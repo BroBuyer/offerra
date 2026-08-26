@@ -12,7 +12,8 @@ return [
 
     // TLD для швидкого пошуку (без зони в полі). Іншу зону — вкажіть повний домен, напр. brand.io
     'domain_search_tlds' => [
-        'click', 'cyou', 'sbs', 'cfd', 'pics', 'live', 'online', 'co',
+        'com', 'net', 'org', 'biz',
+        'co', 'live', 'online', 'click', 'cyou', 'sbs', 'cfd', 'pics',
     ],
 
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),

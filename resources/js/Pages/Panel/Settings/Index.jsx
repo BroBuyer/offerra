@@ -15,15 +15,13 @@ function formFromSettings(settings, userId = null) {
         tg_bot_token: settings.tg_bot_token ?? '',
         tg_chat_id: settings.tg_chat_id ?? '',
         tg_group_chat_id: settings.tg_group_chat_id ?? '',
-        deploy_panel_name: settings.deploy_panel_name ?? 'Hestia',
+        deploy_driver: 'ubuntu',
+        deploy_panel_name: settings.deploy_panel_name ?? '',
         deploy_host: settings.deploy_host ?? '',
         deploy_port: settings.deploy_port ?? 22,
         deploy_username: settings.deploy_username ?? '',
         deploy_password: settings.deploy_password ?? '',
-        deploy_path_template: settings.deploy_path_template ?? '/home/{user}/web/{domain}/public_html',
-        deploy_panel_url: settings.deploy_panel_url ?? '',
-        deploy_api_access_key: settings.deploy_api_access_key ?? '',
-        deploy_api_secret_key: settings.deploy_api_secret_key ?? '',
+        deploy_path_template: settings.deploy_path_template ?? '/var/www/offers/{domain}/public_html',
         dynadot_api_key: settings.dynadot_api_key ?? '',
         dynadot_api_secret: settings.dynadot_api_secret ?? '',
         dynadot_contact_id: settings.dynadot_contact_id ?? '',
@@ -31,17 +29,51 @@ function formFromSettings(settings, userId = null) {
         cloudflare_api_token: settings.cloudflare_api_token ?? '',
         cloudflare_account_id: settings.cloudflare_account_id ?? '',
         cloudflare_default_proxied: settings.cloudflare_default_proxied ?? true,
+        origin_health_alerts: settings.origin_health_alerts ?? true,
         cloudflare_account_name: settings.cloudflare_account_name ?? '',
         test_domain: 'reserve-safegrove-ie.com',
     };
 }
 
+const UBUNTU_PATH = '/var/www/offers/{domain}/public_html';
+
+function healthLabel(status) {
+    if (status === 'ok') {
+        return 'OK';
+    }
+    if (status === 'degraded') {
+        return 'Проблеми';
+    }
+    if (status === 'down') {
+        return 'Не відповідає';
+    }
+    return 'Не перевірявся';
+}
+
+function formatCheckedAt(value) {
+    if (!value) {
+        return null;
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return date.toLocaleString('uk-UA', {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
 export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const { errors: pageErrors } = usePage().props;
-    const [deployTest, setDeployTest] = useState(null);
-    const [testingDeploy, setTestingDeploy] = useState(false);
-    const [hestiaApiTest, setHestiaApiTest] = useState(null);
-    const [testingHestiaApi, setTestingHestiaApi] = useState(false);
+    const [originTest, setOriginTest] = useState(null);
+    const [testingOrigin, setTestingOrigin] = useState(false);
+    const [originHealth, setOriginHealth] = useState(settings.origin_health ?? { status: 'unchecked' });
     const [cloudflareTest, setCloudflareTest] = useState(null);
     const [testingCloudflare, setTestingCloudflare] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
@@ -71,41 +103,33 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
         e.preventDefault();
         patch(route('settings.update'), {
             preserveScroll: true,
-            onSuccess: (page) => syncFromSettings(page.props.settings),
+            onSuccess: (page) => {
+                syncFromSettings(page.props.settings);
+                if (page.props.settings?.origin_health) {
+                    setOriginHealth(page.props.settings.origin_health);
+                }
+            },
         });
     };
 
-    const testDeploy = async () => {
-        setTestingDeploy(true);
-        setDeployTest(null);
+    const testOrigin = async () => {
+        setTestingOrigin(true);
+        setOriginTest(null);
 
         try {
-            const { data: result } = await axios.post(route('settings.test-deploy'), data);
-            setDeployTest(result);
+            const { data: result } = await axios.post(route('settings.test-origin'), data);
+            setOriginTest(result);
+            if (result.origin_health) {
+                setOriginHealth(result.origin_health);
+            }
         } catch (error) {
-            setDeployTest({
+            setOriginTest({
                 ok: false,
-                message: error.response?.data?.message ?? 'Не вдалося перевірити зʼєднання',
+                status: 'down',
+                message: error.response?.data?.message ?? 'Не вдалося перевірити сервер',
             });
         } finally {
-            setTestingDeploy(false);
-        }
-    };
-
-    const testHestiaApi = async () => {
-        setTestingHestiaApi(true);
-        setHestiaApiTest(null);
-
-        try {
-            const { data: result } = await axios.post(route('settings.test-hestia-api'), data);
-            setHestiaApiTest(result);
-        } catch (error) {
-            setHestiaApiTest({
-                ok: false,
-                message: error.response?.data?.message ?? 'Не вдалося перевірити Hestia API',
-            });
-        } finally {
-            setTestingHestiaApi(false);
+            setTestingOrigin(false);
         }
     };
 
@@ -157,6 +181,10 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             loadDynadotBalance();
         }
     }, [settingsUser.id, settings.has_dynadot_api_key]);
+
+    useEffect(() => {
+        setOriginHealth(settings.origin_health ?? { status: 'unchecked' });
+    }, [settingsUser.id]);
 
     const pickGscVerificationFile = () => {
         gscVerificationInputRef.current?.click();
@@ -520,46 +548,30 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 </section>
 
                 <section className="card">
-                    <h3>Деплой на Hestia</h3>
-                    <p className="card-desc">
-                        SFTP — заливка в <code>public_html</code>. API access key — створення доменів і SSL
-                        (інфраструктура). У Hestia → Server → API додайте IP панелі Offer: <code>213.176.115.14</code>.
-                    </p>
-                    <div className="field-row">
-                        <div className="field">
-                            <label htmlFor="deploy-name">Назва панелі</label>
-                            <input
-                                type="text"
-                                id="deploy-name"
-                                value={data.deploy_panel_name}
-                                onChange={(e) => setData('deploy_panel_name', e.target.value)}
-                                placeholder="Hestia main"
-                            />
+                    <div className="origin-health-head">
+                        <div>
+                            <h3>Server</h3>
+                            <p className="card-desc">
+                                SSH credentials for deploy and health checks.
+                            </p>
                         </div>
-                        <div className="field">
-                            <label htmlFor="deploy-panel-url">URL панелі</label>
-                            <input
-                                type="url"
-                                id="deploy-panel-url"
-                                value={data.deploy_panel_url}
-                                onChange={(e) => setData('deploy_panel_url', e.target.value)}
-                                placeholder="https://176.126.86.35:8083"
-                            />
-                        </div>
+                        <span className={`origin-health-badge origin-health-badge--${originHealth.status || 'unchecked'}`}>
+                            {healthLabel(originHealth.status)}
+                        </span>
                     </div>
                     <div className="field-row">
                         <div className="field">
-                            <label htmlFor="deploy-host">SSH / SFTP host</label>
+                            <label htmlFor="deploy-host">SSH HOST / IP</label>
                             <input
                                 type="text"
                                 id="deploy-host"
                                 value={data.deploy_host}
                                 onChange={(e) => setData('deploy_host', e.target.value)}
-                                placeholder="176.126.86.35"
+                                placeholder="38.180.169.218"
                             />
                         </div>
                         <div className="field">
-                            <label htmlFor="deploy-port">Порт</label>
+                            <label htmlFor="deploy-port">PORT</label>
                             <input
                                 type="number"
                                 id="deploy-port"
@@ -570,123 +582,128 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                     </div>
                     <div className="field-row">
                         <div className="field">
-                            <label htmlFor="deploy-user">Користувач SFTP (Hestia user)</label>
+                            <label htmlFor="deploy-user">SSH USER</label>
                             <input
                                 type="text"
                                 id="deploy-user"
                                 value={data.deploy_username}
                                 onChange={(e) => setData('deploy_username', e.target.value)}
-                                placeholder="user"
+                                placeholder="root"
                             />
                         </div>
                         <div className="field">
-                            <label htmlFor="deploy-pass">Пароль SFTP</label>
+                            <label htmlFor="deploy-pass">SSH / SFTP PASSWORD</label>
                             <SecretInput
                                 id="deploy-pass"
                                 value={data.deploy_password}
                                 onChange={(e) => setData('deploy_password', e.target.value)}
-                                placeholder="пароль користувача Hestia"
+                                placeholder="SSH password"
                             />
                         </div>
-                    </div>
-                    <div className="field-row">
-                        <div className="field">
-                            <label htmlFor="deploy-api-access">Hestia API access key</label>
-                            <input
-                                type="text"
-                                id="deploy-api-access"
-                                value={data.deploy_api_access_key}
-                                onChange={(e) => setData('deploy_api_access_key', e.target.value)}
-                                placeholder="20 символів"
-                                autoComplete="off"
-                            />
-                        </div>
-                        <div className="field">
-                            <label htmlFor="deploy-api-secret">Hestia API secret key</label>
-                            <SecretInput
-                                id="deploy-api-secret"
-                                value={data.deploy_api_secret_key}
-                                onChange={(e) => setData('deploy_api_secret_key', e.target.value)}
-                                placeholder="40 символів"
-                            />
-                        </div>
-                    </div>
-                    <p className="field-hint">
-                        Створіть ключ на Hestia: <code>v-add-access-key &apos;user&apos; &apos;v-list-web-domains,v-add-web-domain,v-add-letsencrypt-domain&apos; offerra json</code>
-                        {' '}або через панель → Access Keys. Потрібні права на домени для користувача <code>{data.deploy_username || 'user'}</code>.
-                    </p>
-                    <div className="field">
-                        <label htmlFor="deploy-path">Шаблон шляху на сервері</label>
-                        <input
-                            type="text"
-                            id="deploy-path"
-                            value={data.deploy_path_template}
-                            onChange={(e) => setData('deploy_path_template', e.target.value)}
-                        />
-                        <p className="field-hint">
-                            Плейсхолдери: <code>{'{user}'}</code>, <code>{'{domain}'}</code>
-                        </p>
-                    </div>
-                    <div className="field">
-                        <label htmlFor="test-domain">Домен для перевірки</label>
-                        <input
-                            type="text"
-                            id="test-domain"
-                            value={data.test_domain}
-                            onChange={(e) => setData('test_domain', e.target.value)}
-                            placeholder="reserve-safegrove-ie.com"
-                        />
                     </div>
                     <div className="btn-row" style={{ marginTop: '0.5rem' }}>
                         <button
                             type="button"
-                            className="btn btn-ghost"
-                            disabled={testingDeploy}
-                            onClick={testDeploy}
+                            className="btn btn-primary"
+                            disabled={testingOrigin}
+                            onClick={testOrigin}
                         >
-                            {testingDeploy ? 'Перевірка…' : 'Перевірити SFTP'}
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-ghost"
-                            disabled={testingHestiaApi}
-                            onClick={testHestiaApi}
-                        >
-                            {testingHestiaApi ? 'Перевірка…' : 'Перевірити Hestia API'}
+                            {testingOrigin ? 'Checking…' : 'Check server'}
                         </button>
                     </div>
-                    {hestiaApiTest && (
-                        <p
-                            className="field-hint"
-                            style={{
-                                marginTop: '0.75rem',
-                                color: hestiaApiTest.ok ? 'var(--accent)' : '#f87171',
-                            }}
-                        >
-                            {hestiaApiTest.message}
-                        </p>
+                    <label className="field-check" htmlFor="origin-health-alerts" style={{ marginTop: '0.75rem' }}>
+                        <input
+                            id="origin-health-alerts"
+                            type="checkbox"
+                            checked={data.origin_health_alerts}
+                            onChange={(e) => setData('origin_health_alerts', e.target.checked)}
+                        />
+                        <span>
+                            Telegram-алерти при падінні origin (особистий чат + група)
+                        </span>
+                    </label>
+                    <p className="field-hint" style={{ marginTop: '0.35rem' }}>
+                        Використовуються TG Bot Token, Chat ID і Group Chat ID з цих налаштувань.
+                        Вимкніть, якщо сервер ще не готовий (наприклад JEL).
+                    </p>
+                    {(originHealth.checked_at || originHealth.metrics) && (
+                        <div className="origin-health-metrics">
+                            {originHealth.checked_at && (
+                                <p className="field-hint" style={{ margin: 0 }}>
+                                    Last check: {formatCheckedAt(originHealth.checked_at)}
+                                    {originHealth.message ? ` · ${originHealth.message}` : ''}
+                                </p>
+                            )}
+                            {originHealth.metrics && (
+                                <dl className="origin-health-grid">
+                                    <div>
+                                        <dt>SSH</dt>
+                                        <dd>
+                                            {originHealth.metrics.ssh_ok ? 'ok' : 'fail'}
+                                            {originHealth.metrics.ssh_ms != null ? ` ${originHealth.metrics.ssh_ms} ms` : ''}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>HTTP</dt>
+                                        <dd>
+                                            {originHealth.metrics.http_ok ? 'ok' : 'fail'}
+                                            {originHealth.metrics.http_status ? ` ${originHealth.metrics.http_status}` : ''}
+                                            {originHealth.metrics.http_ms != null ? ` ${originHealth.metrics.http_ms} ms` : ''}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>Load</dt>
+                                        <dd>
+                                            {originHealth.metrics.load?.['1'] != null
+                                                ? `${originHealth.metrics.load['1']} / ${originHealth.metrics.load['5'] ?? '—'} / ${originHealth.metrics.load['15'] ?? '—'}`
+                                                : '—'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>RAM</dt>
+                                        <dd>
+                                            {originHealth.metrics.ram_used_mb != null
+                                                ? `${originHealth.metrics.ram_used_mb} / ${originHealth.metrics.ram_total_mb} MB (${originHealth.metrics.ram_pct}%)`
+                                                : '—'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>Disk /</dt>
+                                        <dd>
+                                            {originHealth.metrics.disk_root_pct != null
+                                                ? `${originHealth.metrics.disk_root_pct}% · free ${originHealth.metrics.disk_root_free_gb ?? '—'} GB`
+                                                : '—'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>Disk /var/www</dt>
+                                        <dd>
+                                            {originHealth.metrics.disk_www_pct != null
+                                                ? `${originHealth.metrics.disk_www_pct}% · free ${originHealth.metrics.disk_www_free_gb ?? '—'} GB`
+                                                : '—'}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>nginx</dt>
+                                        <dd>{originHealth.metrics.nginx ?? '—'}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>php-fpm</dt>
+                                        <dd>{originHealth.metrics.php_fpm ?? '—'}</dd>
+                                    </div>
+                                </dl>
+                            )}
+                        </div>
                     )}
-                    {deployTest && (
+                    {originTest && (
                         <p
                             className="field-hint"
                             style={{
                                 marginTop: '0.75rem',
-                                color: deployTest.ok ? 'var(--accent)' : '#f87171',
+                                color: originTest.status === 'ok' ? 'var(--accent)' : originTest.status === 'degraded' ? '#f59e0b' : '#f87171',
                             }}
                         >
-                            {deployTest.message}
-                            {deployTest.path && (
-                                <>
-                                    <br />
-                                    <code>{deployTest.path}</code>
-                                </>
-                            )}
-                            {deployTest.files?.length > 0 && (
-                                <>
-                                    <br />
-                                    Файли: {deployTest.files.join(', ')}
-                                </>
-                            )}
+                            {originTest.message}
                         </p>
                     )}
                 </section>
