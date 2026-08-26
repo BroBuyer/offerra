@@ -629,6 +629,36 @@ class KeitaroClient
         return $response->successful();
     }
 
+    public function deleteCampaign(UserSetting $settings, int $campaignId): string
+    {
+        $apiKey = $settings->keitaro_api_key;
+
+        if (! $apiKey) {
+            throw new RuntimeException('Збережіть Keitaro Admin API key у налаштуваннях.');
+        }
+
+        if ($campaignId <= 0) {
+            return 'skipped';
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        $response = Http::withHeaders([
+            'Api-Key' => $apiKey,
+            'Accept' => 'application/json',
+        ])
+            ->timeout(30)
+            ->delete("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
+
+        if ($response->successful() || $response->status() === 404) {
+            return $response->status() === 404 ? 'already_gone' : 'deleted';
+        }
+
+        throw new RuntimeException(
+            'Keitaro: не вдалося видалити кампанію #'.$campaignId.' — '.$this->formatError($response->body()),
+        );
+    }
+
     /**
      * @return list<array{id: int, name: string, alias: string, token: string}>
      */
