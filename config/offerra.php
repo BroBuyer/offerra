@@ -11,9 +11,9 @@ return [
     'cdn_probe_host' => env('CDN_PROBE_HOST', 'cdnedge.io'),
 
     // TLD для швидкого пошуку (без зони в полі). Іншу зону — вкажіть повний домен, напр. brand.io
+    // Результати сортуються за ціною (від найвищої до найнижчої) у DynadotClient.
     'domain_search_tlds' => [
-        'com', 'net', 'org', 'biz',
-        'co', 'live', 'online', 'click', 'cyou', 'sbs', 'cfd', 'pics',
+        'com', 'net', 'org', 'biz', 'online', 'live', 'cyou', 'cfd', 'sbs',
     ],
 
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),
