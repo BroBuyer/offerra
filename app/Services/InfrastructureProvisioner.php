@@ -45,7 +45,10 @@ class InfrastructureProvisioner
             'infra_error' => null,
         ]);
 
-        ProvisionInfrastructureJob::dispatch($offer->id);
+        // Provisioning is user-critical and must not be starved behind the
+        // background DNS-recheck backlog on the "default" queue. Route it to the
+        // "deploy" queue, which has dedicated workers and leads into auto-deploy.
+        ProvisionInfrastructureJob::dispatch($offer->id)->onQueue('deploy');
     }
 
     public function provision(Offer $offer): void
