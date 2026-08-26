@@ -13,9 +13,10 @@ use RuntimeException;
 class OfferTeardownService
 {
     public function __construct(
-        private readonly HestiaClient $hestia,
         private readonly CloudflareClient $cloudflare,
+        private readonly KeitaroClient $keitaro,
         private readonly OfferVerificationFileService $verificationFiles,
+        private readonly OriginHostService $origin,
         private readonly string $offersPath,
     ) {}
 
@@ -52,17 +53,18 @@ class OfferTeardownService
         $steps = is_array($meta['steps'] ?? null) ? $meta['steps'] : [];
         $errors = [];
 
-        foreach ($this->hestiaCandidates($offer) as $label => $settings) {
+        $ownerSettings = $offer->user?->settings;
+
+        if ($ownerSettings) {
             try {
-                $this->hestia->deleteWebDomain($settings, $domain);
-                $steps['hestia_'.$label] = 'deleted';
+                $this->origin->deleteWebRoot($ownerSettings, $domain);
+                $steps['origin'] = 'deleted';
             } catch (\Throwable $e) {
-                $steps['hestia_'.$label] = 'error: '.$e->getMessage();
-                $errors[] = 'Hestia ('.$label.'): '.$e->getMessage();
-                Log::warning('Offer teardown Hestia failed', [
+                $steps['origin'] = 'error: '.$e->getMessage();
+                $errors[] = 'Origin: '.$e->getMessage();
+                Log::warning('Offer teardown origin failed', [
                     'offer_id' => $offer->id,
                     'domain' => $domain,
-                    'host' => $label,
                     'error' => $e->getMessage(),
                 ]);
             }
@@ -119,6 +121,8 @@ class OfferTeardownService
             $errors[] = 'Verification: '.$e->getMessage();
         }
 
+        $steps['keitaro'] = $this->deleteKeitaroCampaign($offer);
+
         try {
             $localPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
             if (File::isDirectory($localPath)) {
@@ -153,34 +157,6 @@ class OfferTeardownService
             'infra_error' => null,
             'teardown_meta' => $meta,
         ]);
-    }
-
-    /**
-     * @return array<string, UserSetting>
-     */
-    private function hestiaCandidates(Offer $offer): array
-    {
-        $candidates = [];
-        $seenHosts = [];
-
-        $owner = $offer->user?->settings;
-        if ($owner && InfrastructureProvisioner::hestiaApiReady($owner)) {
-            $host = trim((string) $owner->deploy_host);
-            if ($host !== '') {
-                $candidates['owner'] = $owner;
-                $seenHosts[$host] = true;
-            }
-        }
-
-        $admin = $this->adminSettings();
-        if ($admin) {
-            $host = trim((string) $admin->deploy_host);
-            if ($host !== '' && ! isset($seenHosts[$host])) {
-                $candidates['admin'] = $admin;
-            }
-        }
-
-        return $candidates;
     }
 
     /**
@@ -270,5 +246,54 @@ class OfferTeardownService
         unset($meta['cloudflare_zone_id']);
         $offer->infra_meta = $meta;
         $offer->save();
+    }
+
+    private function deleteKeitaroCampaign(Offer $offer): string
+    {
+        $campaignId = (int) ($offer->keitaro_campaign_id ?? 0);
+
+        if ($campaignId <= 0) {
+            return 'skipped';
+        }
+
+        $inUse = Offer::query()
+            ->where('keitaro_campaign_id', $campaignId)
+            ->where('id', '!=', $offer->id)
+            ->whereNotIn('status', ['archived', 'teardown_failed', 'archiving'])
+            ->exists();
+
+        if ($inUse) {
+            Log::warning('Offer teardown skipped Keitaro: campaign still used by a live offer', [
+                'offer_id' => $offer->id,
+                'campaign_id' => $campaignId,
+            ]);
+
+            return 'skipped_in_use';
+        }
+
+        $settings = $offer->user?->settings;
+
+        if (! $settings || ! filled($settings->keitaro_api_key)) {
+            return 'skipped_no_key';
+        }
+
+        try {
+            $outcome = $this->keitaro->deleteCampaign($settings, $campaignId);
+            $offer->update([
+                'keitaro_campaign_id' => null,
+                'keitaro_alias' => null,
+                'keitaro_campaign_token' => null,
+            ]);
+
+            return $outcome;
+        } catch (\Throwable $e) {
+            Log::warning('Offer teardown Keitaro failed', [
+                'offer_id' => $offer->id,
+                'campaign_id' => $campaignId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return 'error: '.$e->getMessage();
+        }
     }
 }

@@ -53,7 +53,7 @@ class DeployConnection
 
                 return [
                     'ok' => false,
-                    'message' => "З'єднання є, але папка не знайдена. Перевірені шляхи: ".implode(', ', $tried).'. Перевірте домен у Hestia.',
+                    'message' => "З'єднання є, але папка не знайдена. Перевірені шляхи: ".implode(', ', $tried).'. Перевірте шлях деплою на Server.',
                     'path' => $tried[0] ?? '',
                 ];
             }

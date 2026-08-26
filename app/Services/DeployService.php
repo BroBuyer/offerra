@@ -6,7 +6,6 @@ use App\Jobs\DeployOfferJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
-use App\Support\InfrastructureOptions;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -89,10 +88,9 @@ class DeployService
             return false;
         }
 
-        $options = InfrastructureOptions::forOffer($offer);
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
 
-        if (($options['hestia'] ?? false) && ($meta['hestia'] ?? '') !== 'done') {
+        if (($meta['origin'] ?? $meta['hestia'] ?? '') !== 'done') {
             return false;
         }
 
@@ -132,10 +130,9 @@ class DeployService
             return false;
         }
 
-        $options = InfrastructureOptions::forOffer($offer);
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
 
-        if (($options['hestia'] ?? false) && ($meta['hestia'] ?? '') !== 'done') {
+        if (($meta['origin'] ?? $meta['hestia'] ?? '') !== 'done') {
             return false;
         }
 

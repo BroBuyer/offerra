@@ -114,7 +114,7 @@ class OfferStatusReconciler
 
             if ($onServer && $offer->status !== 'deployed') {
                 $updates['status'] = 'deployed';
-                $updates['deploy_panel_name'] = $settings->deploy_panel_name ?? 'Hestia';
+                $updates['deploy_panel_name'] = trim((string) $settings->deploy_host) ?: ($settings->deploy_panel_name ?? null);
                 $updates['remote_path'] = $remotePath;
                 $updates['deployed_at'] = $offer->deployed_at ?? now();
                 $updates['deploy_error'] = null;
@@ -222,7 +222,7 @@ class OfferStatusReconciler
         if ($onServer) {
             $manifest = array_merge($manifest, [
                 'status' => 'deployed',
-                'deploy_panel' => $settings->deploy_panel_name ?? 'Hestia',
+                'deploy_panel' => trim((string) $settings->deploy_host) ?: ($settings->deploy_panel_name ?? null),
                 'deploy_host' => $settings->deploy_host,
                 'remote_path' => $remotePath,
                 'deployed_at' => ($offer->deployed_at ?? now())->toIso8601String(),

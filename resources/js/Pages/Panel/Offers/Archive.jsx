@@ -83,7 +83,7 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                 <header className="page-header">
                     <h2>Архів доменів</h2>
                     <p>
-                        Оффери зняті з Hestia і Cloudflare. Домен лишається в Dynadot — можна перепродати вручну.
+                        Оффери зняті з origin-сервера і Cloudflare. Домен лишається в Dynadot — можна перепродати вручну.
                     </p>
                     <p className="field-hint" style={{ marginTop: '0.5rem' }}>
                         <Link href={route('offers.index')}>← До активних офферів</Link>
