@@ -56,4 +56,12 @@ class DynadotClientTest extends TestCase
     {
         $this->assertSame(['example.net'], $this->client->expandQuery('https://www.example.net'));
     }
+
+    public function test_fresh_dynadot_registration_is_treated_as_ns_not_ready(): void
+    {
+        $this->assertTrue(DynadotClient::isNsNotReadyError(
+            'Cannot set nameservers to these domains ( urixen-hu.com : Domain initialization is still in progress. Please try again later.)',
+        ));
+        $this->assertFalse(DynadotClient::isNsNotReadyError('insufficient account balance'));
+    }
 }

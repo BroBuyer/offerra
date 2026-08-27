@@ -277,8 +277,21 @@ class InfrastructureProvisioner
 
         if (($options['dynadot_ns'] ?? false) && $nameservers !== []) {
             if (($meta['dynadot_ns'] ?? '') !== 'done') {
-                $this->dynadot->setNameservers($settings, $domain, $nameservers);
-                $meta['dynadot_ns'] = 'done';
+                try {
+                    $this->dynadot->setNameservers($settings, $domain, $nameservers);
+                    $meta['dynadot_ns'] = 'done';
+                    unset($meta['dynadot_ns_error']);
+                } catch (\Throwable $e) {
+                    if (! DynadotClient::isNsNotReadyError($e->getMessage())) {
+                        throw $e;
+                    }
+
+                    // Fresh Dynadot regs are not NS-writable for a few minutes.
+                    // Do not fail infra — DNS recheck will retry set_ns.
+                    $meta['dynadot_ns'] = 'pending';
+                    $meta['dynadot_ns_error'] = $e->getMessage();
+                    $meta['dns'] = 'pending';
+                }
             }
         }
     }

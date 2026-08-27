@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\UserSetting;
 use App\Support\DomainName;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -210,6 +212,30 @@ class DynadotClient
             throw new RuntimeException('Немає nameservers для оновлення Dynadot.');
         }
 
+        $lock = Cache::lock('dynadot-account-'.md5($apiKey), 90);
+
+        try {
+            $lock->block(120);
+        } catch (LockTimeoutException) {
+            throw new RuntimeException('Dynadot зайнятий — спробуйте ще раз');
+        }
+
+        try {
+            $this->setNameserversUnlocked($settings, $apiKey, $domain, $nameservers);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * @param  list<string>  $nameservers
+     */
+    private function setNameserversUnlocked(
+        UserSetting $settings,
+        string $apiKey,
+        string $domain,
+        array $nameservers,
+    ): void {
         $params = [
             'command' => 'set_ns',
             'domain' => $domain,
@@ -219,28 +245,82 @@ class DynadotClient
             $params["ns{$index}"] = $nameserver;
         }
 
-        $payload = $this->apiGet($settings, $apiKey, $params);
-        $apiError = $this->extractPayloadError($payload, (bool) $settings->dynadot_sandbox);
+        $lastError = 'Dynadot set_ns error';
 
-        if ($apiError !== null) {
-            throw new RuntimeException($apiError);
-        }
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $payload = $this->apiGet($settings, $apiKey, $params);
+            $apiError = $this->extractPayloadError($payload, (bool) $settings->dynadot_sandbox);
 
-        $response = $payload['SetNsResponse'] ?? $payload['setNsResponse'] ?? null;
+            if ($apiError !== null) {
+                $lastError = $apiError;
 
-        if (! is_array($response)) {
-            throw new RuntimeException('Неочікувана відповідь Dynadot (set_ns)');
-        }
+                if ($this->shouldRetrySetNs($apiError, $attempt)) {
+                    $this->waitBeforeSetNsRetry($apiError, $attempt);
+                    continue;
+                }
 
-        $responseCode = (string) ($response['ResponseCode'] ?? $response['SuccessCode'] ?? '');
-        $status = strtolower((string) ($response['Status'] ?? ''));
+                throw new RuntimeException($apiError);
+            }
 
-        if ($responseCode !== '0' && $status !== 'success') {
-            throw new RuntimeException($this->humanizeApiError(
+            $response = $payload['SetNsResponse'] ?? $payload['setNsResponse'] ?? null;
+
+            if (! is_array($response)) {
+                throw new RuntimeException('Неочікувана відповідь Dynadot (set_ns)');
+            }
+
+            $responseCode = (string) ($response['ResponseCode'] ?? $response['SuccessCode'] ?? '');
+            $status = strtolower((string) ($response['Status'] ?? ''));
+
+            if ($responseCode === '0' || $status === 'success') {
+                return;
+            }
+
+            $lastError = $this->humanizeApiError(
                 (string) ($response['Error'] ?? 'Dynadot set_ns error'),
                 (bool) $settings->dynadot_sandbox,
-            ));
+            );
+
+            if ($this->shouldRetrySetNs($lastError, $attempt)) {
+                $this->waitBeforeSetNsRetry($lastError, $attempt);
+                continue;
+            }
+
+            throw new RuntimeException($lastError);
         }
+
+        throw new RuntimeException($lastError);
+    }
+
+    public static function isNsNotReadyError(?string $message): bool
+    {
+        if ($message === null || $message === '') {
+            return false;
+        }
+
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'initialization is still in progress')
+            || str_contains($normalized, 'domain initialization');
+    }
+
+    private function shouldRetrySetNs(string $message, int $attempt): bool
+    {
+        if ($attempt >= 5) {
+            return false;
+        }
+
+        return $this->isBusyApiError($message) || self::isNsNotReadyError($message);
+    }
+
+    private function waitBeforeSetNsRetry(string $message, int $attempt): void
+    {
+        if (self::isNsNotReadyError($message)) {
+            sleep(min(20, 4 * $attempt));
+
+            return;
+        }
+
+        usleep(600_000 * $attempt);
     }
 
     private function disableAutoRenew(UserSetting $settings, string $apiKey, string $domain): bool
