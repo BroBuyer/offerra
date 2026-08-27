@@ -134,6 +134,17 @@ class FunnelAlertController extends Controller
             ->with('success', 'Надіслано в Telegram: '.$result['sent']);
     }
 
+    public function clearEvents(): RedirectResponse
+    {
+        $deleted = FunnelAlertEvent::query()->delete();
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', $deleted > 0
+                ? "Очищено postback-ів: {$deleted}"
+                : 'Немає postback-ів для очищення.');
+    }
+
     public function ignoreBrand(StoreFunnelAlertIgnoredBrandRequest $request, FunnelAlertService $alerts): RedirectResponse
     {
         $result = $alerts->ignoreBrand($request->string('brand')->toString());

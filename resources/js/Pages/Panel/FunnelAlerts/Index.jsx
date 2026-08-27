@@ -23,6 +23,7 @@ export default function FunnelAlertsIndex({ settings, events, ignoredBrands = []
     const [retryingTelegram, setRetryingTelegram] = useState(false);
     const [ignoreBrand, setIgnoreBrand] = useState('');
     const [ignoringBrand, setIgnoringBrand] = useState(false);
+    const [clearingEvents, setClearingEvents] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         tg_bot_token: settings.tg_bot_token ?? '',
@@ -82,6 +83,22 @@ Content-Type: application/json
         });
     };
 
+    const clearEvents = () => {
+        if (events.length === 0 || clearingEvents) {
+            return;
+        }
+
+        if (!window.confirm('Очистити всі postback-и з цієї таблиці? Telegram по тих самих брендах зможе піти знову.')) {
+            return;
+        }
+
+        setClearingEvents(true);
+        router.post(route('funnel-alerts.clear-events'), {}, {
+            preserveScroll: true,
+            onFinish: () => setClearingEvents(false),
+        });
+    };
+
     const ignoreBrandValue = (brand) => {
         const value = (brand ?? '').trim();
         if (!value || ignoringBrand) {
@@ -129,6 +146,14 @@ Content-Type: application/json
                             {retryingTelegram ? 'Надсилаю…' : 'Надіслати в Telegram'}
                         </button>
                     )}
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        disabled={events.length === 0 || clearingEvents}
+                        onClick={clearEvents}
+                    >
+                        {clearingEvents ? 'Очищую…' : 'Очистити постбеки'}
+                    </button>
                     <button
                         type="button"
                         className="btn btn-secondary"
@@ -336,7 +361,17 @@ Content-Type: application/json
             )}
 
             <section className="card">
-                <h3>Останні postback-и</h3>
+                <div className="funnel-alerts-table-head">
+                    <h3>Останні postback-и</h3>
+                    <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        disabled={events.length === 0 || clearingEvents}
+                        onClick={clearEvents}
+                    >
+                        {clearingEvents ? 'Очищую…' : 'Очистити постбеки'}
+                    </button>
+                </div>
                 {events.length === 0 ? (
                     <p className="card-desc">Ще нічого не приходило.</p>
                 ) : (
