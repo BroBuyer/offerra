@@ -127,6 +127,7 @@ return [
         ['code' => 'CO', 'name' => 'Колумбія', 'lang' => 'es', 'phone' => 'co'],
         ['code' => 'CR', 'name' => 'Коста-Рика', 'lang' => 'es', 'phone' => 'cr', 'currency' => 'CRC'],
         ['code' => 'DO', 'name' => 'Домініканська Республіка', 'lang' => 'es', 'phone' => 'do', 'currency' => 'DOP'],
+        ['code' => 'EC', 'name' => 'Еквадор', 'lang' => 'es', 'phone' => 'ec', 'currency' => 'USD'],
         ['code' => 'GE', 'name' => 'Грузія', 'lang' => 'ka', 'phone' => 'ge'],
         ['code' => 'AU', 'name' => 'Австралія', 'lang' => 'en', 'phone' => 'au'],
         ['code' => 'CA', 'name' => 'Канада', 'lang' => 'en', 'phone' => 'ca'],
