@@ -26,7 +26,7 @@ require_once __DIR__ . '/includes/header.php';
       </p>
       <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
         <a href="<?= page_url() ?>" class="btn btn-primary">ホームへ戻る</a>
-        <a href="contacts.php" class="btn btn-outline">お問い合わせ support</a>
+        <a href="contacts.php" class="btn btn-outline">サポートに問い合わせる</a>
       </div>
     </div>
   </section>

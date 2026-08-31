@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('FAQ');
-$page_description = 'Answers about trading, features, security, fees, and getting started with ' . SITE_NAME . '.';
+$page_title = page_title_lead('よくある質問');
+$page_description = '取引、機能、セキュリティ、手数料、始め方についてのご案内 — ' . SITE_NAME . '.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 
@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <p class="eyebrow">FAQ</p>
       <h1>よくある質問</h1>
-      <p class="lead">Everything you need to know before you start.</p>
+      <p class="lead">始める前に知っておきたいこと。</p>
     </div>
   </section>
 
@@ -24,64 +24,64 @@ require_once __DIR__ . '/includes/header.php';
       <div class="faq-list" data-faq>
         <div class="faq-item is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            How do I get started?
+            始め方を教えてください。
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              Create an account, verify your email, and deposit a minimum of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. You'll get immediate access to charts, tools, and onboarding guides.
+              口座を開設し、メールを確認し、最低 <?= MIN_DEPOSIT ?> <?= CURRENCY ?> をご入金ください。チャート、ツール、オンボーディングガイドにすぐアクセスできます。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Is <?= e(SITE_NAME) ?> safe and legitimate?
+            <?= e(SITE_NAME) ?> は安全で信頼できますか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              We use industry-standard SSL encryption, 2FA, and verified payment processors. セキュリティ is built into every layer of the platform.
+              業界標準のSSL暗号化、二要素認証、確認済み決済事業者を使用しています。セキュリティはプラットフォームのすべての層に組み込まれています。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            What are the fees?
+            手数料はいくらですか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Fees are transparent and displayed before you confirm any transaction. No hidden charges on deposits or withdrawals.
+              手数料は取引確定前に明示されます。入出金に隠れた料金はありません。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Can I use automated trading?
+            自動取引は使えますか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Yes. Configure AI-assisted bots with your risk preferences, or trade manually — switch anytime.
+              はい。リスク設定に合わせたAI支援ボットを構成するか、手動で取引できます。いつでも切り替え可能です。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do withdrawals work?
+            出金の流れは？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request a withdrawal from your dashboard. Processing typically takes 1–3 business days depending on your payment method.
+              ダッシュボードから出金を申請してください。支払い方法により、処理は通常1〜3営業日です。
             </div>
           </div>
         </div>
       </div>
 
       <div style="text-align: center; margin-top: 2.5rem;">
-        <p class="lead" style="margin-bottom: 1rem;">Still have questions?</p>
-        <a href="contacts.php" class="btn btn-outline">お問い合わせ support</a>
+        <p class="lead" style="margin-bottom: 1rem;">ほかにご質問はありますか？</p>
+        <a href="contacts.php" class="btn btn-outline">サポートに問い合わせる</a>
       </div>
     </div>
   </section>

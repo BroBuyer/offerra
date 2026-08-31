@@ -1,6 +1,6 @@
 <?php
 /**
- * プラットフォーム showcase image — optimized for Google Images indexing.
+ * Platform showcase image — optimized for Google Images indexing.
  */
 require_once __DIR__ . '/config.php';
 
@@ -17,7 +17,7 @@ $platform_caption = platform_image_caption();
     <img
       src="<?= e($platform_img) ?>"
       alt="<?= e($platform_alt) ?>"
-      title="<?= e(page_title('AI 取引プラットフォーム')) ?>"
+      title="<?= e(page_title('AI取引プラットフォーム')) ?>"
       width="494"
       height="968"
       class="platform-figure-img"

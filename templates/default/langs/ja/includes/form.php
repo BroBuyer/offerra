@@ -78,10 +78,10 @@ $lead_cookie = site_slug() . '_lead';
       </label>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-block submit">Create free account</button>
+    <button type="submit" class="btn btn-primary btn-block submit">無料口座を開設</button>
 
     <?php
-    $payment_context = 'account registration';
+    $payment_context = '口座登録';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>
@@ -92,9 +92,7 @@ $lead_cookie = site_slug() . '_lead';
     </div>
 
     <p class="form-legal">
-      情報を送信することで、当社の
-      <a href="privacy.php">プライバシーポリシー</a> and
-      <a href="conditions.php">利用規約</a>.
+      情報を送信することで、当社の<a href="privacy.php">プライバシーポリシー</a>および<a href="conditions.php">利用規約</a>に同意したものとみなされます。
     </p>
   </div>
 </form>

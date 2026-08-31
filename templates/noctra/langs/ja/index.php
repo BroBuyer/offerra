@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title('AI 取引プラットフォーム');
-$page_description = 'Trade crypto and other markets on ' . SITE_NAME . ' — secure account, clear pricing, helpful AI tools, and fast order execution.';
+$page_title = page_title('AI取引プラットフォーム');
+$page_description = '暗号資産とその他市場を ' . SITE_NAME . ' で — 安全な口座、明確な料金、役立つAIツール、迅速な注文執行。';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -18,37 +18,36 @@ require_once __DIR__ . '/includes/header.php';
       <span class="tape-item"><strong>ETH</strong> <span class="tape-up" data-change="eth">—</span></span>
       <span class="tape-item"><strong>SOL</strong> <span class="tape-down" data-change="sol">—</span></span>
       <span class="tape-item"><strong>XRP</strong> <span class="tape-up" data-change="xrp">—</span></span>
-      <span class="tape-item"><strong>Spreads</strong> from 0.1</span>
-      <span class="tape-item"><strong>Speed</strong> under 40ms</span>
-      <span class="tape-item"><strong>市場</strong> 24/7</span>
+      <span class="tape-item"><strong>スプレッド</strong> 0.1から</span>
+      <span class="tape-item"><strong>速度</strong> 40ms未満</span>
+      <span class="tape-item"><strong>市場</strong> 24時間</span>
     </div>
   </div>
 
   <section class="hero-terminal">
     <div class="container hero-terminal-grid">
       <div>
-        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> AI-powered 取引プラットフォーム</div>
-        <h1>Trade crypto and other markets.<br><span class="text-accent">Get started with <?= e(SITE_NAME) ?></span></h1>
+        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> AI搭載の取引プラットフォーム</div>
+        <h1>暗号資産とその他市場を取引。<br><span class="text-accent"><?= e(SITE_NAME) ?> で始める</span></h1>
         <p class="lead">
-          A simple platform for crypto and multi-asset trading — strong security, clear pricing,
-          helpful AI insights, and an interface that stays easy to follow.
+          暗号資産とマルチアセット取引のためのシンプルなプラットフォーム — 強固なセキュリティ、明確な料金、役立つAIインサイト、わかりやすい画面。
         </p>
-        <div class="hero-badges" aria-label="プラットフォーム highlights">
+        <div class="hero-badges" aria-label="プラットフォームの特長">
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            安全 encrypted connection (SSL)
+            暗号化された接続（SSL）
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Customer support available 24/7
+            カスタマーサポート 24時間対応
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Fast order execution
+            迅速な注文執行
           </span>
         </div>
         <div class="hero-actions">
-          <a href="sign.php" class="btn btn-primary">Start today — min. deposit <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
+          <a href="sign.php" class="btn btn-primary">今すぐ始める — 最低入金 <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
         </div>
       </div>
 
@@ -60,7 +59,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="board-card-body">
           <?php
           $form_id = 'hero-form';
-          $form_heading = '新規登録 in under 2 minutes';
+          $form_heading = '2分以内に登録';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>
@@ -71,19 +70,18 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section markets-block" id="markets">
     <div class="container split">
       <div>
-        <p class="eyebrow">Live markets</p>
-        <h2>See prices in real time. Start when you are ready.</h2>
+        <p class="eyebrow">ライブ市場</p>
+        <h2>価格をリアルタイムで確認。準備ができたら始められます。</h2>
         <p class="lead" style="margin: 1rem 0 1.75rem;">
-          Follow Bitcoin, Ethereum, and other major pairs in a clear market panel —
-          then open your account and place your first trade.
+          ビットコイン、イーサリアムなどの主要ペアを明快な市場パネルで追い、口座を開いて最初の取引を出せます。
         </p>
-        <a href="sign.php" class="btn btn-primary">Open market access</a>
+        <a href="sign.php" class="btn btn-primary">市場アクセスを開く</a>
       </div>
 
-      <div class="exchange-panel" data-ticker-panel aria-label="Live market prices">
+      <div class="exchange-panel" data-ticker-panel aria-label="ライブ市場価格">
         <div class="exchange-panel-header">
           <span>市場</span>
-          <span class="live-dot">Live</span>
+          <span class="live-dot">ライブ</span>
         </div>
         <div class="ticker-list" data-ticker-list>
           <div class="ticker-row">
@@ -111,21 +109,20 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="platform-section" id="platform" aria-label="取引プラットフォーム preview">
+  <section class="platform-section" id="platform" aria-label="取引プラットフォームのプレビュー">
     <div class="container platform-layout">
       <div class="platform-copy">
-        <p class="eyebrow">プラットフォーム</p>
-        <h2>Clear charts.<br>Ready to trade.</h2>
+        <p class="eyebrow">Platform</p>
+        <h2>明快なチャート。<br>すぐに取引できる。</h2>
         <p class="lead">
-          A mobile-friendly trading screen with live charts, profit &amp; loss,
-          and simple one-tap orders — easy to understand from your first login.
+          ライブチャート、損益、ワンタップ注文のモバイル向け画面 — 初回ログインからわかりやすい。
         </p>
         <ul class="platform-points">
-          <li>Live charts and market prices</li>
-          <li>Portfolio balance at a glance</li>
-          <li>安全 account panel with 2FA</li>
+          <li>ライブチャートと市場価格</li>
+          <li>ポートフォリオ残高を一目で</li>
+          <li>二要素認証付きの安全な口座パネル</li>
         </ul>
-        <a href="sign.php" class="btn btn-primary">Open the platform</a>
+        <a href="sign.php" class="btn btn-primary">プラットフォームを開く</a>
       </div>
       <?php require __DIR__ . '/includes/platform-image.php'; ?>
     </div>
@@ -134,52 +131,52 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="features">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow">機能</p>
-        <h2>What you get with <?= e(SITE_NAME) ?></h2>
-        <p class="lead">セキュリティ, speed, and clear tools — without a crowded screen.</p>
+        <p class="eyebrow">Features</p>
+        <h2><?= e(SITE_NAME) ?> で得られるもの</h2>
+        <p class="lead">セキュリティ、スピード、明快なツール — 画面は混みません。</p>
       </div>
 
       <div class="feature-rail">
         <article class="feature-rail-item">
           <div class="idx">01</div>
           <div>
-            <h3>Strong account security</h3>
-            <p>SSL encryption, two-factor login, and protected fund flows keep your money and data safer.</p>
+            <h3>強固な口座セキュリティ</h3>
+            <p>SSL暗号化、二要素ログイン、保護された資金フローが、資金とデータを守ります。</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">02</div>
           <div>
-            <h3>AI market insights</h3>
-            <p>Helpful signals that point out timing and trends — useful when prices move quickly.</p>
+            <h3>AI市場インサイト</h3>
+            <p>タイミングとトレンドを示す役立つシグナル — 価格が速く動くときに有用です。</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">03</div>
           <div>
-            <h3>Automation when you want it</h3>
-            <p>Optional trading bots can follow your rules around the clock — you stay in control.</p>
+            <h3>必要なときの自動化</h3>
+            <p>任意の取引ボットがルールに沿って24時間稼働します — コントロールはお客様のままです。</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">04</div>
           <div>
-            <h3>Several markets in one place</h3>
-            <p>Crypto, forex, stocks, and commodities from one simple platform.</p>
+            <h3>複数市場を一箇所で</h3>
+            <p>暗号資産、外国為替、株式、コモディティを、ひとつのシンプルなプラットフォームで。</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">05</div>
           <div>
-            <h3>Fast order handling</h3>
-            <p>Built for reliable order placement even when markets are busy.</p>
+            <h3>迅速な注文処理</h3>
+            <p>市場が混雑していても、確実な注文発注のために作られています。</p>
           </div>
         </article>
         <article class="feature-rail-item">
           <div class="idx">06</div>
           <div>
-            <h3>Clean, simple layout</h3>
-            <p>Less visual noise — more space for the chart and your next order.</p>
+            <h3>シンプルで明快なレイアウト</h3>
+            <p>視覚ノイズを減らし、チャートと次の注文のための余白を確保します。</p>
           </div>
         </article>
       </div>
@@ -189,9 +186,9 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header centered">
-        <p class="eyebrow">Getting started</p>
-        <h2>Five steps to your first trade</h2>
-        <p class="lead">A clear path from signup to live markets.</p>
+        <p class="eyebrow">始め方</p>
+        <h2>最初の取引までの5ステップ</h2>
+        <p class="lead">登録からライブ市場までの明確な道筋。</p>
       </div>
 
       <div class="timeline">
@@ -199,35 +196,35 @@ require_once __DIR__ . '/includes/header.php';
           <div class="num">01</div>
           <div>
             <h3>口座を開設</h3>
-            <p>送信 your details and get secure access to the platform.</p>
+            <p>情報を送信すると、プラットフォームへ安全にアクセスできます。</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">02</div>
           <div>
-            <h3>Confirm email</h3>
-            <p>Verify your address to unlock the full trading environment.</p>
+            <h3>メールを確認</h3>
+            <p>アドレスを確認すると、取引環境のすべてが利用できます。</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">03</div>
           <div>
             <h3>入金する</h3>
-            <p>Deposit from <?= MIN_DEPOSIT ?> <?= CURRENCY ?> via card, bank transfer, or e-wallet.</p>
+            <p>カード、銀行振込、または電子ウォレットで <?= MIN_DEPOSIT ?> <?= CURRENCY ?> からご入金ください。</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">04</div>
           <div>
-            <h3>Choose how you trade</h3>
-            <p>Trade manually or use AI-assisted tools with clear limits you set.</p>
+            <h3>取引方法を選ぶ</h3>
+            <p>手動で取引するか、ご自身で設定した明確な上限付きのAI支援ツールを使います。</p>
           </div>
         </article>
         <article class="timeline-step">
           <div class="num">05</div>
           <div>
-            <h3>Trade live</h3>
-            <p>Use charts, tools, and 24時間サポート whenever you need help.</p>
+            <h3>ライブで取引</h3>
+            <p>チャート、ツール、必要なときの24時間サポートをご利用ください。</p>
           </div>
         </article>
       </div>
@@ -240,11 +237,11 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-sm payment-section">
     <div class="container" style="max-width: 720px; margin-inline: auto; text-align: center;">
-      <p class="eyebrow" style="justify-content: center;">Payments</p>
-      <h2 style="margin-bottom: 0.75rem;">Deposit with methods you already know</h2>
-      <p class="lead" style="margin-bottom: 1.75rem;">Cards, wallets, and bank transfers — encrypted end to end.</p>
+      <p class="eyebrow" style="justify-content: center;">お支払い</p>
+      <h2 style="margin-bottom: 0.75rem;">使い慣れた方法で入金</h2>
+      <p class="lead" style="margin-bottom: 1.75rem;">カード、ウォレット、銀行振込 — エンドツーエンドで暗号化。</p>
       <?php
-      $payment_context = 'account funding and deposits';
+      $payment_context = '口座への入金';
       $payment_compact = false;
       require __DIR__ . '/includes/payment-icons.php';
       ?>
@@ -254,8 +251,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container">
       <div class="section-header centered" style="margin-bottom: 2rem;">
-        <p class="eyebrow">Infrastructure</p>
-        <h2>Infrastructure partners</h2>
+        <p class="eyebrow">インフラ</p>
+        <h2>インフラパートナー</h2>
       </div>
       <?php require __DIR__ . '/includes/partners.php'; ?>
     </div>
@@ -264,52 +261,52 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" style="background: var(--bg-elevated); border-block: 1px solid var(--border);">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow">レビュー</p>
-        <h2>What traders say</h2>
+        <p class="eyebrow">Reviews</p>
+        <h2>トレーダーの声</h2>
       </div>
 
       <div class="reviews-grid">
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Signup was quick, fees were clear, and support answered. Feels like a platform I can stick with.</p>
+          <p class="review-text">登録は早く、手数料は明確で、サポートも返答がありました。続けられるプラットフォームだと感じます。</p>
           <div class="review-author">
             <div class="review-avatar">OR</div>
             <div>
               <div class="review-name">Oliver Reed</div>
-              <div class="review-role">Independent trader</div>
+              <div class="review-role">個人トレーダー</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Tried crypto here after bouncing between apps — setup was clear and the chart layout finally makes sense.</p>
+          <p class="review-text">アプリを渡り歩いたあとここで暗号資産を試しました — 設定は明快で、チャート配置もようやくわかります。</p>
           <div class="review-author">
             <div class="review-avatar">AM</div>
             <div>
               <div class="review-name">Anna Mitchell</div>
-              <div class="review-role">Crypto trader</div>
+              <div class="review-role">暗号資産トレーダー</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Orders go through reliably, terms are in plain language, and the team knows the product. A solid platform.</p>
+          <p class="review-text">注文は確実に通り、条件は平易な言葉で、チームも製品を理解しています。堅実なプラットフォームです。</p>
           <div class="review-author">
             <div class="review-avatar">DK</div>
             <div>
               <div class="review-name">Daniel Kim</div>
-              <div class="review-role">Digital assets trader</div>
+              <div class="review-role">デジタル資産トレーダー</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">As a beginner I needed clarity more than fireworks. Signup, fees, and help when stuck — that was enough.</p>
+          <p class="review-text">初心者には派手さより明快さが必要でした。登録、手数料、困ったときの助け — それで十分でした。</p>
           <div class="review-author">
             <div class="review-avatar">LP</div>
             <div>
               <div class="review-name">Laura Price</div>
-              <div class="review-role">Private investor</div>
+              <div class="review-role">個人投資家</div>
             </div>
           </div>
         </article>
@@ -321,63 +318,62 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 800px; margin-inline: auto;">
       <div class="section-header centered">
         <p class="eyebrow">FAQ</p>
-        <h2>Before you fund your account</h2>
+        <h2>入金の前に</h2>
       </div>
 
       <div class="faq-list" data-faq>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do I get started?
+            始め方を教えてください。
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Create an account, complete a short verification, and deposit from <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
-              That unlocks charts, tools, and guided onboarding.
+              口座を開設し、簡単な確認を済ませ、<?= MIN_DEPOSIT ?> <?= CURRENCY ?> からご入金ください。チャート、ツール、案内付きオンボーディングが利用できます。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How is my money and data protected?
+            資金とデータはどう守られますか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              We use SSL encryption, two-factor authentication, and trusted payment providers under strict data policies.
+              SSL暗号化、二要素認証、厳格なデータ方針のもと信頼できる決済事業者を使用しています。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How long do withdrawals take?
+            出金にはどのくらいかかりますか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request payouts anytime from the dashboard. Most methods settle in 1–3 business days with fees shown upfront.
+              ダッシュボードからいつでも出金を申請できます。多くの方法は1〜3営業日で、手数料は事前表示です。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Do I need prior trading experience?
+            事前の取引経験は必要ですか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              No. Guided steps and AI-assisted tools help you learn at your pace, with 24時間サポート available.
+              不要です。案内付きの手順とAI支援ツールで自分のペースで学べ、24時間サポートも利用できます。
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Which markets are available?
+            どの市場が利用できますか？
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Cryptocurrencies, forex, global stocks, and commodities — manual or automated — from one interface.
+              暗号資産、外国為替、世界の株式、コモディティ — 手動でも自動でも — ひとつの画面から。
             </div>
           </div>
         </div>
@@ -388,37 +384,37 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container">
       <div class="section-header" style="margin-bottom: 2rem;">
-        <p class="eyebrow">Overview</p>
-        <h2>プラットフォーム at a glance</h2>
+        <p class="eyebrow">概要</p>
+        <h2>プラットフォーム一覧</h2>
       </div>
 
       <div class="specs-table">
         <div class="specs-row">
-          <div class="specs-label">AI tools</div>
-          <div class="specs-value">Market analysis with machine-learning insights</div>
+          <div class="specs-label">AIツール</div>
+          <div class="specs-value">機械学習インサイトによる市場分析</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Funding</div>
-          <div class="specs-value">Cards, bank transfers, PayPal, e-wallets</div>
+          <div class="specs-label">入金</div>
+          <div class="specs-value">カード、銀行振込、PayPal、電子ウォレット</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Devices</div>
-          <div class="specs-value">Web, tablet, mobile — fully responsive</div>
+          <div class="specs-label">デバイス</div>
+          <div class="specs-value">Web、タブレット、モバイル — 完全レスポンシブ</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">AI signal quality</div>
-          <div class="specs-value">Up to 85% on supported strategies*</div>
+          <div class="specs-label">AIシグナル品質</div>
+          <div class="specs-value">対応戦略で最大85%*</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">市場</div>
-          <div class="specs-value">Crypto, forex, stocks, commodities</div>
+          <div class="specs-label">Markets</div>
+          <div class="specs-value">暗号資産、外国為替、株式、コモディティ</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Onboarding</div>
-          <div class="specs-value">Fast setup with guided verification</div>
+          <div class="specs-label">始め方</div>
+          <div class="specs-value">案内付き確認で迅速な設定</div>
         </div>
         <div class="specs-row specs-row-highlight">
-          <div class="specs-label">サポート</div>
+          <div class="specs-label">Support</div>
           <div class="specs-value">24時間サポート — <a href="contacts.php" style="color: var(--accent); font-weight: 600;">お問い合わせ</a></div>
         </div>
       </div>
@@ -429,13 +425,13 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="trust-card">
         <div>
-          <span class="trust-badge">Rated</span>
-          <h3 style="margin-top: 0.75rem; font-size: 1.25rem;"><?= e(SITE_NAME) ?> scorecard</h3>
+          <span class="trust-badge">評価</span>
+          <h3 style="margin-top: 0.75rem; font-size: 1.25rem;"><?= e(SITE_NAME) ?> スコア</h3>
         </div>
         <div class="trust-score">4.7</div>
         <div class="trust-stars">★★★★★</div>
         <div class="trust-meta">
-          <strong>342</strong> reviews · 評価数： <strong>1,842</strong> ratings
+          <strong>342</strong>件のレビュー · 評価数 <strong>1,842</strong>
         </div>
       </div>
     </div>
@@ -444,18 +440,18 @@ require_once __DIR__ . '/includes/header.php';
   <section class="cta-band">
     <div class="container cta-band-grid">
       <div>
-        <h2>Ready for a clearer way to trade?</h2>
-        <p class="lead">Join traders who want live markets, clear fees, and a platform that stays easy to use.</p>
+        <h2>より明快な取引の仕方はいかがですか？</h2>
+        <p class="lead">ライブ市場、明確な手数料、使いやすいプラットフォームを求めるトレーダーに加わりましょう。</p>
       </div>
       <div class="board-card">
         <div class="board-card-head">
           <span>口座を開設</span>
-          <span class="live-pill">Free</span>
+          <span class="live-pill">無料</span>
         </div>
         <div class="board-card-body">
           <?php
           $form_id = 'bottom-form';
-          $form_heading = 'Create your free account';
+          $form_heading = '無料口座を開設';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>

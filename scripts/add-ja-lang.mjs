@@ -91,24 +91,6 @@ function prepareLumenSkeleton() {
   }
 }
 
-prepareLumenSkeleton();
-run('scripts/build-lumen-langs.mjs', 'ja');
-patchConfig(path.join(ROOT, 'templates', 'lumen', 'langs', 'ja', 'includes', 'config.php'));
-applyExtra(path.join(ROOT, 'templates', 'lumen', 'langs', 'ja'));
-run('scripts/build-recupero-langs.mjs', 'ja');
-copyFile(
-  path.join(ROOT, 'templates', 'recupero', 'includes', 'helpers.php'),
-  path.join(ROOT, 'templates', 'recupero', 'langs', 'ja', 'includes', 'helpers.php'),
-);
-run('scripts/build-velora-langs.mjs', 'ja');
-patchConfig(path.join(ROOT, 'templates', 'velora', 'langs', 'ja', 'includes', 'config.php'));
-run('scripts/build-cetra-langs.mjs', 'ja');
-copyFile(
-  path.join(ROOT, 'templates', 'cetra', 'includes', 'helpers.php'),
-  path.join(ROOT, 'templates', 'cetra', 'langs', 'ja', 'includes', 'helpers.php'),
-);
-run('scripts/build-thalora-langs.mjs', 'ja');
-run('scripts/build-aurel-from-en.mjs', 'ja');
 run('scripts/build-ja-from-en.mjs');
 
 console.log('\nJA packs built.');

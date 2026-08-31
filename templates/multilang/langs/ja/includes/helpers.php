@@ -50,6 +50,7 @@ function lang_flag_code(string $lang): string
         'el' => 'gr',
         'ms' => 'my',
         'ja' => 'jp',
+        'lv' => 'lv',
     ];
 
     return $map[strtolower($lang)] ?? strtolower($lang);
@@ -98,9 +99,34 @@ function lang_display_name(string $lang): string
         'sv' => 'Svenska',
         'fi' => 'Suomi',
         'el' => 'Ελληνικά',
+        'ja' => '日本語',
+        'lv' => 'Latviešu',
+        'ms' => 'Bahasa Melayu',
     ];
 
     return $names[strtolower($lang)] ?? strtoupper($lang);
+}
+
+/**
+ * Site root (public_html) — works from includes/ and langs/{code}/includes/.
+ */
+function multilang_site_root(): string
+{
+    $dir = __DIR__;
+    for ($i = 0; $i < 6; $i++) {
+        if (is_file($dir.DIRECTORY_SEPARATOR.'index.php')
+            && is_dir($dir.DIRECTORY_SEPARATOR.'langs')) {
+            return $dir;
+        }
+
+        $parent = dirname($dir);
+        if ($parent === $dir) {
+            break;
+        }
+        $dir = $parent;
+    }
+
+    return dirname(__DIR__);
 }
 
 /**
@@ -108,7 +134,7 @@ function lang_display_name(string $lang): string
  */
 function multilang_supported_codes(): array
 {
-    $langsRoot = dirname(__DIR__).DIRECTORY_SEPARATOR.'langs';
+    $langsRoot = multilang_site_root().DIRECTORY_SEPARATOR.'langs';
     $supported = [];
 
     if (is_dir($langsRoot)) {
@@ -139,6 +165,7 @@ function site_locale(): string
         'sv' => 'sv-SE', 'fi' => 'fi-FI', 'el' => 'el-GR', 'tr' => 'tr-TR',
         'ms' => 'ms-MY',
         'ja' => 'ja-JP',
+        'lv' => 'lv-LV',
     ];
     $lang = active_lang();
 
@@ -341,7 +368,9 @@ function ip_country_allowed_langs(string $ipCountry): array
         'IN' => ['en'],
         'SG' => ['en'],
         'PH' => ['en'],
-        'MY' => ['en'],
+        'MY' => ['ms', 'en'],
+        'JP' => ['ja'],
+        'LV' => ['lv'],
         'HK' => ['en'],
         'PK' => ['en'],
         'NG' => ['en'],

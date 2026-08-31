@@ -11,22 +11,20 @@
         <span class="logo-text"><?= e(SITE_NAME) ?></span>
       </a>
 
-      <nav class="footer-nav" aria-label="Footer navigation">
+      <nav class="footer-nav" aria-label="フッターナビゲーション">
         <a href="<?= page_url() ?>">ホーム</a>
         <a href="product.php">製品</a>
         <a href="offer.php">オファー</a>
         <a href="contacts.php">お問い合わせ</a>
         <a href="faq.php">FAQ</a>
-        <a href="privacy.php">Privacy</a>
-        <a href="conditions.php">Terms</a>
+        <a href="privacy.php">プライバシー</a>
+        <a href="conditions.php">利用規約</a>
       </nav>
     </div>
 
     <div class="footer-risk">
       <p>
-        <?= e(SITE_NAME) ?> is not responsible for any loss or damage arising from the use of information on this site.
-        Trading financial markets involves risk. Only invest funds you can afford to lose. FX, CFDs, and cryptocurrencies
-        may not be suitable for all investors. Consider seeking advice from a qualified professional before trading.
+        <?= e(SITE_NAME) ?> は、本サイトの情報の利用から生じるいかなる損失または損害についても責任を負いません。金融市場の取引にはリスクが伴います。失っても差し支えない資金のみを投資してください。FX、CFD、暗号資産はすべての投資家に適しているとは限りません。取引前に有資格の専門家に相談することを検討してください。
       </p>
     </div>
 

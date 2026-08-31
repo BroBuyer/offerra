@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('ありがとうございます');
-$page_description = 'ご依頼の ' . SITE_NAME . ' 口座リクエストを受け付けました。';
+$page_description = SITE_NAME . ' への口座開設リクエストを受け付けました。';
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;
@@ -17,8 +17,8 @@ require_once __DIR__ . '/includes/header.php';
       <div class="thanks-icon" aria-hidden="true">✓</div>
       <h1>受付完了です。</h1>
       <p class="lead thanks-lead">
-        ご登録ありがとうございます。 <?= e(SITE_NAME) ?>.
-        Our team will reach out shortly to finish setting up your account — keep your phone nearby.
+        <?= e(SITE_NAME) ?> へのご登録ありがとうございます。
+        担当チームが口座設定の完了のため、まもなくご連絡します。お電話を近くにお持ちください。
       </p>
     </div>
   </section>

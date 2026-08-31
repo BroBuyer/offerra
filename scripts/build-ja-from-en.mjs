@@ -113,7 +113,9 @@ function build(id) {
     const ext = path.extname(file).toLowerCase();
     if (!TEXT_EXT.has(ext) && base !== '.htaccess') continue;
     const before = fs.readFileSync(file, 'utf8');
-    const after = applyMap(before, pairs);
+    let after = applyMap(before, pairs);
+    after = after.replace(/(\?\?|=)\s*'SITE_NAME \. /g, '$1 SITE_NAME . ');
+    after = after.replace(/(\$page_description = SITE_NAME \. '[^']+。)(;)/g, "$1'$2");
     if (after !== before) fs.writeFileSync(file, after);
   }
 

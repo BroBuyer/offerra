@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => 'AI-powered 取引プラットフォーム for crypto, forex, and global markets.',
+        'description' => '暗号資産、外国為替、世界市場向けのAI取引プラットフォーム。',
     ];
 
     $website = [
@@ -30,7 +30,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => 'Smart 取引プラットフォーム with real-time market analysis and AI-assisted signals.',
+        'description' => 'リアルタイム市場分析とAI支援シグナルを備えたスマート取引プラットフォーム。',
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
@@ -40,7 +40,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
             'bestRating' => '5',
         ],
         'offers' => [
-            '@type' => 'オファー',
+            '@type' => 'Offer',
             'price' => MIN_DEPOSIT,
             'priceCurrency' => CURRENCY,
         ],
@@ -52,34 +52,34 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => 'How do I get started?',
+                'name' => '始め方を教えてください。',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Create an account in minutes, complete a short verification step, and fund your account with a minimum deposit of ' . MIN_DEPOSIT . ' ' . CURRENCY . '. You will unlock the full platform including live charts and trading tools.',
+                    'text' => '数分で口座を開設し、簡単な確認を済ませ、最低入金額 ' . MIN_DEPOSIT . ' ' . CURRENCY . ' をご入金ください。ライブチャートと取引ツールを含むプラットフォームのすべてが利用できます。',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Is my money and data safe?',
+                'name' => '資金とデータは安全ですか？',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'We protect accounts with SSL encryption, two-factor authentication, and secure fund handling through trusted payment providers. Your personal data is managed under strict security policies.',
+                    'text' => 'SSL暗号化、二要素認証、信頼できる決済事業者による安全な資金管理で口座を保護しています。個人データは厳格なセキュリティ方針のもと管理されます。',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'When can I withdraw profits?',
+                'name' => '利益の出金はいつできますか？',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Withdrawals can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
+                    'text' => '出金は口座ダッシュボードからいつでも申請できます。処理は方法により通常1〜3営業日です。手数料と所要時間は事前に表示されます。',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Do I need trading experience?',
+                'name' => '取引経験は必要ですか？',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No prior experience is required. Guided onboarding, simple tutorials, and AI-assisted tools help you learn at your own pace with 24時間サポート available.',
+                    'text' => '事前の経験は不要です。案内付きオンボーディング、わかりやすいチュートリアル、AI支援ツールで自分のペースで学べ、24時間サポートも利用できます。',
                 ],
             ],
         ],
@@ -92,8 +92,8 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => '口座を作成', 'text' => '基本情報でご登録いただき、プラットフォームへ安全にアクセスできます。'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'メールアドレスを確認', 'text' => 'メールを確認すると、プラットフォームへフルアクセスできます。'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => '口座に入金する', 'text' => '最低 ' . MIN_DEPOSIT . ' ' . CURRENCY . ' を、銀行振込、カード、または電子ウォレットでご入金ください。'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => '戦略を設定する', 'text' => 'リスク水準と取引の好みをお選びください — 手動または自動。'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => '口座に入金', 'text' => '最低 ' . MIN_DEPOSIT . ' ' . CURRENCY . ' を、銀行振込、カード、または電子ウォレットでご入金ください。'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => '戦略を設定', 'text' => 'リスク水準と取引の好みをお選びください — 手動または自動。'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => '取引を開始', 'text' => 'リアルタイムデータとAIインサイトで、自信を持って市場に入りましょう。'],
         ],
     ];

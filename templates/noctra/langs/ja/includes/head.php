@@ -2,8 +2,8 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
-$page_title = $page_title ?? SITE_NAME . ' | Market Terminal';
-$page_description = $page_description ?? 'Trade crypto, forex, and multi-asset markets on ' . SITE_NAME . ' — live terminal UI, AI-assisted signals, and transparent funding.';
+$page_title = $page_title ?? SITE_NAME . ' | マーケットターミナル';
+$page_description = $page_description ?? SITE_NAME . ' で暗号資産、外国為替、マルチアセット市場を取引 — ライブターミナル、AI支援シグナル、透明な入金。';
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

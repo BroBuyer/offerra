@@ -15,7 +15,7 @@ $partners = [
     ['file' => 'partner-8.svg', 'alt' => 'Nansen — on-chain analytics partner'],
 ];
 ?>
-<div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> trusted infrastructure and payment partners">
+<div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> の信頼できるインフラおよび決済パートナー">
   <?php foreach ($partners as $partner): ?>
     <div class="partners-grid-item" role="listitem">
       <img

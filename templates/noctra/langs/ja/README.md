@@ -1,6 +1,6 @@
 # noctra
 
-Dark exchange-terminal template for オファーra.
+Dark exchange-terminal template for Offerra.
 
 - **Langs (v1):** English root (`SITE_LANG=en`) + `langs/{fr,es,it,fi}`
 - **Look:** dark desk + amber CTA + emerald live accents

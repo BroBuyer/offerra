@@ -1,4 +1,4 @@
-# オファー template (PHP lander)
+# Offer template (PHP lander)
 
 Шаблон лендінгу під SEO-трафік: брендований сайт, форма ліда, CRM (YourLeads), Telegram-лог, Keitaro subid для постбеку.
 
