@@ -6,6 +6,7 @@ use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
 use App\Support\InfrastructureOptions;
+use App\Support\MarketOptions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 use RuntimeException;
@@ -107,6 +108,27 @@ class OfferGenerator
             $provisionInfrastructure = InfrastructureOptions::anyEnabled($infraOptions);
             $providerSnapshot = $settings->providerSnapshotForOffer();
 
+            $infraMeta = null;
+            if ($provisionInfrastructure) {
+                $infraMeta = ['options' => $infraOptions];
+                $hub = strtolower(trim((string) ($input['geo_overflow_hub'] ?? '')));
+                $overflowCountry = strtoupper(trim((string) ($input['geo'] ?? '')));
+                if (
+                    ($infraOptions['cloudflare_geo_overflow'] ?? false)
+                    && $hub !== ''
+                    && $overflowCountry !== ''
+                    && $overflowCountry !== 'ML'
+                    && $template !== 'multilang'
+                ) {
+                    $infraMeta['geo_overflow_hub'] = $hub;
+                    $infraMeta['geo_overflow_country'] = $overflowCountry;
+                } else {
+                    // Hub itself must not redirect away.
+                    $infraOptions['cloudflare_geo_overflow'] = false;
+                    $infraMeta['options'] = $infraOptions;
+                }
+            }
+
             $offer = Offer::create([
                 'user_id' => $user->id,
                 'folder' => $folder,
@@ -120,6 +142,7 @@ class OfferGenerator
                 'currency' => strtoupper((string) $input['currency']),
                 'template' => $template,
                 'status' => 'generated',
+                'deploy_panel_name' => trim((string) $settings->deploy_host) ?: null,
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
                 'keitaro_campaign_token' => $keitaro['token'] ?? null,
@@ -127,7 +150,7 @@ class OfferGenerator
                 'from_search_team' => ! empty($input['from_search_team']),
                 'provision_infrastructure' => $provisionInfrastructure,
                 'infra_status' => $provisionInfrastructure ? 'pending' : null,
-                'infra_meta' => $provisionInfrastructure ? ['options' => $infraOptions] : null,
+                'infra_meta' => $infraMeta,
                 ...$providerSnapshot,
             ]);
 
@@ -340,6 +363,7 @@ class OfferGenerator
         }
 
         $keitaroToken = $this->resolveKeitaroToken($offer, $settings);
+        $phones = $this->syncOfferPhoneFields($offer);
 
         $input = [
             'brand' => $offer->brand,
@@ -348,8 +372,8 @@ class OfferGenerator
             'currency' => $offer->currency ?: 'EUR',
             'geo' => $offer->geo,
             'lang' => $offer->lang,
-            'phone' => $offer->phone ?: $offer->lang,
-            'phone_countries' => $offer->phone_countries ?: $offer->phone ?: $offer->lang,
+            'phone' => $phones['phone'],
+            'phone_countries' => $phones['phone_countries'],
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $preservedFormTokenSecret,
@@ -364,8 +388,8 @@ class OfferGenerator
             'domain' => $offer->domain,
             'geo' => strtoupper($offer->geo),
             'lang' => strtolower($offer->lang),
-            'phone' => strtolower($offer->phone ?? $offer->lang),
-            'phone_countries' => $offer->phone_countries ?: strtolower($offer->phone ?? $offer->lang),
+            'phone' => $phones['phone'],
+            'phone_countries' => $phones['phone_countries'],
             'min_deposit' => $offer->min_deposit ?: '250',
             'currency' => strtoupper($offer->currency ?: 'EUR'),
             'template' => $offer->template,
@@ -407,6 +431,7 @@ class OfferGenerator
         $keitaroToken = $this->resolveKeitaroToken($offer, $settings, $configPath);
 
         $formTokenSecret = $this->extractFormTokenSecret($configPath);
+        $phones = $this->syncOfferPhoneFields($offer);
 
         $input = [
             'brand' => $offer->brand,
@@ -415,8 +440,8 @@ class OfferGenerator
             'currency' => $offer->currency ?: 'EUR',
             'geo' => $offer->geo,
             'lang' => $offer->lang,
-            'phone' => $offer->phone ?: $offer->lang,
-            'phone_countries' => $offer->phone_countries ?: $offer->phone ?: $offer->lang,
+            'phone' => $phones['phone'],
+            'phone_countries' => $phones['phone_countries'],
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $formTokenSecret,
@@ -544,8 +569,9 @@ class OfferGenerator
         $manifest['domain'] = $offer->domain;
         $manifest['geo'] = strtoupper((string) $offer->geo);
         $manifest['lang'] = strtolower((string) $offer->lang);
-        $manifest['phone'] = strtolower($offer->phone ?? '');
-        $manifest['phone_countries'] = $offer->phone_countries ?? strtolower($offer->phone ?? '');
+        $phones = $this->syncOfferPhoneFields($offer);
+        $manifest['phone'] = $phones['phone'];
+        $manifest['phone_countries'] = $phones['phone_countries'];
         $manifest['min_deposit'] = $offer->min_deposit ?: '250';
         $manifest['currency'] = strtoupper($offer->currency ?: 'EUR');
         $manifest['template'] = $offer->template;
@@ -835,5 +861,35 @@ class OfferGenerator
         }
 
         return null;
+    }
+
+    /**
+     * Drop language codes (ja, en, …) from phone GEO and persist the clean list.
+     *
+     * @return array{phone: string, phone_countries: string}
+     */
+    private function syncOfferPhoneFields(Offer $offer): array
+    {
+        $normalized = MarketOptions::normalizePhoneFields(
+            (string) $offer->phone,
+            (string) ($offer->phone_countries ?? ''),
+            (string) $offer->geo,
+        );
+        $csv = implode(',', $normalized['phone_countries']);
+
+        if (
+            strtolower((string) $offer->phone) !== $normalized['phone']
+            || (string) $offer->phone_countries !== $csv
+        ) {
+            $offer->forceFill([
+                'phone' => $normalized['phone'],
+                'phone_countries' => $csv,
+            ])->save();
+        }
+
+        return [
+            'phone' => $normalized['phone'],
+            'phone_countries' => $csv,
+        ];
     }
 }

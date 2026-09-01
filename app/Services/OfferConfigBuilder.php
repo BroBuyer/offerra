@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\UserSetting;
+use App\Support\MarketOptions;
 use App\Support\SecretValue;
 
 class OfferConfigBuilder
@@ -26,8 +27,13 @@ class OfferConfigBuilder
         $affiliate = $this->quote($settings->affiliate_tag ?? 'BRO');
         $funnel = $this->quote($offer['brand']);
         $country = $this->quote(strtoupper($offer['geo']));
-        $phone = $this->quote(strtolower((string) $offer['phone']));
-        $allowedPhones = $this->quote($this->phoneCountriesCsv($offer));
+        $phones = MarketOptions::normalizePhoneFields(
+            (string) ($offer['phone'] ?? ''),
+            $offer['phone_countries'] ?? '',
+            (string) ($offer['geo'] ?? ''),
+        );
+        $phone = $this->quote($phones['phone']);
+        $allowedPhones = $this->quote(implode(',', $phones['phone_countries']));
         $tgToken = $this->quote(SecretValue::normalize($settings->tg_bot_token ?? ''));
         $tgChat = $this->quote($settings->tg_chat_id ?? '');
         $tgGroupChat = $this->quote($settings->tg_group_chat_id ?? '');
@@ -155,25 +161,12 @@ PHP;
      */
     public function phoneCountriesCsv(array $offer): string
     {
-        $default = strtolower(trim((string) ($offer['phone'] ?? '')));
-        $raw = $offer['phone_countries'] ?? '';
+        $normalized = MarketOptions::normalizePhoneFields(
+            (string) ($offer['phone'] ?? ''),
+            $offer['phone_countries'] ?? '',
+            (string) ($offer['geo'] ?? ''),
+        );
 
-        if (is_array($raw)) {
-            $list = array_map(static fn ($code) => strtolower(trim((string) $code)), $raw);
-        } else {
-            $list = array_map('trim', explode(',', strtolower((string) $raw)));
-        }
-
-        $list = array_values(array_unique(array_filter($list, static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))));
-
-        if ($default !== '' && ! in_array($default, $list, true)) {
-            array_unshift($list, $default);
-        }
-
-        if ($list === []) {
-            return $default !== '' ? $default : 'gb';
-        }
-
-        return implode(',', $list);
+        return implode(',', $normalized['phone_countries']);
     }
 }
