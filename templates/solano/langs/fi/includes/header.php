@@ -1,4 +1,3 @@
-<a class="skip-link" href="#top">Siirry sisältöön</a>
 <header class="dx8ngh3">
   <div class="nrzt44 yd4epmn">
     <a class="jfbcnp" href="<?= page_url() ?>">

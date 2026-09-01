@@ -693,6 +693,13 @@ class OfferGenerator
         if (! File::isDirectory($destination) || ! File::isFile($marker)) {
             File::copyDirectory($source, $destination);
         }
+
+        $cssSrc = $source.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'main.css';
+        $cssDest = $destination.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'main.css';
+        if (File::isFile($cssSrc)) {
+            File::ensureDirectoryExists(dirname($cssDest));
+            File::copy($cssSrc, $cssDest);
+        }
     }
 
     private function resolveTemplateStaticSource(string $templateId, ?string $lang = null): ?string
