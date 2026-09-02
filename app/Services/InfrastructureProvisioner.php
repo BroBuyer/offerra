@@ -566,6 +566,58 @@ class InfrastructureProvisioner
         ]);
     }
 
+    public function rebindARecord(Offer $offer, string $ip): void
+    {
+        $ip = trim($ip);
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            throw new \RuntimeException('Невалідний IPv4 для A-запису.');
+        }
+
+        $offer->loadMissing('user.settings');
+        $settings = $this->providerSettings($offer);
+
+        if ($settings === null || ! filled($settings->cloudflare_api_token)) {
+            throw new \RuntimeException('Немає Cloudflare API token для '.$offer->domain);
+        }
+
+        $domain = strtolower(trim((string) $offer->domain));
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
+
+        try {
+            if ($zoneId === '') {
+                $zone = $this->cloudflare->findZone($settings, $domain);
+
+                if ($zone === null) {
+                    throw new \RuntimeException('Cloudflare-зону не знайдено.');
+                }
+
+                $zoneId = (string) $zone['zone_id'];
+            }
+
+            $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $ip);
+        } catch (\Throwable $e) {
+            $zone = $this->cloudflare->findZone($settings, $domain);
+
+            if ($zone === null) {
+                throw $e;
+            }
+
+            $zoneId = (string) $zone['zone_id'];
+            $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $ip);
+        }
+
+        $meta['deploy_host'] = $ip;
+        $meta['cloudflare_zone_id'] = $zoneId;
+        unset($meta['dns_error']);
+
+        $offer->update([
+            'infra_meta' => $meta,
+            'deploy_panel_name' => $ip,
+        ]);
+    }
+
     private function providerSettings(Offer $offer): ?UserSetting
     {
         $settings = $offer->user?->settings;

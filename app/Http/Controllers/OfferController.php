@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkOfferActionRequest;
 use App\Http\Requests\StoreBulkOffersRequest;
 use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
+use App\Jobs\RebindOfferDnsJob;
 use App\Jobs\RecheckInfrastructureDnsJob;
 use App\Models\Offer;
 use App\Models\User;
@@ -51,6 +53,7 @@ class OfferController extends Controller
             'filterOptions' => [
                 'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
                 'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+                'panels' => (clone $baseQuery)->reorder()->whereNotNull('deploy_panel_name')->where('deploy_panel_name', '!=', '')->distinct()->orderBy('deploy_panel_name')->pluck('deploy_panel_name')->values()->all(),
             ],
             'createdCounts' => $this->createdCounts($baseQuery, $today),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
@@ -423,6 +426,84 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with('success', "Деплой запущено у фоні: {$offer->domain}. Статус оновиться автоматично.");
+    }
+
+    public function bulkAction(
+        BulkOfferActionRequest $request,
+        DeployService $deploy,
+    ): RedirectResponse {
+        $authUser = $request->user();
+        $action = $request->string('action')->toString();
+        $ip = trim((string) $request->input('ip', ''));
+
+        $query = Offer::query()
+            ->with('user.settings')
+            ->whereIn('id', $request->input('ids'))
+            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed']);
+
+        if (! $authUser->isAdmin()) {
+            $query->where('user_id', $authUser->id);
+        }
+
+        $offers = $query->get();
+
+        if ($offers->isEmpty()) {
+            return redirect()
+                ->back()
+                ->withErrors(['bulk' => 'Немає доступних офферів серед обраних.']);
+        }
+
+        $queued = 0;
+        $skipped = 0;
+        $failed = [];
+
+        foreach ($offers as $offer) {
+            if ($action === 'redeploy') {
+                try {
+                    if (! $offer->user) {
+                        $skipped++;
+                        $failed[] = $offer->domain.': немає власника';
+                        continue;
+                    }
+                    $deploy->enqueueDeploy($offer->user, $offer);
+                    $queued++;
+                } catch (\InvalidArgumentException|\RuntimeException $e) {
+                    $skipped++;
+                    $failed[] = $offer->domain.': '.$e->getMessage();
+                }
+                continue;
+            }
+
+            try {
+                RebindOfferDnsJob::dispatch($offer->id, $ip);
+                $queued++;
+            } catch (\Throwable $e) {
+                $skipped++;
+                $failed[] = $offer->domain.': '.$e->getMessage();
+            }
+        }
+
+        $parts = [];
+
+        if ($action === 'redeploy') {
+            $parts[] = "Редеплой у черзі: {$queued}";
+        } else {
+            $parts[] = "A-запис → {$ip} у черзі: {$queued}";
+        }
+
+        if ($skipped > 0) {
+            $parts[] = "пропущено {$skipped}";
+        }
+
+        if ($failed !== []) {
+            $parts[] = implode('; ', array_slice($failed, 0, 8));
+        }
+
+        $level = $queued > 0 ? ($failed === [] ? 'success' : 'warning') : 'warning';
+
+        return redirect()
+            ->back()
+            ->with($level, implode(' · ', $parts));
     }
 
     public function provision(

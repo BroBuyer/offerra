@@ -352,6 +352,11 @@ export default function OffersIndex({
     const [archivingId, setArchivingId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
+    const [selectedIds, setSelectedIds] = useState([]);
+    const [bulkBusy, setBulkBusy] = useState(false);
+    const [bulkIp, setBulkIp] = useState('');
+    const [rebindOpen, setRebindOpen] = useState(false);
+    const selectAllRef = useRef(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
     const [columnVisibility, setColumnVisibility] = useState(() => loadOfferColumnVisibility(showUserColumn));
@@ -363,6 +368,7 @@ export default function OffersIndex({
     const { total, from: rangeFrom, to: rangeTo, currentPage, lastPage, perPage } = pagination;
     const geos = filterOptions.geos ?? [];
     const langs = filterOptions.langs ?? [];
+    const panelOptions = filterOptions.panels ?? [];
 
     const availableColumns = useMemo(
         () => OFFER_TABLE_COLUMNS.filter((col) => !col.adminOnly || showUserColumn),
@@ -372,7 +378,7 @@ export default function OffersIndex({
     const colVisible = (id) => Boolean(columnVisibility[id]);
 
     const visibleDataColCount = useMemo(
-        () => 1 + availableColumns.filter((col) => columnVisibility[col.id]).length,
+        () => 2 + availableColumns.filter((col) => columnVisibility[col.id]).length,
         [availableColumns, columnVisibility],
     );
 
@@ -605,6 +611,81 @@ export default function OffersIndex({
         return canDeploy;
     };
 
+    const selectableIds = useMemo(
+        () => rows
+            .filter((offer) => {
+                const canManage = showUserColumn || offer.user_id === auth?.user?.id;
+                return canManage && !['archiving', 'archived'].includes(offer.status);
+            })
+            .map((offer) => offer.id),
+        [rows, showUserColumn, auth?.user?.id],
+    );
+
+    const selectedCount = selectedIds.length;
+    const selectedOnPageCount = selectableIds.filter((id) => selectedIds.includes(id)).length;
+    const allPageSelected = selectableIds.length > 0 && selectedOnPageCount === selectableIds.length;
+
+    useEffect(() => {
+        if (!selectAllRef.current) {
+            return;
+        }
+        selectAllRef.current.indeterminate = selectedOnPageCount > 0 && !allPageSelected;
+    }, [selectedOnPageCount, allPageSelected]);
+
+    const toggleSelected = (id) => {
+        setSelectedIds((prev) => (
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+        ));
+    };
+
+    const toggleSelectPage = (checked) => {
+        setSelectedIds((prev) => {
+            if (checked) {
+                return [...new Set([...prev, ...selectableIds])];
+            }
+            return prev.filter((id) => !selectableIds.includes(id));
+        });
+    };
+
+    const runBulkAction = (action) => {
+        if (selectedCount === 0 || bulkBusy) {
+            return;
+        }
+
+        if (action === 'redeploy') {
+            if (!window.confirm(`Запустити редеплой для ${selectedCount} оффер(ів)?`)) {
+                return;
+            }
+        }
+
+        if (action === 'rebind_dns') {
+            const ip = bulkIp.trim();
+            if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) {
+                window.alert('Вкажи IPv4 нового сервера, наприклад 91.224.92.135');
+                return;
+            }
+            if (!window.confirm(
+                `Змінити Cloudflare A-записи @ і www на ${ip} для ${selectedCount} оффер(ів)?\nФайли на диску не копіюються — лише DNS.`,
+            )) {
+                return;
+            }
+        }
+
+        setBulkBusy(true);
+        router.post(route('offers.bulk-action'), {
+            ids: selectedIds,
+            action,
+            ...(action === 'rebind_dns' ? { ip: bulkIp.trim() } : {}),
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSelectedIds([]);
+                setRebindOpen(false);
+            },
+            onFinish: () => setBulkBusy(false),
+        });
+    };
+
     const toggleIndexing = (offer, checked) => {
         setIndexingId(offer.id);
         router.patch(
@@ -753,6 +834,13 @@ export default function OffersIndex({
             {errors?.deploy && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.deploy}</p>
+                </div>
+            )}
+            {(errors?.bulk || errors?.ids || errors?.ip || errors?.action) && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>
+                        {errors.bulk || errors.ids || errors.ip || errors.action}
+                    </p>
                 </div>
             )}
             {errors?.provision && (
@@ -987,10 +1075,82 @@ export default function OffersIndex({
                 </div>
             </div>
 
+            {selectedCount > 0 && (
+                <div className="offer-bulk-bar" role="region" aria-label="Масові дії">
+                    <span className="offer-bulk-bar__count">Обрано {selectedCount}</span>
+                    <button
+                        type="button"
+                        className="btn btn-primary btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => runBulkAction('redeploy')}
+                    >
+                        {bulkBusy ? 'Запуск…' : 'Редеплой'}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => setRebindOpen((open) => !open)}
+                    >
+                        A-запис (IP)
+                    </button>
+                    {rebindOpen && (
+                        <div className="offer-bulk-bar__rebind">
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                autoComplete="off"
+                                placeholder="Новий IP, напр. 91.224.92.135"
+                                value={bulkIp}
+                                list="offer-bulk-ip-presets"
+                                onChange={(e) => setBulkIp(e.target.value)}
+                                aria-label="IPv4 нового сервера"
+                            />
+                            {panelOptions.length > 0 && (
+                                <datalist id="offer-bulk-ip-presets">
+                                    {panelOptions.map((panel) => (
+                                        <option key={panel} value={panel} />
+                                    ))}
+                                </datalist>
+                            )}
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                disabled={bulkBusy}
+                                onClick={() => runBulkAction('rebind_dns')}
+                            >
+                                Змінити A
+                            </button>
+                        </div>
+                    )}
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => {
+                            setSelectedIds([]);
+                            setRebindOpen(false);
+                        }}
+                    >
+                        Скинути
+                    </button>
+                </div>
+            )}
+
             <div className="table-wrap offers-table-desktop">
                 <table>
                     <thead>
                         <tr>
+                            <th className="col-select">
+                                <input
+                                    ref={selectAllRef}
+                                    type="checkbox"
+                                    checked={allPageSelected}
+                                    disabled={selectableIds.length === 0}
+                                    onChange={(e) => toggleSelectPage(e.target.checked)}
+                                    aria-label="Обрати всі на сторінці"
+                                />
+                            </th>
                             <th className="col-num" title={`Всього: ${total}`}>#</th>
                             {colVisible('user') && showUserColumn && <th>Користувач</th>}
                             {colVisible('brand') && <th>Бренд</th>}
@@ -1023,7 +1183,17 @@ export default function OffersIndex({
                             const rowNumber = (currentPage - 1) * perPage + index + 1;
 
                             return (
-                                <tr key={offer.folder}>
+                                <tr key={offer.folder} className={selectedIds.includes(offer.id) ? 'is-selected' : undefined}>
+                                    <td className="col-select">
+                                        {selectableIds.includes(offer.id) ? (
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedIds.includes(offer.id)}
+                                                onChange={() => toggleSelected(offer.id)}
+                                                aria-label={`Обрати ${offer.domain}`}
+                                            />
+                                        ) : null}
+                                    </td>
                                     <td className="col-num">{rowNumber}</td>
                                     {colVisible('user') && showUserColumn && (
                                         <td>
@@ -1192,8 +1362,18 @@ export default function OffersIndex({
 
             <div className="offers-mobile-list" aria-label="Список офферів">
                 {rows.map((offer) => (
-                    <article key={`m-${offer.folder}`} className="offer-mobile-card">
+                    <article key={`m-${offer.folder}`} className={`offer-mobile-card${selectedIds.includes(offer.id) ? ' is-selected' : ''}`}>
                         <div className="offer-mobile-card__top">
+                            {selectableIds.includes(offer.id) && (
+                                <label className="offer-mobile-card__select">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedIds.includes(offer.id)}
+                                        onChange={() => toggleSelected(offer.id)}
+                                        aria-label={`Обрати ${offer.domain}`}
+                                    />
+                                </label>
+                            )}
                             <div className="offer-mobile-card__title">
                                 <strong>{offer.brand}</strong>
                                 <div className="domain-cell">
