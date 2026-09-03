@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 800px; margin-inline: auto;">
       <div class="faq-list" data-faq>
         <div class="faq-item is-open">
-          <button class="faq-trigger" type="button" aria-expés aed="true">
+          <button class="faq-trigger" type="button" aria-expanded="true">
             What is <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -38,7 +38,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             How do I get started with <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -49,7 +49,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Is <?= e($brand) ?> safe?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -60,7 +60,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             What are <?= e($brand) ?> fees?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -71,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Can I use automation on <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             How do <?= e($brand) ?> withdrawals work?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -93,7 +93,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Does <?= e($brand) ?> work on mobile?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -104,7 +104,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             How do I contact <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>

@@ -20,7 +20,7 @@
 
     <div class="header-actions">
       <a href="sign.php" class="btn btn-primary btn-sm"><?= e(SITE_NAME) ?> megnyitása</a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expés aed="false">
+      <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
         <span></span><span></span>
       </button>
     </div>

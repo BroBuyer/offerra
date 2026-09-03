@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Sie sind bereits registriert</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Wir haben Ihre Anfrage bei <?= e(SITE_NAME) ?> erhalten. Unser Spezialist wird Sie in Kürze telefonisch kontaktieren.
     </p>
@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit"><?= e(SITE_NAME) ?>-Konto erstellen</button>
 
     <?php
-    $payment_context = 'Kontoregistrierung';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

@@ -4,18 +4,18 @@ require_once __DIR__ . '/includes/config.php';
 header('Content-Type: application/xml; charset=UTF-8');
 
 $pages = [
-    ['loc' => $site . page_url(), 'changefreq' => $site . 'daily', 'priority' => $site . '1.0', 'image' => $site . true],
-    ['loc' => $site . page_url('product.php'), 'changefreq' => $site . 'weekly', 'priority' => $site . '0.8'],
-    ['loc' => $site . page_url('offer.php'), 'changefreq' => $site . 'weekly', 'priority' => $site . '0.8'],
-    ['loc' => $site . page_url('sign.php'), 'changefreq' => $site . 'weekly', 'priority' => $site . '0.9'],
-    ['loc' => $site . page_url('contacts.php'), 'changefreq' => $site . 'monthly', 'priority' => $site . '0.6'],
-    ['loc' => $site . page_url('faq.php'), 'changefreq' => $site . 'monthly', 'priority' => $site . '0.7'],
-    ['loc' => $site . page_url('privacy.php'), 'changefreq' => $site . 'yearly', 'priority' => $site . '0.3'],
-    ['loc' => $site . page_url('conditions.php'), 'changefreq' => $site . 'yearly', 'priority' => $site . '0.3'],
+    ['loc' => page_url(), 'changefreq' => 'daily', 'priority' => '1.0', 'image' => true],
+    ['loc' => page_url('product.php'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+    ['loc' => page_url('offer.php'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+    ['loc' => page_url('sign.php'), 'changefreq' => 'weekly', 'priority' => '0.9'],
+    ['loc' => page_url('contacts.php'), 'changefreq' => 'monthly', 'priority' => '0.6'],
+    ['loc' => page_url('faq.php'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+    ['loc' => page_url('privacy.php'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+    ['loc' => page_url('conditions.php'), 'changefreq' => 'yearly', 'priority' => '0.3'],
 ];
 
 $platform_url = page_url(platform_image_path());
-$platform_title = SITE_NAME . ' yapay zeka işlem platformu';
+$platform_title = SITE_NAME . ' AI Trading Platform';
 $platform_caption = platform_image_caption();
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

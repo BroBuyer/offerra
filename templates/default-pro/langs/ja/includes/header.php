@@ -15,7 +15,7 @@
       <a href="product.php" class="<?= $active_page === 'product' ? 'is-active' : '' ?>">製品</a>
       <a href="offer.php" class="<?= $active_page === 'offer' ? 'is-active' : '' ?>">オファー</a>
       <a href="contacts.php" class="<?= $active_page === 'contacts' ? 'is-active' : '' ?>">お問い合わせ</a>
-      <a href="faq.php" class="<?= $active_page === 'faq' ? 'is-active' : '' ?>">よくある質問</a>
+      <a href="faq.php" class="<?= $active_page === 'faq' ? 'is-active' : '' ?>">FAQ</a>
     </nav>
 
     <div class="header-actions">
@@ -31,7 +31,7 @@
     <a href="product.php">製品</a>
     <a href="offer.php">オファー</a>
     <a href="contacts.php">お問い合わせ</a>
-    <a href="faq.php">よくある質問</a>
+    <a href="faq.php">FAQ</a>
     <a href="sign.php" class="btn btn-primary"><?= e(SITE_NAME) ?> を開く</a>
   </nav>
 </header>

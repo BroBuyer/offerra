@@ -1,20 +1,20 @@
 <?php
 /**
  * Payment method icons — reusable block with SEO-friendly alt text.
- * @param string $context Optional context label for aria (e.g. "registracija računa form")
+ * @param string $context Optional context label for aria (e.g. "account registration form")
  */
 require_once __DIR__ . '/config.php';
 
-$payment_context = $payment_context ?? 'sigurna naplata';
+$payment_context = $payment_context ?? 'secure checkout';
 $payment_compact = $payment_compact ?? false;
 
 $methods = [
-    ['file' => 'visa.svg',        'alt' => 'Visa — prihvaćeni način plaćanja na ' . SITE_NAME],
-    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — prihvaćeni način plaćanja na ' . SITE_NAME],
-    ['file' => 'paypal.svg',      'alt' => 'PayPal — prihvaćeni način plaćanja na ' . SITE_NAME],
-    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — prihvaćeni način plaćanja na ' . SITE_NAME],
-    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — prihvaćeni način plaćanja na ' . SITE_NAME],
-    ['file' => 'banktransfer.svg','alt' => 'Bankovni transfer i SEPA — prihvaćeno na ' . SITE_NAME],
+    ['file' => 'visa.svg',        'alt' => 'Visa — accepted payment method on ' . SITE_NAME],
+    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — accepted payment method on ' . SITE_NAME],
+    ['file' => 'paypal.svg',      'alt' => 'PayPal — accepted payment method on ' . SITE_NAME],
+    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — accepted payment method on ' . SITE_NAME],
+    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — accepted payment method on ' . SITE_NAME],
+    ['file' => 'banktransfer.svg','alt' => 'Bank transfer and SEPA — accepted on ' . SITE_NAME],
 ];
 ?>
 <div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Prihvaćeni načini plaćanja za <?= e($payment_context) ?>">

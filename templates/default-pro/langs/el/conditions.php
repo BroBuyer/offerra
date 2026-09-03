@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Όρους Χρήσης');
+$page_title = page_title_lead('Terms of Use');
 $page_description = 'Read the terms and conditions for using the ' . SITE_NAME . ' trading platform and website.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'terms';
@@ -13,14 +13,14 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Όρους Χρήσης</h1>
-      <p class="lead">Last updated: <?= date('d/m/Y') ?></p>
+      <h1>Terms of Use</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Όρους Χρήσης. If you do not agree, please do not use our services.</p>
+      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Terms of Use. If you do not agree, please do not use our services.</p>
 
       <h2>Eligibility</h2>
       <p>You must be at least 18 years old and legally permitted to trade financial instruments in your jurisdiction.</p>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2>Limitation of liability</h2>
       <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
 
-      <h2>Επικοινωνία</h2>
+      <h2>Contact</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>

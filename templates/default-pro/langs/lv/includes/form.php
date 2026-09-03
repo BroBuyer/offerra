@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Jūs jau esat reģistrēti</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Jūsu pieprasījums ar <?= e(SITE_NAME) ?> ir saņemts. Lūdzu, gaidiet zvanu no mūsu menedžera.
     </p>

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Gebruiksvoorwaarden');
+$page_title = page_title_lead('Terms of Use');
 $page_description = 'Read the terms and conditions for using the ' . SITE_NAME . ' trading platform and website.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'terms';
@@ -13,29 +13,29 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Gebruiksvoorwaarden</h1>
-      <p class="lead">Laatst bijgewerkt: <?= date('d/m/Y') ?></p>
+      <h1>Terms of Use</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Door toegang te krijgen tot <?= e(SITE_NAME) ?> gaat u akkoord met deze gebruiksvoorwaarden. Als u niet akkoord gaat, gebruik onze diensten dan niet.</p>
+      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Terms of Use. If you do not agree, please do not use our services.</p>
 
-      <h2>Geschiktheid</h2>
-      <p>U moet ouder zijn dan 18 jaar en juridisch bevoegd zijn om financiele instrumenten te verhandelen in uw jurisdictie.</p>
+      <h2>Eligibility</h2>
+      <p>You must be at least 18 years old and legally permitted to trade financial instruments in your jurisdiction.</p>
 
-      <h2>Risicowaarschuwing</h2>
-      <p>Handelen in cryptovaluta, forex, CFD's en andere financiele instrumenten brengt een aanzienlijk risico op verlies met zich mee. Resultaten uit het verleden bieden geen garantie voor toekomstige prestaties. Handel alleen met kapitaal dat u kunt missen.</p>
+      <h2>Risk disclosure</h2>
+      <p>Trading cryptocurrencies, forex, CFDs, and other financial instruments involves substantial risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose.</p>
 
-      <h2>Verantwoordelijkheid voor account</h2>
-      <p>U bent verantwoordelijk voor de vertrouwelijkheid van uw inloggegevens en voor alle activiteiten die via uw account plaatsvinden.</p>
+      <h2>Account responsibilities</h2>
+      <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>
 
-      <h2>Beschikbaarheid van de dienst</h2>
-      <p>Wij streven naar continue beschikbaarheid, maar kunnen ononderbroken toegang niet garanderen. Onderhoud, marktomstandigheden of technische problemen kunnen de dienst beinvloeden.</p>
+      <h2>Service availability</h2>
+      <p>We strive for continuous availability but do not guarantee uninterrupted access. Maintenance, market conditions, or technical issues may affect service.</p>
 
-      <h2>Beperking van aansprakelijkheid</h2>
-      <p><?= e(SITE_NAME) ?> is niet aansprakelijk voor handelsverliezen of schade die voortvloeit uit het gebruik van informatie op deze website. Raadpleeg indien nodig een onafhankelijke financieel adviseur.</p>
+      <h2>Limitation of liability</h2>
+      <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
 
       <h2>Contact</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>

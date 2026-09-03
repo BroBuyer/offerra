@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Έχετε ήδη εγγραφεί</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Έχουμε λάβει το αίτημά σας στο <?= e(SITE_NAME) ?> . Θα λάβετε σύντομα κλήση από έναν ειδικό μας.
     </p>
@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit">Δημιουργία λογαριασμού <?= e(SITE_NAME) ?></button>
 
     <?php
-    $payment_context = 'εγγραφή λογαριασμού';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

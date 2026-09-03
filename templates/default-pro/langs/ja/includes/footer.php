@@ -16,7 +16,7 @@
         <a href="product.php">製品</a>
         <a href="offer.php">オファー</a>
         <a href="contacts.php">お問い合わせ</a>
-        <a href="faq.php">よくある質問</a>
+        <a href="faq.php">FAQ</a>
         <a href="privacy.php">プライバシー</a>
         <a href="conditions.php">利用規約</a>
       </nav>

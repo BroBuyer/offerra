@@ -1,6 +1,6 @@
 # Default Pro (English)
 
-SEO-first fork of `default`: same layout, form, CRM and Keitaro, but the brand (`SITE_NAME`) and GEO (`CRM_COUNTRY`) are written into H1, title, よくある質問, article block, and inner pages.
+SEO-first fork of `default`: same layout, form, CRM and Keitaro, but the brand (`SITE_NAME`) and GEO (`CRM_COUNTRY`) are written into H1, title, FAQ, article block, and inner pages.
 
 **Languages:** English only for now (`SITE_LANG=en` at template root). Other langs later.
 

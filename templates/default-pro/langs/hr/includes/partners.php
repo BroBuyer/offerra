@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — partner za tehnološku infrastrukturu'],
-    ['file' => 'partner-2.svg', 'alt' => 'TradingView — partner za tržišne podatke'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — partner za trgovačku platformu'],
-    ['file' => 'partner-4.svg', 'alt' => 'Visa — partner za obradu plaćanja'],
-    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — partner za obradu plaćanja'],
-    ['file' => 'partner-6.svg', 'alt' => 'PayPal — partner za obradu plaćanja'],
-    ['file' => 'partner-7.svg', 'alt' => 'Partner globalne bankovne mreže'],
-    ['file' => 'partner-8.svg', 'alt' => 'Partner za financijsku sigurnost i usklađenost'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> pouzdani partneri za infrastrukturu i plaćanja">

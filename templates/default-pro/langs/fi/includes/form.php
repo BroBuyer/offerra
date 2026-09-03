@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Olet jo rekisteröitynyt</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Pyyntösi <?= e(SITE_NAME) ?> -palveluun on vastaanotettu. Odota puhelua asiantuntijaltamme.
     </p>
@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit">Luo <?= e(SITE_NAME) ?>-tili</button>
 
     <?php
-    $payment_context = 'tilin rekisteröinti';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — 技術インフラパートナー'],
-    ['file' => 'partner-2.svg', 'alt' => 'TradingView — 市場データパートナー'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — 取引プラットフォームパートナー'],
-    ['file' => 'partner-4.svg', 'alt' => 'Visa — 決済パートナー'],
-    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — 決済パートナー'],
-    ['file' => 'partner-6.svg', 'alt' => 'PayPal — 決済パートナー'],
-    ['file' => 'partner-7.svg', 'alt' => 'グローバル銀行ネットワークパートナー'],
-    ['file' => 'partner-8.svg', 'alt' => '金融セキュリティ・コンプライアンスパートナー'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> の信頼できるインフラおよび決済パートナー">

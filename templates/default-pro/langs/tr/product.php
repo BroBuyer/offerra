@@ -2,11 +2,16 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Ürün');
-$page_description = 'Explore the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.'faq.php'product.php'faq'product';
-$schema_extra = ['breadcrumb' => $site . [
-  ['@type' => $site . 'ListItem', 'position' => $site . 1, 'name' => $site . 'Home', 'item' => $site . page_url()],
-  ['@type' => $site . 'ListItem', 'position' => $site . 2, 'name' => $site . 'Ürün', 'item' => $site . page_url('product.php')],
-]]/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+$page_description = 'Explore the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.';
+$page_canonical = page_url('product.php');
+$active_page = 'product';
+$schema_extra = ['breadcrumb' => [
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Ürün', 'item' => page_url('product.php')],
+]];
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>

@@ -279,7 +279,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2 style="margin-bottom: 0.75rem;">Fund your <?= e($brand) ?> account with methods you already use</h2>
       <p class="lead" style="margin-bottom: 1.75rem;">Cards, e-wallets, and bank transfers — shown inside <?= e($brand) ?> before you confirm.</p>
       <?php
-      $payment_context = $brand . ' account funding és a deposits';
+      $payment_context = $brand . ' account funding and deposits';
       $payment_compact = false;
       require __DIR__ . '/includes/payment-icons.php';
       ?>
@@ -361,7 +361,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <div class="faq-list" data-faq>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             What is <?= e($brand) ?> and how does it work?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -372,7 +372,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Do I need trading experience to use <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -383,7 +383,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Are my data and funds handled securely on <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -394,7 +394,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             What returns can I expect on <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -405,7 +405,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Which markets are available on <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -416,7 +416,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             Can I use <?= e($brand) ?> on mobile?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -427,7 +427,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             How do I contact <?= e($brand) ?> support?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
@@ -438,7 +438,7 @@ require_once __DIR__ . '/includes/header.php';
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-trigger" type="button" aria-expés aed="false">
+          <button class="faq-trigger" type="button" aria-expanded="false">
             How do I start with <?= e($brand) ?> today?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>

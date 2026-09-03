@@ -7,6 +7,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { LANGS, SEO } from './default-pro-i18n/seo.mjs';
 
@@ -113,7 +114,6 @@ function defaultPhraseMap(lang) {
     const en = fs.readFileSync(enFile, 'utf8');
     const tr = fs.readFileSync(langFile, 'utf8');
     Object.assign(map, zipPairs(extractHtmlTexts(en), extractHtmlTexts(tr)));
-    Object.assign(map, zipPairs(extractQuoted(en), extractQuoted(tr)));
   }
 
   return map;
@@ -134,6 +134,7 @@ function applyMap(text, map) {
   const pairs = Object.entries(map)
     .filter(([from, to]) => from && to && from !== to && from.length >= 3)
     .filter(([from]) => !skipToken.has(from.toLowerCase()))
+    .filter(([from]) => !from.includes('=>') && !from.includes('<?') && !from.includes("'"))
     .sort((a, b) => b[0].length - a[0].length);
 
   let out = text;
@@ -150,21 +151,26 @@ function applyMap(text, map) {
   return out;
 }
 
+function phpSingle(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 function applySeo(text, pack) {
+  const title = phpSingle(pack.title);
+  const descBefore = phpSingle(pack.descBefore);
+  const descAfter = phpSingle(pack.descAfter);
   let out = text;
-  out = out.split("page_title('Intelligent trading platform')").join(
-    `page_title('${pack.title.replace(/'/g, "\\'")}')`,
-  );
+  out = out.split("page_title('Intelligent trading platform')").join(`page_title('${title}')`);
   out = out.split("SITE_NAME . ' | Intelligent trading platform'").join(
-    `SITE_NAME . ' | ${pack.title.replace(/'/g, "\\'")}'`,
+    `SITE_NAME . ' | ${title}'`,
   );
   out = out.split(
     ' is a global trading platform developed for users seeking consistent performance, fast execution and full control of the environment.',
-  ).join(`${pack.descBefore}users${pack.descAfter}`);
-  out = out.split(' is a global trading platform developed for ').join(pack.descBefore);
+  ).join(`${descBefore}users${descAfter}`);
+  out = out.split(' is a global trading platform developed for ').join(descBefore);
   out = out.split(
     ' seeking consistent performance, fast execution and full control of the environment.',
-  ).join(pack.descAfter);
+  ).join(descAfter);
   out = out.split('Open <?= e(SITE_NAME) ?>').join(pack.open);
   out = out.split('Create <?= e(SITE_NAME) ?> account').join(pack.create);
   out = out.split('AI trading platform <?= e($brand) ?>:').join(`${pack.h1Lead}<?= e($brand) ?>:`);
@@ -205,12 +211,30 @@ function buildLang(lang) {
     const ext = path.extname(file).toLowerCase();
     const base = path.basename(file);
     if (!['.php', '.js', '.md'].includes(ext) && base !== '.htaccess') continue;
-    if (base === 'config.php' || base === 'helpers.php' || base === 'keitaro.php') continue;
+    if (base === 'config.php' || base === 'helpers.php' || base === 'keitaro.php' || base === 'schema.php') continue;
+    if (base === 'conditions.php' || base === 'privacy.php') continue;
 
     let text = fs.readFileSync(file, 'utf8');
+    const original = text;
     text = applySeo(text, pack);
     text = applyMap(text, phraseMap);
     fs.writeFileSync(file, text);
+
+    if (ext === '.php') {
+      const lint = spawnSync('php', ['-l', file], { encoding: 'utf8' });
+      if (lint.status !== 0) {
+        let fallback = original;
+        fallback = applySeo(fallback, pack);
+        fs.writeFileSync(file, fallback);
+        const lint2 = spawnSync('php', ['-l', file], { encoding: 'utf8' });
+        if (lint2.status !== 0) {
+          fs.writeFileSync(file, original);
+          console.warn(`reverted ${path.relative(SRC, file)} (php -l failed)`);
+        } else {
+          console.warn(`seo-only ${path.relative(SRC, file)}`);
+        }
+      }
+    }
   }
 
   patchConfig(path.join(dest, 'includes', 'config.php'), lang);

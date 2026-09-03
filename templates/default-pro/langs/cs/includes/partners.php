@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — partner technologické infrastruktury'],
-    ['file' => 'partner-2.svg', 'alt' => 'TradingView — partner pro tržní data'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — partner obchodní platformy'],
-    ['file' => 'partner-4.svg', 'alt' => 'Visa — partner zpracování plateb'],
-    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — partner zpracování plateb'],
-    ['file' => 'partner-6.svg', 'alt' => 'PayPal — partner zpracování plateb'],
-    ['file' => 'partner-7.svg', 'alt' => 'Partner globální bankovní sítě'],
-    ['file' => 'partner-8.svg', 'alt' => 'Partner pro compliance a finanční bezpečnost'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> důvěryhodní partneři infrastruktury a plateb">

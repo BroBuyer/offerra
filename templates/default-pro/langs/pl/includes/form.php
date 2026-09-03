@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Jesteś już zarejestrowany</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Otrzymaliśmy Twoje zgłoszenie w <?= e(SITE_NAME) ?> . Oczekuj telefonu od naszego specjalisty.
     </p>
@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit">Utwórz konto <?= e(SITE_NAME) ?></button>
 
     <?php
-    $payment_context = 'rejestracji konta';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>
@@ -93,7 +93,7 @@ $lead_cookie = site_slug() . '_lead';
 
     <p class="form-legal">
       Wysyłając dane, akceptujesz naszą
-      <a href="privacy.php">Polityka prywatności</a> and
+      <a href="privacy.php">Politykę prywatności</a> and
       <a href="conditions.php">Regulamin</a>.
     </p>
   </div>

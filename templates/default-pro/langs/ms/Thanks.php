@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Terima kasih');
-$page_description = 'Permintaan akaun ' . SITE_NAME . ' telah diterima.';
+$page_title = page_title_lead('Thank You');
+$page_description = 'Your ' . SITE_NAME . ' account request has been received.';
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;

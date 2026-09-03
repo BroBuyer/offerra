@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Vous êtes déjà inscrit</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       Votre demande auprès de <?= e(SITE_NAME) ?> a été reçue. Attendez un appel de notre gestionnaire.
     </p>
@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit">Créer un compte <?= e(SITE_NAME) ?></button>
 
     <?php
-    $payment_context = 'inscription de compte';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

@@ -31,7 +31,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full <?= e(SITE_NAME) ?> desk · AI signals · 24/7 support</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Wat is inbegrepen</div>
+          <div class="specs-label">What's included</div>
           <div class="specs-value">Realtime grafieken, trading op meerdere markten, portefeuillebeheer, begeleide onboarding</div>
         </div>
         <div class="specs-row">

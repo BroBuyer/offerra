@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('käyttöehtomme');
-$page_description = 'Lue ' . SITE_NAME . '-kaupankäyntialustan ja verkkosivuston käyttöehdot.';
+$page_title = page_title_lead('Terms of Use');
+$page_description = 'Read the terms and conditions for using the ' . SITE_NAME . ' trading platform and website.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'terms';
 
@@ -13,31 +13,31 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>käyttöehtomme</h1>
-      <p class="lead">Viimeksi päivitetty: <?= date('j.n.Y') ?></p>
+      <h1>Terms of Use</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Käyttämällä <?= e(SITE_NAME) ?> -palvelua hyväksyt nämä käyttöehdot. Jos et hyväksy niitä, älä käytä palveluitamme.</p>
+      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Terms of Use. If you do not agree, please do not use our services.</p>
 
-      <h2>Kelpoisuus</h2>
-      <p>Sinun on oltava vähintään 18-vuotias ja lain mukaan oikeutettu käymään kauppaa rahoitusvälineillä oikeusalueellasi.</p>
+      <h2>Eligibility</h2>
+      <p>You must be at least 18 years old and legally permitted to trade financial instruments in your jurisdiction.</p>
 
-      <h2>Riskien ilmoitus</h2>
-      <p>Kaupankäynti kryptovaluutoilla, forexillä, CFD:illä ja muilla rahoitusvälineillä sisältää merkittävän tappioriskin. Aiempi tuotto ei takaa tulevaa. Käy kauppaa vain pääomalla, jonka voit menettää.</p>
+      <h2>Risk disclosure</h2>
+      <p>Trading cryptocurrencies, forex, CFDs, and other financial instruments involves substantial risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose.</p>
 
-      <h2>Tilin vastuut</h2>
-      <p>Olet vastuussa tilitunnustesi salassapidosta ja kaikesta tililläsi tapahtuvasta toiminnasta.</p>
+      <h2>Account responsibilities</h2>
+      <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>
 
-      <h2>Palvelun saatavuus</h2>
-      <p>Pyrimme jatkuvaan saatavuuteen, mutta emme takaa keskeytyksetöntä käyttöä. Huolto, markkinaolosuhteet tai tekniset ongelmat voivat vaikuttaa palveluun.</p>
+      <h2>Service availability</h2>
+      <p>We strive for continuous availability but do not guarantee uninterrupted access. Maintenance, market conditions, or technical issues may affect service.</p>
 
-      <h2>Vastuunrajoitus</h2>
-      <p><?= e(SITE_NAME) ?> ei ole vastuussa kaupankäyntitappioista tai vahingoista, jotka johtuvat tällä sivustolla olevan tiedon käytöstä. Hae tarvittaessa riippumatonta taloudellista neuvontaa.</p>
+      <h2>Limitation of liability</h2>
+      <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
 
-      <h2>Yhteystiedot</h2>
+      <h2>Contact</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>

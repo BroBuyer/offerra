@@ -15,7 +15,7 @@ $pages = [
 ];
 
 $platform_url = page_url(platform_image_path());
-$platform_title = SITE_NAME . ' KI-Handelsplattform';
+$platform_title = SITE_NAME . ' AI Trading Platform';
 $platform_caption = platform_image_caption();
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

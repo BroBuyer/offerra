@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — Partner für technologische Infrastruktur'],
-    ['file' => 'partner-2.svg', 'alt' => 'TradingView — Partner für Marktdaten'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — Partner der Handelsplattform'],
-    ['file' => 'partner-4.svg', 'alt' => 'Visa — Partner für Zahlungsabwicklung'],
-    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — Partner für Zahlungsabwicklung'],
-    ['file' => 'partner-6.svg', 'alt' => 'PayPal — Partner für Zahlungsabwicklung'],
-    ['file' => 'partner-7.svg', 'alt' => 'Partner des globalen Bankennetzwerks'],
-    ['file' => 'partner-8.svg', 'alt' => 'Partner für Compliance und finanzielle Sicherheit'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> vertrauenswürdige Infrastruktur- und Zahlungspartner">

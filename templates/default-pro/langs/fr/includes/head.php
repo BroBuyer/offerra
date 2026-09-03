@@ -3,7 +3,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
 $page_title = $page_title ?? SITE_NAME . ' | Plateforme de trading intelligente';
-$page_description = $page_description ?? SITE_NAME . ' est une plateforme mondiale de trading conçue pour users qui recherchent des performances constantes, une exécution rapide et un contrôle total de l'environnement.';
+$page_description = $page_description ?? SITE_NAME . ' est une plateforme mondiale de trading conçue pour users qui recherchent des performances constantes, une exécution rapide et un contrôle total de l\'environnement.';
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

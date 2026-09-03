@@ -19,7 +19,7 @@ $lead_cookie = site_slug() . '_lead';
 >
   <div class="form-already-registered hidden" data-already-registered>
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
-    <p class="form-already-registered__title">Már regisztrált</p>
+    <p class="form-already-registered__title">You're already registered</p>
     <p class="form-already-registered__text">
       A(z) <?= e(SITE_NAME) ?> nál leadott kérelmét megkaptuk. Várja szakértőnk hívását.
     </p>

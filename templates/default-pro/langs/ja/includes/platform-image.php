@@ -17,7 +17,7 @@ $platform_caption = platform_image_caption();
     <img
       src="<?= e($platform_img) ?>"
       alt="<?= e($platform_alt) ?>"
-      title="<?= e(page_title('AI取引プラットフォーム')) ?>"
+      title="<?= e(page_title('AI Trading Platform')) ?>"
       width="494"
       height="968"
       class="platform-figure-img"

@@ -1,20 +1,20 @@
 <?php
 /**
  * Payment method icons — reusable block with SEO-friendly alt text.
- * @param string $context Optional context label for aria (e.g. "inscription de compte form")
+ * @param string $context Optional context label for aria (e.g. "account registration form")
  */
 require_once __DIR__ . '/config.php';
 
-$payment_context = $payment_context ?? 'pagamento seguro';
+$payment_context = $payment_context ?? 'secure checkout';
 $payment_compact = $payment_compact ?? false;
 
 $methods = [
-    ['file'text'visa.svg',        'alt'text'Visa — método de pagamento aceite em ' . SITE_NAME],
-    ['file'text'mastercard.svg',  'alt'text'Mastercard — método de pagamento aceite em ' . SITE_NAME],
-    ['file'text'paypal.svg',      'alt'text'PayPal — método de pagamento aceite em ' . SITE_NAME],
-    ['file'text'applepay.svg',    'alt'text'Apple Pay — método de pagamento aceite em ' . SITE_NAME],
-    ['file'text'googlepay.svg',   'alt'text'Google Pay — método de pagamento aceite em ' . SITE_NAME],
-    ['file'text'banktransfer.svg','alt'text'Transferência bancária e SEPA — aceites em ' . SITE_NAME],
+    ['file' => 'visa.svg',        'alt' => 'Visa — accepted payment method on ' . SITE_NAME],
+    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — accepted payment method on ' . SITE_NAME],
+    ['file' => 'paypal.svg',      'alt' => 'PayPal — accepted payment method on ' . SITE_NAME],
+    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — accepted payment method on ' . SITE_NAME],
+    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — accepted payment method on ' . SITE_NAME],
+    ['file' => 'banktransfer.svg','alt' => 'Bank transfer and SEPA — accepted on ' . SITE_NAME],
 ];
 ?>
 <div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Métodos de pagamento aceites para <?= e($payment_context) ?>">

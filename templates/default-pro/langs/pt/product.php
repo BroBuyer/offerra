@@ -2,11 +2,11 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Produto');
-$page_description = 'Explore as ferramentas de trading da the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.';
+$page_description = 'Explore the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.';
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Início', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Produto', 'item' => page_url('product.php')],
 ]];
 

@@ -119,10 +119,4 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

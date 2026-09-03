@@ -6,7 +6,7 @@ $page_description = 'Open ' . SITE_NAME . ' from ' . MIN_DEPOSIT . ' ' . CURRENC
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Início', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Oferta', 'item' => page_url('offer.php')],
 ]];
 
@@ -31,7 +31,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full <?= e(SITE_NAME) ?> desk · AI signals · 24/7 support</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">O que está incluído</div>
+          <div class="specs-label">What's included</div>
           <div class="specs-value">Gráficos em tempo real, trading multi-mercado, acompanhamento de portefólio, integração guiada</div>
         </div>
         <div class="specs-row">

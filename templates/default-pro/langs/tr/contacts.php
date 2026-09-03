@@ -2,7 +2,12 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Iletisim');
-$page_description = 'Iletisim ' . SITE_NAME . ' support. Help for ' . market_audience() . ' on accounts, deposits, and the trading desk.'faq.php'contacts.php'faq'contacts'/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+$page_description = 'Iletisim ' . SITE_NAME . ' support. Help for ' . market_audience() . ' on accounts, deposits, and the trading desk.';
+$page_canonical = page_url('contacts.php');
+$active_page = 'contacts';
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>

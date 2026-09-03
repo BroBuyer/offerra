@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Privatlivspolitik');
-$page_description = 'Les hvordan ' . SITE_NAME . ' samler inn, bruker og beskytter personopplysningene dine.';
+$page_title = page_title_lead('Privacy Policy');
+$page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.';
 $page_canonical = page_url('privacy.php');
 $active_page = 'privacy';
 
@@ -13,34 +13,34 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Privatlivspolitik</h1>
-      <p class="lead">Sist oppdatert: <?= date('d/m/Y') ?></p>
+      <h1>Privacy Policy</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Denne personvernerklæringen beskriver hvordan <?= e(SITE_NAME) ?> («vi») samler inn og behandler personopplysninger når du bruker nettstedet og tjenestene våre.</p>
+      <p>This Privacy Policy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
 
-      <h2>Hvilken informasjon vi samler inn</h2>
-      <p>Vi kan samle inn: navn, e-postadresse, telefonnummer, bostedsland, IP-adresse og informasjon du oppgir via skjemaer eller supporthenvendelser.</p>
+      <h2>Information we collect</h2>
+      <p>We may collect: name, email address, phone number, country of residence, IP address, and information you provide through forms or support requests.</p>
 
-      <h2>Hvordan vi bruker informasjonen din</h2>
+      <h2>How we use your information</h2>
       <ul>
-        <li>For å opprette og administrere kontoen din</li>
-        <li>For å gi tilgang til handelsplattformen og kundestøtte</li>
-        <li>For å oppfylle juridiske og regulatoriske forpliktelser</li>
-        <li>For å forbedre tjenestene våre og forhindre svindel</li>
+        <li>To create and manage your account</li>
+        <li>To provide trading platform access and customer support</li>
+        <li>To comply with legal and regulatory obligations</li>
+        <li>To improve our services and prevent fraud</li>
       </ul>
 
-      <h2>Datasikkerhet</h2>
-      <p>Vi iverksetter tekniske og organisatoriske tiltak, inkludert SSL-kryptering og tilgangskontroll, for å beskytte dataene dine.</p>
+      <h2>Data security</h2>
+      <p>We implement technical and organisational measures including SSL encryption and access controls to protect your data.</p>
 
-      <h2>Dine rettigheter</h2>
-      <p>Avhengig av jurisdiksjonen din kan du ha rett til innsyn, retting eller sletting av personopplysninger. Kontakt os via <?= e(SUPPORT_EMAIL) ?> for å utøve disse rettighetene.</p>
+      <h2>Your rights</h2>
+      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
 
-      <h2>Kontakt</h2>
-      <p>Spørsmål om denne policyen? Kontakt os via <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <h2>Contact</h2>
+      <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>

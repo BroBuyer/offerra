@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Merci');
-$page_description = 'Votre demande de compte sur ' . SITE_NAME . ' a été reçue.';
+$page_title = page_title_lead('Thank You');
+$page_description = 'Your ' . SITE_NAME . ' account request has been received.';
 $page_canonical = page_url('Thanks.php');
 $active_page = 'thanks';
 $noindex = true;
@@ -24,10 +24,4 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

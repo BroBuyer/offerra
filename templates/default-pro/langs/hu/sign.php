@@ -6,7 +6,7 @@ $page_description = 'Create your ' . SITE_NAME . ' account and start trading wit
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Kezdőlap', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sign Up', 'item' => page_url('sign.php')],
 ]];
 

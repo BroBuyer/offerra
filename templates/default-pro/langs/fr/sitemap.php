@@ -4,18 +4,18 @@ require_once __DIR__ . '/includes/config.php';
 header('Content-Type: application/xml; charset=UTF-8');
 
 $pages = [
-    ['loc'textpage_url(), 'changefreq'text'daily', 'priority'text'1.0', 'image'texttrue],
-    ['loc'textpage_url('product.php'), 'changefreq'text'weekly', 'priority'text'0.8'],
-    ['loc'textpage_url('offer.php'), 'changefreq'text'weekly', 'priority'text'0.8'],
-    ['loc'textpage_url('sign.php'), 'changefreq'text'weekly', 'priority'text'0.9'],
-    ['loc'textpage_url('contacts.php'), 'changefreq'text'monthly', 'priority'text'0.6'],
-    ['loc'textpage_url('faq.php'), 'changefreq'text'monthly', 'priority'text'0.7'],
-    ['loc'textpage_url('privacy.php'), 'changefreq'text'yearly', 'priority'text'0.3'],
-    ['loc'textpage_url('conditions.php'), 'changefreq'text'yearly', 'priority'text'0.3'],
+    ['loc' => page_url(), 'changefreq' => 'daily', 'priority' => '1.0', 'image' => true],
+    ['loc' => page_url('product.php'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+    ['loc' => page_url('offer.php'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+    ['loc' => page_url('sign.php'), 'changefreq' => 'weekly', 'priority' => '0.9'],
+    ['loc' => page_url('contacts.php'), 'changefreq' => 'monthly', 'priority' => '0.6'],
+    ['loc' => page_url('faq.php'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+    ['loc' => page_url('privacy.php'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+    ['loc' => page_url('conditions.php'), 'changefreq' => 'yearly', 'priority' => '0.3'],
 ];
 
 $platform_url = page_url(platform_image_path());
-$platform_title = SITE_NAME . ' Plateforme de trading IA';
+$platform_title = SITE_NAME . ' AI Trading Platform';
 $platform_caption = platform_image_caption();
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

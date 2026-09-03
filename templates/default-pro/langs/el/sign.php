@@ -1,13 +1,13 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Εγγραφή');
-$page_description = 'Δημιουργήστε τον λογαριασμό σας στην ' . SITE_NAME . ' account and start trading with AI-powered tools. For ' . market_audience() . '. Minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . '.';
+$page_title = page_title_lead('Sign Up');
+$page_description = 'Create your ' . SITE_NAME . ' account and start trading with AI-powered tools. For ' . market_audience() . '. Minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . '.';
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Αρχική', 'item' => page_url()],
-  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Εγγραφή', 'item' => page_url('sign.php')],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sign Up', 'item' => page_url('sign.php')],
 ]];
 
 require_once __DIR__ . '/includes/head.php';

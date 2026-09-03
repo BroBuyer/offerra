@@ -1,41 +1,46 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Gizlilik Politikasi');
-$page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.'faq.php'privacy.php'faq'privacy'/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+$page_title = page_title_lead('Privacy Policy');
+$page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.';
+$page_canonical = page_url('privacy.php');
+$active_page = 'privacy';
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Gizlilik Politikasi</h1>
-      <p class="lead">Son guncelleme: <?= date('F j, Y') ?></p>
+      <h1>Privacy Policy</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Bu Gizlilik Politikasi, <?= e(SITE_NAME) ?> ("biz") tarafindan web sitemiz ve hizmetlerimiz kullanilirken kisisel verilerin nasil toplandigini ve islendigini aciklar.</p>
+      <p>This Privacy Policy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
 
-      <h2>Hangi bilgileri topluyoruz</h2>
-      <p>Su verileri toplayabiliriz: ad, e-posta adresi, telefon numarasi, ikamet ulkesi, IP adresi ve formlar veya destek talepleri araciligiyla bize ilettiginiz bilgiler.</p>
+      <h2>Information we collect</h2>
+      <p>We may collect: name, email address, phone number, country of residence, IP address, and information you provide through forms or support requests.</p>
 
-      <h2>Bilgilerinizi nasil kullaniyoruz</h2>
+      <h2>How we use your information</h2>
       <ul>
-        <li>Hesabinizi olusturmak ve yonetmek icin</li>
-        <li>Islem platformuna erisim ve musteri destegi saglamak icin</li>
-        <li>Yasal ve duzenleyici yukumlulukleri yerine getirmek icin</li>
-        <li>Hizmetlerimizi gelistirmek ve dolandiriciligi onlemek icin</li>
+        <li>To create and manage your account</li>
+        <li>To provide trading platform access and customer support</li>
+        <li>To comply with legal and regulatory obligations</li>
+        <li>To improve our services and prevent fraud</li>
       </ul>
 
-      <h2>Veri guvenligi</h2>
-      <p>Verilerinizi korumak icin SSL sifreleme ve erisim yonetimi dahil teknik ve organizasyonel onlemler uyguluyoruz.</p>
+      <h2>Data security</h2>
+      <p>We implement technical and organisational measures including SSL encryption and access controls to protect your data.</p>
 
-      <h2>Haklariniz</h2>
-      <p>Bulundugunuz yargi alanina bagli olarak kisisel verilerinize erisim, duzeltme veya silme haklarina sahip olabilirsiniz. Bu haklari kullanmak icin <?= e(SUPPORT_EMAIL) ?> adresiyle iletisime gecin.</p>
+      <h2>Your rights</h2>
+      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
 
-      <h2>Iletisim</h2>
-      <p>Bu politika hakkinda sorulariniz varsa bize su adresten ulasin: <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <h2>Contact</h2>
+      <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>

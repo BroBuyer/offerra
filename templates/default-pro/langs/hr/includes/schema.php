@@ -40,7 +40,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
             'bestRating' => '5',
         ],
         'offers' => [
-            '@type' => 'Ponuda',
+            '@type' => 'Offer',
             'price' => MIN_DEPOSIT,
             'priceCurrency' => CURRENCY,
         ],
@@ -71,7 +71,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'When can I withdraw from ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Isplate can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
+                    'text' => 'Withdrawals can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
                 ],
             ],
             [

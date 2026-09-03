@@ -13,7 +13,7 @@
     <nav class="nav-desktop" aria-label="Main navigation">
       <a href="<?= page_url() ?>" class="<?= $active_page === 'home' ? 'is-active' : '' ?>">Home</a>
       <a href="product.php" class="<?= $active_page === 'product' ? 'is-active' : '' ?>">Prodotto</a>
-      <a href="offer.php" class="<?= $active_page === 'offer' ? 'is-active' : '' ?>">Offertata</a>
+      <a href="offer.php" class="<?= $active_page === 'offer' ? 'is-active' : '' ?>">Offerta</a>
       <a href="contacts.php" class="<?= $active_page === 'contacts' ? 'is-active' : '' ?>">Contatti</a>
       <a href="faq.php" class="<?= $active_page === 'faq' ? 'is-active' : '' ?>">FAQ</a>
     </nav>

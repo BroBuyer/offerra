@@ -12,9 +12,9 @@
 
     <nav class="nav-desktop" aria-label="Main navigation">
       <a href="<?= page_url() ?>" class="<?= $active_page === 'home' ? 'is-active' : '' ?>">Inicio</a>
-      <a href="product.php" class="<?= $active_page === 'product' ? 'is-active' : '' ?>">Productoo</a>
+      <a href="product.php" class="<?= $active_page === 'product' ? 'is-active' : '' ?>">Producto</a>
       <a href="offer.php" class="<?= $active_page === 'offer' ? 'is-active' : '' ?>">Oferta</a>
-      <a href="contacts.php" class="<?= $active_page === 'contacts' ? 'is-active' : '' ?>">Contactoo</a>
+      <a href="contacts.php" class="<?= $active_page === 'contacts' ? 'is-active' : '' ?>">Contacto</a>
       <a href="faq.php" class="<?= $active_page === 'faq' ? 'is-active' : '' ?>">FAQ</a>
     </nav>
 

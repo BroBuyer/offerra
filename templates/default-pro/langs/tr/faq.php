@@ -6,7 +6,12 @@ $audience = market_audience();
 
 $page_title = page_title_lead('FAQ');
 $page_description = 'FAQ for ' . $brand . ' — how the AI trading platform works for ' . $audience
-    . ', security, fees, markets, and how to open an account.'faq.php'faq.php'faq'faq'/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+    . ', security, fees, markets, and how to open an account.';
+$page_canonical = page_url('faq.php');
+$active_page = 'faq';
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>

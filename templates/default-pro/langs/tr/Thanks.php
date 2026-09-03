@@ -2,8 +2,13 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Thank You');
-$page_description = 'Your ' . SITE_NAME . ' account request has been received.'faq.php'Thanks.php'faq'thanks';
-$noindex = true/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+$page_description = 'Your ' . SITE_NAME . ' account request has been received.';
+$page_canonical = page_url('Thanks.php');
+$active_page = 'thanks';
+$noindex = true;
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>

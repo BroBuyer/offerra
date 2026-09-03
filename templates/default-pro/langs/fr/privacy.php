@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Politique de confidentialité');
+$page_title = page_title_lead('Privacy Policy');
 $page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.';
 $page_canonical = page_url('privacy.php');
 $active_page = 'privacy';
@@ -13,42 +13,36 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Politique de confidentialité</h1>
-      <p class="lead">Dernière mise à jour : <?= date('F j, Y') ?></p>
+      <h1>Privacy Policy</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Cette Politique de confidentialité décrit comment <?= e(SITE_NAME) ?> (« nous ») collecte et traite les informations personnelles lorsque vous utilisez notre site et nos services.</p>
+      <p>This Privacy Policy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
 
-      <h2>Informations que nous collectons</h2>
-      <p>Nous pouvons collecter : nom, adresse e-mail, numéro de téléphone, pays de résidence, adresse IP et informations que vous fournissez via des formulaires ou des demandes d'assistance.</p>
+      <h2>Information we collect</h2>
+      <p>We may collect: name, email address, phone number, country of residence, IP address, and information you provide through forms or support requests.</p>
 
-      <h2>Comment nous utilisons vos informations</h2>
+      <h2>How we use your information</h2>
       <ul>
-        <li>Pour créer et gérer votre compte</li>
-        <li>Pour fournir l'accès à la plateforme de trading et l'assistance client</li>
-        <li>Pour respecter les obligations légales et réglementaires</li>
-        <li>Pour améliorer nos services et prévenir la fraude</li>
+        <li>To create and manage your account</li>
+        <li>To provide trading platform access and customer support</li>
+        <li>To comply with legal and regulatory obligations</li>
+        <li>To improve our services and prevent fraud</li>
       </ul>
 
-      <h2>Sécurité des données</h2>
-      <p>Nous mettons en œuvre des mesures techniques et organisationnelles, notamment le chiffrement SSL et des contrôles d'accès, pour protéger vos données.</p>
+      <h2>Data security</h2>
+      <p>We implement technical and organisational measures including SSL encryption and access controls to protect your data.</p>
 
-      <h2>Vos droits</h2>
-      <p>Selon votre juridiction, vous pouvez avoir le droit d'accéder, de corriger ou de supprimer vos données personnelles. Contactez <?= e(SUPPORT_EMAIL) ?> pour exercer ces droits.</p>
+      <h2>Your rights</h2>
+      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
 
       <h2>Contact</h2>
-      <p>Des questions sur cette politique ? Envoyez un e-mail à <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

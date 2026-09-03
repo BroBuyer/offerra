@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => $site . 'partner-1.svg', 'alt' => $site . 'Coinbase — teknoloji altyapisi ortagi'],
-    ['file' => $site . 'partner-2.svg', 'alt' => $site . 'TradingView — piyasa verisi ortagi'],
-    ['file' => $site . 'partner-3.svg', 'alt' => $site . 'MetaTrader — islem platformu ortagi'],
-    ['file' => $site . 'partner-4.svg', 'alt' => $site . 'Visa — odeme islemleri ortagi'],
-    ['file' => $site . 'partner-5.svg', 'alt' => $site . 'Mastercard — odeme islemleri ortagi'],
-    ['file' => $site . 'partner-6.svg', 'alt' => $site . 'PayPal — odeme islemleri ortagi'],
-    ['file' => $site . 'partner-7.svg', 'alt' => $site . 'Kuresel bankacilik agi ortagi'],
-    ['file' => $site . 'partner-8.svg', 'alt' => $site . 'Uyumluluk ve finansal guvenlik ortagi'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> guvenilir altyapi ve odeme ortaklari">

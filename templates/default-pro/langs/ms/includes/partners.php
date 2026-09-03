@@ -7,7 +7,7 @@ require_once __DIR__ . '/config.php';
 $partners = [
     ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
     ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — platform dagangan partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
     ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
     ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
     ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],

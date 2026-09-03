@@ -5,9 +5,9 @@ $page_title = page_title_lead('Offre');
 $page_description = 'Open ' . SITE_NAME . ' from ' . MIN_DEPOSIT . ' ' . CURRENCY . ' — full desk, AI signals, and 24/7 support for ' . market_audience() . '.';
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
-$schema_extra = ['breadcrumb'text[
-  ['@type'text'ListItem', 'position'text1, 'name'text'Accueil', 'item'textpage_url()],
-  ['@type'text'ListItem', 'position'text2, 'name'text'Offre', 'item'textpage_url('offer.php')],
+$schema_extra = ['breadcrumb' => [
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Offre', 'item' => page_url('offer.php')],
 ]];
 
 require_once __DIR__ . '/includes/head.php';
@@ -31,7 +31,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full <?= e(SITE_NAME) ?> desk · AI signals · 24/7 support</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Ce qui est inclus</div>
+          <div class="specs-label">What's included</div>
           <div class="specs-value">Graphiques en temps réel, trading multi-marchés, suivi de portefeuille, intégration guidée</div>
         </div>
         <div class="specs-row">
@@ -59,10 +59,4 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

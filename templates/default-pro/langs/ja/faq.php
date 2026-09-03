@@ -4,8 +4,8 @@ require_once __DIR__ . '/includes/config.php';
 $brand = SITE_NAME;
 $audience = market_audience();
 
-$page_title = page_title_lead('よくある質問');
-$page_description = 'よくある質問 for ' . $brand . ' — how the AI trading platform works for ' . $audience
+$page_title = page_title_lead('FAQ');
+$page_description = 'FAQ for ' . $brand . ' — how the AI trading platform works for ' . $audience
     . ', security, fees, markets, and how to open an account.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <p class="eyebrow"><?= e($brand) ?> よくある質問</p>
+      <p class="eyebrow"><?= e($brand) ?> FAQ</p>
       <h1>Frequently asked questions about <?= e($brand) ?></h1>
       <p class="lead">What <?= e($audience) ?> usually ask before opening a <?= e($brand) ?> account.</p>
     </div>

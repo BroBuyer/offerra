@@ -40,7 +40,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
             'bestRating' => '5',
         ],
         'offers' => [
-            '@type' => 'Προσφορά',
+            '@type' => 'Offer',
             'price' => MIN_DEPOSIT,
             'priceCurrency' => CURRENCY,
         ],
@@ -71,7 +71,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'When can I withdraw from ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Αναλήψεις can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
+                    'text' => 'Withdrawals can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
                 ],
             ],
             [
@@ -108,8 +108,8 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Register on ' . $site, 'text' => 'Sign up with your name, email, and phone to create a ' . $site . ' account.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify the ' . $site . ' account', 'text' => 'Finish guided verification and set risk preferences.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Καταθέστε τουλάχιστον ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Επιλέξτε επίπεδο κινδύνου και προτιμήσεις λειτουργίας, χειροκίνητα ή αυτοματοποιημένα.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Trade in the ' . $site . ' desk', 'text' => 'Use live charts, tickets, and support inside ' . $site . '.'],
         ],
     ];
@@ -123,11 +123,11 @@ function render_schema(string $page = 'home', array $extra = []): void {
         $blocks[] = [
             '@context' => 'https://schema.org',
             '@type' => 'ImageObject',
-            'name' => $site . ' πλατφόρμα trading με AI',
-            'description' => $site . ' mobile διεπαφή trading με ζωντανό γράφημα BTC/USDT και εργαλεία χαρτοφυλακίου',
+            'name' => $site . ' AI Trading Platform',
+            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart and portfolio tools',
             'contentUrl' => $platform_image,
             'thumbnailUrl' => $platform_image,
-            'caption' => $site . ' | πλατφόρμα trading με AI - mobile προβολή γραφήματος',
+            'caption' => $site . ' | AI Trading Platform — mobile chart view',
             'representativeOfPage' => true,
         ];
     }

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Regulamin');
+$page_title = page_title_lead('Terms of Use');
 $page_description = 'Read the terms and conditions for using the ' . SITE_NAME . ' trading platform and website.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'terms';
@@ -13,31 +13,31 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Regulamin</h1>
-      <p class="lead">Ostatnia aktualizacja: <?= date('d/m/Y') ?></p>
+      <h1>Terms of Use</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Korzystając z <?= e(SITE_NAME) ?> , akceptujesz niniejszy regulamin. Jeśli się nie zgadzasz, nie korzystaj z naszych usług.</p>
+      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Terms of Use. If you do not agree, please do not use our services.</p>
 
-      <h2>Kwalifikowalność</h2>
-      <p>Musisz mieć ukończone 18 lat i być prawnie uprawniony do handlu instrumentami finansowymi w swojej jurysdykcji.</p>
+      <h2>Eligibility</h2>
+      <p>You must be at least 18 years old and legally permitted to trade financial instruments in your jurisdiction.</p>
 
-      <h2>Ostrzeżenie o ryzyku</h2>
-      <p>Handel kryptowalutami, forexem, CFD i innymi instrumentami finansowymi wiąże się ze znacznym ryzykiem straty. Wyniki z przeszłości nie gwarantują przyszłych rezultatów. Handluj wyłącznie kapitałem, którego utratę możesz zaakceptować.</p>
+      <h2>Risk disclosure</h2>
+      <p>Trading cryptocurrencies, forex, CFDs, and other financial instruments involves substantial risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose.</p>
 
-      <h2>Odpowiedzialność za konto</h2>
-      <p>Ponosisz odpowiedzialność za poufność danych logowania oraz za całą aktywność wykonaną na Twoim koncie.</p>
+      <h2>Account responsibilities</h2>
+      <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>
 
-      <h2>Dostępność usługi</h2>
-      <p>Staramy się zapewnić ciągłą dostępność, ale nie możemy zagwarantować nieprzerwanego dostępu. Konserwacja, warunki rynkowe lub problemy techniczne mogą wpływać na usługę.</p>
+      <h2>Service availability</h2>
+      <p>We strive for continuous availability but do not guarantee uninterrupted access. Maintenance, market conditions, or technical issues may affect service.</p>
 
-      <h2>Ograniczenie odpowiedzialności</h2>
-      <p><?= e(SITE_NAME) ?> nie ponosi odpowiedzialności za straty tradingowe ani szkody wynikające z korzystania z informacji na tej stronie. W razie potrzeby skonsultuj się z niezależnym doradcą finansowym.</p>
+      <h2>Limitation of liability</h2>
+      <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
 
-      <h2>Kontakt</h2>
+      <h2>Contact</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>

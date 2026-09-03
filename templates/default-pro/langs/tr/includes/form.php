@@ -81,7 +81,7 @@ $lead_cookie = site_slug() . '_lead';
     <button type="submit" class="btn btn-primary btn-block submit"><?= e(SITE_NAME) ?> hesabı oluştur</button>
 
     <?php
-    $payment_context = 'hesap kaydı';
+    $payment_context = 'account registration';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>

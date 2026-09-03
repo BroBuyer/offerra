@@ -28,7 +28,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         '@context' => 'https://schema.org',
         '@type' => 'SoftwareApplication',
         'name' => $site,
-        'opeértékelésSystem' => 'Web, Android, iOS',
+        'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
         'description' => $site . ' — AI trading platform for ' . market_audience() . ' with real-time market analysis and assisted signals.',
         'image' => $platform_image,
@@ -40,7 +40,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
             'bestRating' => '5',
         ],
         'offers' => [
-            '@type' => 'Ajánlat',
+            '@type' => 'Offer',
             'price' => MIN_DEPOSIT,
             'priceCurrency' => CURRENCY,
         ],
@@ -79,7 +79,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'Do I need trading experience to use ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No. ' . $site . ' guides registration, deposit, and basic navigation for ' . market_audience() . '. Advanced tools stay available when you are ready. Ügyfélszolgálat is available 24/7.',
+                    'text' => 'No. ' . $site . ' guides registration, deposit, and basic navigation for ' . market_audience() . '. Advanced tools stay available when you are ready. Support is available 24/7.',
                 ],
             ],
             [
@@ -108,8 +108,8 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Register on ' . $site, 'text' => 'Sign up with your name, email, and phone to create a ' . $site . ' account.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify the ' . $site . ' account', 'text' => 'Finish guided verification and set risk preferences.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Helyezzen el legalább ' . MIN_DEPOSIT . ' ' . CURRENCY . ' banki átutalással, kártyával vagy e-pénztárcával.'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Choose risk level és a trading preferences — manual or automated.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Trade in the ' . $site . ' desk', 'text' => 'Use live charts, tickets, and support inside ' . $site . '.'],
         ],
     ];
@@ -123,11 +123,11 @@ function render_schema(string $page = 'home', array $extra = []): void {
         $blocks[] = [
             '@context' => 'https://schema.org',
             '@type' => 'ImageObject',
-            'name' => $site . ' AI kereskedési platform',
-            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart és a portfolio tools',
+            'name' => $site . ' AI Trading Platform',
+            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart and portfolio tools',
             'contentUrl' => $platform_image,
             'thumbnailUrl' => $platform_image,
-            'caption' => $site . ' | AI kereskedési platform — mobile chart view',
+            'caption' => $site . ' | AI Trading Platform — mobile chart view',
             'representativeOfPage' => true,
         ];
     }

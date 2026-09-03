@@ -279,7 +279,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2 style="margin-bottom: 0.75rem;">Fund your <?= e($brand) ?> account with methods you already use</h2>
       <p class="lead" style="margin-bottom: 1.75rem;">Cards, e-wallets, and bank transfers — shown inside <?= e($brand) ?> before you confirm.</p>
       <?php
-      $payment_context = $brand . ' 口座への入金';
+      $payment_context = $brand . ' account funding and deposits';
       $payment_compact = false;
       require __DIR__ . '/includes/payment-icons.php';
       ?>
@@ -355,7 +355,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="faq">
     <div class="container" style="max-width: 800px; margin-inline: auto;">
       <div class="section-header centered">
-        <p class="eyebrow">よくある質問</p>
+        <p class="eyebrow">FAQ</p>
         <h2>What to know before you start with <?= e($brand) ?></h2>
       </div>
 

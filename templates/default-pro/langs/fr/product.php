@@ -2,12 +2,12 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Produit');
-$page_description = 'Découvrez les outils de trading de the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.';
+$page_description = 'Explore the ' . SITE_NAME . ' trading desk — real-time analytics, AI signals, multi-market access, and automation for ' . market_audience() . '.';
 $page_canonical = page_url('product.php');
 $active_page = 'product';
-$schema_extra = ['breadcrumb'text[
-  ['@type'text'ListItem', 'position'text1, 'name'text'Accueil', 'item'textpage_url()],
-  ['@type'text'ListItem', 'position'text2, 'name'text'Produit', 'item'textpage_url('product.php')],
+$schema_extra = ['breadcrumb' => [
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Produit', 'item' => page_url('product.php')],
 ]];
 
 require_once __DIR__ . '/includes/head.php';
@@ -77,10 +77,4 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

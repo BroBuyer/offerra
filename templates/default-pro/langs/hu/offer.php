@@ -6,7 +6,7 @@ $page_description = 'Open ' . SITE_NAME . ' from ' . MIN_DEPOSIT . ' ' . CURRENC
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Kezdőlap', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Ajánlat', 'item' => page_url('offer.php')],
 ]];
 

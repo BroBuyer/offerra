@@ -254,7 +254,7 @@ require_once __DIR__ . '/includes/header.php';
       <p>
         After registration, a guided path explains verification, the minimum deposit of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>,
         applicable fees, and credit times. <?= e($brand) ?> support assists with documents, withdrawals, and mobile setup.
-        Odkryj narzędzia tradingowe the product pages before exposing significant amounts.
+        Explore the product pages before exposing significant amounts.
       </p>
       <div class="seo-grid">
         <article class="feature-card">
@@ -279,7 +279,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2 style="margin-bottom: 0.75rem;">Fund your <?= e($brand) ?> account with methods you already use</h2>
       <p class="lead" style="margin-bottom: 1.75rem;">Cards, e-wallets, and bank transfers — shown inside <?= e($brand) ?> before you confirm.</p>
       <?php
-      $payment_context = $brand . ' wpłaty i finansowanie konta';
+      $payment_context = $brand . ' account funding and deposits';
       $payment_compact = false;
       require __DIR__ . '/includes/payment-icons.php';
       ?>
@@ -513,7 +513,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card">
         <?php
         $form_id = 'bottom-form';
-        $form_heading = 'Utwórz konto na ' . $brand . ' account';
+        $form_heading = 'Create your ' . $brand . ' account';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

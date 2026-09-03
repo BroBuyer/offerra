@@ -5,14 +5,14 @@
 require_once __DIR__ . '/config.php';
 
 $partners = [
-    ['file' => 'partner-1.svg', 'alt' => 'Coinbase - συνεργάτης τεχνολογικής υποδομής'],
-    ['file' => 'partner-2.svg', 'alt' => 'TradingView - συνεργάτης δεδομένων αγοράς'],
-    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader - συνεργάτης πλατφόρμας trading'],
-    ['file' => 'partner-4.svg', 'alt' => 'Visa - συνεργάτης επεξεργασίας πληρωμών'],
-    ['file' => 'partner-5.svg', 'alt' => 'Mastercard - συνεργάτης επεξεργασίας πληρωμών'],
-    ['file' => 'partner-6.svg', 'alt' => 'PayPal - συνεργάτης επεξεργασίας πληρωμών'],
-    ['file' => 'partner-7.svg', 'alt' => 'Συνεργάτης παγκόσμιου τραπεζικού δικτύου'],
-    ['file' => 'partner-8.svg', 'alt' => 'Συνεργάτης για συμμόρφωση και χρηματοοικονομική ασφάλεια'],
+    ['file' => 'partner-1.svg', 'alt' => 'Coinbase — technology infrastructure partner'],
+    ['file' => 'partner-2.svg', 'alt' => 'TradingView — market data partner'],
+    ['file' => 'partner-3.svg', 'alt' => 'MetaTrader — trading platform partner'],
+    ['file' => 'partner-4.svg', 'alt' => 'Visa — payment processing partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Mastercard — payment processing partner'],
+    ['file' => 'partner-6.svg', 'alt' => 'PayPal — payment processing partner'],
+    ['file' => 'partner-7.svg', 'alt' => 'Global banking network partner'],
+    ['file' => 'partner-8.svg', 'alt' => 'Financial security compliance partner'],
 ];
 ?>
 <div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> ">

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Kontakt');
-$page_description = 'Kontaktujte podporu ' . SITE_NAME . ' support. Help for ' . market_audience() . ' on accounts, deposits, and the trading desk.';
+$page_description = 'Kontakt ' . SITE_NAME . ' support. Help for ' . market_audience() . ' on accounts, deposits, and the trading desk.';
 $page_canonical = page_url('contacts.php');
 $active_page = 'contacts';
 

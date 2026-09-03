@@ -7,7 +7,7 @@ $audience = market_audience();
 
 $page_title = page_title('Plateforme de trading intelligente');
 $page_description = $brand . ' est une plateforme mondiale de trading conçue pour ' . $audience
-    . ' qui recherchent des performances constantes, une exécution rapide et un contrôle total de l'environnement.';
+    . ' qui recherchent des performances constantes, une exécution rapide et un contrôle total de l\'environnement.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -254,7 +254,7 @@ require_once __DIR__ . '/includes/header.php';
       <p>
         After registration, a guided path explains verification, the minimum deposit of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>,
         applicable fees, and credit times. <?= e($brand) ?> support assists with documents, withdrawals, and mobile setup.
-        Découvrez les outils de trading de the product pages before exposing significant amounts.
+        Explore the product pages before exposing significant amounts.
       </p>
       <div class="seo-grid">
         <article class="feature-card">
@@ -513,7 +513,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card">
         <?php
         $form_id = 'bottom-form';
-        $form_heading = 'Créez votre compte sur ' . $brand . ' account';
+        $form_heading = 'Create your ' . $brand . ' account';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>
@@ -522,10 +522,4 @@ require_once __DIR__ . '/includes/header.php';
 
 </main>
 
-<?php require_once __DIR__ . 'assistance</a>
-      </div>
-    </div>
-  </section>
-</main>
-
-<?php require_once __DIR__ . '; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

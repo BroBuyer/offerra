@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Informativa sulla privacy');
-$page_description = 'Scopri come ' . SITE_NAME . ' raccoglie, utilizza e protegge i tuoi dati personali.';
+$page_title = page_title_lead('Privacy Policy');
+$page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.';
 $page_canonical = page_url('privacy.php');
 $active_page = 'privacy';
 
@@ -13,14 +13,14 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Informativa sulla privacy</h1>
-      <p class="lead">Ultimo aggiornamento: <?= date('d/m/Y') ?></p>
+      <h1>Privacy Policy</h1>
+      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>This Informativa sulla privacy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
+      <p>This Privacy Policy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
 
       <h2>Information we collect</h2>
       <p>We may collect: name, email address, phone number, country of residence, IP address, and information you provide through forms or support requests.</p>
@@ -37,9 +37,9 @@ require_once __DIR__ . '/includes/header.php';
       <p>We implement technical and organisational measures including SSL encryption and access controls to protect your data.</p>
 
       <h2>Your rights</h2>
-      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contatta il supporto <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
+      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
 
-      <h2>Contatti</h2>
+      <h2>Contact</h2>
       <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>

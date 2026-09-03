@@ -2,11 +2,16 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Sign Up');
-$page_description = 'Create your ' . SITE_NAME . ' account and start trading with AI-powered tools. For ' . market_audience() . '. Minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . '.'faq.php'sign.php'faq'sign';
-$schema_extra = ['breadcrumb' => $site . [
-  ['@type' => $site . 'ListItem', 'position' => $site . 1, 'name' => $site . 'Home', 'item' => $site . page_url()],
-  ['@type' => $site . 'ListItem', 'position' => $site . 2, 'name' => $site . 'Sign Up', 'item' => $site . page_url('sign.php')],
-]]/includes/head.php'/includes/head.php'/includes/header.php'/includes/header.php';
+$page_description = 'Create your ' . SITE_NAME . ' account and start trading with AI-powered tools. For ' . market_audience() . '. Minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . '.';
+$page_canonical = page_url('sign.php');
+$active_page = 'sign';
+$schema_extra = ['breadcrumb' => [
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sign Up', 'item' => page_url('sign.php')],
+]];
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main>

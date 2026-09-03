@@ -8,109 +8,109 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $platform_image = $url . '/' . platform_image_path();
 
     $organization = [
-        '@context' => $site . 'https://schema.org',
-        '@type' => $site . 'Organization',
-        'name' => $site . $site,
-        'url' => $site . $url,
-        'logo' => $site . $url . '/static/img/logo.svg',
-        'description' => $site . $site . ' is an AI-powered trading platform for ' . market_audience() . ' covering crypto, forex, and global markets.',
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => $site,
+        'url' => $url,
+        'logo' => $url . '/static/img/logo.svg',
+        'description' => $site . ' is an AI-powered trading platform for ' . market_audience() . ' covering crypto, forex, and global markets.',
     ];
 
     $website = [
-        '@context' => $site . 'https://schema.org',
-        '@type' => $site . 'WebSite',
-        'name' => $site . $site,
-        'url' => $site . $url,
-        'publisher' => $site . ['@type' => $site . 'Organization', 'name' => $site . $site],
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => $site,
+        'url' => $url,
+        'publisher' => ['@type' => 'Organization', 'name' => $site],
     ];
 
     $software = [
-        '@context' => $site . 'https://schema.org',
-        '@type' => $site . 'SoftwareApplication',
-        'name' => $site . $site,
-        'operatingSystem' => $site . 'Web, Android, iOS',
-        'applicationCategory' => $site . 'FinanceApplication',
-        'description' => $site . $site . ' — AI trading platform for ' . market_audience() . ' with real-time market analysis and assisted signals.',
-        'image' => $site . $platform_image,
-        'screenshot' => $site . $platform_image,
-        'aggregateRating' => $site . [
-            '@type' => $site . 'AggregateRating',
-            'ratingValue' => $site . '4.7',
-            'ratingCount' => $site . '1842',
-            'bestRating' => $site . '5',
+        '@context' => 'https://schema.org',
+        '@type' => 'SoftwareApplication',
+        'name' => $site,
+        'operatingSystem' => 'Web, Android, iOS',
+        'applicationCategory' => 'FinanceApplication',
+        'description' => $site . ' — AI trading platform for ' . market_audience() . ' with real-time market analysis and assisted signals.',
+        'image' => $platform_image,
+        'screenshot' => $platform_image,
+        'aggregateRating' => [
+            '@type' => 'AggregateRating',
+            'ratingValue' => '4.7',
+            'ratingCount' => '1842',
+            'bestRating' => '5',
         ],
-        'offers' => $site . [
-            '@type' => $site . 'Teklif',
-            'price' => $site . MIN_DEPOSIT,
-            'priceCurrency' => $site . CURRENCY,
+        'offers' => [
+            '@type' => 'Offer',
+            'price' => MIN_DEPOSIT,
+            'priceCurrency' => CURRENCY,
         ],
     ];
 
     $faq = [
-        '@context' => $site . 'https://schema.org',
-        '@type' => $site . 'FAQPage',
-        'mainEntity' => $site . [
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => [
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'What is ' . $site . ' and how does it work?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . $site . ' is an AI-assisted trading platform that analyses financial markets in real time and highlights setups with alerts and risk tools. Create an account, complete verification, and fund from ' . MIN_DEPOSIT . ' ' . CURRENCY . '.',
+                '@type' => 'Question',
+                'name' => 'What is ' . $site . ' and how does it work?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $site . ' is an AI-assisted trading platform that analyses financial markets in real time and highlights setups with alerts and risk tools. Create an account, complete verification, and fund from ' . MIN_DEPOSIT . ' ' . CURRENCY . '.',
                 ],
             ],
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'Are my data and funds handled securely on ' . $site . '?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . $site . ' protects accounts with SSL encryption, two-factor authentication, and documented deposit and withdrawal steps. Trading still involves a risk of losing capital.',
+                '@type' => 'Question',
+                'name' => 'Are my data and funds handled securely on ' . $site . '?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $site . ' protects accounts with SSL encryption, two-factor authentication, and documented deposit and withdrawal steps. Trading still involves a risk of losing capital.',
                 ],
             ],
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'When can I withdraw from ' . $site . '?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . 'Withdrawals can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
+                '@type' => 'Question',
+                'name' => 'When can I withdraw from ' . $site . '?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => 'Withdrawals can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
                 ],
             ],
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'Do I need trading experience to use ' . $site . '?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . 'No. ' . $site . ' guides registration, deposit, and basic navigation for ' . market_audience() . '. Advanced tools stay available when you are ready. Support is available 24/7.',
+                '@type' => 'Question',
+                'name' => 'Do I need trading experience to use ' . $site . '?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => 'No. ' . $site . ' guides registration, deposit, and basic navigation for ' . market_audience() . '. Advanced tools stay available when you are ready. Support is available 24/7.',
                 ],
             ],
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'What returns can I expect on ' . $site . '?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . $site . ' does not guarantee returns. Results depend on capital, strategy, volatility, and how you manage risk.',
+                '@type' => 'Question',
+                'name' => 'What returns can I expect on ' . $site . '?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $site . ' does not guarantee returns. Results depend on capital, strategy, volatility, and how you manage risk.',
                 ],
             ],
             [
-                '@type' => $site . 'Question',
-                'name' => $site . 'Which markets are available on ' . $site . '?',
-                'acceptedAnswer' => $site . [
-                    '@type' => $site . 'Answer',
-                    'text' => $site . $site . ' covers digital assets and multi-market instruments in one dashboard, with alerts and assisted automation for ' . market_audience() . '.',
+                '@type' => 'Question',
+                'name' => 'Which markets are available on ' . $site . '?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $site . ' covers digital assets and multi-market instruments in one dashboard, with alerts and assisted automation for ' . market_audience() . '.',
                 ],
             ],
         ],
     ];
 
     $howto = [
-        '@context' => $site . 'https://schema.org',
-        '@type' => $site . 'HowTo',
-        'name' => $site . 'How to start trading with ',
-        'step' => $site . [
-            ['@type' => $site . 'HowToStep', 'position' => $site . 1, 'name' => $site . 'Register on ' . $site, 'text' => $site . 'Sign up with your name, email, and phone to create a ' . $site . ' account.'],
-            ['@type' => $site . 'HowToStep', 'position' => $site . 2, 'name' => $site . 'Verify the ' . $site . ' account', 'text' => $site . 'Finish guided verification and set risk preferences.'],
-            ['@type' => $site . 'HowToStep', 'position' => $site . 3, 'name' => $site . 'Fund your ' . $site . ' account', 'text' => $site . 'Banka havalesi, kart veya e-cüzdan ile en az ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
-            ['@type' => $site . 'HowToStep', 'position' => $site . 4, 'name' => $site . 'Set ' . $site . ' limits', 'text' => $site . 'Risk seviyenizi ve işlem tercihlerinizi manuel ya da otomatik olarak ayarlayın.'],
-            ['@type' => $site . 'HowToStep', 'position' => $site . 5, 'name' => $site . 'Trade in the ' . $site . ' desk', 'text' => $site . 'Use live charts, tickets, and support inside ' . $site . '.'],
+        '@context' => 'https://schema.org',
+        '@type' => 'HowTo',
+        'name' => 'How to start trading with ' . $site,
+        'step' => [
+            ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Register on ' . $site, 'text' => 'Sign up with your name, email, and phone to create a ' . $site . ' account.'],
+            ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify the ' . $site . ' account', 'text' => 'Finish guided verification and set risk preferences.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
+            ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Trade in the ' . $site . ' desk', 'text' => 'Use live charts, tickets, and support inside ' . $site . '.'],
         ],
     ];
 
@@ -121,22 +121,22 @@ function render_schema(string $page = 'home', array $extra = []): void {
         $blocks[] = $faq;
         $blocks[] = $howto;
         $blocks[] = [
-            '@context' => $site . 'https://schema.org',
-            '@type' => $site . 'ImageObject',
-            'name' => $site . $site . ' yapay zeka işlem platformu',
-            'description' => $site . $site . ' BTC/USDT canlı kripto grafiği ve portföy araçları sunan mobil işlem arayüzü',
-            'contentUrl' => $site . $platform_image,
-            'thumbnailUrl' => $site . $platform_image,
-            'caption' => $site . $site . ' | Yapay zeka işlem platformu — mobil grafik görünümü',
-            'representativeOfPage' => $site . true,
+            '@context' => 'https://schema.org',
+            '@type' => 'ImageObject',
+            'name' => $site . ' AI Trading Platform',
+            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart and portfolio tools',
+            'contentUrl' => $platform_image,
+            'thumbnailUrl' => $platform_image,
+            'caption' => $site . ' | AI Trading Platform — mobile chart view',
+            'representativeOfPage' => true,
         ];
     }
 
     if (!empty($extra['breadcrumb'])) {
         $blocks[] = [
-            '@context' => $site . 'https://schema.org',
-            '@type' => $site . 'BreadcrumbList',
-            'itemListElement' => $site . $extra['breadcrumb'],
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $extra['breadcrumb'],
         ];
     }
 
