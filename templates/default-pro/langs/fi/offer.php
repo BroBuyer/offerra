@@ -1,0 +1,62 @@
+<?php
+require_once __DIR__ . '/includes/config.php';
+
+$page_title = page_title_lead('Tarjous');
+$page_description = 'Open ' . SITE_NAME . ' from ' . MIN_DEPOSIT . ' ' . CURRENCY . ' — full desk, AI signals, and 24/7 support for ' . market_audience() . '.';
+$page_canonical = page_url('offer.php');
+$active_page = 'offer';
+$schema_extra = ['breadcrumb' => [
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Etusivu', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Tarjous', 'item' => page_url('offer.php')],
+]];
+
+require_once __DIR__ . '/includes/head.php';
+require_once __DIR__ . '/includes/header.php';
+?>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow"><?= e(SITE_NAME) ?> offer</p>
+      <h1>Start <?= e(SITE_NAME) ?> from <?= MIN_DEPOSIT ?> <?= CURRENCY ?></h1>
+      <p class="lead">Full <?= e(SITE_NAME) ?> platform for <?= e(market_audience()) ?>. Scale when you are ready.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width: 900px; margin-inline: auto;">
+      <div class="specs-table" style="margin-bottom: 2rem;">
+        <div class="specs-row specs-row-highlight">
+          <div class="specs-label">Aloituspääsy</div>
+          <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum · Full <?= e(SITE_NAME) ?> desk · AI signals · 24/7 support</div>
+        </div>
+        <div class="specs-row">
+          <div class="specs-label">Mitä sisältyy</div>
+          <div class="specs-value">Live-kaaviot, monimarkkinakaupankäynti, salkun seuranta, ohjattu aloitus</div>
+        </div>
+        <div class="specs-row">
+          <div class="specs-label">Rahoitus</div>
+          <div class="specs-value">Kortti, tilisiirto, PayPal, e-lompakot</div>
+        </div>
+        <div class="specs-row">
+          <div class="specs-label">Nostot</div>
+          <div class="specs-value">Milloin tahansa · 1–3 arkipäivää · Kulut näkyvät etukäteen</div>
+        </div>
+        <div class="specs-row">
+          <div class="specs-label">Laitteet</div>
+          <div class="specs-value">Selain, tabletti, mobiili — ei latausta tarvita</div>
+        </div>
+      </div>
+
+      <div class="form-card form-card-accent" style="max-width: 480px; margin-inline: auto;">
+        <?php
+        $form_id = 'offer-form';
+        $form_heading = 'Claim your ' . SITE_NAME . ' offer';
+        require __DIR__ . '/includes/form.php';
+        ?>
+      </div>
+    </div>
+  </section>
+</main>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
