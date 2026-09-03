@@ -88,6 +88,7 @@ return [
         ['code' => 'ILS', 'name' => 'Ізраїльський шекель (₪)'],
         ['code' => 'CNY', 'name' => 'Китайський юань (¥)'],
         ['code' => 'HKD', 'name' => 'Гонконгський долар'],
+        ['code' => 'LKR', 'name' => 'Шрі-ланкійська рупія (Rs)'],
     ],
 
     // Підказки GEO — можна вибрати або вписати свій код (2 літери)
@@ -134,6 +135,8 @@ return [
         ['code' => 'US', 'name' => 'США', 'lang' => 'en', 'phone' => 'us'],
         ['code' => 'AE', 'name' => 'ОАЕ', 'lang' => 'en', 'phone' => 'ae'],
         ['code' => 'IN', 'name' => 'Індія', 'lang' => 'en', 'phone' => 'in'],
+        ['code' => 'HK', 'name' => 'Гонконг', 'lang' => 'en', 'phone' => 'hk', 'currency' => 'HKD'],
+        ['code' => 'LK', 'name' => 'Шрі-Ланка', 'lang' => 'en', 'phone' => 'lk', 'currency' => 'LKR'],
         ['code' => 'JP', 'name' => 'Японія', 'lang' => 'ja', 'phone' => 'jp', 'currency' => 'JPY'],
         ['code' => 'KR', 'name' => 'Південна Корея', 'lang' => 'en', 'phone' => 'kr'],
         ['code' => 'SG', 'name' => 'Сінгапур', 'lang' => 'en', 'phone' => 'sg'],
