@@ -227,7 +227,7 @@ function buildActiveFilterChips(filters, users) {
     if (filters.brand) {
         chips.push({
             id: 'brand',
-            label: `Бренд: ${filters.brand}`,
+            label: `Brand: ${filters.brand}`,
             clear: { brand: '' },
         });
     }
@@ -235,7 +235,7 @@ function buildActiveFilterChips(filters, users) {
     if (filters.domain) {
         chips.push({
             id: 'domain',
-            label: `Домен: ${filters.domain}`,
+            label: `Domain: ${filters.domain}`,
             clear: { domain: '' },
         });
     }
@@ -251,7 +251,7 @@ function buildActiveFilterChips(filters, users) {
     if (filters.lang) {
         chips.push({
             id: 'lang',
-            label: `Мова: ${filters.lang}`,
+            label: `Lang: ${filters.lang}`,
             clear: { lang: '' },
         });
     }
@@ -276,7 +276,7 @@ function buildActiveFilterChips(filters, users) {
         const user = users.find((item) => String(item.id) === String(filters.user));
         chips.push({
             id: 'user',
-            label: `Користувач: ${user?.name ?? user?.email ?? filters.user}`,
+            label: `User: ${user?.name ?? user?.email ?? filters.user}`,
             clear: { user: '' },
         });
     }
@@ -284,32 +284,32 @@ function buildActiveFilterChips(filters, users) {
     if (filters.indexing === 'yes') {
         chips.push({
             id: 'indexing',
-            label: 'Індексація: подано',
+            label: 'Indexing: yes',
             clear: { indexing: '' },
         });
     } else if (filters.indexing === 'no') {
         chips.push({
             id: 'indexing',
-            label: 'Індексація: не подано',
+            label: 'Indexing: no',
             clear: { indexing: '' },
         });
     }
 
     if (filters.created) {
-        let dateLabel = 'Дата: ';
+        let dateLabel = 'Date: ';
 
         switch (filters.created) {
             case 'today':
-                dateLabel += 'сьогодні';
+                dateLabel += 'today';
                 break;
             case 'yesterday':
-                dateLabel += 'вчора';
+                dateLabel += 'yesterday';
                 break;
             case 'week':
-                dateLabel += 'цей тиждень';
+                dateLabel += 'this week';
                 break;
             case 'month':
-                dateLabel += 'цей місяць';
+                dateLabel += 'this month';
                 break;
             case 'custom':
                 dateLabel += [
@@ -890,7 +890,7 @@ export default function OffersIndex({
                                 type="button"
                                 className="filter-chip"
                                 onClick={() => clearFilter(chip.clear)}
-                                title="Прибрати фільтр"
+                                title="Remove filter"
                             >
                                 <span>{chip.label}</span>
                                 <span className="filter-chip__remove" aria-hidden="true">×</span>
@@ -902,7 +902,7 @@ export default function OffersIndex({
                         className="btn btn-ghost btn-sm active-filters__reset"
                         onClick={clearAllFilters}
                     >
-                        Скинути все
+                        Reset all
                     </button>
                 </div>
             )}
@@ -914,8 +914,8 @@ export default function OffersIndex({
                         className="btn btn-ghost btn-sm columns-picker__btn"
                         aria-expanded={columnsMenuOpen}
                         aria-haspopup="true"
-                        aria-label="Вибрати колонки таблиці"
-                        title="Колонки таблиці"
+                        aria-label="Table columns"
+                        title="Columns"
                         onClick={() => setColumnsMenuOpen((open) => !open)}
                     >
                         <svg
@@ -935,15 +935,15 @@ export default function OffersIndex({
                         </svg>
                     </button>
                     {columnsMenuOpen && (
-                        <div className="columns-picker__menu" role="menu" aria-label="Видимі колонки">
+                        <div className="columns-picker__menu" role="menu" aria-label="Visible columns">
                             <div className="columns-picker__head">
-                                <span>Показати колонки</span>
+                                <span>Columns</span>
                                 <button
                                     type="button"
                                     className="btn btn-ghost btn-sm"
                                     onClick={showAllColumns}
                                 >
-                                    Усі
+                                    All
                                 </button>
                             </div>
                             <ul className="columns-picker__list">
@@ -968,18 +968,18 @@ export default function OffersIndex({
                     <input
                         type="search"
                         className="filter-bar__search"
-                        placeholder="Бренд…"
+                        placeholder="Brand…"
                         value={brandQuery}
                         onChange={(event) => setBrandQuery(event.target.value)}
-                        aria-label="Пошук за брендом"
+                        aria-label="Search by brand"
                     />
                     <input
                         type="search"
                         className="filter-bar__search"
-                        placeholder="Домен…"
+                        placeholder="Domain…"
                         value={domainQuery}
                         onChange={(event) => setDomainQuery(event.target.value)}
-                        aria-label="Пошук за доменом"
+                        aria-label="Search by domain"
                     />
                 </div>
                 <select
@@ -987,7 +987,7 @@ export default function OffersIndex({
                     value={filters.geo ?? ''}
                     onChange={(e) => reloadOffers({ geo: e.target.value })}
                 >
-                    <option value="">Усі GEO</option>
+                    <option value="">All GEO</option>
                     {geos.map((g) => (
                         <option key={g} value={g}>
                             {g}
@@ -995,11 +995,11 @@ export default function OffersIndex({
                     ))}
                 </select>
                 <select
-                    aria-label="Мова"
+                    aria-label="Lang"
                     value={filters.lang ?? ''}
                     onChange={(e) => reloadOffers({ lang: e.target.value })}
                 >
-                    <option value="">Усі мови</option>
+                    <option value="">All langs</option>
                     {langs.map((l) => (
                         <option key={l} value={l}>
                             {l}
@@ -1011,7 +1011,7 @@ export default function OffersIndex({
                     value={filters.template ?? ''}
                     onChange={(e) => reloadOffers({ template: e.target.value })}
                 >
-                    <option value="">All templates</option>
+                    <option value="">Templates</option>
                     {templateOptions.map((tpl) => (
                         <option key={tpl} value={tpl}>
                             {tpl}
@@ -1023,7 +1023,7 @@ export default function OffersIndex({
                     value={filters.panel ?? ''}
                     onChange={(e) => reloadOffers({ panel: e.target.value })}
                 >
-                    <option value="">All servers</option>
+                    <option value="">Servers</option>
                     {panelOptions.map((panel) => (
                         <option key={panel} value={panel}>
                             {panel}
@@ -1032,11 +1032,11 @@ export default function OffersIndex({
                 </select>
                 {showUserColumn && users.length > 0 && (
                     <select
-                        aria-label="Користувач"
+                        aria-label="User"
                         value={filters.user ?? ''}
                         onChange={(e) => reloadOffers({ user: e.target.value })}
                     >
-                        <option value="">Усі користувачі</option>
+                        <option value="">All users</option>
                         {users.map((user) => (
                             <option key={user.id} value={user.id}>
                                 {user.name ?? user.email}
@@ -1045,33 +1045,33 @@ export default function OffersIndex({
                     </select>
                 )}
                 <select
-                    aria-label="Індексація"
+                    aria-label="Indexing"
                     value={filters.indexing ?? ''}
                     onChange={(e) => reloadOffers({ indexing: e.target.value })}
                 >
-                    <option value="">Уся індексація</option>
-                    <option value="no">Не подано</option>
-                    <option value="yes">Подано</option>
+                    <option value="">Indexing</option>
+                    <option value="no">Not submitted</option>
+                    <option value="yes">Submitted</option>
                 </select>
                 <select
-                    aria-label="Дата створення"
+                    aria-label="Created date"
                     value={filters.created ?? ''}
                     onChange={(e) => reloadOffers({ created: e.target.value })}
                 >
-                    <option value="">Усі дати</option>
-                    <option value="today">Сьогодні ({createdCounts.today ?? 0})</option>
-                    <option value="yesterday">Вчора ({createdCounts.yesterday ?? 0})</option>
-                    <option value="week">Цей тиждень ({createdCounts.week ?? 0})</option>
-                    <option value="month">Цей місяць ({createdCounts.month ?? 0})</option>
-                    <option value="custom">Свій період…</option>
+                    <option value="">Dates</option>
+                    <option value="today">Today ({createdCounts.today ?? 0})</option>
+                    <option value="yesterday">Yesterday ({createdCounts.yesterday ?? 0})</option>
+                    <option value="week">This week ({createdCounts.week ?? 0})</option>
+                    <option value="month">This month ({createdCounts.month ?? 0})</option>
+                    <option value="custom">Custom…</option>
                 </select>
                 {filters.created === 'custom' && (
                     <div className="filter-bar__date-range">
                         <label className="filter-bar__date-field">
-                            <span className="sr-only">Від</span>
+                            <span className="sr-only">From</span>
                             <input
                                 type="date"
-                                aria-label="Дата від"
+                                aria-label="Date from"
                                 value={filters.created_from ?? ''}
                                 max={filters.created_to || dateFilters.today || undefined}
                                 onChange={(e) => reloadOffers({ created_from: e.target.value })}
@@ -1079,10 +1079,10 @@ export default function OffersIndex({
                         </label>
                         <span className="filter-bar__date-sep" aria-hidden="true">—</span>
                         <label className="filter-bar__date-field">
-                            <span className="sr-only">До</span>
+                            <span className="sr-only">To</span>
                             <input
                                 type="date"
-                                aria-label="Дата до"
+                                aria-label="Date to"
                                 value={filters.created_to ?? ''}
                                 min={filters.created_from || undefined}
                                 max={dateFilters.today || undefined}
@@ -1093,9 +1093,9 @@ export default function OffersIndex({
                 )}
                 <div className="filter-bar__meta">
                     <label className="filter-bar__per-page">
-                        <span className="filter-bar__per-page-label">На стор.</span>
+                        <span className="filter-bar__per-page-label">/ pg</span>
                         <select
-                            aria-label="Записів на сторінці"
+                            aria-label="Rows per page"
                             value={String(filters.per_page ?? 30)}
                             onChange={(e) => reloadOffers({ per_page: Number(e.target.value) })}
                         >
@@ -1109,8 +1109,8 @@ export default function OffersIndex({
                     {(hasActiveFilters || total > 0) && (
                         <span className="filter-bar__count">
                             {total === 0
-                                ? 'Офферів не знайдено'
-                                : `Знайдено ${total}${lastPage > 1 ? ` · показано ${rangeFrom}–${rangeTo}` : ''}`}
+                                ? 'No offers'
+                                : `${total}${lastPage > 1 ? ` · ${rangeFrom}–${rangeTo}` : ''}`}
                         </span>
                     )}
                 </div>
@@ -1189,10 +1189,10 @@ export default function OffersIndex({
                                     checked={allPageSelected}
                                     disabled={selectableIds.length === 0}
                                     onChange={(e) => toggleSelectPage(e.target.checked)}
-                                    aria-label="Обрати всі на сторінці"
+                                    aria-label="Select all on this page"
                                 />
                             </th>
-                            <th className="col-num" title={`Всього: ${total}`}>#</th>
+                            <th className="col-num" title={`Total: ${total}`}>#</th>
                             {colVisible('user') && showUserColumn && <th>User</th>}
                             {colVisible('brand') && <th>Brand</th>}
                             {colVisible('domain') && <th>Domain</th>}
@@ -1393,7 +1393,7 @@ export default function OffersIndex({
                         {rows.length === 0 && (
                             <tr>
                                 <td colSpan={visibleDataColCount} className="field-hint">
-                                    Офферів не знайдено
+                                    No offers found
                                 </td>
                             </tr>
                         )}
@@ -1401,7 +1401,7 @@ export default function OffersIndex({
                 </table>
             </div>
 
-            <div className="offers-mobile-list" aria-label="Список офферів">
+            <div className="offers-mobile-list" aria-label="Offers">
                 {rows.map((offer) => (
                     <article key={`m-${offer.folder}`} className={`offer-mobile-card${selectedIds.includes(offer.id) ? ' is-selected' : ''}`}>
                         <div className="offer-mobile-card__top">
@@ -1496,22 +1496,22 @@ export default function OffersIndex({
                     </article>
                 ))}
                 {rows.length === 0 && (
-                    <p className="field-hint" style={{ padding: '1rem 0' }}>Офферів не знайдено</p>
+                    <p className="field-hint" style={{ padding: '1rem 0' }}>No offers found</p>
                 )}
             </div>
 
             {lastPage > 1 && (
-                <nav className="pagination-bar" aria-label="Сторінки офферів">
+                <nav className="pagination-bar" aria-label="Offer pages">
                     <button
                         type="button"
                         className="btn btn-ghost btn-sm"
                         disabled={currentPage <= 1}
                         onClick={() => reloadOffers({ page: currentPage - 1 }, { resetPage: false })}
                     >
-                        ← Назад
+                        ← Prev
                     </button>
                     <span className="pagination-bar__info">
-                        Сторінка {currentPage} з {lastPage}
+                        Page {currentPage} of {lastPage}
                     </span>
                     <button
                         type="button"
@@ -1519,7 +1519,7 @@ export default function OffersIndex({
                         disabled={currentPage >= lastPage}
                         onClick={() => reloadOffers({ page: currentPage + 1 }, { resetPage: false })}
                     >
-                        Далі →
+                        Next →
                     </button>
                 </nav>
             )}
