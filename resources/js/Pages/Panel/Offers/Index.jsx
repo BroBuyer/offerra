@@ -8,23 +8,23 @@ const OFFER_COLUMNS_STORAGE_KEY = 'offerra.offers.visibleColumns.v1';
 
 /** @type {{ id: string, label: string, locked?: boolean, adminOnly?: boolean }[]} */
 const OFFER_TABLE_COLUMNS = [
-    { id: 'user', label: 'Користувач', adminOnly: true },
-    { id: 'brand', label: 'Бренд', locked: true },
-    { id: 'domain', label: 'Домен', locked: true },
+    { id: 'user', label: 'User', adminOnly: true },
+    { id: 'brand', label: 'Brand', locked: true },
+    { id: 'domain', label: 'Domain', locked: true },
     { id: 'geo', label: 'GEO' },
-    { id: 'lang', label: 'Мова' },
-    { id: 'template', label: 'Шаблон' },
-    { id: 'panel', label: 'Панель' },
+    { id: 'lang', label: 'Lang' },
+    { id: 'template', label: 'Template' },
+    { id: 'panel', label: 'Server' },
     { id: 'cloudflare', label: 'Cloudflare' },
     { id: 'dynadot', label: 'Dynadot' },
     { id: 'keitaro', label: 'Keitaro' },
     { id: 'cwv', label: 'CWV' },
-    { id: 'created', label: 'Створено' },
-    { id: 'deployed', label: 'Останній деплой' },
-    { id: 'status', label: 'Статус' },
+    { id: 'created', label: 'Created' },
+    { id: 'deployed', label: 'Deployed' },
+    { id: 'status', label: 'Status' },
     { id: 'dns', label: 'DNS' },
-    { id: 'indexing', label: 'Індексація' },
-    { id: 'actions', label: 'Дії', locked: true },
+    { id: 'indexing', label: 'Indexing' },
+    { id: 'actions', label: 'Actions', locked: true },
 ];
 
 function defaultOfferColumnVisibility(showUserColumn) {
@@ -256,6 +256,22 @@ function buildActiveFilterChips(filters, users) {
         });
     }
 
+    if (filters.template) {
+        chips.push({
+            id: 'template',
+            label: `Template: ${filters.template}`,
+            clear: { template: '' },
+        });
+    }
+
+    if (filters.panel) {
+        chips.push({
+            id: 'panel',
+            label: `Server: ${filters.panel}`,
+            clear: { panel: '' },
+        });
+    }
+
     if (filters.user) {
         const user = users.find((item) => String(item.id) === String(filters.user));
         chips.push({
@@ -368,6 +384,7 @@ export default function OffersIndex({
     const { total, from: rangeFrom, to: rangeTo, currentPage, lastPage, perPage } = pagination;
     const geos = filterOptions.geos ?? [];
     const langs = filterOptions.langs ?? [];
+    const templateOptions = filterOptions.templates ?? [];
     const panelOptions = filterOptions.panels ?? [];
 
     const availableColumns = useMemo(
@@ -989,6 +1006,30 @@ export default function OffersIndex({
                         </option>
                     ))}
                 </select>
+                <select
+                    aria-label="Template"
+                    value={filters.template ?? ''}
+                    onChange={(e) => reloadOffers({ template: e.target.value })}
+                >
+                    <option value="">All templates</option>
+                    {templateOptions.map((tpl) => (
+                        <option key={tpl} value={tpl}>
+                            {tpl}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    aria-label="Server"
+                    value={filters.panel ?? ''}
+                    onChange={(e) => reloadOffers({ panel: e.target.value })}
+                >
+                    <option value="">All servers</option>
+                    {panelOptions.map((panel) => (
+                        <option key={panel} value={panel}>
+                            {panel}
+                        </option>
+                    ))}
+                </select>
                 {showUserColumn && users.length > 0 && (
                     <select
                         aria-label="Користувач"
@@ -1152,13 +1193,13 @@ export default function OffersIndex({
                                 />
                             </th>
                             <th className="col-num" title={`Всього: ${total}`}>#</th>
-                            {colVisible('user') && showUserColumn && <th>Користувач</th>}
-                            {colVisible('brand') && <th>Бренд</th>}
-                            {colVisible('domain') && <th>Домен</th>}
+                            {colVisible('user') && showUserColumn && <th>User</th>}
+                            {colVisible('brand') && <th>Brand</th>}
+                            {colVisible('domain') && <th>Domain</th>}
                             {colVisible('geo') && <th>GEO</th>}
-                            {colVisible('lang') && <th>Мова</th>}
-                            {colVisible('template') && <th>Шаблон</th>}
-                            {colVisible('panel') && <th>Панель</th>}
+                            {colVisible('lang') && <th>Lang</th>}
+                            {colVisible('template') && <th>Template</th>}
+                            {colVisible('panel') && <th>Server</th>}
                             {colVisible('cloudflare') && <th>Cloudflare</th>}
                             {colVisible('dynadot') && <th>Dynadot</th>}
                             {colVisible('keitaro') && <th>Keitaro</th>}
@@ -1170,11 +1211,11 @@ export default function OffersIndex({
                                     CWV
                                 </th>
                             )}
-                            {colVisible('created') && <th>Створено</th>}
-                            {colVisible('deployed') && <th className="col-deployed">Останній деплой</th>}
-                            {colVisible('status') && <th>Статус</th>}
+                            {colVisible('created') && <th>Created</th>}
+                            {colVisible('deployed') && <th className="col-deployed">Deployed</th>}
+                            {colVisible('status') && <th>Status</th>}
                             {colVisible('dns') && <th>DNS</th>}
-                            {colVisible('indexing') && <th>Індексація</th>}
+                            {colVisible('indexing') && <th>Indexing</th>}
                             {colVisible('actions') && <th />}
                         </tr>
                     </thead>
@@ -1409,15 +1450,19 @@ export default function OffersIndex({
                                 <dd>{offer.geo} / {offer.lang}</dd>
                             </div>
                             <div>
-                                <dt>Шаблон</dt>
+                                <dt>Template</dt>
                                 <dd>{offer.template}</dd>
+                            </div>
+                            <div>
+                                <dt>Server</dt>
+                                <dd>{offer.deploy_panel || '—'}</dd>
                             </div>
                             <div>
                                 <dt>Keitaro</dt>
                                 <dd>{offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}</dd>
                             </div>
                             <div>
-                                <dt>Створено</dt>
+                                <dt>Created</dt>
                                 <dd>{formatCreatedDate(offer.date)}</dd>
                             </div>
                         </dl>

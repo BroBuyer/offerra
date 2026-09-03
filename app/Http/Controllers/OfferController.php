@@ -53,6 +53,7 @@ class OfferController extends Controller
             'filterOptions' => [
                 'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
                 'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+                'templates' => (clone $baseQuery)->reorder()->whereNotNull('template')->where('template', '!=', '')->distinct()->orderBy('template')->pluck('template')->values()->all(),
                 'panels' => (clone $baseQuery)->reorder()->whereNotNull('deploy_panel_name')->where('deploy_panel_name', '!=', '')->distinct()->orderBy('deploy_panel_name')->pluck('deploy_panel_name')->values()->all(),
             ],
             'createdCounts' => $this->createdCounts($baseQuery, $today),
@@ -118,6 +119,8 @@ class OfferController extends Controller
             'domain' => $this->normalizeDomainFilter(request()->string('domain')->toString()),
             'geo' => strtoupper(request()->string('geo')->toString()),
             'lang' => strtolower(request()->string('lang')->toString()),
+            'template' => trim(request()->string('template')->toString()),
+            'panel' => trim(request()->string('panel')->toString()),
             'indexing' => request()->string('indexing')->toString(),
             'created' => request()->string('created')->toString(),
             'created_from' => request()->string('created_from')->toString(),
@@ -184,6 +187,18 @@ class OfferController extends Controller
 
         if ($filters['lang'] !== '') {
             $query->where('lang', $filters['lang']);
+        }
+
+        if ($filters['template'] !== '') {
+            $query->where('template', $filters['template']);
+        }
+
+        if ($filters['panel'] !== '') {
+            $panel = $filters['panel'];
+            $query->where(function (Builder $builder) use ($panel) {
+                $builder->where('deploy_panel_name', $panel)
+                    ->orWhere('infra_meta->deploy_host', $panel);
+            });
         }
 
         if ($filters['indexing'] === 'yes') {
