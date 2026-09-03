@@ -29,7 +29,7 @@ class TemplateCatalog
         foreach ($this->discoverTemplateIds() as $id) {
             $templates[] = [
                 'id' => $id,
-                'name' => $id,
+                'name' => $this->label($id),
                 'languages' => $this->languagesFor($id),
             ];
         }
@@ -49,7 +49,7 @@ class TemplateCatalog
 
             $items[] = [
                 'id' => $id,
-                'name' => $id,
+                'name' => $this->label($id),
                 'description' => $this->libraryDescription($id, $langs),
                 'languages' => $langs,
                 'pages' => 'index, product, offer, faq, contacts, sign, thanks',
@@ -110,7 +110,10 @@ class TemplateCatalog
 
     public function label(string $templateId): string
     {
-        return $templateId;
+        return match ($templateId) {
+            'default-pro' => 'Default Pro',
+            default => $templateId,
+        };
     }
 
     /**
@@ -250,6 +253,10 @@ class TemplateCatalog
             $languages,
         );
 
-        return 'PHP-ленд · '.count($codes).' '.(count($codes) === 1 ? 'мова' : 'мови').': '.implode(', ', $labels);
+        $base = 'PHP-ленд · '.count($codes).' '.(count($codes) === 1 ? 'мова' : 'мови').': '.implode(', ', $labels);
+
+        return $templateId === 'default-pro'
+            ? $base.' · branded SEO copy (H1, FAQ, GEO)'
+            : $base;
     }
 }
