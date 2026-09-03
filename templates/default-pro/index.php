@@ -5,10 +5,9 @@ $brand = SITE_NAME;
 $market = market_country_name();
 $audience = market_audience();
 
-$page_title = page_title('AI trading platform for financial markets');
-$page_description = $brand . ' is an AI-powered trading platform for ' . $audience
-    . '. Real-time analysis, automated insights, and a dashboard for crypto, forex, and global markets. Minimum deposit '
-    . MIN_DEPOSIT . ' ' . CURRENCY . '.';
+$page_title = page_title('Intelligent trading platform');
+$page_description = $brand . ' is a global trading platform developed for ' . $audience
+    . ' seeking consistent performance, fast execution and full control of the environment.';
 $page_canonical = page_url();
 $active_page = 'home';
 

@@ -2,8 +2,8 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
-$page_title = $page_title ?? SITE_NAME . ' | AI Trading Platform';
-$page_description = $page_description ?? 'Trade smarter with ' . SITE_NAME . ' — real-time analytics, AI signals, and a clean platform built for crypto, forex, and global markets.';
+$page_title = $page_title ?? SITE_NAME . ' | Intelligent trading platform';
+$page_description = $page_description ?? SITE_NAME . ' is a global trading platform developed for users seeking consistent performance, fast execution and full control of the environment.';
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

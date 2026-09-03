@@ -211,7 +211,33 @@ function market_country_name(): string
 
 function market_audience(): string
 {
-    return 'traders in ' . market_country_name();
+    $country = market_country_name();
+    $lang = strtolower((string) SITE_LANG);
+
+    return match ($lang) {
+        'cs' => 'tradery v zemi '.$country,
+        'da' => 'tradere i '.$country,
+        'de' => 'Trader in '.$country,
+        'el' => 'traders στην περιοχή '.$country,
+        'es' => 'traders en '.$country,
+        'fi' => 'treidaajille maassa '.$country,
+        'fr' => 'traders en '.$country,
+        'hr' => 'traderima u zemlji '.$country,
+        'hu' => 'trader számára itt: '.$country,
+        'it' => 'trader in '.$country,
+        'ja' => $country.' のトレーダー',
+        'lv' => 'tirgotājiem valstī '.$country,
+        'ms' => 'trader di '.$country,
+        'nl' => 'traders in '.$country,
+        'no' => 'tradere i '.$country,
+        'pl' => 'traderów w kraju '.$country,
+        'pt' => 'traders em '.$country,
+        'ro' => 'traderi din '.$country,
+        'sk' => 'traderov v krajine '.$country,
+        'sv' => 'traders i '.$country,
+        'tr' => $country.' bölgesindeki yatırımcılar',
+        default => 'traders in '.$country,
+    };
 }
 
 function brand_with(string $text): string

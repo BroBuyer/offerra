@@ -1,11 +1,11 @@
 const forms = document.querySelectorAll('.leadform');
 
 const phoneErrorMap = {
-  0: 'Inserisci un numero di telefono valido',
-  1: 'Prefisso paese non valido',
-  2: 'Il numero di telefono è troppo corto',
-  3: 'Il numero di telefono è troppo lungo',
-  4: 'Inserisci un numero di telefono valido',
+  0: 'Please enter a valid phone number',
+  1: 'Invalid country code',
+  2: 'The phone number is too short',
+  3: 'The phone number is too long',
+  4: 'Please enter a valid phone number',
 };
 
 function getLeadCookieName(form) {
@@ -98,10 +98,10 @@ function validateNativeFields(form) {
 
 function validatePhone(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return 'Inserisci il tuo numero di telefono';
+  if (!trimmed) return 'Please enter your phone number';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || 'Inserisci un numero di telefono valido';
+    return phoneErrorMap[code] || 'Please enter a valid phone number';
   }
   return '';
 }
@@ -302,7 +302,7 @@ function setupFormValidation(form) {
       const data = await res.json();
 
       if (!data.ok) {
-        showFormMessage(form, data.error || 'Qualcosa è andato storto. Riprova più tardi.');
+        showFormMessage(form, data.error || 'Something went wrong. Please try again later.');
         return;
       }
 
@@ -313,7 +313,7 @@ function setupFormValidation(form) {
       window.location.href = thanks.href;
     } catch (err) {
       console.error(err);
-      showFormMessage(form, 'Errore di connessione. Controlla la tua connessione Internet e riprova.');
+      showFormMessage(form, 'Connection error. Check your internet connection and try again.');
     } finally {
       preloader?.classList.add('hidden');
     }
