@@ -32,6 +32,10 @@ composer.phar
 # Local scratch / site mirrors (not product code)
 _mirror_*/
 _tmp_*.php
+_tmp-*.php
+*.bak
+*.bak-*
 scripts/_tmp_*
+scripts/_tmp-*
 templates/**/_mirror/
 templates/**/_live-extracted.css

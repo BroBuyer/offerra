@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 class OfferVerificationFileService
@@ -139,20 +138,7 @@ class OfferVerificationFileService
 
         $directory = $this->storageDirectory($offer);
         File::ensureDirectoryExists($directory);
-        try {
-            File::copy($userPath, $directory.DIRECTORY_SEPARATOR.$filename);
-        } catch (\Throwable $e) {
-            // Якщо через права/FS неможливо прочитати/скопіювати файл в storage,
-            // то не валимо редагування оффера — verification синхронізуємо пізніше.
-            Log::warning('OfferVerificationFileService: failed copy user verification', [
-                'offer_id' => $offer->id,
-                'from' => $userPath,
-                'to' => $directory.DIRECTORY_SEPARATOR.$filename,
-                'error' => $e->getMessage(),
-            ]);
-
-            return;
-        }
+        File::copy($userPath, $directory.DIRECTORY_SEPARATOR.$filename);
 
         if ($offer->verification_filename !== $filename) {
             $offer->update(['verification_filename' => $filename]);
@@ -190,19 +176,8 @@ class OfferVerificationFileService
         }
 
         $filename = (string) $offer->verification_filename;
-        try {
-            $this->deleteOtherVerificationFiles($offerRoot, $filename);
-            File::copy($storagePath, $offerRoot.DIRECTORY_SEPARATOR.$filename);
-        } catch (\Throwable $e) {
-            Log::warning('OfferVerificationFileService: failed syncToOfferFolder copy', [
-                'offer_id' => $offer->id,
-                'from' => $storagePath,
-                'to' => $offerRoot.DIRECTORY_SEPARATOR.$filename,
-                'error' => $e->getMessage(),
-            ]);
-
-            return;
-        }
+        $this->deleteOtherVerificationFiles($offerRoot, $filename);
+        File::copy($storagePath, $offerRoot.DIRECTORY_SEPARATOR.$filename);
     }
 
     public function publicUrl(Offer $offer): ?string
