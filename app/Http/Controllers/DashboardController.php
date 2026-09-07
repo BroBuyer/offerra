@@ -13,8 +13,9 @@ class DashboardController extends Controller
     public function __invoke(Request $request): Response
     {
         $user = $request->user();
+        $canSeeAll = $user->canSeeAllOffers();
         $isAdmin = $user->isAdmin();
-        $selectedUserId = $isAdmin && $request->filled('user')
+        $selectedUserId = $canSeeAll && $request->filled('user')
             ? (int) $request->integer('user')
             : null;
 
@@ -23,7 +24,7 @@ class DashboardController extends Controller
             ->whereNotIn('status', ['archived', 'archiving'])
             ->orderByDesc('created_at');
 
-        if (! $isAdmin) {
+        if (! $canSeeAll) {
             $query->where('user_id', $user->id);
         } elseif ($selectedUserId) {
             $query->where('user_id', $selectedUserId);
@@ -36,7 +37,7 @@ class DashboardController extends Controller
             ? User::query()->find($selectedUserId, ['id', 'name', 'email'])
             : null;
 
-        $scopeLabel = $this->scopeLabel($isAdmin, $selectedUser);
+        $scopeLabel = $this->scopeLabel($canSeeAll, $selectedUser);
 
         $recentOffers = $dbOffers->take(8)->map(fn (Offer $offer) => [
             'brand' => $offer->brand,
@@ -64,7 +65,8 @@ class DashboardController extends Controller
             'geoBars' => $geoBars,
             'recentOffers' => $recentOffers,
             'isAdmin' => $isAdmin,
-            'users' => $isAdmin
+            'canSeeAllOffers' => $canSeeAll,
+            'users' => $canSeeAll
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
             'filters' => [
@@ -74,9 +76,9 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function scopeLabel(bool $isAdmin, ?User $selectedUser): string
+    private function scopeLabel(bool $canSeeAll, ?User $selectedUser): string
     {
-        if (! $isAdmin) {
+        if (! $canSeeAll) {
             return 'Статистика ваших офферів';
         }
 

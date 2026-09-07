@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserAccessRequest;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Http\RedirectResponse;
@@ -24,6 +25,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'role' => $user->isAdmin() ? User::ROLE_ADMIN : ($user->role ?: User::ROLE_USER),
                 'role_label' => $user->isAdmin() ? 'Адмін' : $user->roleLabel(),
+                'can_see_all_offers' => $user->isAdmin() ? true : (bool) $user->can_see_all_offers,
                 'offers_count' => $user->offers_count,
                 'created_at' => $user->created_at?->format('Y-m-d'),
             ]);
@@ -31,6 +33,24 @@ class UserController extends Controller
         return Inertia::render('Panel/Users/Index', [
             'users' => $users,
         ]);
+    }
+
+    public function updateAccess(UpdateUserAccessRequest $request, User $user): RedirectResponse
+    {
+        if ($user->isAdmin()) {
+            return redirect()
+                ->route('users.index')
+                ->withErrors(['access' => 'Адмін і так бачить усі оффери.']);
+        }
+
+        $enabled = $request->boolean('can_see_all_offers');
+        $user->update(['can_see_all_offers' => $enabled]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', $enabled
+                ? "{$user->email}: доступ до всіх офферів увімкнено."
+                : "{$user->email}: знову бачить лише свої оффери.");
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -42,6 +62,7 @@ class UserController extends Controller
             'email' => $request->string('email')->toString(),
             'password' => $password,
             'role' => User::ROLE_USER,
+            'can_see_all_offers' => false,
             'email_verified_at' => now(),
         ]);
 

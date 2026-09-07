@@ -19,13 +19,14 @@ class MirrorDomainController extends Controller
         /** @var User $user */
         $user = $request->user();
         $settings = $user->settings()->firstOrCreate([]);
+        $canSeeAll = $user->canSeeAllOffers();
 
         $query = MirrorDomain::query()
             ->with(['redirectOffer:id,domain,brand', 'user:id,email'])
             ->orderByDesc('last_seen_at')
             ->orderByDesc('id');
 
-        if (! $user->isAdmin()) {
+        if (! $canSeeAll) {
             $query->where('user_id', $user->id);
         } elseif ($request->filled('user_id')) {
             $query->where('user_id', (int) $request->input('user_id'));
@@ -41,7 +42,7 @@ class MirrorDomainController extends Controller
             ->whereIn('status', ['deployed', 'generated', 'failed'])
             ->orderBy('domain');
 
-        if (! $user->isAdmin()) {
+        if (! $canSeeAll) {
             $offersQuery->where('user_id', $user->id);
         }
 
@@ -54,7 +55,7 @@ class MirrorDomainController extends Controller
             ])
             ->values();
 
-        $users = $user->isAdmin()
+        $users = $canSeeAll
             ? User::query()->orderBy('email')->get(['id', 'email'])->map(fn (User $u) => [
                 'id' => $u->id,
                 'email' => $u->email,
@@ -74,15 +75,15 @@ class MirrorDomainController extends Controller
             ],
             'offers' => $offers,
             'users' => $users,
-            'showUserColumn' => $user->isAdmin(),
+            'showUserColumn' => $canSeeAll,
             'stats' => [
-                'total' => MirrorDomain::query()->when(! $user->isAdmin(), fn ($q) => $q->where('user_id', $user->id))->count(),
+                'total' => MirrorDomain::query()->when(! $canSeeAll, fn ($q) => $q->where('user_id', $user->id))->count(),
                 'redirecting' => MirrorDomain::query()
-                    ->when(! $user->isAdmin(), fn ($q) => $q->where('user_id', $user->id))
+                    ->when(! $canSeeAll, fn ($q) => $q->where('user_id', $user->id))
                     ->where('redirect_enabled', true)
                     ->count(),
                 'new' => MirrorDomain::query()
-                    ->when(! $user->isAdmin(), fn ($q) => $q->where('user_id', $user->id))
+                    ->when(! $canSeeAll, fn ($q) => $q->where('user_id', $user->id))
                     ->where('status', MirrorDomain::STATUS_NEW)
                     ->count(),
             ],

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('AI-Powered Tirdzniecības platforma');
-$page_description = 'Trade crypto, forex, and global markets with ' . SITE_NAME . '. Real-time analytics, AI-assisted signals, and a platform built for speed and clarity.';
+$page_description = 'Tirdojiet kriptovalūtas, forex un pasaules tirgus ar ' . SITE_NAME . '. Reāllaika analītika, ar mākslīgo intelektu atbalstīti signāli un platforma, kas veidota ātrumam un skaidrībai.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -17,32 +17,32 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-grid">
       <div class="hero-content">
         <p class="eyebrow">AI Tirdzniecības platforma</p>
-        <h1>Trade smarter.<br><span class="text-accent">Move faster.</span></h1>
+        <h1>Tirdojiet gudrāk.<br><span class="text-accent">Rīkojieties ātrāk.</span></h1>
         <p class="lead">
-          A new standard in crypto and multi-market trading. Advanced security, transparent fees,
-          AI-driven insights, and an interface that stays out of your way.
+          Jauns standarts kripto un daudztirgu tirdzniecībā. Uzlabota drošība, caurspīdīgas komisijas,
+          ar mākslīgo intelektu vadīti ieskati un saskarne, kas netraucē jūsu darbu.
         </p>
         <div class="hero-badges">
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            SSL Drošid
+            SSL aizsargāts
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            24/7 Atbalsts
+            Atbalsts 24/7
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Fast Execution
+            Ātra izpilde
           </span>
         </div>
-        <a href="sign.php" class="btn btn-primary">Sākt tirdzniecību — <?= MIN_DEPOSIT ?> <?= CURRENCY ?> min.</a>
+        <a href="sign.php" class="btn btn-primary">Sākt tirdzniecību — min. <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
       </div>
 
       <div class="form-card form-card-accent">
         <?php
         $form_id = 'hero-form';
-        $form_heading = 'Atveriet savu account in 2 minutes';
+        $form_heading = 'Atveriet kontu 2 minūtēs';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

@@ -28,3 +28,10 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 composer.phar
+
+# Local scratch / site mirrors (not product code)
+_mirror_*/
+_tmp_*.php
+scripts/_tmp_*
+templates/**/_mirror/
+templates/**/_live-extracted.css

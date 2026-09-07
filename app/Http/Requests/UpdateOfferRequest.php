@@ -60,36 +60,20 @@ class UpdateOfferRequest extends FormRequest
             ]);
         }
 
-        $phone = strtolower(trim((string) $this->input('phone', '')));
-        $rawCountries = $this->input('phone_countries', []);
-        if (is_string($rawCountries)) {
-            $rawCountries = explode(',', strtolower($rawCountries));
-        }
-        $countries = collect(is_array($rawCountries) ? $rawCountries : [])
-            ->map(static fn ($code) => strtolower(trim((string) $code)))
-            ->filter(static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))
-            ->unique()
-            ->values()
-            ->all();
-
-        if ($phone !== '' && ! in_array($phone, $countries, true)) {
-            array_unshift($countries, $phone);
-        }
-
-        if ($countries === [] && $phone !== '') {
-            $countries = [$phone];
-        }
-
-        if ($phone === '' && $countries !== []) {
-            $phone = $countries[0];
-        }
+        $normalized = MarketOptions::normalizePhoneFields(
+            (string) $this->input('phone', ''),
+            $this->input('phone_countries', []),
+            (string) $this->input('geo', ''),
+        );
 
         $this->merge([
-            'phone' => $phone,
-            'phone_countries' => $countries,
+            'phone' => $normalized['phone'],
+            'phone_countries' => $normalized['phone_countries'],
             'create_keitaro' => $this->boolean('create_keitaro'),
             'vitals_enabled' => $this->boolean('vitals_enabled'),
             'auto_redeploy' => $this->boolean('auto_redeploy', true),
+            'infra_cloudflare_geo_overflow' => $this->boolean('infra_cloudflare_geo_overflow'),
+            'geo_overflow_hub' => \App\Support\DomainName::normalize((string) $this->input('geo_overflow_hub', '')),
         ]);
     }
 
@@ -105,16 +89,18 @@ class UpdateOfferRequest extends FormRequest
         return [
             'brand' => ['required', 'string', 'max:120'],
             'min_deposit' => ['required', 'string', 'max:20'],
-            'currency' => ['required', 'string', 'size:3', Rule::in($currencyCodes)],
+            'currency' => ['required', 'string', 'min:2', 'max:8', Rule::in($currencyCodes)],
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
             'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
-            'phone' => ['required', 'string', 'size:2', 'alpha:ascii'],
+            'phone' => ['required', 'string', 'regex:/^(ip|[a-zA-Z]{2})$/'],
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
             'auto_redeploy' => ['boolean'],
+            'infra_cloudflare_geo_overflow' => ['boolean'],
+            'geo_overflow_hub' => ['nullable', 'string', 'max:120'],
         ];
     }
 
@@ -128,5 +114,30 @@ class UpdateOfferRequest extends FormRequest
             'currency.in' => 'Оберіть валюту зі списку',
             'geo.size' => 'GEO — 2 літери, наприклад IE, IT, ZA',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator): void {
+            if (! $this->boolean('infra_cloudflare_geo_overflow')) {
+                return;
+            }
+
+            $hub = strtolower(trim((string) $this->input('geo_overflow_hub', '')));
+            if ($hub === '' || ! preg_match('/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i', $hub)) {
+                $validator->errors()->add('geo_overflow_hub', 'Вкажіть валідний домен multilang hub.');
+            }
+
+            /** @var \App\Models\Offer|null $offer */
+            $offer = $this->route('offer');
+            $template = (string) $this->input('template', $offer?->template);
+            $geo = strtoupper((string) $this->input('geo', $offer?->geo));
+            if ($template === 'multilang' || $geo === 'ML') {
+                $validator->errors()->add(
+                    'infra_cloudflare_geo_overflow',
+                    'На multilang hub overflow не ставиться.',
+                );
+            }
+        });
     }
 }

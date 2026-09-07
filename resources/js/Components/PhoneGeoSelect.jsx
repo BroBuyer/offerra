@@ -44,10 +44,25 @@ export function uniquePhonePresets(geoPresets) {
     });
 }
 
-export default function PhoneGeoSelect({ options, selected, onToggle, disabled = false }) {
+export default function PhoneGeoSelect({
+    options,
+    selected,
+    onToggle,
+    onSelectAll,
+    onClear,
+    disabled = false,
+}) {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const rootRef = useRef(null);
+
+    const allCodes = useMemo(
+        () => options.map((item) => phoneOptionCode(item)),
+        [options],
+    );
+
+    const allSelected = allCodes.length > 0 && selected.length >= allCodes.length
+        && allCodes.every((code) => selected.includes(code));
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -98,8 +113,6 @@ export default function PhoneGeoSelect({ options, selected, onToggle, disabled =
             const optionsCount = Array.isArray(options) ? options.length : 0;
             const upper = selected.map((code) => code.toUpperCase());
 
-            // Для multilang ми вибираємо “всі” — не виводимо тисячі кодів у рядок,
-            // інакше зсувається верстка.
             if (optionsCount > 0 && count >= optionsCount) {
                 return `Усі (${count})`;
             }
@@ -138,6 +151,24 @@ export default function PhoneGeoSelect({ options, selected, onToggle, disabled =
                         onChange={(event) => setQuery(event.target.value)}
                         autoFocus
                     />
+                    <div className="phone-geo-select__bulk">
+                        <button
+                            type="button"
+                            className="phone-geo-select__bulk-btn"
+                            disabled={disabled || allSelected || allCodes.length === 0}
+                            onClick={() => onSelectAll?.(allCodes)}
+                        >
+                            Усі країни
+                        </button>
+                        <button
+                            type="button"
+                            className="phone-geo-select__bulk-btn"
+                            disabled={disabled || selected.length === 0}
+                            onClick={() => onClear?.()}
+                        >
+                            Очистити
+                        </button>
+                    </div>
                     <div className="phone-geo-select__list">
                         {filtered.map((item) => {
                             const code = phoneOptionCode(item);

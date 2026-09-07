@@ -2,38 +2,45 @@
 
 namespace App\Console\Commands;
 
-use App\Models\UserSetting;
+use App\Models\OriginServer;
 use App\Services\OriginHealthMonitor;
+use App\Services\OriginServerSync;
 use Illuminate\Console\Command;
 
 class CheckOriginHealth extends Command
 {
-    protected $signature = 'origin:check-health';
+    protected $signature = 'origin:check-health {--sync : Sync registry from user settings + offer hosts first}';
 
-    protected $description = 'Перевірити SSH/HTTP origin-серверів баєрів і надіслати Telegram при падінні';
+    protected $description = 'Перевірити всі origin-сервери з реєстру (і orphan без SSH) та надіслати Telegram при падінні';
 
-    public function handle(OriginHealthMonitor $monitor): int
+    public function handle(OriginHealthMonitor $monitor, OriginServerSync $sync): int
     {
-        $settings = UserSetting::query()
-            ->with('user:id,name')
-            ->whereNotNull('deploy_host')
-            ->where('deploy_host', '!=', '')
-            ->whereNotNull('deploy_username')
-            ->where('deploy_username', '!=', '')
-            ->whereNotNull('deploy_password')
+        if ($this->option('sync') || OriginServer::query()->count() === 0) {
+            $result = $sync->sync();
+            $this->info("sync created={$result['created']} updated={$result['updated']} orphans=".count($result['orphans']));
+        }
+
+        $counts = $sync->offerCountsByHost();
+        $servers = OriginServer::query()
+            ->with('owner:id,name')
+            ->orderBy('host')
             ->get();
 
         $checked = 0;
 
-        foreach ($settings as $row) {
-            if (! $row->hasOriginCredentials()) {
+        foreach ($servers as $server) {
+            $host = $sync->normalizeHost((string) $server->host);
+            $offers = (int) ($counts[$host] ?? 0);
+
+            // Skip inactive servers with no live offers.
+            if (! $server->is_active && $offers === 0) {
                 continue;
             }
 
-            $result = $monitor->check($row, true);
+            $result = $monitor->checkServer($server, true);
             $status = $result['status'] ?? 'unchecked';
-            $host = $row->deploy_host;
-            $this->line("{$host}\t{$status}\t".($result['message'] ?? ''));
+            $mode = $server->hasSshCredentials() ? 'ssh' : 'http-only';
+            $this->line("{$server->host}\t{$status}\t{$mode}\toffers={$offers}\t".($result['message'] ?? ''));
             $checked++;
         }
 

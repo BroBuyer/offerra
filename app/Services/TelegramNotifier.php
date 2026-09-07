@@ -56,6 +56,18 @@ class TelegramNotifier
         return $ok;
     }
 
+    public function sendPersonal(UserSetting $settings, string $text, ?string $parseMode = null): bool
+    {
+        $token = trim((string) ($settings->tg_bot_token ?? ''));
+        $chatId = trim((string) ($settings->tg_chat_id ?? ''));
+
+        if ($token === '' || $chatId === '') {
+            return false;
+        }
+
+        return (bool) ($this->sendRawResult($token, [$chatId], $text, $parseMode)['ok'] ?? false);
+    }
+
     /**
      * @param  list<string>  $chatIds
      */

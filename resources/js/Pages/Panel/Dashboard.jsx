@@ -6,12 +6,14 @@ export default function Dashboard({
     geoBars,
     recentOffers,
     isAdmin = false,
+    canSeeAllOffers = false,
     users = [],
     filters = {},
     scopeLabel = 'Статистика ваших офферів',
 }) {
     const langPills = Object.entries(stats.lang_breakdown ?? {});
     const selectedUser = filters.user ?? '';
+    const showAllScope = canSeeAllOffers || isAdmin;
 
     const setUserFilter = (userId) => {
         router.get(
@@ -21,7 +23,7 @@ export default function Dashboard({
         );
     };
 
-    const kpiSub = isAdmin
+    const kpiSub = showAllScope
         ? (selectedUser ? 'обраний користувач' : 'усі користувачі')
         : 'ваші оффери';
 
@@ -44,7 +46,7 @@ export default function Dashboard({
                 <Link href={route('templates.index')} className="btn btn-ghost">
                     Шаблони
                 </Link>
-                {isAdmin && users.length > 0 && (
+                {showAllScope && users.length > 0 && (
                     <select
                         className="dashboard-user-filter"
                         aria-label="Користувач"
@@ -72,12 +74,12 @@ export default function Dashboard({
                 <div className="kpi-card">
                     <div className="kpi-card-label">Задеплоєно</div>
                     <div className="kpi-card-value">{stats.deployed}</div>
-                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'ваші задеплоєні'}</div>
+                    <div className="kpi-card-sub">{showAllScope ? kpiSub : 'ваші задеплоєні'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Всього офферів</div>
                     <div className="kpi-card-value">{stats.total}</div>
-                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'у вашому акаунті'}</div>
+                    <div className="kpi-card-sub">{showAllScope ? kpiSub : 'у вашому акаунті'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Очікують деплой</div>
@@ -90,7 +92,7 @@ export default function Dashboard({
                 <div className="kpi-card">
                     <div className="kpi-card-label">Keitaro підключено</div>
                     <div className="kpi-card-value">{stats.keitaro_linked}</div>
-                    <div className="kpi-card-sub">{isAdmin ? kpiSub : 'з ваших офферів'}</div>
+                    <div className="kpi-card-sub">{showAllScope ? kpiSub : 'з ваших офферів'}</div>
                 </div>
                 <div className="kpi-card">
                     <div className="kpi-card-label">Унікальних GEO</div>
@@ -161,7 +163,7 @@ export default function Dashboard({
                                 <span className="activity-time">{offer.date}</span>
                                 <span className="activity-text">
                                     <strong>{offer.brand}</strong>
-                                    {isAdmin && offer.user_name ? ` · ${offer.user_name}` : ''}
+                                    {showAllScope && offer.user_name ? ` · ${offer.user_name}` : ''}
                                     {' · '}
                                     {offer.geo} · {offer.lang}
                                     {offer.keitaro_id ? ` · Keitaro #${offer.keitaro_id}` : ''}

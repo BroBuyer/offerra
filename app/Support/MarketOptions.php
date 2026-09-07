@@ -43,11 +43,22 @@ class MarketOptions
     {
         $code = strtolower(trim($code));
 
+        if ($code === 'ip' || $code === 'auto') {
+            return 'ip';
+        }
+
         if (strlen($code) !== 2 || ! ctype_alpha($code) || self::isLanguageOnlyCode($code)) {
             return '';
         }
 
         return $code === 'uk' ? 'gb' : $code;
+    }
+
+    public static function isAutoPhone(?string $phone): bool
+    {
+        $phone = strtolower(trim((string) $phone));
+
+        return $phone === 'ip' || $phone === 'auto';
     }
 
     /**
@@ -61,7 +72,10 @@ class MarketOptions
 
         foreach ($list as $code) {
             $clean = self::sanitizePhoneCode((string) $code);
-            if ($clean !== '' && ! in_array($clean, $out, true)) {
+            if ($clean === '' || self::isAutoPhone($clean)) {
+                continue;
+            }
+            if (! in_array($clean, $out, true)) {
                 $out[] = $clean;
             }
         }
@@ -76,6 +90,19 @@ class MarketOptions
     public static function normalizePhoneFields(string $phone, string|array $rawCountries, string $geo = ''): array
     {
         $countries = self::sanitizePhoneCodes($rawCountries);
+        $rawPhone = strtolower(trim($phone));
+
+        if (self::isAutoPhone($rawPhone)) {
+            if ($countries === []) {
+                $countries = [self::phoneForGeo($geo)];
+            }
+
+            return [
+                'phone' => 'ip',
+                'phone_countries' => $countries,
+            ];
+        }
+
         $phone = self::sanitizePhoneCode($phone);
 
         if ($phone === '') {

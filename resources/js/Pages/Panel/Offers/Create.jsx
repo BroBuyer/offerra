@@ -2,7 +2,7 @@ import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { clearWizardState, loadWizardState, saveWizardState, stripFreshQueryParam } from '@/lib/offerWizardStorage';
-import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
+import { geoDepositMissingFromCatalog, lookupGeoDeposit } from '@/lib/geoDepositPrefs';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -16,6 +16,12 @@ const INFRA_TASKS = [
     { key: 'infra_cloudflare_ssl', label: 'Cloudflare — SSL (flexible)', requiresZone: true },
     { key: 'infra_cloudflare_https', label: 'Cloudflare — HTTP → HTTPS', requiresZone: true },
     { key: 'infra_cloudflare_www_redirect', label: 'Cloudflare — www → домен (301)', requiresZone: true },
+    {
+        key: 'infra_cloudflare_geo_overflow',
+        label: 'Cloudflare — чуже GEO → multilang hub (302, боти без redirect)',
+        requiresZone: true,
+        requiresHub: true,
+    },
 ];
 
 function defaultInfraOptions(enabled = false) {
@@ -26,6 +32,7 @@ function defaultInfraOptions(enabled = false) {
         infra_cloudflare_ssl: enabled,
         infra_cloudflare_https: enabled,
         infra_cloudflare_www_redirect: enabled,
+        infra_cloudflare_geo_overflow: false,
     };
 }
 
@@ -216,7 +223,8 @@ export default function OffersCreate({
     initialLang = null,
     initialFromSearch = false,
 }) {
-    const { errors } = usePage().props;
+    const { errors, panel } = usePage().props;
+    const geoMinDeposits = panel?.geo_min_deposits || {};
     const defaults = useMemo(
         () => buildDefaults(templates, initialFromSearch),
         [templates, initialFromSearch],
@@ -263,9 +271,23 @@ export default function OffersCreate({
         [bulkItems],
     );
 
-    const bulkHasMultilangMix = isBulkMode
-        && bulkMultilangFlags.some(Boolean)
-        && !bulkMultilangFlags.every(Boolean);
+    const bulkHubCount = useMemo(
+        () => bulkMultilangFlags.filter(Boolean).length,
+        [bulkMultilangFlags],
+    );
+
+    const bulkHasHub = bulkHubCount > 0;
+    const bulkHasGeo = useMemo(
+        () => bulkMultilangFlags.some((flag) => !flag) && bulkItems.length > 0,
+        [bulkMultilangFlags, bulkItems.length],
+    );
+    const bulkHubDomain = useMemo(() => {
+        const row = bulkItems.find((item) => isMultilangTemplate(item.template));
+
+        return row?.domain ?? '';
+    }, [bulkItems]);
+    const bulkTooManyHubs = bulkHubCount > 1;
+    const bulkMixedPack = bulkHasHub && bulkHasGeo;
 
     const bulkAllMultilang = isBulkMode
         && bulkItems.length > 0
@@ -385,7 +407,7 @@ export default function OffersCreate({
                 ...prev,
                 template: initialTemplate,
                 ...(isMultilangTemplate(initialTemplate)
-                    ? { geo: MULTILANG_GEO, lang: 'en' }
+                    ? { geo: MULTILANG_GEO, lang: 'en', phone: 'ip' }
                     : {}),
             }));
         }
@@ -467,7 +489,11 @@ export default function OffersCreate({
             template: templateId,
             lang,
             ...(isMultilang
-                ? { geo: MULTILANG_GEO }
+                ? {
+                    geo: MULTILANG_GEO,
+                    phone: 'ip',
+                    phone_countries: uniquePhonePresets(geoPresets).map((item) => phoneOptionCode(item)),
+                }
                 : wasMultilang
                     ? { geo: '', phone: '', phone_countries: [] }
                     : {}),
@@ -493,9 +519,10 @@ export default function OffersCreate({
             ...prev,
             geo: MULTILANG_GEO,
             lang: 'en',
+            phone: 'ip',
             phone_countries: allPhoneCodes,
-            // Дефолтний phone — беремо з поточного GEO-ресолву, або перший доступний.
-            phone: prev.phone && allPhoneCodes.includes(prev.phone) ? prev.phone : allPhoneCodes[0],
+            // Дефолтний phone — IP; whitelist — усі пресети.
+            ...(prev.phone && allPhoneCodes.includes(prev.phone) ? {} : {}),
         }));
     }, [isMarketMultilang, phoneOptions, setData]);
 
@@ -529,7 +556,7 @@ export default function OffersCreate({
         }
 
         const resolved = resolveMarket(code, geoPresets, availableLanguages);
-        const remembered = getGeoDepositPref(resolved.geo);
+        const remembered = lookupGeoDeposit(resolved.geo, geoMinDeposits);
         setData((prev) => {
             const countries = new Set([
                 ...normalizePhoneCountries(prev.phone_countries, prev.phone),
@@ -566,24 +593,41 @@ export default function OffersCreate({
             }
 
             const list = [...set];
-            const phone = list.includes(prev.phone) ? prev.phone : list[0];
+            const phone = prev.phone === 'ip'
+                ? 'ip'
+                : (list.includes(prev.phone) ? prev.phone : list[0]);
 
             return { ...prev, phone_countries: list, phone };
         });
     };
 
-    const update = (field, value) => {
-        if (field === 'min_deposit' || field === 'currency') {
-            setData((prev) => {
-                const next = { ...prev, [field]: value };
-                if (next.geo.length === 2) {
-                    saveGeoDepositPref(next.geo, next.min_deposit, next.currency);
-                }
-                return next;
-            });
+    const selectAllPhoneCountries = (codes) => {
+        const list = normalizePhoneCountries(codes);
+        if (list.length === 0) {
             return;
         }
+        setData((prev) => ({
+            ...prev,
+            phone_countries: list,
+            phone: prev.phone === 'ip' || list.includes(prev.phone) ? prev.phone : 'ip',
+        }));
+    };
 
+    const clearPhoneCountries = () => {
+        setData((prev) => {
+            const keep = prev.phone === 'ip'
+                ? (normalizePhoneCountries(prev.phone_countries)[0] || 'gb')
+                : (prev.phone && /^[a-z]{2}$/.test(prev.phone) ? prev.phone : 'gb');
+
+            return {
+                ...prev,
+                phone_countries: [keep],
+                phone: prev.phone === 'ip' ? 'ip' : keep,
+            };
+        });
+    };
+
+    const update = (field, value) => {
         setData(field, value);
     };
 
@@ -957,17 +1001,22 @@ export default function OffersCreate({
 
     const toggleInfraOption = (key, checked) => {
         setData((prev) => {
+            const task = INFRA_TASKS.find((row) => row.key === key);
+            if (checked && task?.requiresHub && !bulkMixedPack) {
+                return prev;
+            }
+
             const next = { ...prev, [key]: checked };
 
             if (!checked && key === 'infra_cloudflare_zone') {
-                INFRA_TASKS.forEach((task) => {
-                    if (task.requiresZone) {
-                        next[task.key] = false;
+                INFRA_TASKS.forEach((row) => {
+                    if (row.requiresZone) {
+                        next[row.key] = false;
                     }
                 });
             }
 
-            if (checked && INFRA_TASKS.find((task) => task.key === key)?.requiresZone) {
+            if (checked && task?.requiresZone) {
                 next.infra_cloudflare_zone = true;
             }
 
@@ -976,8 +1025,34 @@ export default function OffersCreate({
     };
 
     const enableAllInfraOptions = () => {
-        setData((prev) => ({ ...prev, ...defaultInfraOptions(true) }));
+        setData((prev) => ({
+            ...prev,
+            ...defaultInfraOptions(true),
+            infra_cloudflare_geo_overflow: bulkMixedPack,
+        }));
     };
+
+    useEffect(() => {
+        if (!canProvisionInfrastructure) {
+            return;
+        }
+
+        setData((prev) => {
+            const wantOverflow = Boolean(bulkMixedPack);
+            if (
+                Boolean(prev.infra_cloudflare_geo_overflow) === wantOverflow
+                && (!wantOverflow || prev.infra_cloudflare_zone)
+            ) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                infra_cloudflare_geo_overflow: wantOverflow,
+                ...(wantOverflow ? { infra_cloudflare_zone: true } : {}),
+            };
+        });
+    }, [bulkMixedPack, canProvisionInfrastructure, setData]);
 
     useEffect(() => {
         if (canProvisionInfrastructure && domainPurchasedViaPanel && !anyInfraEnabled(data)) {
@@ -1013,7 +1088,7 @@ export default function OffersCreate({
             if (!item.template) {
                 return false;
             }
-            if (!data.lang || isMarketMultilang) {
+            if (isMultilangTemplate(item.template) || !data.lang || isMarketMultilang) {
                 return true;
             }
             const template = templates.find((row) => row.id === item.template);
@@ -1021,7 +1096,7 @@ export default function OffersCreate({
             return templateSupportsLang(template, data.lang);
         })
             && templates.length > 0
-            && !bulkHasMultilangMix
+            && !bulkTooManyHubs
         : Boolean(data.template)
             && templates.length > 0
             && (
@@ -1051,8 +1126,15 @@ export default function OffersCreate({
                     : 'Заповніть бренд і зберіть пакет доменів (крок 1).')
                 : 'Заповніть бренд і домен (крок 1).';
         }
-        if (isBulkMode && bulkHasMultilangMix) {
-            return 'У пакеті змішані multilang і звичайні шаблони — оберіть один тип.';
+        if (isBulkMode && bulkTooManyHubs) {
+            return 'У пакеті може бути лише один multilang hub.';
+        }
+        if (data.infra_cloudflare_geo_overflow && isBulkMode && !bulkMixedPack) {
+            return 'Overflow: потрібні GEO-офери + один multilang hub у пакеті.';
+        }
+        if (data.infra_cloudflare_geo_overflow && !isBulkMode && !isMultilangTemplate(data.template)) {
+            // single GEO offer without hub domain field yet — block until hub domain provided via pack
+            return 'Overflow для одного офера: створіть пакет GEO + multilang hub.';
         }
         if (!canProceedTemplate) {
             return isBulkMode
@@ -1078,11 +1160,14 @@ export default function OffersCreate({
         data.create_keitaro,
         hasKeitaroApiKey,
         isBulkMode,
-        bulkHasMultilangMix,
+        bulkTooManyHubs,
+        bulkMixedPack,
         packNeedsPurchase,
         bulkItems.length,
         templatesForLang.length,
         data.lang,
+        data.infra_cloudflare_geo_overflow,
+        data.template,
         isMarketMultilang,
     ]);
 
@@ -1105,9 +1190,6 @@ export default function OffersCreate({
         }
 
         const onSuccess = () => {
-            if (data.geo.length === 2) {
-                saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
-            }
             skipPersist.current = true;
             clearWizardState();
             setStep(0);
@@ -1136,6 +1218,8 @@ export default function OffersCreate({
                 infra_cloudflare_ssl: data.infra_cloudflare_ssl,
                 infra_cloudflare_https: data.infra_cloudflare_https,
                 infra_cloudflare_www_redirect: data.infra_cloudflare_www_redirect,
+                infra_cloudflare_geo_overflow: data.infra_cloudflare_geo_overflow,
+                geo_overflow_hub: bulkHubDomain || '',
                 items: bulkItems.map(({ domain, template }) => ({ domain, template })),
             }, {
                 preserveScroll: true,
@@ -1608,30 +1692,38 @@ export default function OffersCreate({
                                     options={phoneOptions}
                                     selected={selectedPhones}
                                     onToggle={togglePhoneCountry}
+                                    onSelectAll={selectAllPhoneCountries}
+                                    onClear={clearPhoneCountries}
                                     disabled={!isMarketMultilang && data.geo.length < 2}
                                 />
                                 <p className="field-hint">
-                                    За IP (Cloudflare) підставляється код зі списку, інакше — дефолтний.
+                                    За IP (Cloudflare) підставляється код зі списку. «Усі країни» — для multilang/хабів.
                                 </p>
                             </div>
                             <div className="field">
                                 <label htmlFor="phone">Дефолтний phone</label>
                                 <select
                                     id="phone"
-                                    value={data.phone}
+                                    value={data.phone === 'ip' || selectedPhones.includes(data.phone) ? data.phone : (selectedPhones[0] || 'ip')}
                                     onChange={(e) => update('phone', e.target.value.toLowerCase())}
                                     disabled={selectedPhones.length === 0}
                                 >
                                     {selectedPhones.length === 0 ? (
                                         <option value="">Спочатку вкажіть GEO</option>
                                     ) : (
-                                        selectedPhones.map((code) => (
-                                            <option key={code} value={code}>
-                                                {code.toUpperCase()}
-                                            </option>
-                                        ))
+                                        <>
+                                            <option value="ip">По IP (Cloudflare)</option>
+                                            {selectedPhones.map((code) => (
+                                                <option key={code} value={code}>
+                                                    {code.toUpperCase()}
+                                                </option>
+                                            ))}
+                                        </>
                                     )}
                                 </select>
+                                <p className="field-hint">
+                                    «По IP» — код країни з CF-IPCountry, навіть поза списком вище.
+                                </p>
                             </div>
                         </div>
                         <div className="field-row">
@@ -1643,9 +1735,6 @@ export default function OffersCreate({
                                     value={data.min_deposit}
                                     onChange={(e) => update('min_deposit', e.target.value)}
                                 />
-                                <p className="field-hint">
-                                    Запам’ятовується для GEO в цьому браузері (останній вибір).
-                                </p>
                             </div>
                             <div className="field">
                                 <label htmlFor="currency">Валюта</label>
@@ -1662,6 +1751,17 @@ export default function OffersCreate({
                                 </select>
                             </div>
                         </div>
+                        {geoDepositMissingFromCatalog(data.geo, geoMinDeposits) && (
+                            <p className="field-hint" style={{ marginTop: '0.5rem', color: '#ca8a04' }}>
+                                Для GEO <strong>{String(data.geo || '').toUpperCase()}</strong> ще немає суми й валюти в таблиці мін. депів.
+                                Напишіть адміну, щоб він додав їх у систему (тоді підтягуватиметься всім), або впишіть самі зараз.
+                            </p>
+                        )}
+                        {lookupGeoDeposit(data.geo, geoMinDeposits) && (
+                            <p className="field-hint" style={{ marginTop: '0.5rem' }}>
+                                Підтягнуто з таблиці мін. депів — можна змінити вручну.
+                            </p>
+                        )}
                     </div>
 
                     <div className="card" style={{ marginTop: '1rem' }}>
@@ -1696,30 +1796,39 @@ export default function OffersCreate({
                                 <ul className="offer-bulk-map__list">
                                     {bulkItems.map((item) => (
                                         <li key={item.domain} className="offer-bulk-map__row">
-                                            <span className="offer-bulk-map__domain">{item.domain}</span>
+                                            <span className="offer-bulk-map__domain">
+                                                {item.domain}
+                                                {isMultilangTemplate(item.template) ? ' · hub' : ''}
+                                            </span>
                                             <select
                                                 className="offer-bulk-map__select"
                                                 value={item.template}
                                                 onChange={(e) => updateBulkItemTemplate(item.domain, e.target.value)}
                                                 aria-label={`Шаблон для ${item.domain}`}
-                                                disabled={!data.lang && !isMarketMultilang}
+                                                disabled={!data.lang && !isMarketMultilang && !isMultilangTemplate(item.template)}
                                             >
                                                 <option value="">
                                                     {!data.lang && !isMarketMultilang ? 'Спочатку мова' : '— шаблон —'}
                                                 </option>
                                                 {templates.map((template) => {
-                                                    const langOk = isMarketMultilang || templateSupportsLang(template, data.lang);
+                                                    const isHubTpl = isMultilangTemplate(template.id);
+                                                    const langOk = isHubTpl || isMarketMultilang || templateSupportsLang(template, data.lang);
                                                     const used = usedTemplateIds.includes(template.id);
+                                                    const hubTaken = isHubTpl
+                                                        && bulkHasHub
+                                                        && !isMultilangTemplate(item.template);
 
                                                     return (
                                                         <option
                                                             key={template.id}
                                                             value={template.id}
-                                                            disabled={!langOk}
+                                                            disabled={!langOk || hubTaken}
                                                         >
                                                             {template.name}
+                                                            {isHubTpl ? ' · hub' : ''}
                                                             {used ? ' · вже є' : ''}
                                                             {!langOk ? ' · немає мови' : ''}
+                                                            {hubTaken ? ' · вже обрано' : ''}
                                                         </option>
                                                     );
                                                 })}
@@ -1727,9 +1836,14 @@ export default function OffersCreate({
                                         </li>
                                     ))}
                                 </ul>
-                                {bulkHasMultilangMix && (
+                                {bulkTooManyHubs && (
                                     <p className="field-hint" style={{ color: '#f87171' }}>
-                                        Не можна змішувати multilang і звичайні шаблони в одному пакеті.
+                                        Лише один multilang hub на пакет.
+                                    </p>
+                                )}
+                                {bulkMixedPack && (
+                                    <p className="field-hint">
+                                        Пакет GEO + hub ({bulkHubDomain}): чужі GEO з GEO-доменів можна редиректити на hub у кроці інфри.
                                     </p>
                                 )}
                             </div>
@@ -1825,17 +1939,28 @@ export default function OffersCreate({
                                 Оберіть, що виконати автоматично після генерації. Кожен пункт — окремо.
                             </p>
                             <div className="field" style={{ display: 'grid', gap: '0.65rem' }}>
-                                {INFRA_TASKS.map((task) => (
-                                    <label key={task.key} className="field-check" htmlFor={task.key}>
-                                        <input
-                                            id={task.key}
-                                            type="checkbox"
-                                            checked={Boolean(data[task.key])}
-                                            onChange={(e) => toggleInfraOption(task.key, e.target.checked)}
-                                        />
-                                        <span>{task.label}</span>
-                                    </label>
-                                ))}
+                                {INFRA_TASKS.map((task) => {
+                                    const hubBlocked = Boolean(task.requiresHub) && !bulkMixedPack;
+
+                                    return (
+                                        <label key={task.key} className="field-check" htmlFor={task.key}>
+                                            <input
+                                                id={task.key}
+                                                type="checkbox"
+                                                checked={Boolean(data[task.key])}
+                                                disabled={hubBlocked}
+                                                onChange={(e) => toggleInfraOption(task.key, e.target.checked)}
+                                            />
+                                            <span>
+                                                {task.label}
+                                                {hubBlocked ? ' — додайте GEO + 1 multilang у пакет' : ''}
+                                                {task.requiresHub && bulkMixedPack && bulkHubDomain
+                                                    ? ` → ${bulkHubDomain}`
+                                                    : ''}
+                                            </span>
+                                        </label>
+                                    );
+                                })}
                             </div>
                             <div className="btn-row" style={{ marginTop: '0.75rem' }}>
                                 <button type="button" className="btn btn-ghost btn-sm" onClick={enableAllInfraOptions}>
@@ -1912,9 +2037,17 @@ export default function OffersCreate({
                                 <span>
                                     {isMarketMultilang
                                         ? `Multi (${MULTILANG_GEO}) / en + ${Math.max(0, availableLanguages.length - 1)} мов`
-                                        : `${data.geo} / ${data.lang}`}
+                                        : bulkMixedPack
+                                            ? `${data.geo} / ${data.lang} + hub ML/en (${bulkHubDomain})`
+                                            : `${data.geo} / ${data.lang}`}
                                 </span>
                             </div>
+                            {data.infra_cloudflare_geo_overflow && bulkHubDomain && (
+                                <div className="summary-row">
+                                    <span>GEO overflow</span>
+                                    <span>чуже GEO → {bulkHubDomain} (302, bots OK)</span>
+                                </div>
+                            )}
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Мін. депозит</span><span>{data.min_deposit || '—'} {data.currency || ''}</span></div>
                             {!isBulkMode && (

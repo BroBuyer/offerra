@@ -101,12 +101,25 @@ function form_visitor_phone_country(): string
 {
     $allowed = form_allowed_countries();
     $default = strtolower(trim((string) FORM_PHONE_COUNTRY));
+    $autoIp = ($default === 'ip' || $default === 'auto');
+    $ipCode = form_phone_code_from_ip(form_ip_country());
+
+    // Режим «по IP»: завжди беремо CF-IPCountry, навіть якщо коду немає в whitelist.
+    if ($autoIp) {
+        if ($ipCode !== '') {
+            return $ipCode;
+        }
+
+        if ($allowed !== []) {
+            return in_array('gb', $allowed, true) ? 'gb' : $allowed[0];
+        }
+
+        return 'gb';
+    }
 
     if ($allowed === []) {
         return $default !== '' ? $default : 'gb';
     }
-
-    $ipCode = form_phone_code_from_ip(form_ip_country());
 
     if ($ipCode !== '' && in_array($ipCode, $allowed, true)) {
         return $ipCode;

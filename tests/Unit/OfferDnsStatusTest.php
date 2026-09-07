@@ -27,7 +27,6 @@ class OfferDnsStatusTest extends TestCase
                 'options' => [
                     'cloudflare_zone' => true,
                     'dynadot_ns' => false,
-                    'hestia' => true,
                     'cloudflare_dns' => true,
                     'cloudflare_ssl' => true,
                     'cloudflare_https' => true,
@@ -40,6 +39,26 @@ class OfferDnsStatusTest extends TestCase
         $this->assertSame('pending', $offer->dnsStatus());
     }
 
+    public function test_dns_status_is_waiting_when_infra_ready_without_pending_flag(): void
+    {
+        $offer = new Offer([
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'infra_meta' => [
+                'options' => [
+                    'cloudflare_zone' => true,
+                    'dynadot_ns' => true,
+                    'cloudflare_dns' => true,
+                    'cloudflare_ssl' => true,
+                    'cloudflare_https' => true,
+                    'cloudflare_www_redirect' => true,
+                ],
+            ],
+        ]);
+
+        $this->assertSame('waiting', $offer->dnsStatus());
+    }
+
     public function test_dns_status_is_skipped_without_dns_wait_options(): void
     {
         $offer = new Offer([
@@ -47,7 +66,6 @@ class OfferDnsStatusTest extends TestCase
             'infra_status' => 'ready',
             'infra_meta' => [
                 'options' => [
-                    'hestia' => true,
                     'cloudflare_zone' => false,
                     'cloudflare_dns' => false,
                     'dynadot_ns' => false,

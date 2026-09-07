@@ -1,49 +1,26 @@
-export const GEO_DEPOSIT_PREFS_KEY = 'offerra:geo-deposit-prefs';
+/**
+ * Resolve min deposit / currency from the admin DB catalog (panel.geo_min_deposits).
+ */
 
-function readAll() {
-    if (typeof window === 'undefined') {
-        return {};
-    }
-
-    try {
-        const raw = localStorage.getItem(GEO_DEPOSIT_PREFS_KEY);
-        if (!raw) {
-            return {};
-        }
-        const parsed = JSON.parse(raw);
-        return parsed && typeof parsed === 'object' ? parsed : {};
-    } catch {
-        return {};
-    }
-}
-
-function writeAll(prefs) {
-    if (typeof window === 'undefined') {
-        return;
-    }
-
-    try {
-        localStorage.setItem(GEO_DEPOSIT_PREFS_KEY, JSON.stringify(prefs));
-    } catch {
-        // Quota / private mode — ignore.
-    }
-}
-
-function normalizeGeoCode(geo) {
+export function normalizeGeoCode(geo) {
     return String(geo || '')
         .replace(/[^a-zA-Z]/g, '')
         .toUpperCase()
         .slice(0, 2);
 }
 
-/** @returns {{ min_deposit: string, currency: string } | null} */
-export function getGeoDepositPref(geo) {
+/**
+ * @param {string} geo
+ * @param {Record<string, { min_deposit?: string, currency?: string }>|null|undefined} catalog
+ * @returns {{ min_deposit: string, currency: string } | null}
+ */
+export function lookupGeoDeposit(geo, catalog) {
     const code = normalizeGeoCode(geo);
-    if (code.length !== 2) {
+    if (code.length !== 2 || !catalog || typeof catalog !== 'object') {
         return null;
     }
 
-    const row = readAll()[code];
+    const row = catalog[code];
     if (!row || typeof row !== 'object') {
         return null;
     }
@@ -60,22 +37,12 @@ export function getGeoDepositPref(geo) {
     };
 }
 
-export function saveGeoDepositPref(geo, minDeposit, currency) {
+/** True when GEO is a normal country code with no row in the admin catalog. */
+export function geoDepositMissingFromCatalog(geo, catalog) {
     const code = normalizeGeoCode(geo);
-    if (code.length !== 2) {
-        return;
+    if (code.length !== 2 || code === 'ML') {
+        return false;
     }
 
-    const deposit = String(minDeposit ?? '').trim();
-    const curr = String(currency ?? '').trim().toUpperCase();
-    if (!deposit && !curr) {
-        return;
-    }
-
-    const all = readAll();
-    all[code] = {
-        ...(deposit ? { min_deposit: deposit } : all[code]?.min_deposit ? { min_deposit: all[code].min_deposit } : {}),
-        ...(curr ? { currency: curr } : all[code]?.currency ? { currency: all[code].currency } : {}),
-    };
-    writeAll(all);
+    return lookupGeoDeposit(code, catalog) === null;
 }

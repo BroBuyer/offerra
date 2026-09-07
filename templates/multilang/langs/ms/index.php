@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('AI-Powered Platform dagangan');
-$page_description = 'Trade crypto, forex, and global markets with ' . SITE_NAME . '. Real-time analytics, AI-assisted signals, and a platform built for speed and clarity.';
+$page_description = 'Dagang kripto, forex dan pasaran global dengan ' . SITE_NAME . '. Analitik masa nyata, isyarat bantuan AI dan platform yang dibina untuk kelajuan dan kejelasan.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -17,32 +17,32 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-grid">
       <div class="hero-content">
         <p class="eyebrow">AI Platform dagangan</p>
-        <h1>Trade smarter.<br><span class="text-accent">Move faster.</span></h1>
+        <h1>Berdagang dengan lebih bijak.<br><span class="text-accent">Bertindak lebih pantas.</span></h1>
         <p class="lead">
-          A new standard in crypto and multi-market trading. Advanced security, transparent fees,
-          AI-driven insights, and an interface that stays out of your way.
+          Standard baharu dalam dagangan kripto dan pelbagai pasaran. Keselamatan lanjutan, yuran telus,
+          pandangan dipacu AI dan antara muka yang tidak menghalang anda.
         </p>
         <div class="hero-badges">
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            SSL Selamatd
+            Dilindungi SSL
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            24/7 Sokongan
+            Sokongan 24/7
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Fast Execution
+            Pelaksanaan pantas
           </span>
         </div>
-        <a href="sign.php" class="btn btn-primary">Mula berdagang — <?= MIN_DEPOSIT ?> <?= CURRENCY ?> min.</a>
+        <a href="sign.php" class="btn btn-primary">Mula berdagang — min. <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
       </div>
 
       <div class="form-card form-card-accent">
         <?php
         $form_id = 'hero-form';
-        $form_heading = 'Buka akaun account in 2 minutes';
+        $form_heading = 'Buka akaun anda dalam 2 minit';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

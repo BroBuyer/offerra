@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\OriginServer;
 use App\Models\UserSetting;
 use App\Support\DeployDriver;
 use Illuminate\Support\Facades\Http;
@@ -16,10 +17,92 @@ class OriginHealthProbe
      */
     public function probe(UserSetting $settings, ?string $password = null): array
     {
-        $host = trim((string) $settings->deploy_host);
-        $port = (int) ($settings->deploy_port ?: 22);
-        $username = trim((string) $settings->deploy_username);
-        $password = $password ?? (string) ($settings->deploy_password ?? '');
+        return $this->probeTarget(
+            host: trim((string) $settings->deploy_host),
+            port: (int) ($settings->deploy_port ?: 22),
+            username: trim((string) $settings->deploy_username),
+            password: $password ?? (string) ($settings->deploy_password ?? ''),
+            pathTemplate: $settings->deploy_path_template ?: DeployDriver::defaultPath($settings->deploy_driver),
+            driver: DeployDriver::normalize($settings->deploy_driver),
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function probeServer(OriginServer $server, ?string $password = null): array
+    {
+        return $this->probeTarget(
+            host: trim((string) $server->host),
+            port: (int) ($server->port ?: 22),
+            username: trim((string) ($server->username ?? '')),
+            password: $password ?? (string) ($server->password ?? ''),
+            pathTemplate: $server->deploy_path_template ?: DeployDriver::defaultPath($server->deploy_driver),
+            driver: DeployDriver::normalize($server->deploy_driver),
+        );
+    }
+
+    /**
+     * Lightweight check for hosts without SSH credentials (orphans).
+     *
+     * @return array<string, mixed>
+     */
+    public function probeHttpOnly(string $host): array
+    {
+        $host = trim($host);
+        $http = $this->checkHttp($host);
+        $tcp80 = $this->checkTcp($host, 80);
+        $tcp22 = $this->checkTcp($host, 22);
+
+        $issues = [];
+        if (! ($tcp22['ok'] ?? false)) {
+            $issues[] = 'SSH :22 закритий';
+        }
+        if (! ($tcp80['ok'] ?? false)) {
+            $issues[] = 'HTTP :80 закритий';
+        }
+        if (! ($http['ok'] ?? false)) {
+            $issues[] = 'HTTP origin не відповідає';
+        }
+
+        $sshStub = [
+            'ok' => false,
+            'latency_ms' => $tcp22['latency_ms'] ?? null,
+            'error' => ($tcp22['ok'] ?? false) ? 'Немає SSH-креденшалів у реєстрі' : 'TCP :22 недоступний',
+        ];
+
+        if ($issues !== []) {
+            return $this->result('down', implode('; ', $issues), $sshStub, $http, [
+                'tcp22' => $tcp22['ok'] ?? false,
+                'tcp80' => $tcp80['ok'] ?? false,
+                'orphan' => true,
+            ], $issues);
+        }
+
+        return $this->result('degraded', 'HTTP живий, але SSH-креденшалів немає — повний моніторинг недоступний', $sshStub, $http, [
+            'tcp22' => true,
+            'tcp80' => true,
+            'orphan' => true,
+            'nginx' => 'unknown',
+            'php_fpm' => 'unknown',
+            'web' => 'unknown',
+        ], ['немає SSH у реєстрі origin_servers']);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function probeTarget(
+        string $host,
+        int $port,
+        string $username,
+        string $password,
+        ?string $pathTemplate = null,
+        ?string $driver = null,
+    ): array {
+        $host = trim($host);
+        $username = trim($username);
+        $password = (string) $password;
 
         if ($host === '' || $username === '' || $password === '') {
             return $this->evaluate(
@@ -29,7 +112,8 @@ class OriginHealthProbe
             );
         }
 
-        $ssh = $this->checkSsh($settings, $host, $port, $username, $password);
+        $pathTemplate = $pathTemplate ?: DeployDriver::defaultPath($driver);
+        $ssh = $this->checkSsh($host, $port, $username, $password, $pathTemplate);
         $http = $this->checkHttp($host);
 
         return $this->evaluate($ssh, $http, is_array($ssh['metrics'] ?? null) ? $ssh['metrics'] : []);
@@ -126,6 +210,9 @@ class OriginHealthProbe
                 'php_fpm' => $metrics['php_fpm'] ?? 'unknown',
                 'web' => $metrics['web'] ?? ($metrics['nginx'] ?? 'unknown'),
                 'writable' => $metrics['writable'] ?? null,
+                'tcp22' => $metrics['tcp22'] ?? null,
+                'tcp80' => $metrics['tcp80'] ?? null,
+                'orphan' => $metrics['orphan'] ?? null,
             ],
         ];
     }
@@ -133,7 +220,7 @@ class OriginHealthProbe
     /**
      * @return array{ok: bool, latency_ms: ?int, error: ?string, metrics?: array<string, mixed>}
      */
-    private function checkSsh(UserSetting $settings, string $host, int $port, string $username, string $password): array
+    private function checkSsh(string $host, int $port, string $username, string $password, string $pathTemplate): array
     {
         $started = microtime(true);
 
@@ -149,7 +236,7 @@ class OriginHealthProbe
                 ];
             }
 
-            $probePath = $this->probePath($settings, $username);
+            $probePath = $this->probePath($pathTemplate, $username);
             $safePath = preg_replace('#[^a-zA-Z0-9/._-]#', '', $probePath) ?: '/tmp/offerra_health';
             $output = (string) $ssh->exec($this->metricsScript($safePath));
             $ssh->disconnect();
@@ -218,14 +305,30 @@ class OriginHealthProbe
         }
     }
 
-    private function probePath(UserSetting $settings, string $username): string
+    /**
+     * @return array{ok: bool, latency_ms: ?int}
+     */
+    private function checkTcp(string $host, int $port): array
     {
-        $template = $settings->deploy_path_template ?: DeployDriver::defaultPath($settings->deploy_driver);
+        $started = microtime(true);
+        $errno = 0;
+        $errstr = '';
+        $fp = @fsockopen($host, $port, $errno, $errstr, 3);
+        if (is_resource($fp)) {
+            fclose($fp);
 
+            return ['ok' => true, 'latency_ms' => $this->elapsedMs($started)];
+        }
+
+        return ['ok' => false, 'latency_ms' => $this->elapsedMs($started)];
+    }
+
+    private function probePath(string $pathTemplate, string $username): string
+    {
         return str_replace(
             ['{user}', '{domain}'],
             [$username, '_offerra_health'],
-            $template,
+            $pathTemplate,
         );
     }
 

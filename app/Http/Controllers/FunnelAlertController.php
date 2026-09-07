@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFunnelAlertIgnoredBrandRequest;
+use App\Http\Requests\StoreFunnelAlertIgnoredGeoRequest;
+use App\Http\Requests\StoreFunnelAlertIgnoredLangRequest;
 use App\Http\Requests\UpdateFunnelAlertSettingsRequest;
 use App\Models\FunnelAlertEvent;
 use App\Models\FunnelAlertIgnoredBrand;
+use App\Models\FunnelAlertIgnoredGeo;
+use App\Models\FunnelAlertIgnoredLang;
 use App\Models\FunnelAlertSetting;
 use App\Services\FunnelAlertService;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +29,16 @@ class FunnelAlertController extends Controller
             ->map(fn (array $row) => FunnelAlertIgnoredBrand::keyFor($row['brand']))
             ->all();
 
+        $ignoredGeos = $alerts->ignoredGeos();
+        $ignoredGeoKeys = collect($ignoredGeos)
+            ->map(fn (array $row) => FunnelAlertIgnoredGeo::keyFor($row['geo']))
+            ->all();
+
+        $ignoredLangs = $alerts->ignoredLangs();
+        $ignoredLangKeys = collect($ignoredLangs)
+            ->map(fn (array $row) => FunnelAlertIgnoredLang::keyFor($row['lang']))
+            ->all();
+
         $rawEvents = FunnelAlertEvent::query()
             ->where('offer_found', false)
             ->latest('id')
@@ -36,9 +50,12 @@ class FunnelAlertController extends Controller
         $resolvedIds = [];
 
         $events = $rawEvents
-            ->map(function (FunnelAlertEvent $event) use ($ignoredKeys, $existingKeys, &$resolvedIds) {
+            ->map(function (FunnelAlertEvent $event) use ($ignoredKeys, $ignoredGeoKeys, $ignoredLangKeys, $existingKeys, &$resolvedIds) {
                 $offerFound = isset($existingKeys[$event->match_key]);
-                $ignored = in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true);
+                $ignoredBrand = in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true);
+                $ignoredGeo = in_array(FunnelAlertIgnoredGeo::keyFor((string) $event->geo), $ignoredGeoKeys, true);
+                $ignoredLang = in_array(FunnelAlertIgnoredLang::keyFor((string) $event->lang), $ignoredLangKeys, true);
+                $ignored = $ignoredBrand || $ignoredGeo || $ignoredLang;
 
                 if ($offerFound && ! $event->offer_found) {
                     $resolvedIds[] = $event->id;
@@ -76,6 +93,8 @@ class FunnelAlertController extends Controller
                 'tg_chat_ids' => $settings->chatIds() ?: [''],
             ],
             'ignoredBrands' => $ignoredBrands,
+            'ignoredGeos' => $ignoredGeos,
+            'ignoredLangs' => $ignoredLangs,
             'events' => $events,
         ]);
     }
@@ -164,6 +183,48 @@ class FunnelAlertController extends Controller
         return redirect()
             ->route('funnel-alerts.index')
             ->with('success', "Бренд «{$brand}» прибрано з ігнору");
+    }
+
+    public function ignoreGeo(StoreFunnelAlertIgnoredGeoRequest $request, FunnelAlertService $alerts): RedirectResponse
+    {
+        $result = $alerts->ignoreGeo($request->string('geo')->toString());
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', $result['created']
+                ? "GEO «{$result['geo']}» додано в ігнор — Telegram більше не піде"
+                : "GEO «{$result['geo']}» уже в ігнорі");
+    }
+
+    public function unignoreGeo(FunnelAlertIgnoredGeo $ignored, FunnelAlertService $alerts): RedirectResponse
+    {
+        $geo = $ignored->geo;
+        $alerts->unignoreGeo($ignored);
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', "GEO «{$geo}» прибрано з ігнору");
+    }
+
+    public function ignoreLang(StoreFunnelAlertIgnoredLangRequest $request, FunnelAlertService $alerts): RedirectResponse
+    {
+        $result = $alerts->ignoreLang($request->string('lang')->toString());
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', $result['created']
+                ? "Lang «{$result['lang']}» додано в ігнор — Telegram більше не піде"
+                : "Lang «{$result['lang']}» уже в ігнорі");
+    }
+
+    public function unignoreLang(FunnelAlertIgnoredLang $ignored, FunnelAlertService $alerts): RedirectResponse
+    {
+        $lang = $ignored->lang;
+        $alerts->unignoreLang($ignored);
+
+        return redirect()
+            ->route('funnel-alerts.index')
+            ->with('success', "Lang «{$lang}» прибрано з ігнору");
     }
 
     public function regenerateToken(FunnelAlertService $alerts): JsonResponse

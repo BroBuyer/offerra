@@ -15,6 +15,7 @@ export default function UsersIndex({ users }) {
     const { flash, errors } = usePage().props;
     const [dismissedCredentialsId, setDismissedCredentialsId] = useState(null);
     const [resettingId, setResettingId] = useState(null);
+    const [accessBusyId, setAccessBusyId] = useState(null);
 
     const { data, setData, post, processing, errors: formErrors, reset } = useForm({
         name: '',
@@ -59,16 +60,35 @@ export default function UsersIndex({ users }) {
         });
     };
 
+    const toggleSeeAllOffers = (user, enabled) => {
+        setAccessBusyId(user.id);
+        router.patch(route('users.access.update', user.id), {
+            can_see_all_offers: enabled,
+        }, {
+            preserveScroll: true,
+            onFinish: () => setAccessBusyId(null),
+        });
+    };
+
     return (
         <PanelLayout title="Користувачі" wide>
             <header className="page-header">
                 <h2>Користувачі</h2>
-                <p>Створення акаунтів для команди — кожен працює зі своїми налаштуваннями та офферами</p>
+                <p>
+                    Створення акаунтів для команди. Доступ «бачити всі оффери» можна вмикати окремо
+                    для кожного користувача. Редагувати чужі оффери можуть лише адміни.
+                </p>
             </header>
 
             {errors?.reset && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.reset}</p>
+                </div>
+            )}
+
+            {errors?.access && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.access}</p>
                 </div>
             )}
 
@@ -160,6 +180,7 @@ export default function UsersIndex({ users }) {
                             <th>Email</th>
                             <th>Роль</th>
                             <th>Офферів</th>
+                            <th title="Бачити оффери всіх користувачів">Усі оффери</th>
                             <th>Створено</th>
                             <th />
                         </tr>
@@ -187,6 +208,23 @@ export default function UsersIndex({ users }) {
                                         '0'
                                     )}
                                 </td>
+                                <td>
+                                    {user.role === 'admin' ? (
+                                        <span className="field-hint">завжди</span>
+                                    ) : (
+                                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={Boolean(user.can_see_all_offers)}
+                                                disabled={accessBusyId === user.id}
+                                                onChange={(e) => toggleSeeAllOffers(user, e.target.checked)}
+                                            />
+                                            <span className="field-hint">
+                                                {accessBusyId === user.id ? '…' : (user.can_see_all_offers ? 'так' : 'ні')}
+                                            </span>
+                                        </label>
+                                    )}
+                                </td>
                                 <td>{user.created_at ?? '—'}</td>
                                 <td>
                                     <Link
@@ -210,7 +248,7 @@ export default function UsersIndex({ users }) {
                         ))}
                         {users.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="field-hint">
+                                <td colSpan={7} className="field-hint">
                                     Користувачів ще немає
                                 </td>
                             </tr>

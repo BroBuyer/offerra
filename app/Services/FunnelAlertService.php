@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\FunnelAlertEvent;
 use App\Models\FunnelAlertIgnoredBrand;
+use App\Models\FunnelAlertIgnoredGeo;
 use App\Models\FunnelAlertSetting;
+use App\Models\FunnelAlertIgnoredLang;
 use App\Models\Offer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -93,7 +95,11 @@ class FunnelAlertService
             return ['ok' => true];
         }
 
-        if ($this->brandIgnored($brand)) {
+        if (
+            $this->brandIgnored($brand)
+            || $this->geoIgnored($geo)
+            || $this->langIgnored($lang)
+        ) {
             return ['ok' => true];
         }
 
@@ -153,7 +159,10 @@ class FunnelAlertService
         $results = [];
 
         foreach ($events as $event) {
-            if ($this->brandIgnored($event->brand)) {
+            if ($this->brandIgnored($event->brand)
+                || $this->geoIgnored($event->geo)
+                || $this->langIgnored($event->lang)
+            ) {
                 continue;
             }
 
@@ -197,6 +206,28 @@ class FunnelAlertService
         return FunnelAlertIgnoredBrand::query()->where('brand_key', $key)->exists();
     }
 
+    public function geoIgnored(string $geo): bool
+    {
+        $key = FunnelAlertIgnoredGeo::keyFor($geo);
+
+        if ($key === '') {
+            return false;
+        }
+
+        return FunnelAlertIgnoredGeo::query()->where('geo_key', $key)->exists();
+    }
+
+    public function langIgnored(string $lang): bool
+    {
+        $key = FunnelAlertIgnoredLang::keyFor($lang);
+
+        if ($key === '') {
+            return false;
+        }
+
+        return FunnelAlertIgnoredLang::query()->where('lang_key', $key)->exists();
+    }
+
     /**
      * @return array{created: bool, brand: string}
      */
@@ -226,6 +257,60 @@ class FunnelAlertService
     }
 
     /**
+     * @return array{created: bool, geo: string}
+     */
+    public function ignoreGeo(string $geo): array
+    {
+        $key = FunnelAlertIgnoredGeo::keyFor($geo);
+
+        if ($key === '') {
+            return ['created' => false, 'geo' => trim($geo)];
+        }
+
+        $row = FunnelAlertIgnoredGeo::query()->firstOrCreate(
+            ['geo_key' => $key],
+            ['geo' => $key],
+        );
+
+        return [
+            'created' => $row->wasRecentlyCreated,
+            'geo' => $row->geo,
+        ];
+    }
+
+    public function unignoreGeo(FunnelAlertIgnoredGeo $ignored): void
+    {
+        $ignored->delete();
+    }
+
+    /**
+     * @return array{created: bool, lang: string}
+     */
+    public function ignoreLang(string $lang): array
+    {
+        $key = FunnelAlertIgnoredLang::keyFor($lang);
+
+        if ($key === '') {
+            return ['created' => false, 'lang' => trim($lang)];
+        }
+
+        $row = FunnelAlertIgnoredLang::query()->firstOrCreate(
+            ['lang_key' => $key],
+            ['lang' => $key],
+        );
+
+        return [
+            'created' => $row->wasRecentlyCreated,
+            'lang' => $row->lang,
+        ];
+    }
+
+    public function unignoreLang(FunnelAlertIgnoredLang $ignored): void
+    {
+        $ignored->delete();
+    }
+
+    /**
      * @return list<array{id: int, brand: string}>
      */
     public function ignoredBrands(): array
@@ -236,6 +321,36 @@ class FunnelAlertService
             ->map(fn (FunnelAlertIgnoredBrand $row) => [
                 'id' => $row->id,
                 'brand' => $row->brand,
+            ])
+            ->all();
+    }
+
+    /**
+     * @return list<array{id: int, geo: string}>
+     */
+    public function ignoredGeos(): array
+    {
+        return FunnelAlertIgnoredGeo::query()
+            ->orderBy('geo')
+            ->get(['id', 'geo'])
+            ->map(fn (FunnelAlertIgnoredGeo $row) => [
+                'id' => $row->id,
+                'geo' => $row->geo,
+            ])
+            ->all();
+    }
+
+    /**
+     * @return list<array{id: int, lang: string}>
+     */
+    public function ignoredLangs(): array
+    {
+        return FunnelAlertIgnoredLang::query()
+            ->orderBy('lang')
+            ->get(['id', 'lang'])
+            ->map(fn (FunnelAlertIgnoredLang $row) => [
+                'id' => $row->id,
+                'lang' => $row->lang,
             ])
             ->all();
     }

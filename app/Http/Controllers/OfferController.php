@@ -64,8 +64,9 @@ class OfferController extends Controller
             'currencies' => config('offerra.currencies'),
             'templates' => app(TemplateCatalog::class)->forWizard(),
             'brandTemplateUsage' => $this->brandTemplateUsage($user),
-            'showUserColumn' => $user->isAdmin(),
-            'users' => $user->isAdmin()
+            'showUserColumn' => $user->canSeeAllOffers(),
+            'canManageAllOffers' => $user->isAdmin(),
+            'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
             'dateFilters' => [
@@ -125,7 +126,7 @@ class OfferController extends Controller
             'created' => request()->string('created')->toString(),
             'created_from' => request()->string('created_from')->toString(),
             'created_to' => request()->string('created_to')->toString(),
-            'user' => $user->isAdmin() && request()->filled('user')
+            'user' => $user->canSeeAllOffers() && request()->filled('user')
                 ? (string) request()->integer('user')
                 : '',
             'per_page' => $this->resolvePerPage($perPage),
@@ -159,7 +160,7 @@ class OfferController extends Controller
             $query->whereNotIn('status', ['archived', 'teardown_failed']);
         }
 
-        if (! $user->isAdmin()) {
+        if (! $user->canSeeAllOffers()) {
             $query->where('user_id', $user->id);
         } elseif (request()->filled('user')) {
             $query->where('user_id', request()->integer('user'));
@@ -646,8 +647,8 @@ class OfferController extends Controller
             'offers' => $offers,
             'filters' => $filters,
             'perPageOptions' => self::PER_PAGE_OPTIONS,
-            'showUserColumn' => $user->isAdmin(),
-            'users' => $user->isAdmin()
+            'showUserColumn' => $user->canSeeAllOffers(),
+            'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
         ]);

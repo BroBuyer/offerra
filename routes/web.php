@@ -5,8 +5,10 @@ use App\Http\Controllers\DomainBalanceController;
 use App\Http\Controllers\DomainPurchaseController;
 use App\Http\Controllers\DomainSearchController;
 use App\Http\Controllers\FunnelAlertController;
+use App\Http\Controllers\GeoMinDepositController;
 use App\Http\Controllers\MirrorDomainController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OriginServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TemplateController;
@@ -59,6 +61,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
             ->name('users.reset-password');
+        Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
+            ->name('users.access.update');
+
+        Route::get('/origin-servers', [OriginServerController::class, 'index'])->name('origin-servers.index');
+        Route::post('/origin-servers', [OriginServerController::class, 'store'])->name('origin-servers.store');
+        Route::post('/origin-servers/{originServer}/update', [OriginServerController::class, 'update'])
+            ->name('origin-servers.update');
+        Route::delete('/origin-servers/{originServer}', [OriginServerController::class, 'destroy'])->name('origin-servers.destroy');
+        Route::post('/origin-servers/{originServer}/check', [OriginServerController::class, 'check'])->name('origin-servers.check');
+        Route::post('/origin-servers/sync', [OriginServerController::class, 'sync'])->name('origin-servers.sync');
+        Route::post('/origin-servers/check-all', [OriginServerController::class, 'checkAll'])->name('origin-servers.check-all');
+
+        Route::get('/min-deposits', [GeoMinDepositController::class, 'index'])->name('min-deposits.index');
+        Route::post('/min-deposits', [GeoMinDepositController::class, 'store'])->name('min-deposits.store');
+        Route::post('/min-deposits/{geoMinDeposit}/update', [GeoMinDepositController::class, 'update'])
+            ->name('min-deposits.update');
+        Route::delete('/min-deposits/{geoMinDeposit}', [GeoMinDepositController::class, 'destroy'])
+            ->name('min-deposits.destroy');
 
         Route::get('/funnel-alerts', [FunnelAlertController::class, 'index'])->name('funnel-alerts.index');
         Route::patch('/funnel-alerts', [FunnelAlertController::class, 'update'])->name('funnel-alerts.update');

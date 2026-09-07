@@ -1,8 +1,15 @@
-import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
+import PhoneGeoSelect, { normalizePhoneCountries, phoneOptionCode, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
-import { getGeoDepositPref, saveGeoDepositPref } from '@/lib/geoDepositPrefs';
+import { geoDepositMissingFromCatalog, lookupGeoDeposit } from '@/lib/geoDepositPrefs';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
+
+/** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
+const MULTILANG_GEO = 'ML';
+
+function isMultilangTemplate(templateId) {
+    return templateId === 'multilang';
+}
 
 function resolveMarket(geo, geoPresets, availableLanguages) {
     const code = String(geo || '').toUpperCase();
@@ -27,13 +34,16 @@ export default function OfferEditModal({
     currencies = [],
     templates = [],
     brandTemplateUsage = {},
+    multilangHubs = [],
     hasKeitaroApiKey,
     onClose,
 }) {
     const phoneCountries = normalizePhoneCountries(offer.phone_countries, offer.phone);
     const initialTemplate = offer.template_id || 'default';
+    const canGeoOverflow = Boolean(offer.can_geo_overflow);
 
-    const { errors: pageErrors } = usePage().props;
+    const { errors: pageErrors, panel } = usePage().props;
+    const geoMinDeposits = panel?.geo_min_deposits || {};
     const { data, setData, patch, processing, errors, reset, clearErrors } = useForm({
         brand: offer.brand || '',
         geo: String(offer.geo || '').toUpperCase(),
@@ -46,7 +56,23 @@ export default function OfferEditModal({
         create_keitaro: false,
         vitals_enabled: Boolean(offer.vitals_enabled),
         auto_redeploy: true,
+        infra_cloudflare_geo_overflow: Boolean(offer.geo_overflow_enabled),
+        geo_overflow_hub: offer.geo_overflow_hub || '',
     });
+
+    const brandHubs = useMemo(() => {
+        const brand = String(data.brand || '').trim().toLowerCase();
+        const ownerId = offer.user_id;
+        return multilangHubs.filter((hub) => {
+            if (ownerId && hub.user_id && hub.user_id !== ownerId) {
+                return false;
+            }
+            if (!brand) {
+                return true;
+            }
+            return String(hub.brand || '').trim().toLowerCase() === brand;
+        });
+    }, [multilangHubs, data.brand, offer.user_id]);
 
     const usedTemplateIds = useMemo(
         () => usedTemplatesForBrand(brandTemplateUsage, data.brand, {
@@ -73,25 +99,60 @@ export default function OfferEditModal({
         [templates, data.template],
     );
     const availableLanguages = selectedTemplate?.languages ?? [];
+    const isMarketMultilang = isMultilangTemplate(data.template);
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
     const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
+
+    useEffect(() => {
+        if (!isMarketMultilang) {
+            return;
+        }
+
+        const langs = availableLanguages;
+        const nextLang = langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code || 'en');
+
+        setData((prev) => {
+            if (prev.geo === MULTILANG_GEO && prev.lang === nextLang) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                geo: MULTILANG_GEO,
+                lang: nextLang,
+            };
+        });
+    }, [isMarketMultilang, availableLanguages, setData]);
 
     const onTemplateChange = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const langCodes = langs.map((item) => item.code);
-        const nextLang = langCodes.includes(data.lang) ? data.lang : (langCodes[0] || data.lang);
+        const wasMultilang = isMultilangTemplate(data.template);
+        const isMultilang = isMultilangTemplate(templateId);
+        const nextLang = isMultilang
+            ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
+            : (langs.some((item) => item.code === data.lang) ? data.lang : (langs[0]?.code || data.lang));
+        const allPhoneCodes = phoneOptions.map((item) => phoneOptionCode(item));
 
         setData((prev) => ({
             ...prev,
             template: templateId,
             lang: nextLang,
+            ...(isMultilang
+                ? {
+                    geo: MULTILANG_GEO,
+                    phone: 'ip',
+                    phone_countries: allPhoneCodes.length > 0 ? allPhoneCodes : prev.phone_countries,
+                }
+                : wasMultilang
+                    ? { geo: prev.geo === MULTILANG_GEO ? (geoPresets[0]?.code || '') : prev.geo }
+                    : {}),
         }));
     };
 
     const onGeoChange = (code) => {
         const resolved = resolveMarket(code, geoPresets, availableLanguages);
-        const remembered = getGeoDepositPref(resolved.geo);
+        const remembered = lookupGeoDeposit(resolved.geo, geoMinDeposits);
         setData((prev) => {
             const phones = normalizePhoneCountries(prev.phone_countries, prev.phone);
             const phoneSet = new Set(phones);
@@ -114,13 +175,7 @@ export default function OfferEditModal({
     };
 
     const updateDepositField = (field, value) => {
-        setData((prev) => {
-            const next = { ...prev, [field]: value };
-            if (String(next.geo || '').length === 2) {
-                saveGeoDepositPref(next.geo, next.min_deposit, next.currency);
-            }
-            return next;
-        });
+        setData(field, value);
     };
 
     const togglePhoneCountry = (code) => {
@@ -139,9 +194,37 @@ export default function OfferEditModal({
             }
 
             const list = [...set];
-            const phone = list.includes(prev.phone) ? prev.phone : list[0];
+            const phone = prev.phone === 'ip'
+                ? 'ip'
+                : (list.includes(prev.phone) ? prev.phone : list[0]);
 
             return { ...prev, phone_countries: list, phone };
+        });
+    };
+
+    const selectAllPhoneCountries = (codes) => {
+        const list = normalizePhoneCountries(codes);
+        if (list.length === 0) {
+            return;
+        }
+        setData((prev) => ({
+            ...prev,
+            phone_countries: list,
+            phone: prev.phone === 'ip' || list.includes(prev.phone) ? prev.phone : 'ip',
+        }));
+    };
+
+    const clearPhoneCountries = () => {
+        setData((prev) => {
+            const keep = prev.phone === 'ip'
+                ? (normalizePhoneCountries(prev.phone_countries)[0] || phoneOptions[0] && phoneOptionCode(phoneOptions[0]) || 'gb')
+                : (prev.phone && /^[a-z]{2}$/.test(prev.phone) ? prev.phone : 'gb');
+
+            return {
+                ...prev,
+                phone_countries: [keep],
+                phone: prev.phone === 'ip' ? 'ip' : keep,
+            };
         });
     };
 
@@ -152,9 +235,6 @@ export default function OfferEditModal({
         patch(route('offers.update', offer.id), {
             preserveScroll: true,
             onSuccess: () => {
-                if (String(data.geo || '').length === 2) {
-                    saveGeoDepositPref(data.geo, data.min_deposit, data.currency);
-                }
                 reset();
                 onClose();
             },
@@ -173,7 +253,9 @@ export default function OfferEditModal({
         || errors.phone
         || errors.phone_countries
         || errors.create_keitaro
-        || errors.vitals_enabled;
+        || errors.vitals_enabled
+        || errors.infra_cloudflare_geo_overflow
+        || errors.geo_overflow_hub;
 
     return (
         <div className="modal-backdrop" onClick={() => !processing && onClose()}>
@@ -224,18 +306,35 @@ export default function OfferEditModal({
 
                     <div className="field-row">
                         <div className="field">
-                            <label htmlFor="edit-geo">GEO (CRM)</label>
-                            <select
-                                id="edit-geo"
-                                value={data.geo}
-                                onChange={(event) => onGeoChange(event.target.value)}
-                            >
-                                {geoPresets.map((item) => (
-                                    <option key={item.code} value={item.code}>
-                                        {item.code}{item.name ? ` — ${item.name}` : ''}
-                                    </option>
-                                ))}
-                            </select>
+                            <label htmlFor="edit-geo">
+                                {isMarketMultilang ? 'GEO (мітка)' : 'GEO (CRM)'}
+                            </label>
+                            {isMarketMultilang ? (
+                                <>
+                                    <select id="edit-geo" value={MULTILANG_GEO} disabled>
+                                        <option value={MULTILANG_GEO}>
+                                            {MULTILANG_GEO} — Multi (усі мови)
+                                        </option>
+                                    </select>
+                                    <p className="field-hint">
+                                        <strong>ML</strong> — лише мітка для папки/Keitaro.
+                                        У CRM країна йде з IP відвідувача. Мова ленду фіксується в <code>en</code>,
+                                        інші мови вже всередині шаблону.
+                                    </p>
+                                </>
+                            ) : (
+                                <select
+                                    id="edit-geo"
+                                    value={data.geo}
+                                    onChange={(event) => onGeoChange(event.target.value)}
+                                >
+                                    {geoPresets.map((item) => (
+                                        <option key={item.code} value={item.code}>
+                                            {item.code}{item.name ? ` — ${item.name}` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                         <div className="field">
                             <label htmlFor="edit-lang">Мова</label>
@@ -243,6 +342,7 @@ export default function OfferEditModal({
                                 id="edit-lang"
                                 value={data.lang}
                                 onChange={(event) => setData('lang', event.target.value.toLowerCase())}
+                                disabled={isMarketMultilang}
                             >
                                 {availableLanguages.map((item) => (
                                     <option key={item.code} value={item.code}>
@@ -250,6 +350,11 @@ export default function OfferEditModal({
                                     </option>
                                 ))}
                             </select>
+                            {isMarketMultilang && (
+                                <p className="field-hint">
+                                    Для multilang база — <code>en</code>. Не шукай <code>ML</code> тут — це GEO.
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -279,6 +384,17 @@ export default function OfferEditModal({
                             </select>
                         </div>
                     </div>
+                    {geoDepositMissingFromCatalog(data.geo, geoMinDeposits) && (
+                        <p className="field-hint" style={{ marginTop: '0.35rem', color: '#ca8a04' }}>
+                            Для GEO <strong>{String(data.geo || '').toUpperCase()}</strong> ще немає суми й валюти в таблиці мін. депів.
+                            Напишіть адміну, щоб він додав їх у систему (тоді підтягуватиметься всім), або впишіть самі зараз.
+                        </p>
+                    )}
+                    {lookupGeoDeposit(data.geo, geoMinDeposits) && (
+                        <p className="field-hint" style={{ marginTop: '0.35rem' }}>
+                            Підтягнуто з таблиці мін. депів — можна змінити вручну.
+                        </p>
+                    )}
 
                     <div className="field">
                         <label>Phone GEO (форма)</label>
@@ -286,9 +402,11 @@ export default function OfferEditModal({
                             options={phoneOptions}
                             selected={selectedPhones}
                             onToggle={togglePhoneCountry}
+                            onSelectAll={selectAllPhoneCountries}
+                            onClear={clearPhoneCountries}
                         />
                         <p className="field-hint">
-                            За IP (Cloudflare) підставляється код зі списку, інакше — дефолтний.
+                            За IP (Cloudflare) підставляється код зі списку. «Усі країни» — для multilang/хабів.
                         </p>
                     </div>
 
@@ -296,15 +414,19 @@ export default function OfferEditModal({
                         <label htmlFor="edit-phone">Дефолтний phone</label>
                         <select
                             id="edit-phone"
-                            value={data.phone}
+                            value={data.phone === 'ip' || selectedPhones.includes(data.phone) ? data.phone : (selectedPhones[0] || 'ip')}
                             onChange={(event) => setData('phone', event.target.value.toLowerCase())}
                         >
+                            <option value="ip">По IP (Cloudflare)</option>
                             {selectedPhones.map((code) => (
                                 <option key={code} value={code}>
                                     {code.toUpperCase()}
                                 </option>
                             ))}
                         </select>
+                        <p className="field-hint">
+                            «По IP» — код країни з CF-IPCountry, навіть якщо його немає у списку вище.
+                        </p>
                     </div>
 
                     {offer.can_create_keitaro && (
@@ -361,6 +483,64 @@ export default function OfferEditModal({
                             Зміна мови/шаблону перезбирає ленд з нуля. Домен і Cloudflare/Dynadot не чіпаються.
                         </p>
                     </div>
+
+                    {canGeoOverflow && data.template !== 'multilang' && (
+                        <div className="field" style={{ marginTop: '0.5rem' }}>
+                            <label className="field-check" htmlFor="edit-geo-overflow">
+                                <input
+                                    id="edit-geo-overflow"
+                                    type="checkbox"
+                                    checked={Boolean(data.infra_cloudflare_geo_overflow)}
+                                    onChange={(event) => {
+                                        const on = event.target.checked;
+                                        setData((prev) => ({
+                                            ...prev,
+                                            infra_cloudflare_geo_overflow: on,
+                                            geo_overflow_hub: on
+                                                ? (prev.geo_overflow_hub || brandHubs[0]?.domain || '')
+                                                : prev.geo_overflow_hub,
+                                        }));
+                                    }}
+                                />
+                                <span>Cloudflare — чуже GEO → multilang hub (302)</span>
+                            </label>
+                            <p className="field-hint">
+                                Відвідувачі не з GEO офера йдуть на hub. Googlebot / CF bots лишаються на цьому домені.
+                            </p>
+                            {data.infra_cloudflare_geo_overflow && (
+                                <div className="field" style={{ marginTop: '0.5rem' }}>
+                                    <label htmlFor="edit-geo-overflow-hub">Multilang hub</label>
+                                    {brandHubs.length > 0 ? (
+                                        <select
+                                            id="edit-geo-overflow-hub"
+                                            value={data.geo_overflow_hub}
+                                            onChange={(event) => setData('geo_overflow_hub', event.target.value)}
+                                        >
+                                            <option value="">— оберіть hub —</option>
+                                            {brandHubs.map((hub) => (
+                                                <option key={hub.id} value={hub.domain}>
+                                                    {hub.domain} ({hub.brand})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <input
+                                            id="edit-geo-overflow-hub"
+                                            type="text"
+                                            placeholder="example-hub.com"
+                                            value={data.geo_overflow_hub}
+                                            onChange={(event) => setData('geo_overflow_hub', event.target.value.toLowerCase())}
+                                        />
+                                    )}
+                                    {brandHubs.length === 0 && (
+                                        <p className="field-hint">
+                                            Немає multilang оферів цього бренду в панелі — вкажіть домен hub вручну.
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {fieldError && (
                         <p className="field-hint" style={{ color: '#f87171' }}>

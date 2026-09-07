@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\InfrastructureOptions;
+use App\Support\MarketOptions;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -94,16 +95,13 @@ class Offer extends Model
      */
     public function phoneCountriesList(): array
     {
-        $raw = $this->phone_countries ?: $this->phone;
+        $normalized = MarketOptions::normalizePhoneFields(
+            (string) $this->phone,
+            (string) ($this->phone_countries ?? ''),
+            (string) $this->geo,
+        );
 
-        if (! $raw) {
-            return [];
-        }
-
-        return array_values(array_unique(array_filter(array_map(
-            static fn (string $code) => strtolower(trim($code)),
-            explode(',', strtolower((string) $raw)),
-        ), static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))));
+        return $normalized['phone_countries'];
     }
 
     /**
@@ -132,11 +130,31 @@ class Offer extends Model
             return 'pending';
         }
 
-        if (in_array($this->infra_status, ['ready', 'dns_propagating'], true)) {
-            return 'pending';
+        return 'waiting';
+    }
+
+    public function serverHost(): string
+    {
+        $meta = is_array($this->infra_meta) ? $this->infra_meta : [];
+        $fromMeta = trim((string) ($meta['deploy_host'] ?? ''));
+
+        if ($fromMeta !== '') {
+            return $fromMeta;
         }
 
-        return 'waiting';
+        $stored = trim((string) ($this->deploy_panel_name ?? ''));
+
+        if ($stored !== '' && filter_var($stored, FILTER_VALIDATE_IP)) {
+            return $stored;
+        }
+
+        $fromUser = trim((string) ($this->user?->settings?->deploy_host ?? ''));
+
+        if ($fromUser !== '') {
+            return $fromUser;
+        }
+
+        return $stored;
     }
 
     /**
@@ -166,7 +184,7 @@ class Offer extends Model
             'can_create_keitaro' => ! $this->keitaro_campaign_id,
             'vitals_enabled' => (bool) $this->vitals_enabled,
             'status' => $this->status,
-            'deploy_panel' => $this->deploy_panel_name,
+            'deploy_panel' => $this->serverHost(),
             'cloudflare_account' => $this->cloudflare_account_name,
             'dynadot_account' => $this->dynadot_account_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
@@ -182,6 +200,15 @@ class Offer extends Model
             'dns_status' => $this->dnsStatus(),
             'dns_error' => is_array($this->infra_meta) ? ($this->infra_meta['dns_error'] ?? null) : null,
             'infra_meta' => $this->infra_meta ?? [],
+            'geo_overflow_enabled' => (bool) (is_array($this->infra_meta)
+                ? (($this->infra_meta['options']['cloudflare_geo_overflow'] ?? false)
+                    || (($this->infra_meta['geo_overflow'] ?? '') === 'done'))
+                : false),
+            'geo_overflow_hub' => is_array($this->infra_meta)
+                ? (string) ($this->infra_meta['geo_overflow_hub'] ?? '')
+                : '',
+            'can_geo_overflow' => $this->template !== 'multilang'
+                && strtoupper((string) $this->geo) !== 'ML',
         ];
     }
 }

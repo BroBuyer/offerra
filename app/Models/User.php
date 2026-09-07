@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -32,6 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'can_see_all_offers' => 'boolean',
         ];
     }
 
@@ -57,5 +58,14 @@ class User extends Authenticatable
     {
         return $this->role === self::ROLE_ADMIN
             || $this->email === 'admin@offerra.local';
+    }
+
+    /**
+     * Whether this user may list/filter offers belonging to everyone.
+     * Management (edit/deploy/archive) stays owner-or-admin unless isAdmin().
+     */
+    public function canSeeAllOffers(): bool
+    {
+        return $this->isAdmin() || (bool) $this->can_see_all_offers;
     }
 }

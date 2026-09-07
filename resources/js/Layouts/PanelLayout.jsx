@@ -15,6 +15,8 @@ const navItems = [
 
 const adminNavItems = [
     { href: '/users', icon: '👥', label: 'Користувачі' },
+    { href: '/origin-servers', icon: '🖥️', label: 'Origin-сервери' },
+    { href: '/min-deposits', icon: '💵', label: 'Мін. депи' },
     { href: '/funnel-alerts', icon: '🔔', label: 'Алерти воронок' },
 ];
 

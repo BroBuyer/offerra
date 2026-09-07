@@ -89,6 +89,7 @@ return [
         ['code' => 'CNY', 'name' => 'Китайський юань (¥)'],
         ['code' => 'HKD', 'name' => 'Гонконгський долар'],
         ['code' => 'LKR', 'name' => 'Шрі-ланкійська рупія (Rs)'],
+        ['code' => 'SL', 'name' => 'Леоне Сьєрра-Леоне (SL)'],
     ],
 
     // Підказки GEO — можна вибрати або вписати свій код (2 літери)
@@ -121,6 +122,7 @@ return [
         ['code' => 'ZA', 'name' => 'ПАР', 'lang' => 'en', 'phone' => 'za'],
         ['code' => 'NG', 'name' => 'Нігерія', 'lang' => 'en', 'phone' => 'ng', 'currency' => 'NGN'],
         ['code' => 'KE', 'name' => 'Кенія', 'lang' => 'en', 'phone' => 'ke', 'currency' => 'KES'],
+        ['code' => 'SL', 'name' => 'Сьєрра-Леоне', 'lang' => 'en', 'phone' => 'sl', 'currency' => 'SL'],
         ['code' => 'AR', 'name' => 'Аргентина', 'lang' => 'es', 'phone' => 'ar'],
         ['code' => 'BR', 'name' => 'Бразилія', 'lang' => 'pt', 'phone' => 'br'],
         ['code' => 'MX', 'name' => 'Мексика', 'lang' => 'es', 'phone' => 'mx'],

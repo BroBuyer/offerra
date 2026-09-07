@@ -16,13 +16,17 @@ function statusLabel(event) {
     return 'Очікує TG';
 }
 
-export default function FunnelAlertsIndex({ settings, events, ignoredBrands = [] }) {
+export default function FunnelAlertsIndex({ settings, events, ignoredBrands = [], ignoredGeos = [], ignoredLangs = [] }) {
     const { flash, errors } = usePage().props;
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [blacklistOpen, setBlacklistOpen] = useState(false);
     const [retryingTelegram, setRetryingTelegram] = useState(false);
     const [ignoreBrand, setIgnoreBrand] = useState('');
     const [ignoringBrand, setIgnoringBrand] = useState(false);
+    const [ignoreGeo, setIgnoreGeo] = useState('');
+    const [ignoringGeo, setIgnoringGeo] = useState(false);
+    const [ignoreLang, setIgnoreLang] = useState('');
+    const [ignoringLang, setIgnoringLang] = useState(false);
     const [clearingEvents, setClearingEvents] = useState(false);
 
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
@@ -116,6 +120,64 @@ Content-Type: application/json
         });
     };
 
+    const ignoreGeoValue = (geo) => {
+        const value = (geo ?? '').trim();
+        if (!value || ignoringGeo) {
+            return;
+        }
+
+        setIgnoringGeo(true);
+        router.post(route('funnel-alerts.ignored-geos.store'), { geo: value }, {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => {
+                setIgnoringGeo(false);
+                setIgnoreGeo('');
+            },
+        });
+    };
+
+    const submitIgnoreGeo = (e) => {
+        e?.preventDefault?.();
+        ignoreGeoValue(ignoreGeo);
+    };
+
+    const removeIgnoredGeo = (id) => {
+        router.delete(route('funnel-alerts.ignored-geos.destroy', id), {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
+
+    const ignoreLangValue = (lang) => {
+        const value = (lang ?? '').trim();
+        if (!value || ignoringLang) {
+            return;
+        }
+
+        setIgnoringLang(true);
+        router.post(route('funnel-alerts.ignored-langs.store'), { lang: value }, {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => {
+                setIgnoringLang(false);
+                setIgnoreLang('');
+            },
+        });
+    };
+
+    const submitIgnoreLang = (e) => {
+        e?.preventDefault?.();
+        ignoreLangValue(ignoreLang);
+    };
+
+    const removeIgnoredLang = (id) => {
+        router.delete(route('funnel-alerts.ignored-langs.destroy', id), {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
+
     const submitIgnoreBrand = (e) => {
         e?.preventDefault?.();
         ignoreBrandValue(ignoreBrand);
@@ -133,7 +195,7 @@ Content-Type: application/json
             <header className="page-header funnel-alerts-header">
                 <div>
                     <h2>Алерти воронок</h2>
-                    <p>TG лише якщо офера немає в базі і бренд не в чорному списку. Пуш один раз на комбінацію.</p>
+                    <p>TG лише якщо офера немає в базі і бренд / GEO / lang не в чорному списку. Пуш один раз на комбінацію.</p>
                 </div>
                 <div className="offer-actions">
                     {pendingTelegramCount > 0 && (
@@ -160,7 +222,9 @@ Content-Type: application/json
                         onClick={() => setBlacklistOpen(true)}
                     >
                         Чорний список
-                        {ignoredBrands.length > 0 ? ` (${ignoredBrands.length})` : ''}
+                        {ignoredBrands.length + ignoredGeos.length + ignoredLangs.length > 0
+                            ? ` (${ignoredBrands.length + ignoredGeos.length + ignoredLangs.length})`
+                            : ''}
                     </button>
                     <button
                         type="button"
@@ -201,7 +265,7 @@ Content-Type: application/json
                             <div>
                                 <h3>Чорний список</h3>
                                 <p className="card-desc" style={{ margin: 0 }}>
-                                    По цих брендах Telegram не йде. Якщо офер уже створили — в таблиці буде «Оффер є».
+                                        По цих брендах / GEO / lang Telegram не йде. Якщо офер уже створили — в таблиці буде «Оффер є».
                                 </p>
                             </div>
                             <button
@@ -214,42 +278,123 @@ Content-Type: application/json
                             </button>
                         </div>
 
-                        <form onSubmit={submitIgnoreBrand} className="blacklist-add">
-                            <input
-                                type="text"
-                                value={ignoreBrand}
-                                onChange={(e) => setIgnoreBrand(e.target.value)}
-                                placeholder="Назва воронки / бренд"
-                                autoFocus
-                            />
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                disabled={ignoringBrand || !ignoreBrand.trim()}
-                            >
-                                {ignoringBrand ? 'Додаю…' : 'Додати'}
-                            </button>
-                        </form>
+                        <div>
+                            <p className="card-desc" style={{ marginBottom: '0.5rem' }}>Бренди</p>
+                            <form onSubmit={submitIgnoreBrand} className="blacklist-add">
+                                <input
+                                    type="text"
+                                    value={ignoreBrand}
+                                    onChange={(e) => setIgnoreBrand(e.target.value)}
+                                    placeholder="Назва воронки / бренд"
+                                    autoFocus
+                                />
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={ignoringBrand || !ignoreBrand.trim()}
+                                >
+                                    {ignoringBrand ? 'Додаю…' : 'Додати'}
+                                </button>
+                            </form>
 
-                        {ignoredBrands.length === 0 ? (
-                            <p className="card-desc">Список порожній.</p>
-                        ) : (
-                            <ul className="blacklist-chips">
-                                {ignoredBrands.map((item) => (
-                                    <li key={item.id} className="blacklist-chip">
-                                        <span>{item.brand}</span>
-                                        <button
-                                            type="button"
-                                            className="blacklist-chip__remove"
-                                            onClick={() => removeIgnoredBrand(item.id)}
-                                            aria-label={`Прибрати ${item.brand}`}
-                                        >
-                                            ×
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                            {ignoredBrands.length === 0 ? (
+                                <p className="card-desc">Список порожній.</p>
+                            ) : (
+                                <ul className="blacklist-chips">
+                                    {ignoredBrands.map((item) => (
+                                        <li key={item.id} className="blacklist-chip">
+                                            <span>{item.brand}</span>
+                                            <button
+                                                type="button"
+                                                className="blacklist-chip__remove"
+                                                onClick={() => removeIgnoredBrand(item.id)}
+                                                aria-label={`Прибрати ${item.brand}`}
+                                            >
+                                                ×
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+
+                        <div style={{ marginTop: '1rem' }}>
+                            <p className="card-desc" style={{ marginBottom: '0.5rem' }}>GEO (ISO2)</p>
+                            <form onSubmit={submitIgnoreGeo} className="blacklist-add">
+                                <input
+                                    type="text"
+                                    value={ignoreGeo}
+                                    onChange={(e) => setIgnoreGeo(e.target.value)}
+                                    placeholder="Напр. RU, UA, FR"
+                                />
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={ignoringGeo || !ignoreGeo.trim()}
+                                >
+                                    {ignoringGeo ? 'Додаю…' : 'Додати'}
+                                </button>
+                            </form>
+
+                            {ignoredGeos.length === 0 ? (
+                                <p className="card-desc">Список порожній.</p>
+                            ) : (
+                                <ul className="blacklist-chips">
+                                    {ignoredGeos.map((item) => (
+                                        <li key={item.id} className="blacklist-chip">
+                                            <span>{item.geo}</span>
+                                            <button
+                                                type="button"
+                                                className="blacklist-chip__remove"
+                                                onClick={() => removeIgnoredGeo(item.id)}
+                                                aria-label={`Прибрати GEO ${item.geo}`}
+                                            >
+                                                ×
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+
+                        <div style={{ marginTop: '1rem' }}>
+                            <p className="card-desc" style={{ marginBottom: '0.5rem' }}>Lang</p>
+                            <form onSubmit={submitIgnoreLang} className="blacklist-add">
+                                <input
+                                    type="text"
+                                    value={ignoreLang}
+                                    onChange={(e) => setIgnoreLang(e.target.value)}
+                                    placeholder="Напр. en, fr, de"
+                                />
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={ignoringLang || !ignoreLang.trim()}
+                                >
+                                    {ignoringLang ? 'Додаю…' : 'Додати'}
+                                </button>
+                            </form>
+
+                            {ignoredLangs.length === 0 ? (
+                                <p className="card-desc">Список порожній.</p>
+                            ) : (
+                                <ul className="blacklist-chips">
+                                    {ignoredLangs.map((item) => (
+                                        <li key={item.id} className="blacklist-chip">
+                                            <span>{item.lang}</span>
+                                            <button
+                                                type="button"
+                                                className="blacklist-chip__remove"
+                                                onClick={() => removeIgnoredLang(item.id)}
+                                                aria-label={`Прибрати lang ${item.lang}`}
+                                            >
+                                                ×
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

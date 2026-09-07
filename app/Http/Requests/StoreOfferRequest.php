@@ -29,33 +29,15 @@ class StoreOfferRequest extends FormRequest
             ]);
         }
 
-        $phone = strtolower(trim((string) $this->input('phone', '')));
-        $rawCountries = $this->input('phone_countries', []);
-        if (is_string($rawCountries)) {
-            $rawCountries = explode(',', strtolower($rawCountries));
-        }
-        $countries = collect(is_array($rawCountries) ? $rawCountries : [])
-            ->map(static fn ($code) => strtolower(trim((string) $code)))
-            ->filter(static fn (string $code) => strlen($code) === 2 && ctype_alpha($code))
-            ->unique()
-            ->values()
-            ->all();
-
-        if ($phone !== '' && ! in_array($phone, $countries, true)) {
-            array_unshift($countries, $phone);
-        }
-
-        if ($countries === [] && $phone !== '') {
-            $countries = [$phone];
-        }
-
-        if ($phone === '' && $countries !== []) {
-            $phone = $countries[0];
-        }
+        $normalized = MarketOptions::normalizePhoneFields(
+            (string) $this->input('phone', ''),
+            $this->input('phone_countries', []),
+            (string) $this->input('geo', ''),
+        );
 
         $this->merge([
-            'phone' => $phone,
-            'phone_countries' => $countries,
+            'phone' => $normalized['phone'],
+            'phone_countries' => $normalized['phone_countries'],
         ]);
     }
 
@@ -72,10 +54,10 @@ class StoreOfferRequest extends FormRequest
             'brand' => ['required', 'string', 'max:120'],
             'domain' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i'],
             'min_deposit' => ['required', 'string', 'max:20'],
-            'currency' => ['required', 'string', 'size:3', Rule::in($currencyCodes)],
+            'currency' => ['required', 'string', 'min:2', 'max:8', Rule::in($currencyCodes)],
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
             'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
-            'phone' => ['required', 'string', 'size:2', 'alpha:ascii'],
+            'phone' => ['required', 'string', 'regex:/^(ip|[a-zA-Z]{2})$/'],
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
@@ -83,13 +65,14 @@ class StoreOfferRequest extends FormRequest
             'vitals_enabled' => ['boolean'],
             'from_search_team' => ['boolean'],
             'provision_infrastructure' => ['boolean'],
-            'infra_hestia' => ['boolean'],
             'infra_cloudflare_zone' => ['boolean'],
             'infra_cloudflare_dns' => ['boolean'],
             'infra_dynadot_ns' => ['boolean'],
             'infra_cloudflare_ssl' => ['boolean'],
             'infra_cloudflare_https' => ['boolean'],
             'infra_cloudflare_www_redirect' => ['boolean'],
+            'infra_cloudflare_geo_overflow' => ['boolean'],
+            'geo_overflow_hub' => ['nullable', 'string', 'max:120'],
         ];
     }
 

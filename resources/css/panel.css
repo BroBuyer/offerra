@@ -1490,6 +1490,33 @@ a:hover { text-decoration: underline; }
   outline: none;
 }
 
+.phone-geo-select__bulk {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem 0.15rem;
+}
+
+.phone-geo-select__bulk-btn {
+  flex: 1;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.55);
+  color: #cbd5e1;
+  border-radius: 0.45rem;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.45rem;
+  cursor: pointer;
+}
+
+.phone-geo-select__bulk-btn:hover:not(:disabled) {
+  border-color: rgba(52, 211, 153, 0.45);
+  color: #ecfdf5;
+}
+
+.phone-geo-select__bulk-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .phone-geo-select__list {
   max-height: 220px;
   overflow-y: auto;

@@ -358,6 +358,7 @@ export default function OffersIndex({
     templates = [],
     brandTemplateUsage = {},
     showUserColumn = false,
+    canManageAllOffers = false,
     users = [],
     dateFilters = {},
 }) {
@@ -613,7 +614,7 @@ export default function OffersIndex({
     };
 
     const canManageOffer = (offer) => {
-        if (showUserColumn) {
+        if (canManageAllOffers) {
             return true;
         }
 
@@ -621,21 +622,21 @@ export default function OffersIndex({
     };
 
     const canDeployOffer = (offer) => {
-        if (showUserColumn) {
+        if (canManageAllOffers) {
             return offer.deploy_ready;
         }
 
-        return canDeploy;
+        return canDeploy && offer.user_id === auth?.user?.id;
     };
 
     const selectableIds = useMemo(
         () => rows
             .filter((offer) => {
-                const canManage = showUserColumn || offer.user_id === auth?.user?.id;
+                const canManage = canManageAllOffers || offer.user_id === auth?.user?.id;
                 return canManage && !['archiving', 'archived'].includes(offer.status);
             })
             .map((offer) => offer.id),
-        [rows, showUserColumn, auth?.user?.id],
+        [rows, canManageAllOffers, auth?.user?.id],
     );
 
     const selectedCount = selectedIds.length;
