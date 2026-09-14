@@ -66,12 +66,21 @@ class DynadotClient
      */
     public function sortSearchResultsByPriceDesc(array $results): array
     {
-        usort($results, function (array $a, array $b): int {
+        $tldOrder = [];
+        foreach (config('offerra.domain_search_tlds', []) as $index => $tld) {
+            $tldOrder[ltrim((string) $tld, '.')] = $index;
+        }
+
+        usort($results, function (array $a, array $b) use ($tldOrder): int {
             $priceA = $this->parsePriceAmount($a['price'] ?? null);
             $priceB = $this->parsePriceAmount($b['price'] ?? null);
 
             if ($priceA === null && $priceB === null) {
-                return strcmp((string) ($a['domain'] ?? ''), (string) ($b['domain'] ?? ''));
+                return $this->compareDomainsByTldPreference(
+                    (string) ($a['domain'] ?? ''),
+                    (string) ($b['domain'] ?? ''),
+                    $tldOrder,
+                );
             }
 
             if ($priceA === null) {
@@ -83,13 +92,48 @@ class DynadotClient
             }
 
             if ($priceA === $priceB) {
-                return strcmp((string) ($a['domain'] ?? ''), (string) ($b['domain'] ?? ''));
+                return $this->compareDomainsByTldPreference(
+                    (string) ($a['domain'] ?? ''),
+                    (string) ($b['domain'] ?? ''),
+                    $tldOrder,
+                );
             }
 
             return $priceB <=> $priceA;
         });
 
         return array_values($results);
+    }
+
+    /**
+     * @param  array<string, int>  $tldOrder
+     */
+    private function compareDomainsByTldPreference(string $domainA, string $domainB, array $tldOrder): int
+    {
+        $rankA = $this->tldPreferenceRank($domainA, $tldOrder);
+        $rankB = $this->tldPreferenceRank($domainB, $tldOrder);
+
+        if ($rankA !== $rankB) {
+            return $rankA <=> $rankB;
+        }
+
+        return strcmp($domainA, $domainB);
+    }
+
+    /**
+     * @param  array<string, int>  $tldOrder
+     */
+    private function tldPreferenceRank(string $domain, array $tldOrder): int
+    {
+        $domain = strtolower(trim($domain));
+        $dot = strrpos($domain, '.');
+        if ($dot === false) {
+            return PHP_INT_MAX;
+        }
+
+        $tld = substr($domain, $dot + 1);
+
+        return $tldOrder[$tld] ?? (1000 + ord($tld[0] ?? 'z'));
     }
 
     public function parsePriceAmount(?string $price): ?float

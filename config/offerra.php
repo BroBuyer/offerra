@@ -13,7 +13,7 @@ return [
     // TLD для швидкого пошуку (без зони в полі). Іншу зону — вкажіть повний домен, напр. brand.io
     // Результати сортуються за ціною (від найвищої до найнижчої) у DynadotClient.
     'domain_search_tlds' => [
-        'com', 'net', 'org', 'biz', 'online', 'live', 'cyou', 'cfd', 'sbs',
+        'com', 'net', 'org', 'biz', 'online', 'live', 'site', 'cyou', 'cfd', 'sbs',
     ],
 
     'templates_path' => base_path(env('TEMPLATES_PATH', 'templates')),
@@ -44,6 +44,7 @@ return [
         ['code' => 'ms', 'name' => 'Bahasa Melayu'],
         ['code' => 'ja', 'name' => '日本語'],
         ['code' => 'lv', 'name' => 'Latviešu'],
+        ['code' => 'lt', 'name' => 'Lietuvių'],
     ],
 
     // ISO 4217 — вибір при створенні оффера
@@ -119,6 +120,7 @@ return [
         ['code' => 'NO', 'name' => 'Норвегія', 'lang' => 'no', 'phone' => 'no'],
         ['code' => 'FI', 'name' => 'Фінляндія', 'lang' => 'fi', 'phone' => 'fi'],
         ['code' => 'LV', 'name' => 'Латвія', 'lang' => 'lv', 'phone' => 'lv', 'currency' => 'EUR'],
+        ['code' => 'LT', 'name' => 'Литва', 'lang' => 'lt', 'phone' => 'lt', 'currency' => 'EUR'],
         ['code' => 'ZA', 'name' => 'ПАР', 'lang' => 'en', 'phone' => 'za'],
         ['code' => 'NG', 'name' => 'Нігерія', 'lang' => 'en', 'phone' => 'ng', 'currency' => 'NGN'],
         ['code' => 'KE', 'name' => 'Кенія', 'lang' => 'en', 'phone' => 'ke', 'currency' => 'KES'],

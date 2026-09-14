@@ -59,7 +59,11 @@ class UpdateSettingsRequest extends FormRequest
             'cloudflare_default_proxied' => ['boolean'],
             'origin_health_alerts' => ['boolean'],
             'cloudflare_account_name' => ['nullable', 'string', 'max:80'],
+            'cloudflare_backup_api_token' => ['nullable', 'string', 'max:255'],
+            'cloudflare_backup_account_id' => ['nullable', 'string', 'max:40'],
+            'cloudflare_backup_account_name' => ['nullable', 'string', 'max:80'],
             'test_domain' => ['nullable', 'string', 'max:120'],
+            'cloudflare_slot' => ['nullable', 'string', 'in:primary,backup'],
         ];
     }
 }

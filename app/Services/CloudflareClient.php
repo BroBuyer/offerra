@@ -126,9 +126,66 @@ class CloudflareClient
 
     public function ensureRootARecord(UserSetting $settings, string $zoneId, string $domain, string $ip): void
     {
+        // Lander zones should only have our apex/www A records — drop parking,
+        // leftover AAAA/CNAME/TXT/ACME junk that causes CF warnings and conflicts.
+        $this->purgeZoneDnsRecords($settings, $zoneId);
+
         $proxied = (bool) ($settings->cloudflare_default_proxied ?? true);
         $this->ensureARecord($settings, $zoneId, $domain, '@', $ip, $proxied);
         $this->ensureARecord($settings, $zoneId, $domain, 'www', $ip, $proxied);
+    }
+
+    /**
+     * Delete every DNS record in the zone (paginated). Safe to call before recreating A records.
+     *
+     * @return int Number of deleted records
+     */
+    public function purgeZoneDnsRecords(UserSetting $settings, string $zoneId): int
+    {
+        $zoneId = trim($zoneId);
+
+        if ($zoneId === '') {
+            return 0;
+        }
+
+        $deleted = 0;
+        $guard = 0;
+
+        // Always re-fetch page 1: deletes shift pagination.
+        while ($guard < 50) {
+            $guard++;
+            $response = $this->request($settings, 'GET', '/zones/'.$zoneId.'/dns_records', [
+                'per_page' => 100,
+                'page' => 1,
+            ]);
+
+            /** @var list<array<string, mixed>> $records */
+            $records = is_array($response['result'] ?? null) ? $response['result'] : [];
+
+            if ($records === []) {
+                break;
+            }
+
+            $round = 0;
+
+            foreach ($records as $record) {
+                $id = trim((string) ($record['id'] ?? ''));
+
+                if ($id === '') {
+                    continue;
+                }
+
+                $this->request($settings, 'DELETE', '/zones/'.$zoneId.'/dns_records/'.$id);
+                $deleted++;
+                $round++;
+            }
+
+            if ($round === 0) {
+                break;
+            }
+        }
+
+        return $deleted;
     }
 
     /**

@@ -10,9 +10,15 @@ use Illuminate\Support\Carbon;
 
 class OriginHealthMonitor
 {
+    /** Keep counting consecutive fails for UI/debug; alerts use time below. */
     public const FAIL_STREAK_ALERT = 3;
 
     public const DEGRADED_STREAK_ALERT = 2;
+
+    /** Only alert after the origin stays down/degraded this long (ignores short blips). */
+    public const DOWN_ALERT_AFTER_MINUTES = 3;
+
+    public const DEGRADED_ALERT_AFTER_MINUTES = 3;
 
     public const ALERT_COOLDOWN_MINUTES = 30;
 
@@ -120,21 +126,35 @@ class OriginHealthMonitor
         $failStreak = (int) ($previous['fail_streak'] ?? 0);
         $degradedStreak = (int) ($previous['degraded_streak'] ?? 0);
         $status = (string) ($result['status'] ?? 'down');
+        $now = now();
+
+        $downSince = null;
+        $degradedSince = null;
 
         if ($status === 'down') {
             $failStreak++;
             $degradedStreak = 0;
+            $downSince = $this->unresolvedSince($previous, $prevStatus, 'down', $now);
         } elseif ($status === 'degraded') {
             $degradedStreak++;
             $failStreak = 0;
+            $degradedSince = $this->unresolvedSince($previous, $prevStatus, 'degraded', $now);
         } else {
             $failStreak = 0;
             $degradedStreak = 0;
         }
 
-        $now = now();
         $alertKind = $alert
-            ? $this->decideAlert($prevStatus, $status, $failStreak, $degradedStreak, $previous, $now)
+            ? $this->decideAlert(
+                $prevStatus,
+                $status,
+                $failStreak,
+                $degradedStreak,
+                $previous,
+                $now,
+                $downSince,
+                $degradedSince,
+            )
             : null;
 
         return [
@@ -142,12 +162,35 @@ class OriginHealthMonitor
             'checked_at' => $now->toIso8601String(),
             'fail_streak' => $failStreak,
             'degraded_streak' => $degradedStreak,
+            'down_since' => $downSince?->toIso8601String(),
+            'degraded_since' => $degradedSince?->toIso8601String(),
             'message' => $result['message'] ?? null,
             'metrics' => $this->panelMetrics($result),
             'last_alert_at' => $previous['last_alert_at'] ?? null,
             'last_alert_kind' => $previous['last_alert_kind'] ?? null,
             '_alert_kind' => $alertKind,
         ];
+    }
+
+    /**
+     * First moment the current bad status started (sticky across checks).
+     *
+     * @param  array<string, mixed>  $previous
+     */
+    private function unresolvedSince(array $previous, string $prevStatus, string $status, Carbon $now): Carbon
+    {
+        $key = $status === 'down' ? 'down_since' : 'degraded_since';
+
+        if (! empty($previous[$key])) {
+            return Carbon::parse((string) $previous[$key]);
+        }
+
+        // Already in this status but without a stamp (legacy health rows).
+        if ($prevStatus === $status && ! empty($previous['checked_at'])) {
+            return Carbon::parse((string) $previous['checked_at']);
+        }
+
+        return $now->copy();
     }
 
     /**
@@ -160,6 +203,8 @@ class OriginHealthMonitor
         int $degradedStreak,
         array $previous,
         ?Carbon $now = null,
+        ?Carbon $downSince = null,
+        ?Carbon $degradedSince = null,
     ): ?string {
         $now ??= now();
         $lastAlertAt = isset($previous['last_alert_at'])
@@ -176,12 +221,27 @@ class OriginHealthMonitor
             return null;
         }
 
-        if ($status === 'down' && $failStreak >= self::FAIL_STREAK_ALERT && $cooledDown) {
-            return 'down';
+        if ($status === 'down' && $cooledDown) {
+            $since = $downSince ?? (! empty($previous['down_since']) ? Carbon::parse((string) $previous['down_since']) : null);
+            if ($since !== null && $since->lte($now->copy()->subMinutes(self::DOWN_ALERT_AFTER_MINUTES))) {
+                return 'down';
+            }
+
+            // Fallback for callers/tests that only pass fail_streak (legacy).
+            if ($since === null && $failStreak >= self::FAIL_STREAK_ALERT) {
+                return 'down';
+            }
         }
 
-        if ($status === 'degraded' && $degradedStreak >= self::DEGRADED_STREAK_ALERT && $cooledDown) {
-            return 'degraded';
+        if ($status === 'degraded' && $cooledDown) {
+            $since = $degradedSince ?? (! empty($previous['degraded_since']) ? Carbon::parse((string) $previous['degraded_since']) : null);
+            if ($since !== null && $since->lte($now->copy()->subMinutes(self::DEGRADED_ALERT_AFTER_MINUTES))) {
+                return 'degraded';
+            }
+
+            if ($since === null && $degradedStreak >= self::DEGRADED_STREAK_ALERT) {
+                return 'degraded';
+            }
         }
 
         return null;

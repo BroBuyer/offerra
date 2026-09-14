@@ -37,7 +37,7 @@ export default function Dashboard({
             </header>
 
             <div className="quick-actions">
-                <Link href={route('offers.create', { fresh: 1 })} className="btn btn-primary">
+                <Link href={route('offers.create')} className="btn btn-primary">
                     + Новий оффер
                 </Link>
                 <Link href={route('offers.index')} className="btn btn-ghost">

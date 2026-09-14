@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Services\CloudflareClient;
 use App\Services\DynadotClient;
+use App\Services\GoogleOAuthService;
 use App\Services\OfferVerificationFileService;
 use App\Services\OriginHealthMonitor;
 use App\Services\SalesPostbackService;
@@ -14,6 +15,7 @@ use App\Support\DeployDriver;
 use App\Support\SecretValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -72,6 +74,8 @@ class SettingsController extends Controller
             'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),
             'origin_health_alerts' => $request->boolean('origin_health_alerts'),
             'cloudflare_account_name' => trim((string) ($data['cloudflare_account_name'] ?? '')) ?: null,
+            'cloudflare_backup_account_id' => $data['cloudflare_backup_account_id'] ?? $settings->cloudflare_backup_account_id,
+            'cloudflare_backup_account_name' => trim((string) ($data['cloudflare_backup_account_name'] ?? '')) ?: null,
         ]);
 
         $this->assignSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
@@ -84,6 +88,11 @@ class SettingsController extends Controller
             $settings,
             'cloudflare_api_token',
             CloudflareClient::normalizeApiToken($data['cloudflare_api_token'] ?? null),
+        );
+        $this->assignSecret(
+            $settings,
+            'cloudflare_backup_api_token',
+            CloudflareClient::normalizeApiToken($data['cloudflare_backup_api_token'] ?? null),
         );
 
         $settings->save();
@@ -154,6 +163,7 @@ class SettingsController extends Controller
         $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
         $settings = $targetUser->settings;
         $data = $request->validated();
+        $slot = ($data['cloudflare_slot'] ?? 'primary') === 'backup' ? 'backup' : 'primary';
 
         if (! $settings) {
             return response()->json([
@@ -162,7 +172,21 @@ class SettingsController extends Controller
             ]);
         }
 
-        $token = CloudflareClient::normalizeApiToken($data['cloudflare_api_token'] ?? $settings->cloudflare_api_token);
+        if ($slot === 'backup') {
+            $token = CloudflareClient::normalizeApiToken(
+                $data['cloudflare_backup_api_token'] ?? $settings->cloudflare_backup_api_token,
+            );
+            $accountId = trim((string) (
+                $data['cloudflare_backup_account_id'] ?? $settings->cloudflare_backup_account_id ?? ''
+            ));
+        } else {
+            $token = CloudflareClient::normalizeApiToken(
+                $data['cloudflare_api_token'] ?? $settings->cloudflare_api_token,
+            );
+            $accountId = trim((string) (
+                $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id ?? ''
+            ));
+        }
 
         if ($token === '') {
             return response()->json([
@@ -171,12 +195,11 @@ class SettingsController extends Controller
             ]);
         }
 
-        $settings->cloudflare_api_token = $token;
-        $settings->cloudflare_account_id = trim((string) (
-            $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id ?? ''
-        )) ?: null;
+        $probe = $settings->replicate();
+        $probe->cloudflare_api_token = $token;
+        $probe->cloudflare_account_id = $accountId !== '' ? $accountId : null;
 
-        return response()->json($cloudflare->testConnection($settings));
+        return response()->json($cloudflare->testConnection($probe));
     }
 
     public function storeGscVerification(
@@ -227,6 +250,123 @@ class SettingsController extends Controller
         }
 
         return $redirect->with('success', 'Файл GSC видалено');
+    }
+
+    public function redirectGoogle(Request $request, GoogleOAuthService $google): RedirectResponse
+    {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+
+        if (! $google->isConfigured()) {
+            return redirect()
+                ->route('settings.index', $authUser->isAdmin() && $targetUser->id !== $authUser->id ? ['user' => $targetUser->id] : [])
+                ->withErrors(['google_oauth' => 'Google OAuth ще не налаштований на сервері (CLIENT_ID/SECRET).']);
+        }
+
+        $url = $google->authorizationUrl([
+            'user_id' => $targetUser->id,
+            'by' => $authUser->id,
+            'nonce' => bin2hex(random_bytes(8)),
+            'ts' => time(),
+        ]);
+
+        return redirect()->away($url);
+    }
+
+    public function callbackGoogle(Request $request, GoogleOAuthService $google): RedirectResponse
+    {
+        $authUser = $request->user();
+        if (! $authUser) {
+            return redirect()->route('login');
+        }
+
+        if ($request->filled('error')) {
+            return redirect()
+                ->route('settings.index')
+                ->withErrors(['google_oauth' => 'Google відхилив доступ: '.$request->string('error')]);
+        }
+
+        $code = trim((string) $request->query('code', ''));
+        $stateRaw = (string) $request->query('state', '');
+        if ($code === '' || $stateRaw === '') {
+            return redirect()
+                ->route('settings.index')
+                ->withErrors(['google_oauth' => 'Неповна відповідь від Google OAuth.']);
+        }
+
+        try {
+            $state = decrypt($stateRaw);
+        } catch (\Throwable) {
+            return redirect()
+                ->route('settings.index')
+                ->withErrors(['google_oauth' => 'Невірний OAuth state.']);
+        }
+
+        if (! is_array($state) || empty($state['user_id'])) {
+            return redirect()
+                ->route('settings.index')
+                ->withErrors(['google_oauth' => 'Пошкоджений OAuth state.']);
+        }
+
+        $targetUser = $this->resolveSettingsUser($authUser, (int) $state['user_id']);
+        if ((int) ($state['user_id'] ?? 0) !== $targetUser->id) {
+            return redirect()
+                ->route('settings.index')
+                ->withErrors(['google_oauth' => 'Немає доступу до цього акаунта Settings.']);
+        }
+
+        try {
+            $tokens = $google->exchangeCode($code);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('settings.index', $authUser->isAdmin() && $targetUser->id !== $authUser->id ? ['user' => $targetUser->id] : [])
+                ->withErrors(['google_oauth' => $e->getMessage()]);
+        }
+
+        $settings = $targetUser->settings()->firstOrCreate([]);
+        $refresh = $tokens['refresh_token'] ?: $settings->google_oauth_refresh_token;
+        if (! filled($refresh)) {
+            return redirect()
+                ->route('settings.index', $authUser->isAdmin() && $targetUser->id !== $authUser->id ? ['user' => $targetUser->id] : [])
+                ->withErrors(['google_oauth' => 'Google не повернув refresh token. Відключіть доступ Offerra в акаунті Google і підключіть знову.']);
+        }
+
+        $settings->forceFill([
+            'google_oauth_refresh_token' => $refresh,
+            'google_oauth_email' => $tokens['email'],
+            'google_oauth_connected_at' => now(),
+        ])->save();
+
+        $redirect = redirect()->route('settings.index');
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        $label = $tokens['email'] ?: 'Google';
+
+        return $redirect->with('success', "Google підключено: {$label}");
+    }
+
+    public function disconnectGoogle(Request $request): RedirectResponse
+    {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+        $settings = $targetUser->settings;
+
+        if ($settings) {
+            $settings->forceFill([
+                'google_oauth_refresh_token' => null,
+                'google_oauth_email' => null,
+                'google_oauth_connected_at' => null,
+            ])->save();
+        }
+
+        $redirect = redirect()->route('settings.index');
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        return $redirect->with('success', 'Google відключено');
     }
 
     private function resolveSettingsUser(User $authUser, ?int $userId = null): User

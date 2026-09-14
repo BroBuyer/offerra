@@ -1,6 +1,6 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import { Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 function formatArchivedAt(value) {
     if (!value) {
@@ -20,6 +20,17 @@ function formatArchivedAt(value) {
     return `${day}.${month}.${year}${time ? ` ${time}` : ''}`;
 }
 
+function formatCreatedDate(value) {
+    if (!value) {
+        return '';
+    }
+    const [year, month, day] = String(value).split('-');
+    if (!year || !month || !day) {
+        return String(value);
+    }
+    return `${day}.${month}.${year}`;
+}
+
 function statusBadge(status) {
     switch (status) {
         case 'archived':
@@ -31,14 +42,177 @@ function statusBadge(status) {
     }
 }
 
-export default function Archive({ offers, filters, perPageOptions, showUserColumn, users }) {
-    const { auth, errors } = usePage().props;
+function buildQueryParams(filters, overrides = {}) {
+    const merged = { ...filters, ...overrides };
+    const params = {};
+
+    Object.entries(merged).forEach(([key, value]) => {
+        if (value === '' || value === null || value === undefined) {
+            return;
+        }
+        if (key === 'page' && Number(value) <= 1) {
+            return;
+        }
+        params[key] = value;
+    });
+
+    return params;
+}
+
+function buildActiveFilterChips(filters, users) {
+    const chips = [];
+
+    if (filters.brand) {
+        chips.push({ id: 'brand', label: `Brand: ${filters.brand}`, clear: { brand: '' } });
+    }
+    if (filters.domain) {
+        chips.push({ id: 'domain', label: `Domain: ${filters.domain}`, clear: { domain: '' } });
+    }
+    if (filters.geo) {
+        chips.push({ id: 'geo', label: `GEO: ${filters.geo}`, clear: { geo: '' } });
+    }
+    if (filters.lang) {
+        chips.push({ id: 'lang', label: `Lang: ${filters.lang}`, clear: { lang: '' } });
+    }
+    if (filters.template) {
+        chips.push({ id: 'template', label: `Template: ${filters.template}`, clear: { template: '' } });
+    }
+    if (filters.panel) {
+        chips.push({ id: 'panel', label: `Server: ${filters.panel}`, clear: { panel: '' } });
+    }
+    if (filters.user) {
+        const user = users.find((item) => String(item.id) === String(filters.user));
+        chips.push({
+            id: 'user',
+            label: `User: ${user?.name ?? user?.email ?? filters.user}`,
+            clear: { user: '' },
+        });
+    }
+    if (filters.archive_status === 'archived') {
+        chips.push({ id: 'archive_status', label: 'Status: archived', clear: { archive_status: '' } });
+    } else if (filters.archive_status === 'teardown_failed') {
+        chips.push({ id: 'archive_status', label: 'Status: error', clear: { archive_status: '' } });
+    }
+    if (filters.created) {
+        let dateLabel = 'Archived: ';
+        switch (filters.created) {
+            case 'today':
+                dateLabel += 'today';
+                break;
+            case 'yesterday':
+                dateLabel += 'yesterday';
+                break;
+            case 'week':
+                dateLabel += 'this week';
+                break;
+            case 'month':
+                dateLabel += 'this month';
+                break;
+            case 'custom':
+                dateLabel += [
+                    filters.created_from ? formatCreatedDate(filters.created_from) : '…',
+                    filters.created_to ? formatCreatedDate(filters.created_to) : '…',
+                ].join(' — ');
+                break;
+            default:
+                dateLabel += filters.created;
+        }
+        chips.push({
+            id: 'created',
+            label: dateLabel,
+            clear: { created: '', created_from: '', created_to: '' },
+        });
+    }
+
+    return chips;
+}
+
+export default function Archive({
+    offers,
+    filters = {},
+    filterOptions = {},
+    createdCounts = {},
+    perPageOptions = [10, 30, 50, 100],
+    showUserColumn = false,
+    users = [],
+    dateFilters = {},
+}) {
+    const { auth, errors, flash } = usePage().props;
     const rows = offers?.data ?? [];
     const [retryingId, setRetryingId] = useState(null);
+    const [restoringId, setRestoringId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
+    const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
+    const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
 
     const currentPage = offers?.current_page ?? 1;
     const lastPage = offers?.last_page ?? 1;
+    const total = offers?.total ?? rows.length;
+    const isAdmin = auth?.user?.role === 'admin';
+    const geos = filterOptions.geos ?? [];
+    const langs = filterOptions.langs ?? [];
+    const templateOptions = filterOptions.templates ?? [];
+    const panelOptions = filterOptions.panels ?? [];
+
+    const canManageOffer = (offer) => isAdmin || offer.user_id === auth?.user?.id;
+
+    const activeChips = useMemo(
+        () => buildActiveFilterChips(filters, users),
+        [filters, users],
+    );
+
+    const reloadArchive = (overrides = {}) => {
+        const params = buildQueryParams(filters, { ...overrides, page: overrides.page ?? 1 });
+        router.get(route('offers.archive.index'), params, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
+    const clearAllFilters = () => {
+        reloadArchive({
+            brand: '',
+            domain: '',
+            geo: '',
+            lang: '',
+            template: '',
+            panel: '',
+            user: '',
+            archive_status: '',
+            created: '',
+            created_from: '',
+            created_to: '',
+            page: 1,
+        });
+    };
+
+    useEffect(() => {
+        setBrandQuery(filters.brand ?? '');
+    }, [filters.brand]);
+
+    useEffect(() => {
+        setDomainQuery(filters.domain ?? '');
+    }, [filters.domain]);
+
+    useEffect(() => {
+        if (brandQuery === (filters.brand ?? '')) {
+            return undefined;
+        }
+        const timer = window.setTimeout(() => {
+            reloadArchive({ brand: brandQuery });
+        }, 350);
+        return () => window.clearTimeout(timer);
+    }, [brandQuery]);
+
+    useEffect(() => {
+        if (domainQuery === (filters.domain ?? '')) {
+            return undefined;
+        }
+        const timer = window.setTimeout(() => {
+            reloadArchive({ domain: domainQuery });
+        }, 350);
+        return () => window.clearTimeout(timer);
+    }, [domainQuery]);
 
     const copyDomain = async (offer) => {
         const text = offer.domain;
@@ -64,17 +238,19 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
         });
     };
 
-    const reloadPage = (page) => {
-        const params = { ...filters, page };
-        Object.keys(params).forEach((key) => {
-            if (params[key] === '' || params[key] === null || params[key] === undefined) {
-                delete params[key];
-            }
-        });
-        if (page <= 1) {
-            delete params.page;
+    const restoreOffer = (offer) => {
+        if (!window.confirm(
+            `Поновити ${offer.domain} з архіву?\n\n`
+            + 'Буде заново зібрано лендінг із даних у БД, піднято Cloudflare/origin і запущено деплой. '
+            + 'Домен має лишатися в Dynadot.',
+        )) {
+            return;
         }
-        router.get(route('offers.archive.index'), params, { preserveState: true, preserveScroll: true });
+
+        setRestoringId(offer.id);
+        router.post(route('offers.restore', offer.id), {}, {
+            onFinish: () => setRestoringId(null),
+        });
     };
 
     return (
@@ -83,18 +259,189 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                 <header className="page-header">
                     <h2>Архів доменів</h2>
                     <p>
-                        Оффери зняті з origin-сервера і Cloudflare. Домен лишається в Dynadot — можна перепродати вручну.
+                        Оффери зняті з origin-сервера і Cloudflare. Дані в БД збережені — можна поновити оффер.
+                        Домен лишається в Dynadot.
                     </p>
                     <p className="field-hint" style={{ marginTop: '0.5rem' }}>
                         <Link href={route('offers.index')}>← До активних офферів</Link>
                     </p>
                 </header>
 
+                {flash?.success && (
+                    <div className="card" style={{ marginBottom: '1rem' }}>
+                        <p className="card-desc">{flash.success}</p>
+                    </div>
+                )}
+
                 {errors?.archive && (
                     <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                         <p className="card-desc" style={{ color: '#f87171' }}>{errors.archive}</p>
                     </div>
                 )}
+
+                {activeChips.length > 0 && (
+                    <div className="active-filters" aria-label="Активні фільтри">
+                        <span className="active-filters__label">Обрані фільтри:</span>
+                        <div className="active-filters__chips">
+                            {activeChips.map((chip) => (
+                                <button
+                                    key={chip.id}
+                                    type="button"
+                                    className="filter-chip"
+                                    onClick={() => reloadArchive(chip.clear)}
+                                    title="Remove filter"
+                                >
+                                    {chip.label}
+                                    <span className="filter-chip__remove" aria-hidden="true">×</span>
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm active-filters__reset"
+                            onClick={clearAllFilters}
+                        >
+                            Reset all
+                        </button>
+                    </div>
+                )}
+
+                <div className="filter-bar">
+                    <div className="filter-bar__search-group">
+                        <input
+                            type="search"
+                            className="filter-bar__search"
+                            placeholder="Brand…"
+                            value={brandQuery}
+                            onChange={(event) => setBrandQuery(event.target.value)}
+                            aria-label="Search by brand"
+                        />
+                        <input
+                            type="search"
+                            className="filter-bar__search"
+                            placeholder="Domain…"
+                            value={domainQuery}
+                            onChange={(event) => setDomainQuery(event.target.value)}
+                            aria-label="Search by domain"
+                        />
+                    </div>
+                    <select
+                        aria-label="GEO"
+                        value={filters.geo ?? ''}
+                        onChange={(e) => reloadArchive({ geo: e.target.value })}
+                    >
+                        <option value="">All GEO</option>
+                        {geos.map((g) => (
+                            <option key={g} value={g}>{g}</option>
+                        ))}
+                    </select>
+                    <select
+                        aria-label="Lang"
+                        value={filters.lang ?? ''}
+                        onChange={(e) => reloadArchive({ lang: e.target.value })}
+                    >
+                        <option value="">All langs</option>
+                        {langs.map((l) => (
+                            <option key={l} value={l}>{l}</option>
+                        ))}
+                    </select>
+                    <select
+                        aria-label="Template"
+                        value={filters.template ?? ''}
+                        onChange={(e) => reloadArchive({ template: e.target.value })}
+                    >
+                        <option value="">Templates</option>
+                        {templateOptions.map((tpl) => (
+                            <option key={tpl} value={tpl}>{tpl}</option>
+                        ))}
+                    </select>
+                    <select
+                        aria-label="Server"
+                        value={filters.panel ?? ''}
+                        onChange={(e) => reloadArchive({ panel: e.target.value })}
+                    >
+                        <option value="">Servers</option>
+                        {panelOptions.map((panel) => (
+                            <option key={panel} value={panel}>{panel}</option>
+                        ))}
+                    </select>
+                    {showUserColumn && users.length > 0 && (
+                        <select
+                            aria-label="User"
+                            value={filters.user ?? ''}
+                            onChange={(e) => reloadArchive({ user: e.target.value })}
+                        >
+                            <option value="">All users</option>
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.name ?? user.email}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                    <select
+                        aria-label="Archive status"
+                        value={filters.archive_status ?? ''}
+                        onChange={(e) => reloadArchive({ archive_status: e.target.value })}
+                    >
+                        <option value="">All statuses</option>
+                        <option value="archived">В архіві</option>
+                        <option value="teardown_failed">Помилка</option>
+                    </select>
+                    <select
+                        aria-label="Archived date"
+                        value={filters.created ?? ''}
+                        onChange={(e) => reloadArchive({ created: e.target.value })}
+                    >
+                        <option value="">Archived date</option>
+                        <option value="today">Today ({createdCounts.today ?? 0})</option>
+                        <option value="yesterday">Yesterday ({createdCounts.yesterday ?? 0})</option>
+                        <option value="week">This week ({createdCounts.week ?? 0})</option>
+                        <option value="month">This month ({createdCounts.month ?? 0})</option>
+                        <option value="custom">Custom…</option>
+                    </select>
+                    {filters.created === 'custom' && (
+                        <div className="filter-bar__date-range">
+                            <label className="filter-bar__date-field">
+                                <span className="sr-only">From</span>
+                                <input
+                                    type="date"
+                                    aria-label="Date from"
+                                    value={filters.created_from ?? ''}
+                                    max={filters.created_to || dateFilters.today || undefined}
+                                    onChange={(e) => reloadArchive({ created_from: e.target.value })}
+                                />
+                            </label>
+                            <span className="filter-bar__date-sep" aria-hidden="true">—</span>
+                            <label className="filter-bar__date-field">
+                                <span className="sr-only">To</span>
+                                <input
+                                    type="date"
+                                    aria-label="Date to"
+                                    value={filters.created_to ?? ''}
+                                    min={filters.created_from || undefined}
+                                    max={dateFilters.today || undefined}
+                                    onChange={(e) => reloadArchive({ created_to: e.target.value })}
+                                />
+                            </label>
+                        </div>
+                    )}
+                    <div className="filter-bar__meta">
+                        <label className="filter-bar__per-page">
+                            <span className="filter-bar__per-page-label">/ pg</span>
+                            <select
+                                aria-label="Per page"
+                                value={String(filters.per_page ?? 30)}
+                                onChange={(e) => reloadArchive({ per_page: Number(e.target.value), page: 1 })}
+                            >
+                                {perPageOptions.map((n) => (
+                                    <option key={n} value={n}>{n}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <span className="filter-bar__count">{total}</span>
+                    </div>
+                </div>
 
                 <div className="table-wrap">
                     <table className="data-table offers-table">
@@ -163,7 +510,18 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                                         <td>{formatArchivedAt(offer.archived_at)}</td>
                                         <td>
                                             <div className="offer-actions">
-                                                {offer.status === 'teardown_failed' && (
+                                                {canManageOffer(offer) && offer.status === 'archived' && (
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-ghost btn-sm"
+                                                        disabled={restoringId === offer.id}
+                                                        onClick={() => restoreOffer(offer)}
+                                                        title="Поновити оффер з даних у БД"
+                                                    >
+                                                        {restoringId === offer.id ? '…' : 'Поновити'}
+                                                    </button>
+                                                )}
+                                                {canManageOffer(offer) && offer.status === 'teardown_failed' && (
                                                     <button
                                                         type="button"
                                                         className="btn btn-ghost btn-sm"
@@ -181,7 +539,7 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                             {rows.length === 0 && (
                                 <tr>
                                     <td colSpan={showUserColumn ? 7 : 6} className="field-hint">
-                                        Архів порожній
+                                        {activeChips.length > 0 ? 'Нічого не знайдено за фільтрами' : 'Архів порожній'}
                                     </td>
                                 </tr>
                             )}
@@ -195,7 +553,7 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                             type="button"
                             className="btn btn-ghost btn-sm"
                             disabled={currentPage <= 1}
-                            onClick={() => reloadPage(currentPage - 1)}
+                            onClick={() => reloadArchive({ page: currentPage - 1 })}
                         >
                             ← Назад
                         </button>
@@ -206,7 +564,7 @@ export default function Archive({ offers, filters, perPageOptions, showUserColum
                             type="button"
                             className="btn btn-ghost btn-sm"
                             disabled={currentPage >= lastPage}
-                            onClick={() => reloadPage(currentPage + 1)}
+                            onClick={() => reloadArchive({ page: currentPage + 1 })}
                         >
                             Далі →
                         </button>

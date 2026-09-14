@@ -88,19 +88,56 @@ class OriginHealthTest extends TestCase
         $this->assertSame('degraded', $result['status']);
     }
 
-    public function test_down_alert_after_three_failures_and_cooldown(): void
+    public function test_down_alert_after_three_minutes_and_cooldown(): void
     {
         $monitor = $this->app->make(OriginHealthMonitor::class);
         $now = Carbon::parse('2026-08-18 19:00:00');
 
+        // Short blip (< 3 min) — no alert even with a high fail streak.
+        $this->assertNull($monitor->decideAlert(
+            'ok',
+            'down',
+            5,
+            0,
+            [],
+            $now,
+            $now->copy()->subMinutes(2),
+        ));
+
+        // Down for >= 3 minutes — alert.
+        $this->assertSame('down', $monitor->decideAlert(
+            'ok',
+            'down',
+            3,
+            0,
+            [],
+            $now,
+            $now->copy()->subMinutes(3),
+        ));
+
+        // Cooldown suppresses repeats.
+        $this->assertNull($monitor->decideAlert(
+            'down',
+            'down',
+            4,
+            0,
+            ['last_alert_at' => $now->copy()->subMinutes(10)->toIso8601String()],
+            $now,
+            $now->copy()->subMinutes(10),
+        ));
+        $this->assertSame('down', $monitor->decideAlert(
+            'down',
+            'down',
+            8,
+            0,
+            ['last_alert_at' => $now->copy()->subMinutes(31)->toIso8601String()],
+            $now,
+            $now->copy()->subMinutes(10),
+        ));
+
+        // Legacy callers without down_since still use fail_streak.
         $this->assertNull($monitor->decideAlert('ok', 'down', 2, 0, [], $now));
         $this->assertSame('down', $monitor->decideAlert('ok', 'down', 3, 0, [], $now));
-        $this->assertNull($monitor->decideAlert('down', 'down', 4, 0, [
-            'last_alert_at' => $now->copy()->subMinutes(10)->toIso8601String(),
-        ], $now));
-        $this->assertSame('down', $monitor->decideAlert('down', 'down', 8, 0, [
-            'last_alert_at' => $now->copy()->subMinutes(31)->toIso8601String(),
-        ], $now));
 
         // Brief SSH blip (status was down, but no down alert sent) → no recovery spam.
         $this->assertNull($monitor->decideAlert('down', 'ok', 0, 0, [
@@ -120,11 +157,38 @@ class OriginHealthTest extends TestCase
             'last_alert_kind' => 'degraded',
         ], $now));
 
-        $this->assertNull($monitor->decideAlert('ok', 'degraded', 0, 1, [], $now));
-        $this->assertSame('degraded', $monitor->decideAlert('ok', 'degraded', 0, 2, [], $now));
-        $this->assertNull($monitor->decideAlert('degraded', 'degraded', 0, 3, [
-            'last_alert_at' => $now->copy()->subMinutes(2)->toIso8601String(),
-            'last_alert_kind' => 'degraded',
-        ], $now));
+        $this->assertNull($monitor->decideAlert(
+            'ok',
+            'degraded',
+            0,
+            2,
+            [],
+            $now,
+            null,
+            $now->copy()->subMinutes(2),
+        ));
+        $this->assertSame('degraded', $monitor->decideAlert(
+            'ok',
+            'degraded',
+            0,
+            2,
+            [],
+            $now,
+            null,
+            $now->copy()->subMinutes(3),
+        ));
+        $this->assertNull($monitor->decideAlert(
+            'degraded',
+            'degraded',
+            0,
+            3,
+            [
+                'last_alert_at' => $now->copy()->subMinutes(2)->toIso8601String(),
+                'last_alert_kind' => 'degraded',
+            ],
+            $now,
+            null,
+            $now->copy()->subMinutes(10),
+        ));
     }
 }

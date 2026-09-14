@@ -168,6 +168,9 @@ class Offer extends Model
             'status' => $this->status,
             'deploy_panel' => $this->deploy_panel_name,
             'cloudflare_account' => $this->cloudflare_account_name,
+            'cloudflare_slot' => ((is_array($this->infra_meta) ? ($this->infra_meta['cloudflare_slot'] ?? '') : '') === 'backup')
+                ? 'backup'
+                : 'primary',
             'dynadot_account' => $this->dynadot_account_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'deploy_error' => $this->deploy_error,
@@ -181,6 +184,10 @@ class Offer extends Model
             'infra_error' => $this->infra_status === 'failed' ? $this->infra_error : null,
             'dns_status' => $this->dnsStatus(),
             'dns_error' => is_array($this->infra_meta) ? ($this->infra_meta['dns_error'] ?? null) : null,
+            'gsc_status' => is_array($this->infra_meta)
+                ? (string) (($this->infra_meta['gsc']['status'] ?? '') ?: '')
+                : '',
+            'gsc_error' => is_array($this->infra_meta) ? ($this->infra_meta['gsc_error'] ?? null) : null,
             'infra_meta' => $this->infra_meta ?? [],
         ];
     }

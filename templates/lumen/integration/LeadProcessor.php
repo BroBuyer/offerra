@@ -452,7 +452,7 @@ final class LeadProcessor
         return implode("\n", $lines);
     }
 
-    /** Clear fake-click spam — no CRM / Telegram noise. */
+    /** Spam that must not hit CRM / Telegram (fake success to the visitor). */
     private static function shouldSilentDrop(?string $spamReason): bool
     {
         return in_array($spamReason, [
@@ -464,6 +464,11 @@ final class LeadProcessor
             'KT_CAMPAIGN_MISMATCH',
             'FORM_TOKEN_INVALID',
             'FORM_TOKEN_MISSING',
+            'RATE_LIMIT',
+            'FORM_TOKEN_USED',
+            'FORM_TOKEN_TOO_FAST',
+            'FORM_TOKEN_DROP',
+            'NO_CLOUDFLARE',
         ], true);
     }
 

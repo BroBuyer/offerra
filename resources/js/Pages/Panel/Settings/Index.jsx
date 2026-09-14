@@ -31,6 +31,9 @@ function formFromSettings(settings, userId = null) {
         cloudflare_default_proxied: settings.cloudflare_default_proxied ?? true,
         origin_health_alerts: settings.origin_health_alerts ?? true,
         cloudflare_account_name: settings.cloudflare_account_name ?? '',
+        cloudflare_backup_api_token: settings.cloudflare_backup_api_token ?? '',
+        cloudflare_backup_account_id: settings.cloudflare_backup_account_id ?? '',
+        cloudflare_backup_account_name: settings.cloudflare_backup_account_name ?? '',
         test_domain: 'reserve-safegrove-ie.com',
     };
 }
@@ -76,6 +79,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
     const [originHealth, setOriginHealth] = useState(settings.origin_health ?? { status: 'unchecked' });
     const [cloudflareTest, setCloudflareTest] = useState(null);
     const [testingCloudflare, setTestingCloudflare] = useState(false);
+    const [cloudflareBackupTest, setCloudflareBackupTest] = useState(null);
+    const [testingCloudflareBackup, setTestingCloudflareBackup] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [dynadotBalanceError, setDynadotBalanceError] = useState('');
@@ -138,7 +143,10 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
         setCloudflareTest(null);
 
         try {
-            const { data: result } = await axios.post(route('settings.test-cloudflare'), data);
+            const { data: result } = await axios.post(route('settings.test-cloudflare'), {
+                ...data,
+                cloudflare_slot: 'primary',
+            });
             setCloudflareTest(result);
         } catch (error) {
             setCloudflareTest({
@@ -147,6 +155,26 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             });
         } finally {
             setTestingCloudflare(false);
+        }
+    };
+
+    const testCloudflareBackup = async () => {
+        setTestingCloudflareBackup(true);
+        setCloudflareBackupTest(null);
+
+        try {
+            const { data: result } = await axios.post(route('settings.test-cloudflare'), {
+                ...data,
+                cloudflare_slot: 'backup',
+            });
+            setCloudflareBackupTest(result);
+        } catch (error) {
+            setCloudflareBackupTest({
+                ok: false,
+                message: error.response?.data?.message ?? 'Не вдалося перевірити запасний Cloudflare API',
+            });
+        } finally {
+            setTestingCloudflareBackup(false);
         }
     };
 
@@ -504,9 +532,68 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 </section>
 
                 <section className="card">
+                    <h3>Запасний Cloudflare</h3>
+                    <p className="card-desc">
+                        Другий акаунт для масової дії «CF акаунт» на списку оферів — перекидання зони після abuse
+                        (нова зона, A-записи, SSL, редіректи, NS у Dynadot).
+                    </p>
+                    <div className="field">
+                        <label htmlFor="cf-backup-account-name">Назва акаунта</label>
+                        <input
+                            type="text"
+                            id="cf-backup-account-name"
+                            value={data.cloudflare_backup_account_name}
+                            onChange={(e) => setData('cloudflare_backup_account_name', e.target.value)}
+                            placeholder="CloudflareBackup"
+                        />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="cf-backup-token">API token</label>
+                        <SecretInput
+                            id="cf-backup-token"
+                            value={data.cloudflare_backup_api_token}
+                            onChange={(e) => setData('cloudflare_backup_api_token', e.target.value)}
+                            placeholder="Cloudflare API token (backup)"
+                        />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="cf-backup-account">Account ID</label>
+                        <input
+                            type="text"
+                            id="cf-backup-account"
+                            value={data.cloudflare_backup_account_id}
+                            onChange={(e) => setData('cloudflare_backup_account_id', e.target.value)}
+                        />
+                    </div>
+                    <div style={{ marginTop: '1rem' }}>
+                        <button
+                            type="button"
+                            className="btn btn-ghost"
+                            disabled={testingCloudflareBackup}
+                            onClick={testCloudflareBackup}
+                        >
+                            {testingCloudflareBackup ? 'Перевірка…' : 'Перевірити запасний Cloudflare'}
+                        </button>
+                    </div>
+                    {cloudflareBackupTest && (
+                        <p
+                            className="field-hint"
+                            style={{
+                                marginTop: '0.75rem',
+                                color: cloudflareBackupTest.ok ? 'var(--accent)' : '#f87171',
+                            }}
+                        >
+                            {cloudflareBackupTest.message}
+                        </p>
+                    )}
+                </section>
+
+                <section className="card">
                     <h3>Google Search Console</h3>
                     <p className="card-desc">
-                        Файл <code>google….html</code> з GSC — один раз тут, далі автоматично додається до кожного нового оффера при генерації та деплої.
+                        Файл <code>google….html</code> з GSC — один раз тут, далі автоматично додається до кожного нового
+                        оффера. Після підключення Google акаунта система сама додає сайт у Search Console і сабмітить
+                        sitemap, коли DNS став готовим.
                     </p>
                     <input
                         ref={gscVerificationInputRef}
@@ -540,9 +627,69 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             </button>
                         )}
                     </div>
+
+                    <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                        {settings.google_oauth_connected ? (
+                            <>
+                                <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                                    Google підключено
+                                    {settings.google_oauth_email ? `: ${settings.google_oauth_email}` : ''}
+                                </span>
+                                {settings.google_oauth_connected_at && (
+                                    <span className="field-hint" style={{ margin: 0 }}>
+                                        з {settings.google_oauth_connected_at}
+                                    </span>
+                                )}
+                                <button
+                                    type="button"
+                                    className="btn btn-ghost btn-sm"
+                                    onClick={() =>
+                                        router.delete(route('settings.google.disconnect'), {
+                                            data: { user_id: settingsUser.id },
+                                            preserveScroll: true,
+                                        })
+                                    }
+                                >
+                                    Відключити
+                                </button>
+                            </>
+                        ) : (
+                            <a
+                                className={`btn btn-sm ${settings.google_oauth_configured && settings.has_gsc_verification_file ? '' : 'btn-ghost'}`}
+                                href={
+                                    settings.google_oauth_configured
+                                        ? route('settings.google.redirect', { user_id: settingsUser.id })
+                                        : undefined
+                                }
+                                aria-disabled={!settings.google_oauth_configured}
+                                onClick={(e) => {
+                                    if (!settings.google_oauth_configured) {
+                                        e.preventDefault();
+                                    }
+                                }}
+                            >
+                                Підключити Google
+                            </a>
+                        )}
+                    </div>
+                    {!settings.google_oauth_configured && (
+                        <p className="field-hint" style={{ color: '#f87171', marginTop: '0.5rem' }}>
+                            На сервері ще немає GOOGLE_OAUTH_CLIENT_ID / SECRET.
+                        </p>
+                    )}
+                    {settings.google_oauth_configured && !settings.has_gsc_verification_file && (
+                        <p className="field-hint" style={{ marginTop: '0.5rem' }}>
+                            Спочатку завантажте HTML-файл верифікації з того ж Google-акаунта.
+                        </p>
+                    )}
                     {pageErrors?.gsc_verification && (
                         <p className="field-hint" style={{ color: '#f87171', marginTop: '0.5rem' }}>
                             {pageErrors.gsc_verification}
+                        </p>
+                    )}
+                    {pageErrors?.google_oauth && (
+                        <p className="field-hint" style={{ color: '#f87171', marginTop: '0.5rem' }}>
+                            {pageErrors.google_oauth}
                         </p>
                     )}
                 </section>
@@ -712,7 +859,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                     <button type="submit" className="btn btn-primary" disabled={processing}>
                         {processing ? 'Збереження…' : 'Зберегти налаштування'}
                     </button>
-                    <Link href={route('offers.create', { fresh: 1 })} className="btn btn-ghost">
+                    <Link href={route('offers.create')} className="btn btn-ghost">
                         Далі: створити оффер →
                     </Link>
                 </div>

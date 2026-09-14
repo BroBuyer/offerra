@@ -29,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
     Route::post('/offers/{offer}/archive', [OfferController::class, 'archive'])->name('offers.archive');
     Route::post('/offers/{offer}/archive/retry', [OfferController::class, 'retryArchive'])->name('offers.archive.retry');
+    Route::post('/offers/{offer}/restore', [OfferController::class, 'restore'])->name('offers.restore');
     Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');
     Route::post('/offers/{offer}/recheck-dns', [OfferController::class, 'recheckDns'])->name('offers.recheck-dns');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
@@ -51,6 +52,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/settings/test-cloudflare', [SettingsController::class, 'testCloudflare'])->name('settings.test-cloudflare');
     Route::post('/settings/gsc-verification', [SettingsController::class, 'storeGscVerification'])->name('settings.gsc-verification.store');
     Route::delete('/settings/gsc-verification', [SettingsController::class, 'destroyGscVerification'])->name('settings.gsc-verification.destroy');
+    Route::get('/settings/google/redirect', [SettingsController::class, 'redirectGoogle'])->name('settings.google.redirect');
+    Route::get('/settings/google/callback', [SettingsController::class, 'callbackGoogle'])->name('settings.google.callback');
+    Route::delete('/settings/google', [SettingsController::class, 'disconnectGoogle'])->name('settings.google.disconnect');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

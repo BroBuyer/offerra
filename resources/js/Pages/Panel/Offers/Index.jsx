@@ -361,6 +361,10 @@ export default function OffersIndex({
     canManageAllOffers = false,
     users = [],
     dateFilters = {},
+    hasCloudflarePrimary = false,
+    hasCloudflareBackup = false,
+    cloudflarePrimaryName = 'Основний CF',
+    cloudflareBackupName = 'Запасний CF',
 }) {
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
@@ -373,6 +377,7 @@ export default function OffersIndex({
     const [bulkBusy, setBulkBusy] = useState(false);
     const [bulkIp, setBulkIp] = useState('');
     const [rebindOpen, setRebindOpen] = useState(false);
+    const [cfSwitchOpen, setCfSwitchOpen] = useState(false);
     const selectAllRef = useRef(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
@@ -493,11 +498,15 @@ export default function OffersIndex({
     };
 
     const clearAllFilters = () => {
+        setBrandQuery('');
+        setDomainQuery('');
         reloadOffers({
             brand: '',
             domain: '',
             geo: '',
             lang: '',
+            template: '',
+            panel: '',
             indexing: '',
             created: '',
             created_from: '',
@@ -665,7 +674,7 @@ export default function OffersIndex({
         });
     };
 
-    const runBulkAction = (action) => {
+    const runBulkAction = (action, extra = {}) => {
         if (selectedCount === 0 || bulkBusy) {
             return;
         }
@@ -689,16 +698,39 @@ export default function OffersIndex({
             }
         }
 
+        if (action === 'switch_cloudflare') {
+            const target = extra.cloudflare_target === 'backup' ? 'backup' : 'primary';
+            const label = target === 'backup' ? cloudflareBackupName : cloudflarePrimaryName;
+            if (!canManageAllOffers) {
+                if (target === 'backup' && !hasCloudflareBackup) {
+                    window.alert('Спочатку заповніть запасний Cloudflare у Settings (token + Account ID).');
+                    return;
+                }
+                if (target === 'primary' && !hasCloudflarePrimary) {
+                    window.alert('Спочатку заповніть основний Cloudflare у Settings (token + Account ID).');
+                    return;
+                }
+            }
+            if (!window.confirm(
+                `Перекинути ${selectedCount} оффер(ів) на «${label}»?\n` +
+                'Створиться нова CF-зона, A/SSL/редіректи, NS у Dynadot; стара зона спробує видалитись.',
+            )) {
+                return;
+            }
+        }
+
         setBulkBusy(true);
         router.post(route('offers.bulk-action'), {
             ids: selectedIds,
             action,
             ...(action === 'rebind_dns' ? { ip: bulkIp.trim() } : {}),
+            ...(action === 'switch_cloudflare' ? { cloudflare_target: extra.cloudflare_target } : {}),
         }, {
             preserveScroll: true,
             onSuccess: () => {
                 setSelectedIds([]);
                 setRebindOpen(false);
+                setCfSwitchOpen(false);
             },
             onFinish: () => setBulkBusy(false),
         });
@@ -836,7 +868,7 @@ export default function OffersIndex({
                     <p>Каталог згенерованих лендів — деплой на сервер</p>
                 </div>
                 <Link
-                    href={route('offers.create', { fresh: 1 })}
+                    href={route('offers.create')}
                     className="btn btn-primary offers-page-header__create"
                 >
                     + Новий оффер
@@ -965,6 +997,7 @@ export default function OffersIndex({
                         </div>
                     )}
                 </div>
+                <div className="filter-bar__scroll">
                 <div className="filter-bar__search-group">
                     <input
                         type="search"
@@ -1092,6 +1125,7 @@ export default function OffersIndex({
                         </label>
                     </div>
                 )}
+                </div>
                 <div className="filter-bar__meta">
                     <label className="filter-bar__per-page">
                         <span className="filter-bar__per-page-label">/ pg</span>
@@ -1132,7 +1166,10 @@ export default function OffersIndex({
                         type="button"
                         className="btn btn-ghost btn-sm"
                         disabled={bulkBusy}
-                        onClick={() => setRebindOpen((open) => !open)}
+                        onClick={() => {
+                            setCfSwitchOpen(false);
+                            setRebindOpen((open) => !open);
+                        }}
                     >
                         A-запис (IP)
                     </button>
@@ -1170,8 +1207,42 @@ export default function OffersIndex({
                         className="btn btn-ghost btn-sm"
                         disabled={bulkBusy}
                         onClick={() => {
+                            setRebindOpen(false);
+                            setCfSwitchOpen((open) => !open);
+                        }}
+                    >
+                        CF акаунт
+                    </button>
+                    {cfSwitchOpen && (
+                        <div className="offer-bulk-bar__rebind">
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                disabled={bulkBusy || (!canManageAllOffers && !hasCloudflarePrimary)}
+                                title={!hasCloudflarePrimary && !canManageAllOffers ? 'Немає основного CF у Settings' : undefined}
+                                onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: 'primary' })}
+                            >
+                                → {cloudflarePrimaryName}
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                disabled={bulkBusy || (!canManageAllOffers && !hasCloudflareBackup)}
+                                title={!hasCloudflareBackup && !canManageAllOffers ? 'Немає запасного CF у Settings' : undefined}
+                                onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: 'backup' })}
+                            >
+                                → {cloudflareBackupName}
+                            </button>
+                        </div>
+                    )}
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => {
                             setSelectedIds([]);
                             setRebindOpen(false);
+                            setCfSwitchOpen(false);
                         }}
                     >
                         Скинути
@@ -1288,7 +1359,14 @@ export default function OffersIndex({
                                     {colVisible('lang') && <td>{offer.lang}</td>}
                                     {colVisible('template') && <td>{offer.template}</td>}
                                     {colVisible('panel') && <td>{offer.deploy_panel ?? '—'}</td>}
-                                    {colVisible('cloudflare') && <td>{offer.cloudflare_account ?? '—'}</td>}
+                                    {colVisible('cloudflare') && (
+                                        <td>
+                                            {offer.cloudflare_account ?? '—'}
+                                            {offer.cloudflare_slot === 'backup' ? (
+                                                <span className="muted" style={{ marginLeft: '0.35rem' }}>· backup</span>
+                                            ) : null}
+                                        </td>
+                                    )}
                                     {colVisible('dynadot') && <td>{offer.dynadot_account ?? '—'}</td>}
                                     {colVisible('keitaro') && (
                                         <td>
@@ -1360,9 +1438,11 @@ export default function OffersIndex({
                                                     <label
                                                         className="indexing-check"
                                                         title={
-                                                            offer.submitted_for_indexing && offer.indexed_at
-                                                                ? `Подано: ${offer.indexed_at}`
-                                                                : 'Подано на індексацію (GSC / IndexNow)'
+                                                            offer.gsc_error
+                                                                ? offer.gsc_error
+                                                                : offer.submitted_for_indexing && offer.indexed_at
+                                                                  ? `Подано: ${offer.indexed_at}`
+                                                                  : 'Подано на індексацію (GSC sitemap)'
                                                         }
                                                     >
                                                         <input
@@ -1372,13 +1452,24 @@ export default function OffersIndex({
                                                             onChange={(e) => toggleIndexing(offer, e.target.checked)}
                                                         />
                                                         <span className="indexing-check__label">
-                                                            {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                                            {offer.submitted_for_indexing
+                                                                ? 'Так'
+                                                                : offer.gsc_status === 'waiting'
+                                                                  ? '…'
+                                                                  : offer.gsc_status === 'failed'
+                                                                    ? '!'
+                                                                    : 'Ні'}
                                                         </span>
                                                     </label>
                                                 ) : (
                                                     <span className="field-hint">
                                                         {offer.submitted_for_indexing ? 'Так' : '—'}
                                                     </span>
+                                                )}
+                                                {offer.gsc_error && (
+                                                    <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
+                                                        {formatOfferError(offer.gsc_error)}
+                                                    </div>
                                                 )}
                                             </div>
                                         </td>
@@ -1484,13 +1575,25 @@ export default function OffersIndex({
                                         onChange={(e) => toggleIndexing(offer, e.target.checked)}
                                     />
                                     <span className="indexing-check__label">
-                                        Індексація: {offer.submitted_for_indexing ? 'Так' : 'Ні'}
+                                        Індексація:{' '}
+                                        {offer.submitted_for_indexing
+                                            ? 'Так'
+                                            : offer.gsc_status === 'waiting'
+                                              ? 'очікує'
+                                              : offer.gsc_status === 'failed'
+                                                ? 'помилка'
+                                                : 'Ні'}
                                     </span>
                                 </label>
                             ) : (
                                 <span className="field-hint">
                                     Індексація: {offer.submitted_for_indexing ? 'Так' : '—'}
                                 </span>
+                            )}
+                            {offer.gsc_error && (
+                                <p className="field-hint" style={{ color: '#f87171', margin: '0.35rem 0 0' }}>
+                                    {formatOfferError(offer.gsc_error)}
+                                </p>
                             )}
                             {renderOfferActions(offer)}
                         </div>

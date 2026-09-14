@@ -1,7 +1,7 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
-import { clearWizardState, loadWizardState, saveWizardState, stripFreshQueryParam } from '@/lib/offerWizardStorage';
+import { clearWizardState, draftHasProgress, loadWizardState, peekWizardDraft, saveWizardState, stripFreshQueryParam } from '@/lib/offerWizardStorage';
 import { geoDepositMissingFromCatalog, lookupGeoDeposit } from '@/lib/geoDepositPrefs';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
@@ -234,6 +234,7 @@ export default function OffersCreate({
     const domainSearchResultsRef = useRef(null);
     const offerBulkPackRef = useRef(null);
     const lastPackHeightRef = useRef(0);
+    const preservePackScrollRef = useRef(null);
     const initial = useMemo(() => (
         fresh
             ? { step: 0, data: defaults, bulkItems: [], domainPurchasedViaPanel: false }
@@ -391,9 +392,32 @@ export default function OffersCreate({
             return;
         }
 
-        // Intentional "new funnel" once — then drop ?fresh so F5 restores the draft.
+        // Intentional "new funnel" — but never silently wipe a draft with domains/progress.
         freshHandled.current = true;
-        skipPersist.current = false;
+
+        const existing = peekWizardDraft(defaults);
+        if (draftHasProgress(existing)) {
+            const packCount = existing.bulkItems?.length ?? 0;
+            const keepDraft = !window.confirm(
+                packCount > 0
+                    ? `Є незавершена чернетка (${packCount} домен(ів) у пакеті, у т.ч. куплені). Почати з нуля і втратити її?`
+                    : 'Є незавершена чернетка створення офера. Почати з нуля і втратити її?',
+            );
+
+            if (keepDraft) {
+                const restored = loadWizardState(defaults);
+                setStep(restored.step);
+                setData(restored.data);
+                setBulkItems(restored.bulkItems);
+                setDomainPurchasedViaPanel(restored.domainPurchasedViaPanel);
+                setBulkSubmitting(false);
+                skipPersist.current = false;
+                stripFreshQueryParam();
+                return;
+            }
+        }
+
+        skipPersist.current = true;
         clearWizardState();
         setStep(0);
         reset();
@@ -401,6 +425,7 @@ export default function OffersCreate({
         setBulkSubmitting(false);
         setDomainPurchasedViaPanel(false);
         stripFreshQueryParam();
+        skipPersist.current = false;
 
         if (initialTemplate && templates.some((item) => item.id === initialTemplate)) {
             setData((prev) => ({
@@ -445,7 +470,7 @@ export default function OffersCreate({
         if (initialFromSearch) {
             setData((prev) => ({ ...prev, from_search_team: true }));
         }
-    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, setData]);
+    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, setData, defaults]);
 
     useEffect(() => {
         if (bulkItems.length === 0) {
@@ -470,6 +495,51 @@ export default function OffersCreate({
 
         saveWizardState(step, data, { bulkItems, domainPurchasedViaPanel });
     }, [step, data, bulkItems, domainPurchasedViaPanel, processing, bulkSubmitting]);
+
+    useEffect(() => {
+        const flushDraft = () => {
+            if (skipPersist.current || processing || bulkSubmitting) {
+                return;
+            }
+
+            saveWizardState(step, data, { bulkItems, domainPurchasedViaPanel });
+        };
+
+        const onVisibility = () => {
+            if (document.visibilityState === 'hidden') {
+                flushDraft();
+            }
+        };
+
+        window.addEventListener('pagehide', flushDraft);
+        document.addEventListener('visibilitychange', onVisibility);
+
+        return () => {
+            window.removeEventListener('pagehide', flushDraft);
+            document.removeEventListener('visibilitychange', onVisibility);
+        };
+    }, [step, data, bulkItems, domainPurchasedViaPanel, processing, bulkSubmitting]);
+
+    const discardDraft = () => {
+        if (!draftHasProgress({ step, data, bulkItems, domainPurchasedViaPanel })) {
+            return;
+        }
+
+        if (!window.confirm('Очистити чернетку створення офера (пакет доменів теж)?')) {
+            return;
+        }
+
+        skipPersist.current = true;
+        clearWizardState();
+        setStep(0);
+        reset();
+        setBulkItems([]);
+        setBulkSubmitting(false);
+        setDomainPurchasedViaPanel(false);
+        setDomainSearchResults(null);
+        setDomainSearchError('');
+        skipPersist.current = false;
+    };
 
     const goToStep = (nextStep) => {
         setStep(nextStep);
@@ -666,21 +736,39 @@ export default function OffersCreate({
 
     useLayoutEffect(() => {
         const el = offerBulkPackRef.current;
-
-        if (!el || bulkItems.length === 0) {
-            lastPackHeightRef.current = 0;
-            return;
-        }
-
-        const height = el.offsetHeight;
+        const height = el && bulkItems.length > 0 ? el.offsetHeight : 0;
         const prev = lastPackHeightRef.current;
+        const delta = height - prev;
+        const preserved = preservePackScrollRef.current;
 
-        if (prev > 0 && height > prev) {
-            window.scrollBy(0, height - prev);
+        if (preserved) {
+            // Keep the domain results under the cursor after the pack card grows/shrinks
+            // above them (and avoid the browser jumping to the focused #domain input).
+            window.scrollTo(0, Math.max(0, preserved.windowY + delta));
+            const list = domainSearchResultsRef.current?.querySelector?.('.domain-search-results');
+            if (list && typeof preserved.listY === 'number') {
+                list.scrollTop = preserved.listY;
+            }
+            preservePackScrollRef.current = null;
+        } else if (delta !== 0) {
+            window.scrollBy(0, delta);
         }
 
         lastPackHeightRef.current = height;
     }, [bulkItems]);
+
+    const rememberPackScroll = () => {
+        const active = document.activeElement;
+        if (active instanceof HTMLElement && active.id === 'domain') {
+            active.blur();
+        }
+
+        const list = domainSearchResultsRef.current?.querySelector?.('.domain-search-results');
+        preservePackScrollRef.current = {
+            windowY: window.scrollY,
+            listY: list ? list.scrollTop : null,
+        };
+    };
 
     const searchDomains = async () => {
         const query = domainSearchQuery;
@@ -715,20 +803,19 @@ export default function OffersCreate({
     const addDomainToPack = (searchItem, { owned = false } = {}) => {
         const domain = searchItem.domain;
 
-        setBulkItems((prev) => {
-            if (prev.some((item) => item.domain === domain)) {
-                setDomainSearchError(`${domain} уже в пакеті.`);
-                return prev;
-            }
+        if (bulkItems.some((item) => item.domain === domain)) {
+            setDomainSearchError(`${domain} уже в пакеті.`);
+            return;
+        }
 
-            if (prev.length >= DOMAIN_BULK_PURCHASE_LIMIT) {
-                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
-                return prev;
-            }
+        if (bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT) {
+            setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+            return;
+        }
 
-            setDomainSearchError('');
-            return [...prev, makePackItem(domain, searchItem, { owned })];
-        });
+        rememberPackScroll();
+        setDomainSearchError('');
+        setBulkItems((prev) => [...prev, makePackItem(domain, searchItem, { owned })]);
     };
 
     const addAllAvailableToPack = () => {
@@ -739,42 +826,41 @@ export default function OffersCreate({
             return;
         }
 
-        setBulkItems((prev) => {
-            const existing = new Set(prev.map((item) => item.domain));
-            const room = DOMAIN_BULK_PURCHASE_LIMIT - prev.length;
+        const existing = new Set(bulkItems.map((item) => item.domain));
+        const room = DOMAIN_BULK_PURCHASE_LIMIT - bulkItems.length;
 
-            if (room <= 0) {
-                setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
-                return prev;
+        if (room <= 0) {
+            setDomainSearchError(`У пакеті вже максимум ${DOMAIN_BULK_PURCHASE_LIMIT} доменів.`);
+            return;
+        }
+
+        const toAdd = [];
+        for (const item of available) {
+            if (existing.has(item.domain)) {
+                continue;
             }
-
-            const toAdd = [];
-            for (const item of available) {
-                if (existing.has(item.domain)) {
-                    continue;
-                }
-                if (toAdd.length >= room) {
-                    break;
-                }
-                toAdd.push(makePackItem(item.domain, item));
+            if (toAdd.length >= room) {
+                break;
             }
+            toAdd.push(makePackItem(item.domain, item));
+        }
 
-            if (toAdd.length === 0) {
-                setDomainSearchError('Усі вільні домени вже в пакеті.');
-                return prev;
-            }
+        if (toAdd.length === 0) {
+            setDomainSearchError('Усі вільні домени вже в пакеті.');
+            return;
+        }
 
-            const skipped = available.filter((item) => !existing.has(item.domain)).length - toAdd.length;
-            if (skipped > 0) {
-                setDomainSearchError(
-                    `Додано ${toAdd.length} (ліміт пакету ${DOMAIN_BULK_PURCHASE_LIMIT}).`,
-                );
-            } else {
-                setDomainSearchError(`Додано до пакету: ${toAdd.map((item) => item.domain).join(', ')}`);
-            }
+        const skipped = available.filter((item) => !existing.has(item.domain)).length - toAdd.length;
+        if (skipped > 0) {
+            setDomainSearchError(
+                `Додано ${toAdd.length} (ліміт пакету ${DOMAIN_BULK_PURCHASE_LIMIT}).`,
+            );
+        } else {
+            setDomainSearchError(`Додано до пакету: ${toAdd.map((item) => item.domain).join(', ')}`);
+        }
 
-            return [...prev, ...toAdd];
-        });
+        rememberPackScroll();
+        setBulkItems((prev) => [...prev, ...toAdd]);
     };
 
     const availableNotInPackCount = useMemo(() => {
@@ -1291,6 +1377,20 @@ export default function OffersCreate({
                 </div>
             )}
 
+            {draftHasProgress({ step, data, bulkItems, domainPurchasedViaPanel }) && (
+                <div className="card" style={{ marginBottom: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                    <p className="card-desc" style={{ margin: 0 }}>
+                        Чернетка зберігається автоматично
+                        {bulkItems.length > 0 ? ` · пакет: ${bulkItems.length}` : ''}
+                        {step > 0 ? ` · крок ${step + 1}` : ''}.
+                        Можна закрити вкладку і продовжити пізніше.
+                    </p>
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={discardDraft}>
+                        Очистити чернетку
+                    </button>
+                </div>
+            )}
+
             <nav className="wizard-steps" aria-label="Кроки">
                 {steps.map((label, index) => (
                     <button
@@ -1547,7 +1647,6 @@ export default function OffersCreate({
                                                                 || inPack
                                                                 || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
                                                             }
-                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => addDomainToPack(item)}
                                                         >
                                                             {inPack ? 'У пакеті' : 'Додати до пакету'}
@@ -1562,7 +1661,6 @@ export default function OffersCreate({
                                                                 || inPack
                                                                 || bulkItems.length >= DOMAIN_BULK_PURCHASE_LIMIT
                                                             }
-                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => addDomainToPack(item, { owned: true })}
                                                             title="Додати як уже ваш домен (без купівлі)"
                                                         >

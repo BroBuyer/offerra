@@ -266,9 +266,11 @@ HTML;
 
     private function isOwnedHost(User $user, string $host): bool
     {
+        // Include archived / teardown rows — same offers table. After archive the
+        // lander is gone, but residual probe hits on our own domain must not
+        // create a fake "mirror" alert.
         $hosts = Offer::query()
             ->where('user_id', $user->id)
-            ->where('status', '!=', 'archived')
             ->pluck('domain')
             ->map(fn ($domain) => $this->normalizeHost((string) $domain))
             ->filter()

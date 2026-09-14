@@ -40,7 +40,13 @@ class UserSetting extends Model
         'cloudflare_account_id',
         'cloudflare_default_proxied',
         'cloudflare_account_name',
+        'cloudflare_backup_api_token',
+        'cloudflare_backup_account_id',
+        'cloudflare_backup_account_name',
         'gsc_verification_filename',
+        'google_oauth_refresh_token',
+        'google_oauth_email',
+        'google_oauth_connected_at',
     ];
 
     protected function casts(): array
@@ -53,13 +59,21 @@ class UserSetting extends Model
             'dynadot_api_key' => 'encrypted',
             'dynadot_api_secret' => 'encrypted',
             'cloudflare_api_token' => 'encrypted',
+            'cloudflare_backup_api_token' => 'encrypted',
+            'google_oauth_refresh_token' => 'encrypted',
             'deploy_port' => 'integer',
             'dynadot_sandbox' => 'boolean',
             'dynadot_default_years' => 'integer',
             'cloudflare_default_proxied' => 'boolean',
             'origin_health_alerts' => 'boolean',
             'origin_health' => 'array',
+            'google_oauth_connected_at' => 'datetime',
         ];
+    }
+
+    public function hasGoogleOAuth(): bool
+    {
+        return filled($this->google_oauth_refresh_token);
     }
 
     public function user(): BelongsTo
@@ -128,8 +142,16 @@ class UserSetting extends Model
             'cloudflare_account_id' => $this->cloudflare_account_id ?? '',
             'cloudflare_default_proxied' => (bool) ($this->cloudflare_default_proxied ?? true),
             'cloudflare_account_name' => $this->cloudflare_account_name ?? '',
+            'has_cloudflare_backup_api_token' => filled($this->cloudflare_backup_api_token),
+            'cloudflare_backup_account_id' => $this->cloudflare_backup_account_id ?? '',
+            'cloudflare_backup_account_name' => $this->cloudflare_backup_account_name ?? '',
             'gsc_verification_filename' => $this->gsc_verification_filename ?? '',
             'has_gsc_verification_file' => filled($this->gsc_verification_filename),
+            'google_oauth_connected' => $this->hasGoogleOAuth(),
+            'google_oauth_email' => $this->google_oauth_email ?? '',
+            'google_oauth_connected_at' => $this->google_oauth_connected_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
+            'google_oauth_configured' => filled(config('services.google.client_id'))
+                && filled(config('services.google.client_secret')),
         ];
     }
 
@@ -180,6 +202,36 @@ class UserSetting extends Model
             'dynadot_api_key' => $this->dynadot_api_key ?? '',
             'dynadot_api_secret' => $this->dynadot_api_secret ?? '',
             'cloudflare_api_token' => $this->cloudflare_api_token ?? '',
+            'cloudflare_backup_api_token' => $this->cloudflare_backup_api_token ?? '',
         ]);
+    }
+
+    /**
+     * @return array{token: string, account_id: string, name: string}
+     */
+    public function cloudflareSlotCredentials(string $slot): array
+    {
+        $slot = $slot === 'backup' ? 'backup' : 'primary';
+
+        if ($slot === 'backup') {
+            return [
+                'token' => CloudflareClient::normalizeApiToken($this->cloudflare_backup_api_token),
+                'account_id' => trim((string) ($this->cloudflare_backup_account_id ?? '')),
+                'name' => trim((string) ($this->cloudflare_backup_account_name ?? '')),
+            ];
+        }
+
+        return [
+            'token' => CloudflareClient::normalizeApiToken($this->cloudflare_api_token),
+            'account_id' => trim((string) ($this->cloudflare_account_id ?? '')),
+            'name' => trim((string) ($this->cloudflare_account_name ?? '')),
+        ];
+    }
+
+    public function hasCloudflareSlot(string $slot): bool
+    {
+        $creds = $this->cloudflareSlotCredentials($slot);
+
+        return $creds['token'] !== '' && $creds['account_id'] !== '';
     }
 }

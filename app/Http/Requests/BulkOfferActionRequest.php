@@ -20,8 +20,9 @@ class BulkOfferActionRequest extends FormRequest
         return [
             'ids' => ['required', 'array', 'min:1', 'max:200'],
             'ids.*' => ['integer', 'distinct'],
-            'action' => ['required', 'string', Rule::in(['redeploy', 'rebind_dns'])],
+            'action' => ['required', 'string', Rule::in(['redeploy', 'rebind_dns', 'switch_cloudflare'])],
             'ip' => ['required_if:action,rebind_dns', 'nullable', 'ip:4'],
+            'cloudflare_target' => ['required_if:action,switch_cloudflare', 'nullable', 'string', Rule::in(['primary', 'backup'])],
         ];
     }
 
@@ -34,6 +35,7 @@ class BulkOfferActionRequest extends FormRequest
             'ids.required' => 'Оберіть хоча б один оффер.',
             'ip.required_if' => 'Вкажіть IPv4 нового сервера.',
             'ip.ip' => 'IPv4 виглядає невалідним.',
+            'cloudflare_target.required_if' => 'Оберіть Cloudflare-акаунт: основний або запасний.',
         ];
     }
 }

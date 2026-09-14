@@ -338,7 +338,19 @@ a:hover { text-decoration: underline; }
   gap: 0.28rem;
   margin-bottom: 0.55rem;
   padding: 0.35rem 0.45rem;
+  overflow: visible;
+}
+
+.offers-page .filter-bar__scroll {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: inherit;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.05rem;
 }
 
 .offers-page .filter-bar__search-group {
@@ -1976,7 +1988,7 @@ a:hover { text-decoration: underline; }
   top: calc(100% + 0.35rem);
   left: 0;
   right: auto;
-  z-index: 40;
+  z-index: 80;
   width: min(16rem, 80vw);
   max-height: min(24rem, 70vh);
   overflow: auto;
@@ -2260,6 +2272,24 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
 .modal-card--wide {
   width: min(100%, 40rem);
+}
+
+.origin-servers-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.origin-servers-add-btn {
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
 }
 
 .filter-bar {

@@ -8,11 +8,13 @@ use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
 use App\Jobs\RebindOfferDnsJob;
 use App\Jobs\RecheckInfrastructureDnsJob;
+use App\Jobs\SwitchOfferCloudflareJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
 use App\Services\InfrastructureProvisioner;
 use App\Services\OfferGenerator;
+use App\Services\OfferRestoreService;
 use App\Services\OfferTeardownService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
@@ -60,6 +62,10 @@ class OfferController extends Controller
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'canDeploy' => app(DeployService::class)->settingsReady($settings),
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
+            'hasCloudflarePrimary' => (bool) $settings?->hasCloudflareSlot('primary'),
+            'hasCloudflareBackup' => (bool) $settings?->hasCloudflareSlot('backup'),
+            'cloudflarePrimaryName' => trim((string) ($settings?->cloudflare_account_name ?? '')) ?: 'Основний CF',
+            'cloudflareBackupName' => trim((string) ($settings?->cloudflare_backup_account_name ?? '')) ?: 'Запасний CF',
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
             'templates' => app(TemplateCatalog::class)->forWizard(),
@@ -123,6 +129,7 @@ class OfferController extends Controller
             'template' => trim(request()->string('template')->toString()),
             'panel' => trim(request()->string('panel')->toString()),
             'indexing' => request()->string('indexing')->toString(),
+            'archive_status' => request()->string('archive_status')->toString(),
             'created' => request()->string('created')->toString(),
             'created_from' => request()->string('created_from')->toString(),
             'created_to' => request()->string('created_to')->toString(),
@@ -172,7 +179,7 @@ class OfferController extends Controller
     /**
      * @param  array<string, mixed>  $filters
      */
-    private function applyOfferFilters(Builder $query, array $filters, Carbon $today): void
+    private function applyOfferFilters(Builder $query, array $filters, Carbon $today, string $dateColumn = 'created_at'): void
     {
         if ($filters['brand'] !== '') {
             $query->where('brand', 'like', '%'.$filters['brand'].'%');
@@ -208,43 +215,50 @@ class OfferController extends Controller
             $query->where('submitted_for_indexing', false);
         }
 
+        if (($filters['archive_status'] ?? '') === 'archived') {
+            $query->where('status', 'archived');
+        } elseif (($filters['archive_status'] ?? '') === 'teardown_failed') {
+            $query->where('status', 'teardown_failed');
+        }
+
         match ($filters['created']) {
-            'today' => $query->whereDate('created_at', $today),
-            'yesterday' => $query->whereDate('created_at', $today->copy()->subDay()),
-            'week' => $query->whereDate('created_at', '>=', $today->copy()->startOfWeek()),
-            'month' => $query->whereDate('created_at', '>=', $today->copy()->startOfMonth()),
+            'today' => $query->whereDate($dateColumn, $today),
+            'yesterday' => $query->whereDate($dateColumn, $today->copy()->subDay()),
+            'week' => $query->whereDate($dateColumn, '>=', $today->copy()->startOfWeek()),
+            'month' => $query->whereDate($dateColumn, '>=', $today->copy()->startOfMonth()),
             'custom' => $this->applyCustomDateFilter(
                 $query,
                 (string) $filters['created_from'],
                 (string) $filters['created_to'],
+                $dateColumn,
             ),
             default => null,
         };
     }
 
-    private function applyCustomDateFilter(Builder $query, string $from, string $to): void
+    private function applyCustomDateFilter(Builder $query, string $from, string $to, string $dateColumn = 'created_at'): void
     {
         if ($from !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) {
-            $query->whereDate('created_at', '>=', $from);
+            $query->whereDate($dateColumn, '>=', $from);
         }
 
         if ($to !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
-            $query->whereDate('created_at', '<=', $to);
+            $query->whereDate($dateColumn, '<=', $to);
         }
     }
 
     /**
      * @return array{today: int, yesterday: int, week: int, month: int}
      */
-    private function createdCounts(Builder $baseQuery, Carbon $today): array
+    private function createdCounts(Builder $baseQuery, Carbon $today, string $dateColumn = 'created_at'): array
     {
         $clone = fn (): Builder => clone $baseQuery;
 
         return [
-            'today' => $clone()->whereDate('created_at', $today)->count(),
-            'yesterday' => $clone()->whereDate('created_at', $today->copy()->subDay())->count(),
-            'week' => $clone()->whereDate('created_at', '>=', $today->copy()->startOfWeek())->count(),
-            'month' => $clone()->whereDate('created_at', '>=', $today->copy()->startOfMonth())->count(),
+            'today' => $clone()->whereDate($dateColumn, $today)->count(),
+            'yesterday' => $clone()->whereDate($dateColumn, $today->copy()->subDay())->count(),
+            'week' => $clone()->whereDate($dateColumn, '>=', $today->copy()->startOfWeek())->count(),
+            'month' => $clone()->whereDate($dateColumn, '>=', $today->copy()->startOfMonth())->count(),
         ];
     }
 
@@ -451,6 +465,7 @@ class OfferController extends Controller
         $authUser = $request->user();
         $action = $request->string('action')->toString();
         $ip = trim((string) $request->input('ip', ''));
+        $cloudflareTarget = $request->string('cloudflare_target')->toString();
 
         $query = Offer::query()
             ->with('user.settings')
@@ -490,6 +505,31 @@ class OfferController extends Controller
                 continue;
             }
 
+            if ($action === 'switch_cloudflare') {
+                try {
+                    $settings = $offer->user?->settings;
+                    $target = $cloudflareTarget === 'backup' ? 'backup' : 'primary';
+                    if ($settings === null || ! $settings->hasCloudflareSlot($target)) {
+                        $skipped++;
+                        $failed[] = $offer->domain.': немає credentials для '.($target === 'backup' ? 'запасного' : 'основного').' CF';
+                        continue;
+                    }
+                    $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+                    $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
+                    if ($currentSlot === $target) {
+                        $skipped++;
+                        $failed[] = $offer->domain.': вже на '.($target === 'backup' ? 'запасному' : 'основному').' CF';
+                        continue;
+                    }
+                    SwitchOfferCloudflareJob::dispatch($offer->id, $target);
+                    $queued++;
+                } catch (\Throwable $e) {
+                    $skipped++;
+                    $failed[] = $offer->domain.': '.$e->getMessage();
+                }
+                continue;
+            }
+
             try {
                 RebindOfferDnsJob::dispatch($offer->id, $ip);
                 $queued++;
@@ -503,6 +543,9 @@ class OfferController extends Controller
 
         if ($action === 'redeploy') {
             $parts[] = "Редеплой у черзі: {$queued}";
+        } elseif ($action === 'switch_cloudflare') {
+            $label = $cloudflareTarget === 'backup' ? 'запасний CF' : 'основний CF';
+            $parts[] = "Перехід на {$label} у черзі: {$queued}";
         } else {
             $parts[] = "A-запис → {$ip} у черзі: {$queued}";
         }
@@ -627,16 +670,12 @@ class OfferController extends Controller
     public function archiveIndex(DeployService $deploy): Response
     {
         $user = auth()->user();
+        $today = now();
         $filters = $this->indexFilters($user);
         $baseQuery = $this->offerScopeQuery($user, archived: true);
 
         $query = clone $baseQuery;
-        if ($filters['brand'] !== '') {
-            $query->where('brand', 'like', '%'.$filters['brand'].'%');
-        }
-        if ($filters['domain'] !== '') {
-            $query->where('domain', 'like', '%'.$filters['domain'].'%');
-        }
+        $this->applyOfferFilters($query, $filters, $today, 'archived_at');
 
         $offers = $query
             ->paginate($filters['per_page'], ['*'], 'page', $filters['page'])
@@ -646,11 +685,24 @@ class OfferController extends Controller
         return Inertia::render('Panel/Offers/Archive', [
             'offers' => $offers,
             'filters' => $filters,
+            'filterOptions' => [
+                'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
+                'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+                'templates' => (clone $baseQuery)->reorder()->whereNotNull('template')->where('template', '!=', '')->distinct()->orderBy('template')->pluck('template')->values()->all(),
+                'panels' => (clone $baseQuery)->reorder()->whereNotNull('deploy_panel_name')->where('deploy_panel_name', '!=', '')->distinct()->orderBy('deploy_panel_name')->pluck('deploy_panel_name')->values()->all(),
+            ],
+            'createdCounts' => $this->createdCounts($baseQuery, $today, 'archived_at'),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'showUserColumn' => $user->canSeeAllOffers(),
             'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
+            'dateFilters' => [
+                'today' => $today->toDateString(),
+                'yesterday' => $today->copy()->subDay()->toDateString(),
+                'weekStart' => $today->copy()->startOfWeek()->toDateString(),
+                'monthStart' => $today->copy()->startOfMonth()->toDateString(),
+            ],
         ]);
     }
 
@@ -690,6 +742,29 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with('success', "Повтор архівації: {$offer->domain}.");
+    }
+
+    public function restore(Offer $offer, OfferRestoreService $restore): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        try {
+            $restored = $restore->restore($offer->fresh(), auth()->user());
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['archive' => $e->getMessage()]);
+        }
+
+        $message = "Оффер повернуто з архіву: {$restored->domain}. Інфраструктура й деплой запущені у фоні.";
+
+        if ($restored->keitaro_campaign_id) {
+            $message .= " · Keitaro #{$restored->keitaro_campaign_id}";
+        }
+
+        return redirect()
+            ->route('offers.index')
+            ->with('success', $message);
     }
 
     private function authorizeOfferManagement(Offer $offer): void

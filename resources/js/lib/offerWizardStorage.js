@@ -1,6 +1,19 @@
 export const WIZARD_STORAGE_KEY = 'offerra:offer-create-wizard';
+const LEGACY_SESSION_KEY = WIZARD_STORAGE_KEY;
 
 const PURCHASE_STATUSES = new Set(['pending', 'owned', 'purchased', 'error', 'buying']);
+
+function storage() {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
+    try {
+        return window.localStorage;
+    } catch {
+        return null;
+    }
+}
 
 function normalizeBulkItems(items) {
     if (!Array.isArray(items)) {
@@ -27,68 +40,152 @@ function normalizeBulkItems(items) {
         });
 }
 
-export function loadWizardState(defaults) {
-    if (typeof window === 'undefined') {
-        return {
-            step: 0,
-            data: defaults,
-            bulkItems: [],
-            domainPurchasedViaPanel: false,
-        };
+function emptyState(defaults) {
+    return {
+        step: 0,
+        data: defaults,
+        bulkItems: [],
+        domainPurchasedViaPanel: false,
+    };
+}
+
+function parseStored(raw, defaults) {
+    const parsed = JSON.parse(raw);
+    const step = typeof parsed.step === 'number'
+        ? Math.min(Math.max(parsed.step, 0), 3)
+        : 0;
+
+    return {
+        step,
+        data: { ...defaults, ...(parsed.data ?? {}) },
+        bulkItems: normalizeBulkItems(parsed.bulkItems),
+        domainPurchasedViaPanel: Boolean(parsed.domainPurchasedViaPanel),
+    };
+}
+
+function readRawDraft() {
+    const store = storage();
+    if (!store) {
+        return null;
     }
 
     try {
-        const raw = sessionStorage.getItem(WIZARD_STORAGE_KEY);
+        let raw = store.getItem(WIZARD_STORAGE_KEY);
 
-        if (!raw) {
-            return {
-                step: 0,
-                data: defaults,
-                bulkItems: [],
-                domainPurchasedViaPanel: false,
-            };
+        // One-time migration from the old per-tab sessionStorage draft.
+        if (!raw && typeof sessionStorage !== 'undefined') {
+            try {
+                raw = sessionStorage.getItem(LEGACY_SESSION_KEY);
+                if (raw) {
+                    store.setItem(WIZARD_STORAGE_KEY, raw);
+                    sessionStorage.removeItem(LEGACY_SESSION_KEY);
+                }
+            } catch {
+                // ignore
+            }
         }
 
-        const parsed = JSON.parse(raw);
-        const step = typeof parsed.step === 'number'
-            ? Math.min(Math.max(parsed.step, 0), 3)
-            : 0;
-
-        return {
-            step,
-            data: { ...defaults, ...(parsed.data ?? {}) },
-            bulkItems: normalizeBulkItems(parsed.bulkItems),
-            domainPurchasedViaPanel: Boolean(parsed.domainPurchasedViaPanel),
-        };
+        return raw;
     } catch {
-        return {
-            step: 0,
-            data: defaults,
-            bulkItems: [],
-            domainPurchasedViaPanel: false,
-        };
+        return null;
+    }
+}
+
+export function draftHasProgress(state) {
+    if (!state) {
+        return false;
+    }
+
+    if ((state.bulkItems ?? []).length > 0) {
+        return true;
+    }
+
+    if (state.domainPurchasedViaPanel) {
+        return true;
+    }
+
+    if ((state.step ?? 0) > 0) {
+        return true;
+    }
+
+    const data = state.data ?? {};
+    const brand = typeof data.brand === 'string' ? data.brand.trim() : '';
+    const domain = typeof data.domain === 'string' ? data.domain.trim() : '';
+    const template = typeof data.template === 'string' ? data.template.trim() : '';
+
+    return Boolean(brand || domain || template);
+}
+
+export function loadWizardState(defaults) {
+    if (typeof window === 'undefined') {
+        return emptyState(defaults);
+    }
+
+    try {
+        const raw = readRawDraft();
+        if (!raw) {
+            return emptyState(defaults);
+        }
+
+        return parseStored(raw, defaults);
+    } catch {
+        return emptyState(defaults);
+    }
+}
+
+export function peekWizardDraft(defaults = {}) {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
+    try {
+        const raw = readRawDraft();
+        if (!raw) {
+            return null;
+        }
+
+        return parseStored(raw, defaults);
+    } catch {
+        return null;
     }
 }
 
 export function saveWizardState(step, data, extras = {}) {
-    if (typeof window === 'undefined') {
+    const store = storage();
+    if (!store) {
         return;
     }
 
-    sessionStorage.setItem(WIZARD_STORAGE_KEY, JSON.stringify({
-        step,
-        data,
-        bulkItems: normalizeBulkItems(extras.bulkItems),
-        domainPurchasedViaPanel: Boolean(extras.domainPurchasedViaPanel),
-    }));
+    try {
+        store.setItem(WIZARD_STORAGE_KEY, JSON.stringify({
+            step,
+            data,
+            bulkItems: normalizeBulkItems(extras.bulkItems),
+            domainPurchasedViaPanel: Boolean(extras.domainPurchasedViaPanel),
+            updatedAt: new Date().toISOString(),
+        }));
+    } catch {
+        // Quota / private mode — ignore.
+    }
 }
 
 export function clearWizardState() {
-    if (typeof window === 'undefined') {
+    const store = storage();
+    if (!store) {
         return;
     }
 
-    sessionStorage.removeItem(WIZARD_STORAGE_KEY);
+    try {
+        store.removeItem(WIZARD_STORAGE_KEY);
+    } catch {
+        // ignore
+    }
+
+    try {
+        sessionStorage.removeItem(LEGACY_SESSION_KEY);
+    } catch {
+        // ignore
+    }
 }
 
 /** Remove ?fresh=1 so a browser refresh restores the draft instead of wiping again. */

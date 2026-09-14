@@ -157,7 +157,7 @@ export default function PanelLayout({ title, children, wide = false, fullWidth =
                         {title ? <span>{title}</span> : null}
                     </div>
                     <Link
-                        href={route('offers.create', { fresh: 1 })}
+                        href={route('offers.create')}
                         className="mobile-topbar__create"
                         aria-label="Створити оффер"
                     >

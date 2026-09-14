@@ -107,6 +107,10 @@ class InfrastructureProvisioner
                 'infra_error' => null,
                 'infra_meta' => $meta,
             ]);
+
+            if (($meta['dns'] ?? null) === 'done') {
+                app(\App\Services\OfferGscSubmitter::class)->queue($offer->fresh() ?? $offer, 30);
+            }
         } catch (\Throwable $e) {
             $offer->update([
                 'infra_status' => 'failed',
@@ -209,6 +213,8 @@ class InfrastructureProvisioner
             'infra_error' => null,
             'infra_meta' => $meta,
         ]);
+
+        app(\App\Services\OfferGscSubmitter::class)->queue($offer->fresh() ?? $offer, 30);
 
         return true;
     }
@@ -616,6 +622,180 @@ class InfrastructureProvisioner
             'infra_meta' => $meta,
             'deploy_panel_name' => $ip,
         ]);
+    }
+
+    /**
+     * Move an offer's Cloudflare zone to the user's primary or backup CF account.
+     * Recreates zone/A/SSL/redirects, updates Dynadot NS, tries to delete the old zone, then DNS recheck.
+     *
+     * @param  'primary'|'backup'  $target
+     */
+    public function switchCloudflareAccount(Offer $offer, string $target): void
+    {
+        $target = $target === 'backup' ? 'backup' : 'primary';
+        $offer->loadMissing('user.settings');
+        $userSettings = $offer->user?->settings;
+
+        if ($userSettings === null) {
+            throw new \RuntimeException('Немає налаштувань користувача.');
+        }
+
+        if (! $userSettings->hasCloudflareSlot($target)) {
+            throw new \RuntimeException(
+                $target === 'backup'
+                    ? 'Заповніть запасний Cloudflare (token + Account ID) у налаштуваннях.'
+                    : 'Заповніть основний Cloudflare (token + Account ID) у налаштуваннях.',
+            );
+        }
+
+        if (! filled($userSettings->dynadot_api_key)) {
+            throw new \RuntimeException('Потрібен Dynadot API key, щоб змінити NS.');
+        }
+
+        if (! filled($userSettings->deploy_host) || ! filled($userSettings->deploy_password)) {
+            throw new \RuntimeException('Потрібен origin SSH, щоб взяти IP для A-запису.');
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
+        $domain = strtolower(trim((string) $offer->domain));
+        $oldZoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
+
+        $oldCreds = $this->resolveActiveCloudflareCredentials($offer, $userSettings, $currentSlot);
+        $targetCreds = $userSettings->cloudflareSlotCredentials($target);
+        $targetSettings = $this->settingsWithCloudflareSlot($userSettings, $targetCreds);
+
+        $options = InfrastructureOptions::forOffer($offer);
+        // Migration always needs the full CF+Dynadot path.
+        $options['cloudflare_zone'] = true;
+        $options['cloudflare_dns'] = true;
+        $options['cloudflare_ssl'] = $options['cloudflare_ssl'] ?? true;
+        $options['cloudflare_https'] = $options['cloudflare_https'] ?? true;
+        $options['cloudflare_www_redirect'] = $options['cloudflare_www_redirect'] ?? true;
+        $options['dynadot_ns'] = true;
+
+        $offer->update([
+            'provision_infrastructure' => true,
+            'infra_status' => 'provisioning',
+            'infra_error' => null,
+        ]);
+
+        // Force a fresh zone on the target account (do not reuse the old account's zone id).
+        unset($meta['cloudflare_zone_id'], $meta['nameservers'], $meta['dns_error'], $meta['dns_via']);
+        $meta['dynadot_ns'] = 'pending';
+        $meta['options'] = $options;
+        $meta['cloudflare_slot'] = $target;
+        $meta['cloudflare_migrating_to'] = $target;
+
+        try {
+            $zone = $this->cloudflare->ensureZone($targetSettings, $domain);
+            $zoneId = (string) $zone['zone_id'];
+            $nameservers = $zone['nameservers'];
+            $meta['cloudflare'] = 'done';
+            $meta['cloudflare_zone_id'] = $zoneId;
+            $meta['nameservers'] = $nameservers;
+
+            $serverIp = $this->origin->originIp($userSettings);
+            $this->cloudflare->ensureRootARecord($targetSettings, $zoneId, $domain, $serverIp);
+            $meta['cloudflare_dns'] = 'done';
+            $meta['cloudflare_www_dns'] = 'done';
+            $meta['deploy_host'] = $serverIp;
+
+            $this->applyCloudflareEdge($targetSettings, $domain, $zoneId, $options, $meta);
+
+            try {
+                $this->dynadot->setNameservers($userSettings, $domain, $nameservers);
+                $meta['dynadot_ns'] = 'done';
+                unset($meta['dynadot_ns_error']);
+            } catch (\Throwable $e) {
+                if (! DynadotClient::isNsNotReadyError($e->getMessage())) {
+                    throw $e;
+                }
+                $meta['dynadot_ns'] = 'pending';
+                $meta['dynadot_ns_error'] = $e->getMessage();
+            }
+
+            $oldDeleted = 'skipped';
+            if ($oldZoneId !== '' && $oldCreds['token'] !== '') {
+                // Only delete if the old zone is on a different account/token.
+                $sameToken = hash_equals($oldCreds['token'], $targetCreds['token']);
+                if (! $sameToken) {
+                    try {
+                        $oldSettings = $this->settingsWithCloudflareSlot($userSettings, $oldCreds);
+                        $oldDeleted = $this->cloudflare->deleteZone($oldSettings, $oldZoneId);
+                    } catch (\Throwable $e) {
+                        $oldDeleted = 'failed: '.$e->getMessage();
+                        $meta['cloudflare_old_zone_delete_error'] = $e->getMessage();
+                    }
+                }
+            }
+            $meta['cloudflare_old_zone_delete'] = $oldDeleted;
+            unset($meta['cloudflare_migrating_to']);
+
+            $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+            $dnsVia = $this->publicReadiness($domain, $serverIp, $expectedNs);
+            if ($dnsVia !== null && ($meta['dynadot_ns'] ?? '') === 'done') {
+                $meta['dns'] = 'done';
+                $meta['dns_via'] = $dnsVia;
+                unset($meta['dns_error']);
+            } else {
+                $meta['dns'] = 'pending';
+            }
+
+            $offer->update([
+                'infra_status' => 'ready',
+                'infra_error' => null,
+                'infra_meta' => $meta,
+                'cloudflare_api_token' => $targetCreds['token'],
+                'cloudflare_account_id' => $targetCreds['account_id'] !== '' ? $targetCreds['account_id'] : null,
+                'cloudflare_account_name' => $targetCreds['name'] !== '' ? $targetCreds['name'] : null,
+                'deploy_panel_name' => $serverIp,
+            ]);
+
+            if (($meta['dns'] ?? null) === 'done') {
+                app(\App\Services\OfferGscSubmitter::class)->queue($offer->fresh() ?? $offer, 45);
+            }
+        } catch (\Throwable $e) {
+            $meta['cloudflare_migrate_error'] = $e->getMessage();
+            $offer->update([
+                'infra_status' => 'failed',
+                'infra_error' => $e->getMessage(),
+                'infra_meta' => $meta,
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param  array{token: string, account_id: string, name: string}  $creds
+     */
+    private function settingsWithCloudflareSlot(UserSetting $base, array $creds): UserSetting
+    {
+        $merged = $base->replicate();
+        $merged->cloudflare_api_token = $creds['token'];
+        $merged->cloudflare_account_id = $creds['account_id'] !== '' ? $creds['account_id'] : null;
+        $merged->cloudflare_account_name = $creds['name'] !== '' ? $creds['name'] : null;
+
+        return $merged;
+    }
+
+    /**
+     * @return array{token: string, account_id: string, name: string}
+     */
+    private function resolveActiveCloudflareCredentials(Offer $offer, UserSetting $settings, string $currentSlot): array
+    {
+        // Prefer the credentials currently stored on the offer (last successful CF account).
+        $offerToken = CloudflareClient::normalizeApiToken($offer->cloudflare_api_token);
+        if ($offerToken !== '') {
+            return [
+                'token' => $offerToken,
+                'account_id' => trim((string) ($offer->cloudflare_account_id ?? '')),
+                'name' => trim((string) ($offer->cloudflare_account_name ?? '')),
+            ];
+        }
+
+        return $settings->cloudflareSlotCredentials($currentSlot);
     }
 
     private function providerSettings(Offer $offer): ?UserSetting

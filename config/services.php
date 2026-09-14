@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_OAUTH_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_OAUTH_CLIENT_SECRET'),
+        'redirect_uri' => env('GOOGLE_OAUTH_REDIRECT_URI', env('APP_URL').'/settings/google/callback'),
+        'scopes' => [
+            'https://www.googleapis.com/auth/webmasters',
+            'https://www.googleapis.com/auth/siteverification',
+            'openid',
+            'email',
+        ],
+    ],
+
 ];
