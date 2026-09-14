@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/{offer}/recheck-dns', [OfferController::class, 'recheckDns'])->name('offers.recheck-dns');
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
+    Route::post('/offers/{offer}/gsc', [OfferController::class, 'submitGsc'])->name('offers.gsc');
     Route::get('/mirrors', [MirrorDomainController::class, 'index'])->name('mirrors.index');
     Route::patch('/mirrors/{mirror}', [MirrorDomainController::class, 'update'])->name('mirrors.update');
     Route::delete('/mirrors/{mirror}', [MirrorDomainController::class, 'destroy'])->name('mirrors.destroy');

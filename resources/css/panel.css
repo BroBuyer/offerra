@@ -2139,6 +2139,13 @@ tr:last-child td { border-bottom: none; }
   min-width: 7rem;
 }
 
+.indexing-cell__row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
 .verification-file {
   display: flex;
   align-items: center;

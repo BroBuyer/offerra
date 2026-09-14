@@ -188,7 +188,30 @@ class Offer extends Model
                 ? (string) (($this->infra_meta['gsc']['status'] ?? '') ?: '')
                 : '',
             'gsc_error' => is_array($this->infra_meta) ? ($this->infra_meta['gsc_error'] ?? null) : null,
+            'gsc_ready' => $this->gscReadyForPanel(),
             'infra_meta' => $this->infra_meta ?? [],
         ];
+    }
+
+    private function gscReadyForPanel(): bool
+    {
+        if (! $this->provision_infrastructure || $this->status !== 'deployed') {
+            return false;
+        }
+
+        $meta = is_array($this->infra_meta) ? $this->infra_meta : [];
+        if (($meta['dns'] ?? null) !== 'done') {
+            return false;
+        }
+
+        $this->loadMissing('user.settings');
+        $settings = $this->user?->settings;
+        if (! $settings) {
+            return false;
+        }
+
+        return $settings->hasGoogleOAuth()
+            && filled($settings->gsc_verification_filename)
+            && filled(config('services.google.client_id'));
     }
 }

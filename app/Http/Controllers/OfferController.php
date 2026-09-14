@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\DeployService;
 use App\Services\InfrastructureProvisioner;
 use App\Services\OfferGenerator;
+use App\Services\OfferGscSubmitter;
 use App\Services\OfferRestoreService;
 use App\Services\OfferTeardownService;
 use App\Services\TemplateCatalog;
@@ -158,7 +159,7 @@ class OfferController extends Controller
     private function offerScopeQuery(User $user, bool $archived = false): Builder
     {
         $query = Offer::query()
-            ->with('user')
+            ->with('user.settings')
             ->orderByDesc($archived ? 'archived_at' : 'created_at');
 
         if ($archived) {
@@ -665,6 +666,35 @@ class OfferController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function submitGsc(Offer $offer, OfferGscSubmitter $gsc): RedirectResponse
+    {
+        @set_time_limit(120);
+        $user = auth()->user();
+
+        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        try {
+            $result = $gsc->submit($offer->fresh() ?? $offer);
+        } catch (\InvalidArgumentException|\RuntimeException $e) {
+            return redirect()
+                ->back()
+                ->with('error', "GSC {$offer->domain}: ".$e->getMessage());
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->with('error', "GSC {$offer->domain}: ".$e->getMessage());
+        }
+
+        return redirect()
+            ->back()
+            ->with(
+                'success',
+                "GSC: {$offer->domain} додано в Search Console, sitemap відправлено ({$result['sitemap_url']}).",
+            );
     }
 
     public function archiveIndex(DeployService $deploy): Response
