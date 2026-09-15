@@ -53,6 +53,8 @@ class GoogleSearchConsoleClient
 
     public function assertHttpsLive(string $domain): void
     {
+        $this->assertPublicDnsResolves($domain);
+
         if (! $this->httpsResponds($domain) && ! $this->httpsResponds('www.'.$domain)) {
             throw new RuntimeException('HTTPS is not live yet for '.$domain);
         }
@@ -60,6 +62,8 @@ class GoogleSearchConsoleClient
 
     public function assertVerificationFileLive(string $domain, string $filename): void
     {
+        $this->assertPublicDnsResolves($domain);
+
         $filename = ltrim($filename, '/');
         $url = 'https://'.$domain.'/'.$filename;
         try {
@@ -78,6 +82,76 @@ class GoogleSearchConsoleClient
         if (! str_contains($body, 'google-site-verification')) {
             throw new RuntimeException('Verification file does not look like a GSC HTML token: '.$url);
         }
+    }
+
+    /**
+     * Google itself resolves public DNS — if the panel can't, GSC verify will fail too.
+     */
+    private function assertPublicDnsResolves(string $domain): void
+    {
+        $domain = strtolower(rtrim(trim($domain), '.'));
+        if ($domain === '') {
+            throw new RuntimeException('Empty domain.');
+        }
+
+        $ips = $this->lookupARecords($domain);
+        if ($ips !== []) {
+            return;
+        }
+
+        $ns = $this->lookupNsRecords($domain);
+        if ($ns === []) {
+            throw new RuntimeException(
+                "Домен {$domain} не резолвиться в публічному DNS (NXDOMAIN). ".
+                'Перевір NS у Dynadot → Cloudflare (brianna/weston) і зачекай propagation, потім натисни GSC знову.',
+            );
+        }
+
+        throw new RuntimeException(
+            "Домен {$domain} має NS (".implode(', ', $ns).'), але A-запис ще не видно публічно. Зачекай DNS і спробуй GSC знову.',
+        );
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function lookupARecords(string $domain): array
+    {
+        $records = @dns_get_record($domain, DNS_A);
+        if (! is_array($records)) {
+            return [];
+        }
+
+        $ips = [];
+        foreach ($records as $record) {
+            $ip = trim((string) ($record['ip'] ?? ''));
+            if ($ip !== '' && filter_var($ip, FILTER_VALIDATE_IP)) {
+                $ips[] = $ip;
+            }
+        }
+
+        return array_values(array_unique($ips));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function lookupNsRecords(string $domain): array
+    {
+        $records = @dns_get_record($domain, DNS_NS);
+        if (! is_array($records)) {
+            return [];
+        }
+
+        $out = [];
+        foreach ($records as $record) {
+            $ns = strtolower(rtrim(trim((string) ($record['target'] ?? '')), '.'));
+            if ($ns !== '') {
+                $out[] = $ns;
+            }
+        }
+
+        return array_values(array_unique($out));
     }
 
     private function httpsResponds(string $host): bool
