@@ -11,7 +11,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
 /**
- * After DNS is ready: wait until HTTPS is live (availability dot), then auto-queue GSC.
+ * After DNS is ready: poll HTTPS every minute until live, then auto-queue GSC.
  */
 class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
 {
@@ -19,12 +19,12 @@ class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
 
     public int $timeout = 90;
 
-    public int $tries = 12;
+    /** Keep polling up to ~7 days (once per minute). */
+    public int $tries = 10080;
 
-    public int $uniqueFor = 3600;
+    public int $uniqueFor = 70;
 
-    /** @var list<int> */
-    public array $backoff = [20, 40, 60, 90, 120, 180, 300, 420, 600, 900, 1200];
+    private const RETRY_SECONDS = 60;
 
     public function __construct(public int $offerId)
     {
@@ -57,7 +57,7 @@ class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
         }
 
         if ($offer->status !== 'deployed') {
-            $this->releaseLater();
+            $this->release(self::RETRY_SECONDS);
 
             return;
         }
@@ -71,23 +71,15 @@ class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        Log::info('Offer still not live after DNS — will retry availability probe', [
+        Log::info('Offer still not live after DNS — retry in 1 minute', [
             'offer' => $fresh->id,
             'domain' => $fresh->domain,
             'error' => $fresh->availability_error,
             'attempt' => $this->attempts(),
         ]);
 
-        $this->releaseLater();
-    }
-
-    private function releaseLater(): void
-    {
-        if ($this->attempts() >= $this->tries) {
-            return;
+        if ($this->attempts() < $this->tries) {
+            $this->release(self::RETRY_SECONDS);
         }
-
-        $delay = $this->backoff[min(max($this->attempts() - 1, 0), count($this->backoff) - 1)] ?? 120;
-        $this->release($delay);
     }
 }
