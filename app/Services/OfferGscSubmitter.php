@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Jobs\ProbeOfferAvailabilityJob;
+use App\Jobs\SubmitOfferToGscJob;
 use App\Models\Offer;
 use App\Models\UserSetting;
 use InvalidArgumentException;
@@ -15,6 +17,18 @@ class OfferGscSubmitter
 
     public function canSubmit(Offer $offer): bool
     {
+        if (! $this->baseReady($offer)) {
+            return false;
+        }
+
+        return ($offer->availability_status ?? '') === 'ok';
+    }
+
+    /**
+     * DNS done + deployed + Google connected — enough to start waiting for live HTTPS.
+     */
+    public function shouldProbeAfterDns(Offer $offer): bool
+    {
         if (! $offer->provision_infrastructure) {
             return false;
         }
@@ -23,12 +37,12 @@ class OfferGscSubmitter
             return false;
         }
 
-        if ($offer->status !== 'deployed') {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        if (($meta['dns'] ?? null) !== 'done') {
             return false;
         }
 
-        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        if (($meta['dns'] ?? null) !== 'done') {
+        if ($offer->submitted_for_indexing || ($meta['gsc']['status'] ?? null) === 'submitted') {
             return false;
         }
 
@@ -42,6 +56,44 @@ class OfferGscSubmitter
             && filled(config('services.google.client_id'));
     }
 
+    public function shouldQueue(Offer $offer): bool
+    {
+        if ($offer->submitted_for_indexing) {
+            return false;
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        if (($meta['gsc']['status'] ?? null) === 'submitted') {
+            return false;
+        }
+
+        return $this->canSubmit($offer);
+    }
+
+    public function queueAfterDns(Offer $offer, int $delaySeconds = 15): void
+    {
+        if (! $this->shouldProbeAfterDns($offer)) {
+            return;
+        }
+
+        $pending = ProbeOfferAvailabilityJob::dispatch($offer->id)->onQueue('deploy');
+        if ($delaySeconds > 0) {
+            $pending->delay(now()->addSeconds($delaySeconds));
+        }
+    }
+
+    public function queue(Offer $offer, int $delaySeconds = 0): void
+    {
+        if (! $this->shouldQueue($offer)) {
+            return;
+        }
+
+        $pending = SubmitOfferToGscJob::dispatch($offer->id)->onQueue('deploy');
+        if ($delaySeconds > 0) {
+            $pending->delay(now()->addSeconds($delaySeconds));
+        }
+    }
+
     /**
      * Sync: verify site in Search Console, submit sitemap, tick indexing checkbox.
      *
@@ -51,7 +103,7 @@ class OfferGscSubmitter
     {
         if (! $this->canSubmit($offer)) {
             throw new InvalidArgumentException(
-                'GSC недоступний: потрібні DNS=done, деплой, Google Connect і verification HTML у Settings власника офера.',
+                'GSC недоступний: потрібні DNS=done, живий сайт (зелений кружечок), деплой, Google Connect і verification HTML.',
             );
         }
 
@@ -99,7 +151,9 @@ class OfferGscSubmitter
             $message = $e->getMessage();
             $notReady = str_contains($message, 'HTTPS is not live')
                 || str_contains($message, 'Cannot fetch verification file')
-                || str_contains($message, 'Verification file HTTP');
+                || str_contains($message, 'Verification file HTTP')
+                || str_contains($message, 'NXDOMAIN')
+                || str_contains($message, 'не резолвиться');
 
             $fresh = $offer->fresh() ?? $offer;
             $meta = is_array($fresh->infra_meta) ? $fresh->infra_meta : [];
@@ -114,6 +168,35 @@ class OfferGscSubmitter
                 ? $e
                 : new RuntimeException($message, 0, $e);
         }
+    }
+
+    private function baseReady(Offer $offer): bool
+    {
+        if (! $offer->provision_infrastructure) {
+            return false;
+        }
+
+        if (in_array($offer->status, ['archived', 'archiving', 'teardown_failed'], true)) {
+            return false;
+        }
+
+        if ($offer->status !== 'deployed') {
+            return false;
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        if (($meta['dns'] ?? null) !== 'done') {
+            return false;
+        }
+
+        $settings = $this->ownerSettings($offer);
+        if (! $settings) {
+            return false;
+        }
+
+        return $settings->hasGoogleOAuth()
+            && filled($settings->gsc_verification_filename)
+            && filled(config('services.google.client_id'));
     }
 
     private function ownerSettings(Offer $offer): ?UserSetting

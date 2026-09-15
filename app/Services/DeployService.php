@@ -328,6 +328,10 @@ class DeployService
                 \App\Jobs\RecheckInfrastructureDnsJob::dispatch($fresh->id)->delay(now()->addSeconds(10));
             }
 
+            if ($fresh && ($fresh->infra_meta['dns'] ?? null) === 'done') {
+                app(OfferGscSubmitter::class)->queueAfterDns($fresh, 20);
+            }
+
             return $fresh;
         } catch (\Throwable $e) {
             $offer->update([

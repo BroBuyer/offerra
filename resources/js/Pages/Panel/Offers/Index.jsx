@@ -426,7 +426,6 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
-    const [gscId, setGscId] = useState(null);
     const [archivingId, setArchivingId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
@@ -804,14 +803,6 @@ export default function OffersIndex({
                 onFinish: () => setIndexingId(null),
             },
         );
-    };
-
-    const submitGsc = (offer) => {
-        setGscId(offer.id);
-        router.post(route('offers.gsc', offer.id), {}, {
-            preserveScroll: true,
-            onFinish: () => setGscId(null),
-        });
     };
 
     const copyDomainUrl = async (offer) => {
@@ -1523,47 +1514,32 @@ export default function OffersIndex({
                                         <td>
                                             <div className="indexing-cell">
                                                 {canManageOffer(offer) ? (
-                                                    <>
-                                                        <div className="indexing-cell__row">
-                                                            <label
-                                                                className="indexing-check"
-                                                                title={
-                                                                    offer.gsc_error
-                                                                        ? offer.gsc_error
-                                                                        : offer.submitted_for_indexing && offer.indexed_at
-                                                                          ? `Подано: ${offer.indexed_at}`
-                                                                          : 'Позначка індексації'
-                                                                }
-                                                            >
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={Boolean(offer.submitted_for_indexing)}
-                                                                    disabled={indexingId === offer.id || gscId === offer.id}
-                                                                    onChange={(e) => toggleIndexing(offer, e.target.checked)}
-                                                                />
-                                                                <span className="indexing-check__label">
-                                                                    {offer.submitted_for_indexing
-                                                                        ? 'Так'
-                                                                        : offer.gsc_status === 'waiting'
-                                                                          ? '…'
-                                                                          : offer.gsc_status === 'failed'
-                                                                            ? '!'
-                                                                            : 'Ні'}
-                                                                </span>
-                                                            </label>
-                                                            {offer.gsc_ready && !offer.submitted_for_indexing && (
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-ghost btn-sm"
-                                                                    disabled={gscId === offer.id}
-                                                                    onClick={() => submitGsc(offer)}
-                                                                    title="Додати в Google Search Console і відправити sitemap.xml"
-                                                                >
-                                                                    {gscId === offer.id ? '…' : 'GSC'}
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </>
+                                                    <label
+                                                        className="indexing-check"
+                                                        title={
+                                                            offer.gsc_error
+                                                                ? offer.gsc_error
+                                                                : offer.submitted_for_indexing && offer.indexed_at
+                                                                  ? `Подано: ${offer.indexed_at}`
+                                                                  : 'Автоматично після DNS + зеленого кружечка (якщо Google підключений)'
+                                                        }
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={Boolean(offer.submitted_for_indexing)}
+                                                            disabled={indexingId === offer.id}
+                                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                                        />
+                                                        <span className="indexing-check__label">
+                                                            {offer.submitted_for_indexing
+                                                                ? 'Так'
+                                                                : offer.gsc_status === 'waiting'
+                                                                  ? '…'
+                                                                  : offer.gsc_status === 'failed'
+                                                                    ? '!'
+                                                                    : 'Ні'}
+                                                        </span>
+                                                    </label>
                                                 ) : (
                                                     <span className="field-hint">
                                                         {offer.submitted_for_indexing ? 'Так' : '—'}
@@ -1672,37 +1648,24 @@ export default function OffersIndex({
                         <div className="offer-mobile-card__footer">
                             {canManageOffer(offer) ? (
                                 <div className="indexing-cell">
-                                    <div className="indexing-cell__row">
-                                        <label className="indexing-check">
-                                            <input
-                                                type="checkbox"
-                                                checked={Boolean(offer.submitted_for_indexing)}
-                                                disabled={indexingId === offer.id || gscId === offer.id}
-                                                onChange={(e) => toggleIndexing(offer, e.target.checked)}
-                                            />
-                                            <span className="indexing-check__label">
-                                                Індексація:{' '}
-                                                {offer.submitted_for_indexing
-                                                    ? 'Так'
-                                                    : offer.gsc_status === 'waiting'
-                                                      ? 'очікує'
-                                                      : offer.gsc_status === 'failed'
-                                                        ? 'помилка'
-                                                        : 'Ні'}
-                                            </span>
-                                        </label>
-                                        {offer.gsc_ready && !offer.submitted_for_indexing && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-ghost btn-sm"
-                                                disabled={gscId === offer.id}
-                                                onClick={() => submitGsc(offer)}
-                                                title="Додати в Google Search Console і відправити sitemap.xml"
-                                            >
-                                                {gscId === offer.id ? '…' : 'GSC'}
-                                            </button>
-                                        )}
-                                    </div>
+                                    <label className="indexing-check">
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(offer.submitted_for_indexing)}
+                                            disabled={indexingId === offer.id}
+                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                        />
+                                        <span className="indexing-check__label">
+                                            Індексація:{' '}
+                                            {offer.submitted_for_indexing
+                                                ? 'Так'
+                                                : offer.gsc_status === 'waiting'
+                                                  ? 'очікує'
+                                                  : offer.gsc_status === 'failed'
+                                                    ? 'помилка'
+                                                    : 'Ні'}
+                                        </span>
+                                    </label>
                                 </div>
                             ) : (
                                 <span className="field-hint">

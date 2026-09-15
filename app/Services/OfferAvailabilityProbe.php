@@ -206,6 +206,17 @@ class OfferAvailabilityProbe
             'availability_fail_streak' => min($streak, 255),
         ])->save();
 
+        if ($nextStatus === 'ok') {
+            try {
+                app(OfferGscSubmitter::class)->queue($offer->fresh() ?? $offer, 5);
+            } catch (\Throwable $e) {
+                Log::info('Auto GSC queue after availability skipped', [
+                    'offer' => $offer->id,
+                    'reason' => $e->getMessage(),
+                ]);
+            }
+        }
+
         return [
             'status' => $nextStatus,
             'error' => $error,

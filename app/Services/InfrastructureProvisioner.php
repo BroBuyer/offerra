@@ -107,6 +107,10 @@ class InfrastructureProvisioner
                 'infra_error' => null,
                 'infra_meta' => $meta,
             ]);
+
+            if (($meta['dns'] ?? null) === 'done') {
+                app(OfferGscSubmitter::class)->queueAfterDns($offer->fresh() ?? $offer);
+            }
         } catch (\Throwable $e) {
             $offer->update([
                 'infra_status' => 'failed',
@@ -209,6 +213,8 @@ class InfrastructureProvisioner
             'infra_error' => null,
             'infra_meta' => $meta,
         ]);
+
+        app(OfferGscSubmitter::class)->queueAfterDns($offer->fresh() ?? $offer);
 
         return true;
     }
@@ -745,6 +751,10 @@ class InfrastructureProvisioner
                 'cloudflare_account_name' => $targetCreds['name'] !== '' ? $targetCreds['name'] : null,
                 'deploy_panel_name' => $serverIp,
             ]);
+
+            if (($meta['dns'] ?? null) === 'done') {
+                app(OfferGscSubmitter::class)->queueAfterDns($offer->fresh() ?? $offer);
+            }
         } catch (\Throwable $e) {
             $meta['cloudflare_migrate_error'] = $e->getMessage();
             $offer->update([

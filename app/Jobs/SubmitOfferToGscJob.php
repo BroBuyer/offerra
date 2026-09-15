@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 /**
- * Kept for optional retries; primary flow is the manual GSC button (sync).
+ * Auto GSC submit after DNS is done and the availability probe is green.
  */
 class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
 {
@@ -65,7 +65,11 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
             $message = $e->getMessage();
             $notReady = str_contains($message, 'HTTPS is not live')
                 || str_contains($message, 'Cannot fetch verification file')
-                || str_contains($message, 'Verification file HTTP');
+                || str_contains($message, 'Verification file HTTP')
+                || str_contains($message, 'NXDOMAIN')
+                || str_contains($message, 'не резолвиться')
+                || str_contains($message, 'Timeout')
+                || str_contains($message, 'DNS resolve');
 
             if ($notReady && $this->attempts() < $this->tries) {
                 $delay = $this->backoff[min(max($this->attempts() - 1, 0), count($this->backoff) - 1)] ?? 120;

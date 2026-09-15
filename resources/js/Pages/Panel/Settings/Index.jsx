@@ -591,9 +591,9 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 <section className="card">
                     <h3>Google Search Console</h3>
                     <p className="card-desc">
-                        Файл <code>google….html</code> з GSC — один раз тут, далі автоматично додається до кожного нового
-                        оффера. Після підключення Google акаунта система сама додає сайт у Search Console і сабмітить
-                        sitemap, коли DNS став готовим.
+                        Файл <code>google….html</code> з GSC — один раз тут, далі додається до кожного нового оффера.
+                        Після підключення Google: коли DNS готовий і сайт реально відкривається (зелений кружечок),
+                        система сама додає домен у Search Console, сабмітить sitemap і ставить галочку індексації.
                     </p>
                     <input
                         ref={gscVerificationInputRef}
