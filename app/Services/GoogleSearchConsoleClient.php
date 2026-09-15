@@ -137,10 +137,11 @@ class GoogleSearchConsoleClient
     private function addSite(string $accessToken, string $siteUrl): bool
     {
         $encoded = rawurlencode($siteUrl);
-        $response = Http::timeout(30)
-            ->withToken($accessToken)
-            ->acceptJson()
-            ->put('https://www.googleapis.com/webmasters/v3/sites/'.$encoded);
+        // sites.add must have an empty body — Laravel Http::put($url) defaults to JSON [].
+        $response = $this->putWithoutBody(
+            $accessToken,
+            'https://www.googleapis.com/webmasters/v3/sites/'.$encoded,
+        );
 
         if ($response->successful() || $response->status() === 204) {
             return true;
@@ -170,10 +171,10 @@ class GoogleSearchConsoleClient
     {
         $encodedSite = rawurlencode($siteUrl);
         $encodedFeed = rawurlencode($sitemapUrl);
-        $response = Http::timeout(30)
-            ->withToken($accessToken)
-            ->acceptJson()
-            ->put('https://www.googleapis.com/webmasters/v3/sites/'.$encodedSite.'/sitemaps/'.$encodedFeed);
+        $response = $this->putWithoutBody(
+            $accessToken,
+            'https://www.googleapis.com/webmasters/v3/sites/'.$encodedSite.'/sitemaps/'.$encodedFeed,
+        );
 
         if ($response->successful() || $response->status() === 204) {
             return true;
@@ -185,6 +186,21 @@ class GoogleSearchConsoleClient
         }
 
         throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$response->status().'): '.$this->shortError($body));
+    }
+
+    /**
+     * Google webmasters PUT endpoints (sites.add / sitemaps.submit) reject any JSON body.
+     */
+    private function putWithoutBody(string $accessToken, string $url): \Illuminate\Http\Client\Response
+    {
+        return Http::timeout(30)
+            ->withToken($accessToken)
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'Content-Length' => '0',
+            ])
+            ->withBody('', 'application/octet-stream')
+            ->send('PUT', $url);
     }
 
     private function shortError(string $body): string
