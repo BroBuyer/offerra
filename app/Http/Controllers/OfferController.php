@@ -130,6 +130,7 @@ class OfferController extends Controller
             'template' => trim(request()->string('template')->toString()),
             'panel' => trim(request()->string('panel')->toString()),
             'indexing' => request()->string('indexing')->toString(),
+            'availability' => request()->string('availability')->toString(),
             'archive_status' => request()->string('archive_status')->toString(),
             'created' => request()->string('created')->toString(),
             'created_from' => request()->string('created_from')->toString(),
@@ -214,6 +215,18 @@ class OfferController extends Controller
             $query->where('submitted_for_indexing', true);
         } elseif ($filters['indexing'] === 'no') {
             $query->where('submitted_for_indexing', false);
+        }
+
+        if (($filters['availability'] ?? '') === 'ok') {
+            $query->where('availability_status', 'ok');
+        } elseif (($filters['availability'] ?? '') === 'down') {
+            $query->where('availability_status', 'down');
+        } elseif (($filters['availability'] ?? '') === 'unchecked') {
+            $query->where(function (Builder $builder): void {
+                $builder->whereNull('availability_status')
+                    ->orWhere('availability_status', 'unchecked')
+                    ->orWhere('availability_status', '');
+            });
         }
 
         if (($filters['archive_status'] ?? '') === 'archived') {

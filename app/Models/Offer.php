@@ -48,6 +48,10 @@ class Offer extends Model
         'infra_status',
         'infra_error',
         'infra_meta',
+        'availability_status',
+        'availability_checked_at',
+        'availability_error',
+        'availability_fail_streak',
     ];
 
     protected function casts(): array
@@ -57,6 +61,8 @@ class Offer extends Model
             'archived_at' => 'datetime',
             'submitted_for_indexing' => 'boolean',
             'indexed_at' => 'datetime',
+            'availability_checked_at' => 'datetime',
+            'availability_fail_streak' => 'integer',
             'provision_infrastructure' => 'boolean',
             'vitals_enabled' => 'boolean',
             'from_search_team' => 'boolean',
@@ -189,6 +195,13 @@ class Offer extends Model
                 : '',
             'gsc_error' => is_array($this->infra_meta) ? ($this->infra_meta['gsc_error'] ?? null) : null,
             'gsc_ready' => $this->gscReadyForPanel(),
+            'availability_status' => in_array($this->availability_status, ['ok', 'down'], true)
+                ? $this->availability_status
+                : 'unchecked',
+            'availability_checked_at' => $this->availability_checked_at
+                ?->timezone('Europe/Kyiv')
+                ->format('Y-m-d H:i'),
+            'availability_error' => $this->availability_error,
             'infra_meta' => $this->infra_meta ?? [],
         ];
     }

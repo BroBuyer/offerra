@@ -173,6 +173,42 @@ function dnsBadge(offer) {
     }
 }
 
+function availabilityDot(offer) {
+    const status = offer.availability_status || 'unchecked';
+    const checked = offer.availability_checked_at
+        ? `Перевірено: ${offer.availability_checked_at}`
+        : 'Ще не перевіряли';
+    const error = offer.availability_error ? `\n${offer.availability_error}` : '';
+
+    if (status === 'ok') {
+        return (
+            <span
+                className="availability-dot availability-dot--ok"
+                title={`Сайт відкривається\n${checked}`}
+                aria-label="Сайт доступний"
+            />
+        );
+    }
+
+    if (status === 'down') {
+        return (
+            <span
+                className="availability-dot availability-dot--down"
+                title={`Сайт недоступний\n${checked}${error}`}
+                aria-label="Сайт недоступний"
+            />
+        );
+    }
+
+    return (
+        <span
+            className="availability-dot availability-dot--unchecked"
+            title={checked}
+            aria-label="Доступність ще не перевірена"
+        />
+    );
+}
+
 function formatCreatedDate(isoDate) {
     if (!isoDate) {
         return '—';
@@ -292,6 +328,26 @@ function buildActiveFilterChips(filters, users) {
             id: 'indexing',
             label: 'Indexing: no',
             clear: { indexing: '' },
+        });
+    }
+
+    if (filters.availability === 'ok') {
+        chips.push({
+            id: 'availability',
+            label: 'Site: up',
+            clear: { availability: '' },
+        });
+    } else if (filters.availability === 'down') {
+        chips.push({
+            id: 'availability',
+            label: 'Site: down',
+            clear: { availability: '' },
+        });
+    } else if (filters.availability === 'unchecked') {
+        chips.push({
+            id: 'availability',
+            label: 'Site: unchecked',
+            clear: { availability: '' },
         });
     }
 
@@ -509,6 +565,7 @@ export default function OffersIndex({
             template: '',
             panel: '',
             indexing: '',
+            availability: '',
             created: '',
             created_from: '',
             created_to: '',
@@ -1108,6 +1165,16 @@ export default function OffersIndex({
                     <option value="yes">Submitted</option>
                 </select>
                 <select
+                    aria-label="Site availability"
+                    value={filters.availability ?? ''}
+                    onChange={(e) => reloadOffers({ availability: e.target.value })}
+                >
+                    <option value="">Site</option>
+                    <option value="ok">Up</option>
+                    <option value="down">Down</option>
+                    <option value="unchecked">Unchecked</option>
+                </select>
+                <select
                     aria-label="Created date"
                     value={filters.created ?? ''}
                     onChange={(e) => reloadOffers({ created: e.target.value })}
@@ -1339,6 +1406,7 @@ export default function OffersIndex({
                                     {colVisible('domain') && (
                                         <td>
                                             <div className="domain-cell">
+                                                {availabilityDot(offer)}
                                                 <a
                                                     href={`https://${offer.domain}`}
                                                     target="_blank"
@@ -1545,6 +1613,7 @@ export default function OffersIndex({
                             <div className="offer-mobile-card__title">
                                 <strong>{offer.brand}</strong>
                                 <div className="domain-cell">
+                                    {availabilityDot(offer)}
                                     <a href={`https://${offer.domain}`} target="_blank" rel="noreferrer">
                                         {offer.domain}
                                     </a>
