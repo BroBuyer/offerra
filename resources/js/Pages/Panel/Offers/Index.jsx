@@ -334,19 +334,19 @@ function buildActiveFilterChips(filters, users) {
     if (filters.availability === 'ok') {
         chips.push({
             id: 'availability',
-            label: 'Site: up',
+            label: '● Green (up)',
             clear: { availability: '' },
         });
     } else if (filters.availability === 'down') {
         chips.push({
             id: 'availability',
-            label: 'Site: down',
+            label: '● Red (down)',
             clear: { availability: '' },
         });
     } else if (filters.availability === 'unchecked') {
         chips.push({
             id: 'availability',
-            label: 'Site: unchecked',
+            label: '● Gray (unchecked)',
             clear: { availability: '' },
         });
     }
@@ -709,6 +709,65 @@ export default function OffersIndex({
     const selectedOnPageCount = selectableIds.filter((id) => selectedIds.includes(id)).length;
     const allPageSelected = selectableIds.length > 0 && selectedOnPageCount === selectableIds.length;
 
+    const selectedCfContext = useMemo(() => {
+        const selected = rows.filter((offer) => selectedIds.includes(offer.id));
+
+        // Selection may span pages; if none of the selected rows are on this page, stay neutral.
+        if (selected.length === 0) {
+            if (selectedIds.length > 0) {
+                return {
+                    primaryName: 'Основний CF власника',
+                    backupName: 'Запасний CF власника',
+                    hasPrimary: true,
+                    hasBackup: true,
+                    mixedOwners: true,
+                    ownerLabel: null,
+                };
+            }
+
+            return {
+                primaryName: cloudflarePrimaryName,
+                backupName: cloudflareBackupName,
+                hasPrimary: hasCloudflarePrimary,
+                hasBackup: hasCloudflareBackup,
+                mixedOwners: false,
+                ownerLabel: null,
+            };
+        }
+
+        const ownerIds = [...new Set(selected.map((offer) => String(offer.user_id ?? '')))];
+        const mixedOwners = ownerIds.length > 1;
+
+        if (mixedOwners) {
+            return {
+                primaryName: 'Основний CF власника',
+                backupName: 'Запасний CF власника',
+                hasPrimary: selected.some((offer) => offer.owner_has_cf_primary),
+                hasBackup: selected.some((offer) => offer.owner_has_cf_backup),
+                mixedOwners: true,
+                ownerLabel: null,
+            };
+        }
+
+        const sample = selected[0];
+
+        return {
+            primaryName: sample.owner_cf_primary_name || cloudflarePrimaryName,
+            backupName: sample.owner_cf_backup_name || cloudflareBackupName,
+            hasPrimary: Boolean(sample.owner_has_cf_primary),
+            hasBackup: Boolean(sample.owner_has_cf_backup),
+            mixedOwners: false,
+            ownerLabel: sample.user_name || sample.user_email || null,
+        };
+    }, [
+        rows,
+        selectedIds,
+        cloudflarePrimaryName,
+        cloudflareBackupName,
+        hasCloudflarePrimary,
+        hasCloudflareBackup,
+    ]);
+
     useEffect(() => {
         if (!selectAllRef.current) {
             return;
@@ -757,19 +816,26 @@ export default function OffersIndex({
 
         if (action === 'switch_cloudflare') {
             const target = extra.cloudflare_target === 'backup' ? 'backup' : 'primary';
-            const label = target === 'backup' ? cloudflareBackupName : cloudflarePrimaryName;
-            if (!canManageAllOffers) {
-                if (target === 'backup' && !hasCloudflareBackup) {
-                    window.alert('Спочатку заповніть запасний Cloudflare у Settings (token + Account ID).');
-                    return;
-                }
-                if (target === 'primary' && !hasCloudflarePrimary) {
-                    window.alert('Спочатку заповніть основний Cloudflare у Settings (token + Account ID).');
-                    return;
-                }
+            const label = target === 'backup' ? selectedCfContext.backupName : selectedCfContext.primaryName;
+            const hasSlot = target === 'backup' ? selectedCfContext.hasBackup : selectedCfContext.hasPrimary;
+
+            if (!hasSlot) {
+                window.alert(
+                    target === 'backup'
+                        ? 'У власника вибраних оферів немає запасного Cloudflare (token + Account ID) у Settings.'
+                        : 'У власника вибраних оферів немає основного Cloudflare (token + Account ID) у Settings.',
+                );
+                return;
             }
+
+            const ownerHint = selectedCfContext.mixedOwners
+                ? 'у кожного офера — свій CF власника'
+                : (selectedCfContext.ownerLabel
+                    ? `власник: ${selectedCfContext.ownerLabel}`
+                    : 'CF власника офера');
+
             if (!window.confirm(
-                `Перекинути ${selectedCount} оффер(ів) на «${label}»?\n` +
+                `Перекинути ${selectedCount} оффер(ів) на «${label}» (${ownerHint})?\n` +
                 'Створиться нова CF-зона, A/SSL/редіректи, NS у Dynadot; стара зона спробує видалитись.',
             )) {
                 return;
@@ -1156,14 +1222,14 @@ export default function OffersIndex({
                     <option value="yes">Submitted</option>
                 </select>
                 <select
-                    aria-label="Site availability"
+                    aria-label="Availability dots"
                     value={filters.availability ?? ''}
                     onChange={(e) => reloadOffers({ availability: e.target.value })}
                 >
-                    <option value="">Site</option>
-                    <option value="ok">Up</option>
-                    <option value="down">Down</option>
-                    <option value="unchecked">Unchecked</option>
+                    <option value="">● Status</option>
+                    <option value="ok">● Green</option>
+                    <option value="down">● Red</option>
+                    <option value="unchecked">● Gray</option>
                 </select>
                 <select
                     aria-label="Created date"
@@ -1296,20 +1362,32 @@ export default function OffersIndex({
                             <button
                                 type="button"
                                 className="btn btn-primary btn-sm"
-                                disabled={bulkBusy || (!canManageAllOffers && !hasCloudflarePrimary)}
-                                title={!hasCloudflarePrimary && !canManageAllOffers ? 'Немає основного CF у Settings' : undefined}
+                                disabled={bulkBusy || !selectedCfContext.hasPrimary}
+                                title={
+                                    !selectedCfContext.hasPrimary
+                                        ? 'Немає основного CF у Settings власника'
+                                        : (selectedCfContext.ownerLabel
+                                            ? `CF власника: ${selectedCfContext.ownerLabel}`
+                                            : undefined)
+                                }
                                 onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: 'primary' })}
                             >
-                                → {cloudflarePrimaryName}
+                                → {selectedCfContext.primaryName}
                             </button>
                             <button
                                 type="button"
                                 className="btn btn-primary btn-sm"
-                                disabled={bulkBusy || (!canManageAllOffers && !hasCloudflareBackup)}
-                                title={!hasCloudflareBackup && !canManageAllOffers ? 'Немає запасного CF у Settings' : undefined}
+                                disabled={bulkBusy || !selectedCfContext.hasBackup}
+                                title={
+                                    !selectedCfContext.hasBackup
+                                        ? 'Немає запасного CF у Settings власника'
+                                        : (selectedCfContext.ownerLabel
+                                            ? `CF власника: ${selectedCfContext.ownerLabel}`
+                                            : undefined)
+                                }
                                 onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: 'backup' })}
                             >
-                                → {cloudflareBackupName}
+                                → {selectedCfContext.backupName}
                             </button>
                         </div>
                     )}

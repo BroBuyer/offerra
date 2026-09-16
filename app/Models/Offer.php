@@ -177,6 +177,7 @@ class Offer extends Model
             'cloudflare_slot' => ((is_array($this->infra_meta) ? ($this->infra_meta['cloudflare_slot'] ?? '') : '') === 'backup')
                 ? 'backup'
                 : 'primary',
+            ...$this->ownerCloudflarePanelFields(),
             'dynadot_account' => $this->dynadot_account_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'deploy_error' => $this->deploy_error,
@@ -226,5 +227,31 @@ class Offer extends Model
         return $settings->hasGoogleOAuth()
             && filled($settings->gsc_verification_filename)
             && filled(config('services.google.client_id'));
+    }
+
+    /**
+     * Owner Cloudflare slot labels for bulk "CF акаунт" (no secrets).
+     *
+     * @return array{
+     *     owner_cf_primary_name: string,
+     *     owner_cf_backup_name: string,
+     *     owner_has_cf_primary: bool,
+     *     owner_has_cf_backup: bool
+     * }
+     */
+    private function ownerCloudflarePanelFields(): array
+    {
+        $this->loadMissing('user.settings');
+        $settings = $this->user?->settings;
+
+        $primary = trim((string) ($settings?->cloudflare_account_name ?? ''));
+        $backup = trim((string) ($settings?->cloudflare_backup_account_name ?? ''));
+
+        return [
+            'owner_cf_primary_name' => $primary !== '' ? $primary : 'Основний CF',
+            'owner_cf_backup_name' => $backup !== '' ? $backup : 'Запасний CF',
+            'owner_has_cf_primary' => (bool) $settings?->hasCloudflareSlot('primary'),
+            'owner_has_cf_backup' => (bool) $settings?->hasCloudflareSlot('backup'),
+        ];
     }
 }
