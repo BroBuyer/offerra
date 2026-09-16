@@ -757,6 +757,7 @@ class InfrastructureProvisioner
             }
         } catch (\Throwable $e) {
             $meta['cloudflare_migrate_error'] = $e->getMessage();
+            unset($meta['cloudflare_migrating_to']);
             $offer->update([
                 'infra_status' => 'failed',
                 'infra_error' => $e->getMessage(),

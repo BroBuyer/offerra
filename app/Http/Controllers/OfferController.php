@@ -531,11 +531,28 @@ class OfferController extends Controller
                     }
                     $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
                     $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
-                    if ($currentSlot === $target) {
-                        $skipped++;
-                        $failed[] = $offer->domain.': вже на '.($target === 'backup' ? 'запасному' : 'основному').' CF';
+                    $targetCreds = $settings->cloudflareSlotCredentials($target);
+                    $currentAccountId = trim((string) ($offer->cloudflare_account_id ?? ''));
+                    $targetAccountId = trim((string) ($targetCreds['account_id'] ?? ''));
+                    $sameAccount = $currentAccountId !== ''
+                        && $targetAccountId !== ''
+                        && hash_equals($currentAccountId, $targetAccountId);
+
+                    // Same slot + same Cloudflare account: only refresh the display name if Settings changed.
+                    if ($currentSlot === $target && $sameAccount) {
+                        $targetName = trim((string) ($targetCreds['name'] ?? ''));
+                        $currentName = trim((string) ($offer->cloudflare_account_name ?? ''));
+                        if ($targetName !== '' && $targetName !== $currentName) {
+                            $offer->update(['cloudflare_account_name' => $targetName]);
+                            $queued++;
+                        } else {
+                            $skipped++;
+                            $failed[] = $offer->domain.': вже на '.($target === 'backup' ? 'запасному' : 'основному').' CF';
+                        }
                         continue;
                     }
+
+                    // Same slot but Settings now point at a different CF account — still migrate.
                     SwitchOfferCloudflareJob::dispatch($offer->id, $target);
                     $queued++;
                 } catch (\Throwable $e) {
