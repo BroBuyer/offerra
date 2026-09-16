@@ -2107,6 +2107,34 @@ tr:last-child td { border-bottom: none; }
   display: inline-block;
 }
 
+.availability-dot--button {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background-clip: padding-box;
+}
+
+.availability-dot--button:hover:not(:disabled) {
+  transform: scale(1.35);
+}
+
+.availability-dot--button:focus-visible {
+  outline: 2px solid rgba(148, 163, 184, 0.9);
+  outline-offset: 2px;
+}
+
+.availability-dot--button:disabled,
+.availability-dot.is-checking {
+  cursor: wait;
+  opacity: 0.85;
+  animation: availability-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes availability-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 1; }
+}
+
 .availability-dot--ok {
   background: #22c55e;
   box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35);

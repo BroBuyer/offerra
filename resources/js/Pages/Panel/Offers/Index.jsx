@@ -173,38 +173,65 @@ function dnsBadge(offer) {
     }
 }
 
-function availabilityDot(offer) {
+function availabilityDot(offer, { onClick, busy = false } = {}) {
     const status = offer.availability_status || 'unchecked';
     const checked = offer.availability_checked_at
         ? `Перевірено: ${offer.availability_checked_at}`
         : 'Ще не перевіряли';
     const error = offer.availability_error ? `\n${offer.availability_error}` : '';
+    const clickHint = '\nКлік — перевірити зараз';
+
+    let tone = 'unchecked';
+    let title = checked;
+    let label = 'Доступність ще не перевірена';
 
     if (status === 'ok') {
-        return (
-            <span
-                className="availability-dot availability-dot--ok"
-                title={`Сайт відкривається\n${checked}`}
-                aria-label="Сайт доступний"
-            />
-        );
+        tone = 'ok';
+        title = `Сайт відкривається\n${checked}`;
+        label = 'Сайт доступний';
+    } else if (status === 'down') {
+        tone = 'down';
+        title = `Сайт недоступний\n${checked}${error}`;
+        label = 'Сайт недоступний';
     }
 
-    if (status === 'down') {
+    if (busy) {
+        title = 'Перевіряю…';
+        label = 'Перевірка доступності';
+    } else if (typeof onClick === 'function') {
+        title += clickHint;
+        label = `${label}. Натисніть, щоб перевірити зараз`;
+    }
+
+    const className = [
+        'availability-dot',
+        `availability-dot--${tone}`,
+        busy ? 'is-checking' : '',
+        typeof onClick === 'function' ? 'availability-dot--button' : '',
+    ].filter(Boolean).join(' ');
+
+    if (typeof onClick === 'function') {
         return (
-            <span
-                className="availability-dot availability-dot--down"
-                title={`Сайт недоступний\n${checked}${error}`}
-                aria-label="Сайт недоступний"
+            <button
+                type="button"
+                className={className}
+                title={title}
+                aria-label={label}
+                disabled={busy}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick(offer);
+                }}
             />
         );
     }
 
     return (
         <span
-            className="availability-dot availability-dot--unchecked"
-            title={checked}
-            aria-label="Доступність ще не перевірена"
+            className={className}
+            title={title}
+            aria-label={label}
         />
     );
 }
@@ -426,6 +453,7 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+    const [checkingAvailabilityId, setCheckingAvailabilityId] = useState(null);
     const [archivingId, setArchivingId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
@@ -867,6 +895,22 @@ export default function OffersIndex({
             {
                 preserveScroll: true,
                 onFinish: () => setIndexingId(null),
+            },
+        );
+    };
+
+    const checkAvailability = (offer) => {
+        if (checkingAvailabilityId) {
+            return;
+        }
+
+        setCheckingAvailabilityId(offer.id);
+        router.post(
+            route('offers.check-availability', offer.id),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setCheckingAvailabilityId(null),
             },
         );
     };
@@ -1475,7 +1519,10 @@ export default function OffersIndex({
                                     {colVisible('domain') && (
                                         <td>
                                             <div className="domain-cell">
-                                                {availabilityDot(offer)}
+                                                {availabilityDot(offer, {
+                                                    busy: checkingAvailabilityId === offer.id,
+                                                    onClick: canManageOffer(offer) ? checkAvailability : undefined,
+                                                })}
                                                 <a
                                                     href={`https://${offer.domain}`}
                                                     target="_blank"
@@ -1667,7 +1714,10 @@ export default function OffersIndex({
                             <div className="offer-mobile-card__title">
                                 <strong>{offer.brand}</strong>
                                 <div className="domain-cell">
-                                    {availabilityDot(offer)}
+                                    {availabilityDot(offer, {
+                                        busy: checkingAvailabilityId === offer.id,
+                                        onClick: canManageOffer(offer) ? checkAvailability : undefined,
+                                    })}
                                     <a href={`https://${offer.domain}`} target="_blank" rel="noreferrer">
                                         {offer.domain}
                                     </a>

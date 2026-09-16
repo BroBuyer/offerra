@@ -13,6 +13,7 @@ use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
 use App\Services\InfrastructureProvisioner;
+use App\Services\OfferAvailabilityProbe;
 use App\Services\OfferGenerator;
 use App\Services\OfferGscSubmitter;
 use App\Services\OfferRestoreService;
@@ -679,6 +680,26 @@ class OfferController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function checkAvailability(Offer $offer, OfferAvailabilityProbe $probe): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        @set_time_limit(30);
+
+        $result = $probe->checkAndUpdate($offer, immediate: true);
+        $status = $result['status'];
+
+        $message = match ($status) {
+            'ok' => "{$offer->domain}: сайт відкривається",
+            'down' => "{$offer->domain}: недоступний".($result['error'] ? ' — '.$result['error'] : ''),
+            default => "{$offer->domain}: ще не підтверджено",
+        };
+
+        return redirect()
+            ->back()
+            ->with($status === 'ok' ? 'success' : 'warning', $message);
     }
 
     public function submitGsc(Offer $offer, OfferGscSubmitter $gsc): RedirectResponse

@@ -20,13 +20,14 @@ class OfferAvailabilityProbe
     /**
      * Probe a single offer and persist availability fields.
      *
+     * @param  bool  $immediate  When true (manual UI check), mark down on first failure instead of soft-fail streak.
      * @return array{status: string, error: ?string, changed: bool}
      */
-    public function checkAndUpdate(Offer $offer): array
+    public function checkAndUpdate(Offer $offer, bool $immediate = false): array
     {
         $result = $this->probeDomain((string) $offer->domain);
 
-        return $this->applyResult($offer, $result['ok'], $result['error']);
+        return $this->applyResult($offer, $result['ok'], $result['error'], $immediate);
     }
 
     /**
@@ -178,7 +179,7 @@ class OfferAvailabilityProbe
     /**
      * @return array{status: string, error: ?string, changed: bool}
      */
-    private function applyResult(Offer $offer, bool $ok, ?string $error): array
+    private function applyResult(Offer $offer, bool $ok, ?string $error, bool $immediate = false): array
     {
         $previous = (string) ($offer->availability_status ?: 'unchecked');
         $streak = (int) ($offer->availability_fail_streak ?? 0);
@@ -189,7 +190,7 @@ class OfferAvailabilityProbe
             $error = null;
         } else {
             $streak++;
-            if ($streak >= self::FAIL_STREAK_TO_DOWN || $previous === 'down') {
+            if ($immediate || $streak >= self::FAIL_STREAK_TO_DOWN || $previous === 'down') {
                 $nextStatus = 'down';
             } elseif ($previous === 'ok') {
                 // Soft fail: keep green until second consecutive failure.
