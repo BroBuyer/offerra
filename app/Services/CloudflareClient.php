@@ -373,26 +373,8 @@ class CloudflareClient
     {
         $wwwHost = 'www.'.$domain;
         $description = 'Offerra: www to apex';
-        $rules = [];
 
-        $existing = $this->request(
-            $settings,
-            'GET',
-            '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
-            [],
-            allowNotFound: true,
-        );
-
-        if (($existing['success'] ?? false) && is_array($existing['result'] ?? null)) {
-            /** @var list<array<string, mixed>> $rules */
-            $rules = is_array($existing['result']['rules'] ?? null) ? $existing['result']['rules'] : [];
-            $rules = array_values(array_filter(
-                $rules,
-                static fn (array $rule): bool => ($rule['description'] ?? '') !== $description,
-            ));
-        }
-
-        $rules[] = [
+        $this->upsertDynamicRedirectRule($settings, $zoneId, $description, [
             'description' => $description,
             'expression' => sprintf('(http.host eq "%s")', $wwwHost),
             'action' => 'redirect',
@@ -405,8 +387,123 @@ class CloudflareClient
                     ],
                 ],
             ],
-        ];
+        ]);
+    }
 
+    /**
+     * Redirect non-target GEO visitors to a multilang hub (before origin / Keitaro).
+     */
+    public function ensureGeoOverflowRedirectRule(
+        UserSetting $settings,
+        string $zoneId,
+        string $country,
+        string $hubDomain,
+    ): void {
+        $country = strtoupper(trim($country));
+        $hubDomain = strtolower(trim($hubDomain));
+        $description = 'Offerra: geo overflow to hub';
+
+        if (! preg_match('/^[A-Z]{2}$/', $country) || $hubDomain === '') {
+            throw new RuntimeException('Geo overflow потребує ISO2 country і hub domain.');
+        }
+
+        $expression = sprintf(
+            '(ip.geoip.country ne "%s"'
+            .' and not http.user_agent contains "Google"'
+            .' and not http.user_agent contains "bingbot"'
+            .' and not http.user_agent contains "Bingbot"'
+            .' and not http.user_agent contains "Yandex"'
+            .' and http.request.uri.path ne "/sitemap.xml"'
+            .' and http.request.uri.path ne "/robots.txt"'
+            .' and not starts_with(http.request.uri.path, "/google"))',
+            $country,
+        );
+
+        $this->upsertDynamicRedirectRule($settings, $zoneId, $description, [
+            'description' => $description,
+            'expression' => $expression,
+            'action' => 'redirect',
+            'action_parameters' => [
+                'from_value' => [
+                    'status_code' => 302,
+                    'preserve_query_string' => true,
+                    'target_url' => [
+                        'value' => 'https://'.$hubDomain,
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function removeDynamicRedirectRule(UserSetting $settings, string $zoneId, string $description): void
+    {
+        $description = trim($description);
+        if ($zoneId === '' || $description === '') {
+            return;
+        }
+
+        $existing = $this->request(
+            $settings,
+            'GET',
+            '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
+            [],
+            allowNotFound: true,
+        );
+
+        if (! ($existing['success'] ?? false) || ! is_array($existing['result'] ?? null)) {
+            return;
+        }
+
+        /** @var list<array<string, mixed>> $rules */
+        $rules = is_array($existing['result']['rules'] ?? null) ? $existing['result']['rules'] : [];
+        $filtered = array_values(array_filter(
+            $rules,
+            static fn (array $rule): bool => ($rule['description'] ?? '') !== $description,
+        ));
+
+        if (count($filtered) === count($rules)) {
+            return;
+        }
+
+        $this->putDynamicRedirectRules($settings, $zoneId, $filtered);
+    }
+
+    /**
+     * @param  array<string, mixed>  $rule
+     */
+    private function upsertDynamicRedirectRule(
+        UserSetting $settings,
+        string $zoneId,
+        string $description,
+        array $rule,
+    ): void {
+        $existing = $this->request(
+            $settings,
+            'GET',
+            '/zones/'.$zoneId.'/rulesets/phases/http_request_dynamic_redirect/entrypoint',
+            [],
+            allowNotFound: true,
+        );
+
+        /** @var list<array<string, mixed>> $rules */
+        $rules = [];
+        if (($existing['success'] ?? false) && is_array($existing['result'] ?? null)) {
+            $rules = is_array($existing['result']['rules'] ?? null) ? $existing['result']['rules'] : [];
+            $rules = array_values(array_filter(
+                $rules,
+                static fn (array $item): bool => ($item['description'] ?? '') !== $description,
+            ));
+        }
+
+        $rules[] = $rule;
+        $this->putDynamicRedirectRules($settings, $zoneId, $rules);
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $rules
+     */
+    private function putDynamicRedirectRules(UserSetting $settings, string $zoneId, array $rules): void
+    {
         $response = $this->request(
             $settings,
             'PUT',
@@ -415,17 +512,19 @@ class CloudflareClient
             allowNotFound: true,
         );
 
-        if (! ($response['success'] ?? false)) {
-            $create = $this->request($settings, 'POST', '/zones/'.$zoneId.'/rulesets', [
-                'name' => 'Offerra redirects',
-                'kind' => 'zone',
-                'phase' => 'http_request_dynamic_redirect',
-                'rules' => $rules,
-            ]);
+        if ($response['success'] ?? false) {
+            return;
+        }
 
-            if (! ($create['success'] ?? false)) {
-                throw new RuntimeException('Cloudflare www redirect: '.$this->extractError($create));
-            }
+        $create = $this->request($settings, 'POST', '/zones/'.$zoneId.'/rulesets', [
+            'name' => 'Offerra redirects',
+            'kind' => 'zone',
+            'phase' => 'http_request_dynamic_redirect',
+            'rules' => $rules,
+        ]);
+
+        if (! ($create['success'] ?? false)) {
+            throw new RuntimeException('Cloudflare dynamic redirect: '.$this->extractError($create));
         }
     }
 
