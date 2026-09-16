@@ -708,9 +708,8 @@ class InfrastructureProvisioner
                 $meta['dynadot_ns'] = 'done';
                 unset($meta['dynadot_ns_error']);
             } catch (\Throwable $e) {
-                if (! DynadotClient::isNsNotReadyError($e->getMessage())) {
-                    throw $e;
-                }
+                // Keep CF migration successful even if Dynadot cannot update NS yet
+                // (domain in another registrar account, NS not ready, API busy, etc.).
                 $meta['dynadot_ns'] = 'pending';
                 $meta['dynadot_ns_error'] = $e->getMessage();
             }
