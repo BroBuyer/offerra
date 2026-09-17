@@ -69,7 +69,8 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
                 || str_contains($message, 'NXDOMAIN')
                 || str_contains($message, 'не резолвиться')
                 || str_contains($message, 'Timeout')
-                || str_contains($message, 'DNS resolve');
+                || str_contains($message, 'DNS resolve')
+                || (str_contains($message, 'sitemaps.submit failed') && str_contains($message, '403'));
 
             if ($notReady && $this->attempts() < $this->tries) {
                 $delay = $this->backoff[min(max($this->attempts() - 1, 0), count($this->backoff) - 1)] ?? 120;

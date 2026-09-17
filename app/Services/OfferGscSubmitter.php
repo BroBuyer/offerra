@@ -153,7 +153,8 @@ class OfferGscSubmitter
                 || str_contains($message, 'Cannot fetch verification file')
                 || str_contains($message, 'Verification file HTTP')
                 || str_contains($message, 'NXDOMAIN')
-                || str_contains($message, 'не резолвиться');
+                || str_contains($message, 'не резолвиться')
+                || (str_contains($message, 'sitemaps.submit failed') && str_contains($message, '403'));
 
             $fresh = $offer->fresh() ?? $offer;
             $meta = is_array($fresh->infra_meta) ? $fresh->infra_meta : [];

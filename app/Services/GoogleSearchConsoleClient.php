@@ -38,8 +38,10 @@ class GoogleSearchConsoleClient
         $this->assertVerificationFileLive($domain, $verificationFile);
         $this->assertHttpsLive($domain);
 
-        $verified = $this->verifySiteFile($accessToken, $siteUrl);
+        // Search Console: add property first, then verify ownership, then sitemap.
+        // Submitting the sitemap before ownership has propagated often yields HTTP 403.
         $added = $this->addSite($accessToken, $siteUrl);
+        $verified = $this->verifySiteFile($accessToken, $siteUrl);
         $sitemapSubmitted = $this->submitSitemap($accessToken, $siteUrl, $sitemapUrl);
 
         return [
@@ -245,11 +247,9 @@ class GoogleSearchConsoleClient
     {
         $encodedSite = rawurlencode($siteUrl);
         $encodedFeed = rawurlencode($sitemapUrl);
-        $response = $this->putWithoutBody(
-            $accessToken,
-            'https://www.googleapis.com/webmasters/v3/sites/'.$encodedSite.'/sitemaps/'.$encodedFeed,
-        );
+        $url = 'https://www.googleapis.com/webmasters/v3/sites/'.$encodedSite.'/sitemaps/'.$encodedFeed;
 
+        $response = $this->putWithoutBody($accessToken, $url);
         if ($response->successful() || $response->status() === 204) {
             return true;
         }
@@ -257,6 +257,30 @@ class GoogleSearchConsoleClient
         $body = (string) $response->body();
         if ($response->status() === 409 || str_contains(strtolower($body), 'already')) {
             return true;
+        }
+
+        // Transient ownership race: property exists but sitemap API still returns 403.
+        // Re-add + re-verify, brief wait, then one more submit.
+        if ($response->status() === 403 && str_contains(strtolower($body), 'permission')) {
+            Log::warning('GSC sitemap 403 — retrying after re-add/verify', [
+                'site' => $siteUrl,
+                'body' => $body,
+            ]);
+            $this->addSite($accessToken, $siteUrl);
+            $this->verifySiteFile($accessToken, $siteUrl);
+            usleep(750_000);
+
+            $retry = $this->putWithoutBody($accessToken, $url);
+            if ($retry->successful() || $retry->status() === 204) {
+                return true;
+            }
+
+            $body = (string) $retry->body();
+            if ($retry->status() === 409 || str_contains(strtolower($body), 'already')) {
+                return true;
+            }
+
+            throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$retry->status().'): '.$this->shortError($body));
         }
 
         throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$response->status().'): '.$this->shortError($body));
