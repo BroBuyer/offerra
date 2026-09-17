@@ -1,7 +1,7 @@
 /** SERP title/description + chrome for default-pro lang packs. */
 export const LANGS = [
   'cs', 'da', 'de', 'el', 'es', 'fi', 'fr', 'hr', 'hu',
-  'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sv', 'tr',
+  'id', 'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sv', 'tr',
 ];
 
 /**
@@ -98,6 +98,15 @@ export const SEO = {
     create: '<?= e(SITE_NAME) ?> számla létrehozása',
     h1Lead: 'AI kereskedési platform ',
     h1Accent: 'automatizált elemzés és okosabb kereskedés',
+  },
+  id: {
+    title: 'Platform trading cerdas',
+    descBefore: ' adalah platform trading global yang dikembangkan untuk ',
+    descAfter: ' yang mencari performa konsisten, eksekusi cepat, dan kontrol penuh atas lingkungan.',
+    open: 'Buka <?= e(SITE_NAME) ?>',
+    create: 'Buat akun <?= e(SITE_NAME) ?>',
+    h1Lead: 'Platform trading AI ',
+    h1Accent: 'analisis otomatis dan trading lebih cerdas',
   },
   it: {
     title: 'Piattaforma intelligente per il trading',

@@ -179,6 +179,17 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' RM',
   },
+  id: {
+    siteLang: 'id',
+    crmCountry: 'ID',
+    phoneCountry: 'id',
+    currency: 'IDR',
+    ogLocale: 'id_ID',
+    phonePlaceholder: '812 3456 7890',
+    moneyLocale: 'id-ID',
+    moneyPrefix: 'Rp ',
+    moneySuffix: '',
+  },
   ja: {
     siteLang: 'ja',
     crmCountry: 'JP',

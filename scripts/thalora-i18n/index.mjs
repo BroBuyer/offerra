@@ -11,6 +11,7 @@ import it from './it.mjs';
 import ja from './ja.mjs';
 import lv from './lv.mjs';
 import ms from './ms.mjs';
+import id from './id.mjs';
 import nl from './nl.mjs';
 import no from './no.mjs';
 import pl from './pl.mjs';
@@ -135,6 +136,12 @@ export const LOCALES = {
     phoneCountry: 'my',
     currency: 'MYR',
   },
+  id: {
+    siteLang: 'id',
+    crmCountry: 'ID',
+    phoneCountry: 'id',
+    currency: 'IDR',
+  },
   ja: {
     siteLang: 'ja',
     crmCountry: 'JP',
@@ -149,4 +156,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, ja, lv };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, id, ja, lv };
