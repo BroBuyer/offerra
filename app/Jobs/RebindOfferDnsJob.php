@@ -15,7 +15,7 @@ class RebindOfferDnsJob implements ShouldBeUnique, ShouldQueue
 
     public int $timeout = 90;
 
-    public int $tries = 1;
+    public int $tries = 5;
 
     public int $uniqueFor = 300;
 
@@ -29,6 +29,15 @@ class RebindOfferDnsJob implements ShouldBeUnique, ShouldQueue
     public function uniqueId(): string
     {
         return $this->offerId.':'.$this->ip;
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function backoff(): array
+    {
+        // Cloudflare 429 — wait longer between attempts.
+        return [30, 60, 120, 180];
     }
 
     public function handle(InfrastructureProvisioner $provisioner): void
@@ -46,15 +55,25 @@ class RebindOfferDnsJob implements ShouldBeUnique, ShouldQueue
         try {
             $provisioner->rebindARecord($offer, $this->ip);
         } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            $is429 = str_contains($message, '429')
+                || str_contains(strtolower($message), 'throttl')
+                || str_contains(strtolower($message), 'rate limit');
+
             Log::error('Bulk DNS rebind failed', [
                 'offer' => $this->offerId,
                 'domain' => $offer->domain,
                 'ip' => $this->ip,
-                'error' => $e->getMessage(),
+                'attempt' => $this->attempts(),
+                'error' => $message,
             ]);
 
+            if ($is429 && $this->attempts() < $this->tries) {
+                throw $e; // let queue retry with backoff
+            }
+
             $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-            $meta['dns_error'] = $e->getMessage();
+            $meta['dns_error'] = $message;
             $offer->update(['infra_meta' => $meta]);
         }
     }

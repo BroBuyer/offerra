@@ -84,9 +84,9 @@ class InfrastructureProvisioner
         ]);
 
         try {
-            $this->runSteps($settings, $domain, $options, $meta);
+            $this->runSteps($settings, $domain, $options, $meta, $offer);
 
-            $serverIp = $this->origin->originIp($settings);
+            $serverIp = $this->origin->originIpForOffer($offer, $settings);
             $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
             $dnsVia = $this->publicReadiness($domain, $serverIp, $expectedNs);
 
@@ -134,7 +134,7 @@ class InfrastructureProvisioner
         $options = InfrastructureOptions::forOffer($offer);
         $meta = array_merge($offer->infra_meta ?? [], ['options' => $options]);
         $domain = strtolower(trim($offer->domain));
-        $serverIp = $this->origin->originIp($settings);
+        $serverIp = $this->origin->originIpForOffer($offer, $settings);
 
         // Спочатку лише перевірка DNS/HTTPS — без повторного проходження Cloudflare/Dynadot.
         // Інакше тимчасові таймаути API тримають статус «Очікується DNS», хоча сайт уже живий.
@@ -157,7 +157,7 @@ class InfrastructureProvisioner
         }
 
         try {
-            $this->runSteps($settings, $domain, $options, $meta);
+            $this->runSteps($settings, $domain, $options, $meta, $offer);
             $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : $expectedNs;
         } catch (\Throwable $e) {
             $meta['dns_error'] = $e->getMessage();
@@ -238,8 +238,13 @@ class InfrastructureProvisioner
      * @param  array<string, bool>  $options
      * @param  array<string, mixed>  $meta
      */
-    private function runSteps(UserSetting $settings, string $domain, array $options, array &$meta): void
-    {
+    private function runSteps(
+        UserSetting $settings,
+        string $domain,
+        array $options,
+        array &$meta,
+        ?Offer $offer = null,
+    ): void {
         // Ubuntu origin: always create /var/www/offers/{domain}/public_html before DNS/edge.
         if (($meta['origin'] ?? '') !== 'done') {
             $this->origin->ensureWebRoot($settings, $domain);
@@ -269,12 +274,15 @@ class InfrastructureProvisioner
             }
         }
 
-        $serverIp = $this->origin->originIp($settings);
+        $serverIp = $offer !== null
+            ? $this->origin->originIpForOffer($offer, $settings)
+            : $this->originIpFromMetaOrSettings($settings, $meta);
 
         if (($options['cloudflare_dns'] ?? false) && $zoneId !== '') {
             $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
             $meta['cloudflare_dns'] = 'done';
             $meta['cloudflare_www_dns'] = 'done';
+            $meta['deploy_host'] = $serverIp;
         }
 
         if (InfrastructureOptions::needsCloudflareEdge($options) && $zoneId !== '') {
@@ -652,10 +660,6 @@ class InfrastructureProvisioner
             throw new \RuntimeException('Потрібен Dynadot API key, щоб змінити NS.');
         }
 
-        if (! filled($userSettings->deploy_host) || ! filled($userSettings->deploy_password)) {
-            throw new \RuntimeException('Потрібен origin SSH, щоб взяти IP для A-запису.');
-        }
-
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
         $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
         $domain = strtolower(trim((string) $offer->domain));
@@ -664,6 +668,32 @@ class InfrastructureProvisioner
         $oldCreds = $this->resolveActiveCloudflareCredentials($offer, $userSettings, $currentSlot);
         $targetCreds = $userSettings->cloudflareSlotCredentials($target);
         $targetSettings = $this->settingsWithCloudflareSlot($userSettings, $targetCreds);
+
+        $extraIps = [];
+        if ($oldZoneId !== '' && ($oldCreds['token'] ?? '') !== '') {
+            try {
+                $oldSettings = $this->settingsWithCloudflareSlot($userSettings, $oldCreds);
+                foreach ($this->cloudflare->listARecords($oldSettings, $oldZoneId, $domain) as $record) {
+                    $content = trim((string) ($record['content'] ?? ''));
+                    if ($content !== '' && filter_var($content, FILTER_VALIDATE_IP)) {
+                        $extraIps[] = $content;
+                    }
+                }
+            } catch (\Throwable) {
+                // Ignore — file probe / meta still resolve the origin.
+            }
+        }
+
+        // Prefer origin that actually has lander files (not Settings.deploy_host).
+        try {
+            $serverIp = $this->origin->originIpForOffer($offer, $userSettings, $extraIps);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException(
+                'Немає IP origin для A-запису (ні в офера, ні на origin-серверах, ні в Settings).',
+                0,
+                $e,
+            );
+        }
 
         $options = InfrastructureOptions::forOffer($offer);
         // Migration always needs the full CF+Dynadot path.
@@ -695,12 +725,13 @@ class InfrastructureProvisioner
             $meta['cloudflare_zone_id'] = $zoneId;
             $meta['nameservers'] = $nameservers;
 
-            $serverIp = $this->origin->originIp($userSettings);
             $this->cloudflare->ensureRootARecord($targetSettings, $zoneId, $domain, $serverIp);
             $meta['cloudflare_dns'] = 'done';
             $meta['cloudflare_www_dns'] = 'done';
             $meta['deploy_host'] = $serverIp;
 
+            // SSL probe must hit the offer origin, not Settings.deploy_host.
+            $targetSettings->deploy_host = $serverIp;
             $this->applyCloudflareEdge($targetSettings, $domain, $zoneId, $options, $meta);
 
             try {
@@ -796,6 +827,20 @@ class InfrastructureProvisioner
         }
 
         return $settings->cloudflareSlotCredentials($currentSlot);
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function originIpFromMetaOrSettings(UserSetting $settings, array $meta): string
+    {
+        $fromMeta = trim((string) ($meta['deploy_host'] ?? ''));
+
+        if ($fromMeta !== '' && filter_var($fromMeta, FILTER_VALIDATE_IP)) {
+            return $fromMeta;
+        }
+
+        return $this->origin->originIp($settings);
     }
 
     private function providerSettings(Offer $offer): ?UserSetting

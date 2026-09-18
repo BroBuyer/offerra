@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Offer;
+use App\Models\OriginServer;
 use App\Models\UserSetting;
 use App\Support\DeployDriver;
 use RuntimeException;
@@ -98,10 +100,226 @@ SH;
 
     public function originIp(UserSetting $settings): string
     {
-        $host = trim((string) $settings->deploy_host);
+        return $this->resolveHostToIp(
+            trim((string) $settings->deploy_host),
+            'Заповніть SSH host (IP сервера) у налаштуваннях деплою.',
+        );
+    }
 
+    /**
+     * Resolve the origin IP that should back Cloudflare A for this offer.
+     *
+     * Priority:
+     * 1) Bound host (infra_meta / panel) if it actually has lander files
+     * 2) Any known OriginServer (or Settings host) that has the files
+     * 3) Bound host / Settings even without a file probe (new offers)
+     *
+     * @param  list<string>  $extraCandidates  Optional IPs (e.g. current CF A content)
+     */
+    public function originIpForOffer(Offer $offer, UserSetting $settings, array $extraCandidates = []): string
+    {
+        $domain = strtolower(trim((string) $offer->domain));
+        $bound = $this->boundCandidateIps($offer, $settings, $extraCandidates);
+
+        if ($domain !== '' && $bound !== []) {
+            $withFiles = $this->originsThatHaveOfferFiles($domain, $bound);
+
+            foreach ($bound as $ip) {
+                if (isset($withFiles[$ip])) {
+                    return $ip;
+                }
+            }
+
+            // Bound meta may be stale (e.g. CF switch once wrote Settings IP).
+            // Prefer any other known origin that still has the lander.
+            $discovered = $this->discoverOfferOriginIp($domain, $bound);
+            if ($discovered !== null) {
+                return $discovered;
+            }
+        } elseif ($domain !== '') {
+            $discovered = $this->discoverOfferOriginIp($domain, []);
+            if ($discovered !== null) {
+                return $discovered;
+            }
+        }
+
+        if ($bound !== []) {
+            return $bound[0];
+        }
+
+        return $this->originIp($settings);
+    }
+
+    /**
+     * @param  list<string>  $extraCandidates
+     * @return list<string>
+     */
+    private function boundCandidateIps(Offer $offer, UserSetting $settings, array $extraCandidates = []): array
+    {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $raw = [
+            ...$extraCandidates,
+            trim((string) ($meta['deploy_host'] ?? '')),
+            trim((string) ($offer->deploy_panel_name ?? '')),
+            trim((string) $settings->deploy_host),
+        ];
+
+        $ips = [];
+        foreach ($raw as $host) {
+            $host = trim((string) $host);
+            if ($host === '') {
+                continue;
+            }
+            if (! filter_var($host, FILTER_VALIDATE_IP) && ! preg_match('/^[a-z0-9.-]+$/i', $host)) {
+                continue;
+            }
+            try {
+                $ip = $this->resolveHostToIp($host, '');
+            } catch (RuntimeException) {
+                continue;
+            }
+            if (! in_array($ip, $ips, true)) {
+                $ips[] = $ip;
+            }
+        }
+
+        return $ips;
+    }
+
+    /**
+     * Scan Origin-сервери (+ Settings host) for lander files; skip IPs already checked.
+     *
+     * @param  list<string>  $alreadyChecked
+     */
+    private function discoverOfferOriginIp(string $domain, array $alreadyChecked): ?string
+    {
+        $hosts = [];
+        foreach (OriginServer::query()->where('is_active', true)->orderBy('id')->get() as $server) {
+            if (! $server->hasSshCredentials()) {
+                continue;
+            }
+            $host = trim((string) $server->host);
+            if ($host === '' || in_array($host, $alreadyChecked, true)) {
+                continue;
+            }
+            $hosts[$host] = [
+                'host' => $host,
+                'port' => (int) ($server->port ?: 22),
+                'user' => trim((string) $server->username),
+                'pass' => (string) $server->password,
+            ];
+        }
+
+        foreach ($hosts as $host => $creds) {
+            if ($this->remoteHasOfferIndex($creds, $domain)) {
+                try {
+                    return $this->resolveHostToIp($host, '');
+                } catch (RuntimeException) {
+                    return $host;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  list<string>  $ips
+     * @return array<string, true> ip => true
+     */
+    private function originsThatHaveOfferFiles(string $domain, array $ips): array
+    {
+        $found = [];
+        foreach ($ips as $ip) {
+            $creds = $this->sshCredsForHost($ip);
+            if ($creds === null) {
+                continue;
+            }
+            if ($this->remoteHasOfferIndex($creds, $domain)) {
+                $found[$ip] = true;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * @return array{host: string, port: int, user: string, pass: string}|null
+     */
+    private function sshCredsForHost(string $host): ?array
+    {
+        $host = trim($host);
         if ($host === '') {
-            throw new RuntimeException('Заповніть SSH host (IP сервера) у налаштуваннях деплою.');
+            return null;
+        }
+
+        $server = OriginServer::query()
+            ->where('host', $host)
+            ->first();
+
+        if ($server && $server->hasSshCredentials()) {
+            return [
+                'host' => trim((string) $server->host),
+                'port' => (int) ($server->port ?: 22),
+                'user' => trim((string) $server->username),
+                'pass' => (string) $server->password,
+            ];
+        }
+
+        $settings = UserSetting::query()
+            ->where('deploy_host', $host)
+            ->whereNotNull('deploy_password')
+            ->where('deploy_password', '!=', '')
+            ->first();
+
+        if ($settings && filled($settings->deploy_username) && filled($settings->deploy_password)) {
+            return [
+                'host' => $host,
+                'port' => (int) ($settings->deploy_port ?: 22),
+                'user' => trim((string) $settings->deploy_username),
+                'pass' => (string) $settings->deploy_password,
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array{host: string, port: int, user: string, pass: string}  $creds
+     */
+    private function remoteHasOfferIndex(array $creds, string $domain): bool
+    {
+        $domain = $this->normalizeDomain($domain);
+        $path = '/var/www/offers/'.$domain.'/public_html';
+
+        try {
+            $ssh = new SSH2($creds['host'], $creds['port'], 8);
+            $ssh->setTimeout(12);
+            if (! $ssh->login($creds['user'], $creds['pass'])) {
+                $ssh->disconnect();
+
+                return false;
+            }
+            $out = trim((string) $ssh->exec(
+                'if [ -f '.escapeshellarg($path.'/index.php').' ] || [ -f '.escapeshellarg($path.'/index.html').' ]; '
+                .'then echo YES; else echo NO; fi'
+            ));
+            $ssh->disconnect();
+
+            return str_starts_with($out, 'YES');
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function resolveHostToIp(string $host, string $emptyMessage): string
+    {
+        if ($host === '') {
+            throw new RuntimeException(
+                $emptyMessage !== ''
+                    ? $emptyMessage
+                    : 'Немає host для A-запису.',
+            );
         }
 
         if (filter_var($host, FILTER_VALIDATE_IP)) {
@@ -110,7 +328,7 @@ SH;
 
         $resolved = gethostbyname($host);
 
-        if ($resolved === $host && ! filter_var($host, FILTER_VALIDATE_IP)) {
+        if ($resolved === $host || ! filter_var($resolved, FILTER_VALIDATE_IP)) {
             throw new RuntimeException('Не вдалося визначити IP сервера для A-запису.');
         }
 

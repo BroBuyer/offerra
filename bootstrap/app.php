@@ -30,6 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // prune them manually with `offers:heal-landers --prune-orphans`.
         $schedule->command('offers:heal-landers')->everyFifteenMinutes()->withoutOverlapping(20);
         $schedule->command('offers:check-availability')->hourly()->withoutOverlapping(55);
+        // Recovered red dots should turn green without waiting a full hour / manual click.
+        $schedule->command('offers:check-availability --only-down --down-stale-minutes=10 --limit=2000')
+            ->everyTenMinutes()
+            ->withoutOverlapping(9);
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
