@@ -6,6 +6,7 @@ use App\Support\InfrastructureOptions;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Offer extends Model
 {
@@ -80,9 +81,30 @@ class Offer extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function stats(): HasOne
+    {
+        return $this->hasOne(OfferStat::class);
+    }
+
     public function archivedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'archived_by');
+    }
+
+    /**
+     * Ensure a stats row exists (for postbacks / clicks later).
+     */
+    public function ensureStats(): OfferStat
+    {
+        return $this->stats()->firstOrCreate(
+            ['offer_id' => $this->id],
+            [
+                'clicks_geo_count' => 0,
+                'leads_count' => 0,
+                'deposits_count' => 0,
+                'is_protected' => false,
+            ],
+        );
     }
 
     public function isArchived(): bool

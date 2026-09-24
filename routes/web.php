@@ -8,6 +8,7 @@ use App\Http\Controllers\FunnelAlertController;
 use App\Http\Controllers\GeoMinDepositController;
 use App\Http\Controllers\MirrorDomainController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OfferStatsController;
 use App\Http\Controllers\OriginServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -21,6 +22,7 @@ Route::redirect('/', '/dashboard');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
+    Route::get('/offers/stats', [OfferStatsController::class, 'index'])->name('offers.stats');
     Route::get('/offers/archive', [OfferController::class, 'archiveIndex'])->name('offers.archive.index');
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');

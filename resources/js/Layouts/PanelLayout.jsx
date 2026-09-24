@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 const navItems = [
     { href: '/dashboard', icon: '📊', label: 'Дашборд' },
     { href: '/offers', icon: '📋', label: 'Оффери' },
+    { href: '/offers/stats', icon: '📈', label: 'Статистика' },
     { href: '/mirrors', icon: '🪞', label: 'Дзеркала' },
     { href: '/offers/archive', icon: '📦', label: 'Архів доменів' },
     { href: '/offers/create?fresh=1', icon: '➕', label: 'Створити оффер' },
@@ -31,6 +32,9 @@ export default function PanelLayout({ title, children, wide = false, fullWidth =
         }
         if (href === '/offers') {
             return path === '/offers';
+        }
+        if (href === '/offers/stats') {
+            return path === '/offers/stats' || path.startsWith('/offers/stats?');
         }
         if (href === '/offers/archive') {
             return path === '/offers/archive';
