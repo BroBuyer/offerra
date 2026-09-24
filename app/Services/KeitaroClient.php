@@ -291,13 +291,22 @@ class KeitaroClient
             $putPayload['group_id'] = $groupId;
         }
 
-        $put = Http::withHeaders([
-            'Api-Key' => $apiKey,
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-        ])
-            ->timeout(30)
-            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", $putPayload);
+        try {
+            $put = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ])
+                ->timeout(30)
+                ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", $putPayload);
+        } catch (\Throwable $e) {
+            Log::warning('Keitaro S2S: put exception', [
+                'campaign_id' => $campaignId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return ['changed' => false, 'reason' => 'put_exception'];
+        }
 
         if ($put->failed()) {
             Log::warning('Keitaro S2S: failed to attach sales postback', [

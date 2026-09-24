@@ -11,6 +11,7 @@ class SyncKeitaroS2sPostbacks extends Command
     protected $signature = 'keitaro:sync-s2s-postbacks
         {--user= : ID користувача}
         {--limit=0 : Максимум офферів (0 = усі)}
+        {--from-id=0 : Продовжити з offers.id >= N}
         {--sleep-ms=200 : Пауза між кампаніями (rate limit)}
         {--dry-run : Лише показати, без PUT в Keitaro}';
 
@@ -27,6 +28,11 @@ class SyncKeitaroS2sPostbacks extends Command
 
         if ($userId = $this->option('user')) {
             $query->where('user_id', (int) $userId);
+        }
+
+        $fromId = (int) $this->option('from-id');
+        if ($fromId > 0) {
+            $query->where('id', '>=', $fromId);
         }
 
         $limit = (int) $this->option('limit');
@@ -70,7 +76,17 @@ class SyncKeitaroS2sPostbacks extends Command
                 continue;
             }
 
-            $result = $keitaro->ensureSalesS2sPostback($settings, $campaignId);
+            try {
+                $result = $keitaro->ensureSalesS2sPostback($settings, $campaignId);
+            } catch (\Throwable $e) {
+                $stats['failed']++;
+                $this->warn("FAIL #{$offer->id} {$offer->domain} KT={$campaignId} (exception: {$e->getMessage()})");
+                if ($sleepMs > 0) {
+                    usleep(max($sleepMs, 500) * 1000);
+                }
+                continue;
+            }
+
             $reason = $result['reason'] ?? '';
 
             if ($result['changed'] ?? false) {
@@ -83,6 +99,10 @@ class SyncKeitaroS2sPostbacks extends Command
             } else {
                 $stats['failed']++;
                 $this->warn("FAIL #{$offer->id} {$offer->domain} KT={$campaignId} ({$reason})");
+                if ($sleepMs > 0) {
+                    usleep(max($sleepMs, 500) * 1000);
+                }
+                continue;
             }
 
             if ($sleepMs > 0) {
