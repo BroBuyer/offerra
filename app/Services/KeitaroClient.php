@@ -165,15 +165,19 @@ class KeitaroClient
     }
 
     /**
-     * Attach panel sales S2S postback (sale → Telegram) if missing.
+     * Attach / refresh panel S2S postback: lead → offer_stats, sale → Telegram DEP + stats.
+     * Preserves any other campaign postbacks. Idempotent.
+     *
+     * @return array{changed: bool, reason: string}
      */
-    public function ensureSalesS2sPostback(UserSetting $settings, int $campaignId): void
+    public function ensureSalesS2sPostback(UserSetting $settings, int $campaignId): array
     {
         if ($campaignId <= 0 || ! $settings->keitaro_api_key) {
-            return;
+            return ['changed' => false, 'reason' => 'skip'];
         }
 
-        $url = $this->salesPostbacks->postbackUrl($settings);
+        $desiredUrl = $this->salesPostbacks->postbackUrl($settings);
+        $desiredStatuses = $this->salesPostbacks->panelPostbackStatuses();
         $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
         $apiKey = $settings->keitaro_api_key;
 
@@ -190,11 +194,11 @@ class KeitaroClient
                 'error' => $e->getMessage(),
             ]);
 
-            return;
+            return ['changed' => false, 'reason' => 'load_failed'];
         }
 
         if ($response->failed()) {
-            return;
+            return ['changed' => false, 'reason' => 'load_http_'.$response->status()];
         }
 
         /** @var array<string, mixed> $campaign */
@@ -211,6 +215,8 @@ class KeitaroClient
         $marker = '/api/v1/postback/'.$token;
 
         $existing = [];
+        $panelFound = false;
+        $needsUpdate = false;
 
         foreach ($existingRaw as $row) {
             if (! is_array($row)) {
@@ -223,10 +229,6 @@ class KeitaroClient
                 continue;
             }
 
-            if (str_contains($rowUrl, $marker)) {
-                return;
-            }
-
             $method = strtoupper(trim((string) ($row['method'] ?? 'GET')));
             $statuses = $row['statuses'] ?? ['sale'];
 
@@ -234,18 +236,53 @@ class KeitaroClient
                 $statuses = ['sale'];
             }
 
+            $statuses = array_values(array_unique(array_map(
+                static fn ($s) => strtolower(trim((string) $s)),
+                $statuses,
+            )));
+
+            if (str_contains($rowUrl, $marker)) {
+                $panelFound = true;
+                $statusOk = empty(array_diff($desiredStatuses, $statuses));
+
+                // Refresh URL (add campaign_id) and ensure lead+sale statuses.
+                if (! $statusOk || ! str_contains($rowUrl, 'campaign_id=')) {
+                    $needsUpdate = true;
+                    $existing[] = [
+                        'url' => $desiredUrl,
+                        'method' => 'GET',
+                        'statuses' => $desiredStatuses,
+                    ];
+                } else {
+                    $existing[] = [
+                        'url' => $rowUrl,
+                        'method' => $method !== '' ? $method : 'GET',
+                        'statuses' => $statuses,
+                    ];
+                }
+
+                continue;
+            }
+
             $existing[] = [
                 'url' => $rowUrl,
                 'method' => $method !== '' ? $method : 'GET',
-                'statuses' => array_values($statuses),
+                'statuses' => $statuses,
             ];
         }
 
-        $existing[] = [
-            'url' => $url,
-            'method' => 'GET',
-            'statuses' => ['sale'],
-        ];
+        if (! $panelFound) {
+            $needsUpdate = true;
+            $existing[] = [
+                'url' => $desiredUrl,
+                'method' => 'GET',
+                'statuses' => $desiredStatuses,
+            ];
+        }
+
+        if (! $needsUpdate) {
+            return ['changed' => false, 'reason' => 'already_ok'];
+        }
 
         $putPayload = ['postbacks' => $existing];
         $groupId = $this->resolveGroupIdForUpdate($settings, $campaign);
@@ -268,7 +305,7 @@ class KeitaroClient
                 'body' => Str::limit($put->body(), 300),
             ]);
 
-            return;
+            return ['changed' => false, 'reason' => 'put_failed'];
         }
 
         // Verify — Keitaro may return 200 while ignoring unknown fields.
@@ -280,7 +317,7 @@ class KeitaroClient
                 ->timeout(30)
                 ->get("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}");
         } catch (\Throwable) {
-            return;
+            return ['changed' => true, 'reason' => 'put_ok_verify_skip'];
         }
 
         $verified = false;
@@ -288,7 +325,11 @@ class KeitaroClient
 
         if (is_array($postbacks)) {
             foreach ($postbacks as $row) {
-                if (is_array($row) && str_contains((string) ($row['url'] ?? ''), $marker)) {
+                if (! is_array($row) || ! str_contains((string) ($row['url'] ?? ''), $marker)) {
+                    continue;
+                }
+                $st = $row['statuses'] ?? [];
+                if (is_array($st) && empty(array_diff($desiredStatuses, array_map('strtolower', $st)))) {
                     $verified = true;
                     break;
                 }
@@ -299,7 +340,11 @@ class KeitaroClient
             Log::warning('Keitaro S2S: postback not present after PUT', [
                 'campaign_id' => $campaignId,
             ]);
+
+            return ['changed' => true, 'reason' => 'put_ok_unverified'];
         }
+
+        return ['changed' => true, 'reason' => 'updated'];
     }
 
     /**
