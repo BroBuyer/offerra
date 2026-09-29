@@ -252,6 +252,9 @@ export default function OffersCreate({
     const [domainPurchasedViaPanel, setDomainPurchasedViaPanel] = useState(initial.domainPurchasedViaPanel);
     const [bulkItems, setBulkItems] = useState(initial.bulkItems);
     const [bulkSubmitting, setBulkSubmitting] = useState(false);
+    const [brandLookup, setBrandLookup] = useState(null);
+    const [brandLookupLoading, setBrandLookupLoading] = useState(false);
+    const brandLookupSeq = useRef(0);
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
 
@@ -451,13 +454,15 @@ export default function OffersCreate({
 
                 if (geo) {
                     const preset = geoPresets.find((item) => item.code === geo);
+                    const remembered = lookupGeoDeposit(geo, geoMinDeposits);
                     next = {
                         ...next,
                         geo,
                         lang: lang || preset?.lang || next.lang,
                         phone: preset?.phone ?? geo.toLowerCase(),
                         phone_countries: [preset?.phone ?? geo.toLowerCase()],
-                        ...(preset?.currency ? { currency: preset.currency } : {}),
+                        min_deposit: remembered?.min_deposit || next.min_deposit,
+                        currency: remembered?.currency || preset?.currency || next.currency,
                     };
                 } else if (lang) {
                     next = { ...next, lang };
@@ -470,7 +475,7 @@ export default function OffersCreate({
         if (initialFromSearch) {
             setData((prev) => ({ ...prev, from_search_team: true }));
         }
-    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, setData, defaults]);
+    }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, geoMinDeposits, setData, defaults]);
 
     useEffect(() => {
         if (bulkItems.length === 0) {
@@ -699,6 +704,43 @@ export default function OffersCreate({
 
     const update = (field, value) => {
         setData(field, value);
+        if (field === 'brand') {
+            setBrandLookup(null);
+        }
+    };
+
+    const lookupBrand = async () => {
+        const brand = data.brand.trim();
+        if (!brand) {
+            setBrandLookup(null);
+            setBrandLookupLoading(false);
+            return;
+        }
+
+        const seq = ++brandLookupSeq.current;
+        setBrandLookupLoading(true);
+        try {
+            const { data: result } = await axios.get(route('offers.brand-lookup'), {
+                params: { brand },
+            });
+            if (seq !== brandLookupSeq.current) {
+                return;
+            }
+            setBrandLookup({
+                brand: result.brand ?? brand,
+                active: Number(result.active) || 0,
+                archived: Number(result.archived) || 0,
+            });
+        } catch {
+            if (seq !== brandLookupSeq.current) {
+                return;
+            }
+            setBrandLookup(null);
+        } finally {
+            if (seq === brandLookupSeq.current) {
+                setBrandLookupLoading(false);
+            }
+        }
     };
 
     const domainSearchQuery = useMemo(() => {
@@ -1421,9 +1463,50 @@ export default function OffersCreate({
                                 type="text"
                                 value={data.brand}
                                 onChange={(e) => update('brand', e.target.value)}
+                                onBlur={() => {
+                                    void lookupBrand();
+                                }}
                                 placeholder="Spire Bondtron"
                             />
                             {errors.brand && <p className="field-hint" style={{ color: '#f87171' }}>{errors.brand}</p>}
+                            {brandLookupLoading && (
+                                <p className="field-hint">Перевіряю бренд у базі…</p>
+                            )}
+                            {!brandLookupLoading && brandLookup && (
+                                <div className="field-hint" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+                                    {brandLookup.active === 0 && brandLookup.archived === 0 ? (
+                                        <span>Збігів за брендом «{brandLookup.brand}» немає.</span>
+                                    ) : (
+                                        <>
+                                            <span>
+                                                Уже є: <strong>{brandLookup.active}</strong> активні
+                                                {' · '}
+                                                <strong>{brandLookup.archived}</strong> в архіві
+                                            </span>
+                                            {brandLookup.active > 0 && (
+                                                <a
+                                                    className="btn btn-ghost btn-sm"
+                                                    href={route('offers.index', { brand: brandLookup.brand })}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Активні
+                                                </a>
+                                            )}
+                                            {brandLookup.archived > 0 && (
+                                                <a
+                                                    className="btn btn-ghost btn-sm"
+                                                    href={route('offers.archive.index', { brand: brandLookup.brand })}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Архів
+                                                </a>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         {bulkItems.length > 0 && (
                             <div ref={offerBulkPackRef} className="card offer-bulk-pack" style={{ marginBottom: '1rem' }}>

@@ -103,9 +103,13 @@ export default function Dashboard({
                     <div className="kpi-card-value">{stats.unique_langs}</div>
                 </div>
                 <div className="kpi-card">
-                    <div className="kpi-card-label">Ліди сьогодні (TG)</div>
-                    <div className="kpi-card-value accent">—</div>
-                    <div className="kpi-card-sub">скоро</div>
+                    <div className="kpi-card-label">Ліди сьогодні</div>
+                    <div className="kpi-card-value accent">{stats.leads_today ?? 0}</div>
+                    <div className="kpi-card-sub">
+                        {(stats.deps_today ?? 0) > 0
+                            ? `депи сьогодні: ${stats.deps_today}`
+                            : (showAllScope ? kpiSub : 'з Keitaro · сьогодні')}
+                    </div>
                 </div>
             </div>
 

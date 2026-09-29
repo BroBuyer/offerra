@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Offer;
 use App\Models\User;
+use App\Services\KeitaroTodayStats;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, KeitaroTodayStats $todayStats): Response
     {
         $user = $request->user();
         $canSeeAll = $user->canSeeAllOffers();
@@ -32,6 +33,10 @@ class DashboardController extends Controller
 
         $dbOffers = $query->get();
         $stats = $this->statsFromDb($dbOffers);
+        $ktToday = $todayStats->forOffers($dbOffers);
+        $stats['leads_today'] = $ktToday['leads'];
+        $stats['deps_today'] = $ktToday['sales'];
+        $stats['leads_today_campaigns'] = $ktToday['campaigns'];
 
         $selectedUser = $selectedUserId
             ? User::query()->find($selectedUserId, ['id', 'name', 'email'])

@@ -1,4 +1,5 @@
 import PanelLayout from '@/Layouts/PanelLayout';
+import StaleDeadBanner from '@/Components/StaleDeadBanner';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -136,6 +137,7 @@ export default function Archive({
     showUserColumn = false,
     users = [],
     dateFilters = {},
+    staleDeadHint = null,
 }) {
     const { auth, errors, flash } = usePage().props;
     const rows = offers?.data ?? [];
@@ -266,6 +268,8 @@ export default function Archive({
                         <Link href={route('offers.index')}>← До активних офферів</Link>
                     </p>
                 </header>
+
+                <StaleDeadBanner hint={staleDeadHint} />
 
                 {flash?.success && (
                     <div className="card" style={{ marginBottom: '1rem' }}>

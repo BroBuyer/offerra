@@ -53,6 +53,38 @@ class GoogleSearchConsoleClient
         ];
     }
 
+    /**
+     * Remove URL-prefix property from Search Console (and drop sitemap if present).
+     *
+     * @return 'deleted'|'already_gone'
+     */
+    public function removeOffer(Offer $offer, UserSetting $settings): string
+    {
+        $domain = strtolower(trim((string) $offer->domain));
+        if ($domain === '') {
+            throw new RuntimeException('Offer has no domain.');
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+
+        $siteUrl = trim((string) ($gsc['site_url'] ?? ''));
+        if ($siteUrl === '') {
+            $siteUrl = 'https://'.$domain.'/';
+        }
+
+        $sitemapUrl = trim((string) ($gsc['sitemap_url'] ?? ''));
+        if ($sitemapUrl === '') {
+            $sitemapUrl = 'https://'.$domain.'/sitemap.xml';
+        }
+
+        $accessToken = $this->oauth->accessTokenFor($settings);
+
+        $this->deleteSitemap($accessToken, $siteUrl, $sitemapUrl);
+
+        return $this->deleteSite($accessToken, $siteUrl);
+    }
+
     public function assertHttpsLive(string $domain): void
     {
         $this->assertPublicDnsResolves($domain);
@@ -284,6 +316,66 @@ class GoogleSearchConsoleClient
         }
 
         throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$response->status().'): '.$this->shortError($body));
+    }
+
+    /**
+     * Best-effort: missing property/sitemap is fine during archive.
+     */
+    private function deleteSitemap(string $accessToken, string $siteUrl, string $sitemapUrl): void
+    {
+        $encodedSite = rawurlencode($siteUrl);
+        $encodedFeed = rawurlencode($sitemapUrl);
+        $url = 'https://www.googleapis.com/webmasters/v3/sites/'.$encodedSite.'/sitemaps/'.$encodedFeed;
+
+        try {
+            $response = Http::timeout(30)
+                ->withToken($accessToken)
+                ->acceptJson()
+                ->delete($url);
+
+            if ($response->successful() || in_array($response->status(), [204, 404], true)) {
+                return;
+            }
+
+            Log::info('GSC sitemap delete skipped', [
+                'site' => $siteUrl,
+                'sitemap' => $sitemapUrl,
+                'status' => $response->status(),
+                'body' => substr((string) $response->body(), 0, 240),
+            ]);
+        } catch (\Throwable $e) {
+            Log::info('GSC sitemap delete skipped', [
+                'site' => $siteUrl,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @return 'deleted'|'already_gone'
+     */
+    private function deleteSite(string $accessToken, string $siteUrl): string
+    {
+        $encoded = rawurlencode($siteUrl);
+        $response = Http::timeout(30)
+            ->withToken($accessToken)
+            ->acceptJson()
+            ->delete('https://www.googleapis.com/webmasters/v3/sites/'.$encoded);
+
+        if ($response->successful() || $response->status() === 204) {
+            return 'deleted';
+        }
+
+        if ($response->status() === 404) {
+            return 'already_gone';
+        }
+
+        $body = (string) $response->body();
+        if (str_contains(strtolower($body), 'not found') || str_contains(strtolower($body), 'does not exist')) {
+            return 'already_gone';
+        }
+
+        throw new RuntimeException('Search Console sites.delete failed (HTTP '.$response->status().'): '.$this->shortError($body));
     }
 
     /**

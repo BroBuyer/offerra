@@ -34,8 +34,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('offers:check-availability --only-down --down-stale-minutes=10 --limit=2000')
             ->everyTenMinutes()
             ->withoutOverlapping(9);
+
+        // Daily stale-dead scan for Stats/Archive panel banner (no auto-archive).
+        $schedule->command('offers:scan-stale-dead')
+            ->dailyAt('12:00')
+            ->timezone(config('app.timezone'))
+            ->withoutOverlapping(30);
     })
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

@@ -1,0 +1,64 @@
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
+
+function formatScanAt(value) {
+    if (!value) {
+        return null;
+    }
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) {
+        return String(value);
+    }
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+export default function StaleDeadBanner({ hint }) {
+    const [busy, setBusy] = useState(false);
+    const count = Number(hint?.count ?? 0);
+    if (!count || count < 1) {
+        return null;
+    }
+
+    const scanLabel = formatScanAt(hint?.last_scan_at);
+
+    const onArchiveAll = () => {
+        const ok = window.confirm(
+            `Заархівувати всі ${count} оферів без кліків/лідів/депів (індекс >1 міс)?\nOrigin і Cloudflare буде прибрано, домен лишиться в Dynadot.`,
+        );
+        if (!ok) {
+            return;
+        }
+        setBusy(true);
+        router.post(route('offers.stale-dead.archive'), {}, {
+            onFinish: () => setBusy(false),
+        });
+    };
+
+    return (
+        <div className="stale-dead-banner" role="status">
+            <div className="stale-dead-banner__text">
+                <strong>{count}</strong>
+                {' '}
+                оферів без кліків/лідів/депів, індекс &gt;1 міс.
+                {scanLabel ? (
+                    <span className="field-hint" style={{ display: 'inline', marginLeft: '0.5rem' }}>
+                        Останній скан: {scanLabel}
+                    </span>
+                ) : (
+                    <span className="field-hint" style={{ display: 'inline', marginLeft: '0.5rem' }}>
+                        Скан ще не запускався (о 12:00 щодня).
+                    </span>
+                )}
+            </div>
+            <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                disabled={busy}
+                onClick={onArchiveAll}
+            >
+                {busy ? 'Архівація…' : 'Заархівувати всі'}
+            </button>
+        </div>
+    );
+}

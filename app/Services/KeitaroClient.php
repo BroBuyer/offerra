@@ -217,6 +217,7 @@ class KeitaroClient
         $existing = [];
         $panelFound = false;
         $needsUpdate = false;
+        $panelDesiredEmitted = false;
 
         foreach ($existingRaw as $row) {
             if (! is_array($row)) {
@@ -241,13 +242,27 @@ class KeitaroClient
                 $statuses,
             )));
 
-            if (str_contains($rowUrl, $marker)) {
+            // Any panel S2S URL (current or stale token) — keep a single refreshed row.
+            if (preg_match('#/api/v1/postback/[a-f0-9]+#i', $rowUrl)) {
                 $panelFound = true;
                 $statusOk = empty(array_diff($desiredStatuses, $statuses));
+                $urlOk = str_contains($rowUrl, $marker) && str_contains($rowUrl, 'campaign_id=');
 
-                // Refresh URL (add campaign_id) and ensure lead+sale statuses.
-                if (! $statusOk || ! str_contains($rowUrl, 'campaign_id=')) {
+                if (! $statusOk || ! $urlOk) {
                     $needsUpdate = true;
+                }
+
+                if ($panelDesiredEmitted) {
+                    // Drop duplicate stale panel URLs.
+                    if (! $urlOk || ! $statusOk) {
+                        $needsUpdate = true;
+                    }
+                    continue;
+                }
+
+                $panelDesiredEmitted = true;
+
+                if (! $statusOk || ! $urlOk) {
                     $existing[] = [
                         'url' => $desiredUrl,
                         'method' => 'GET',

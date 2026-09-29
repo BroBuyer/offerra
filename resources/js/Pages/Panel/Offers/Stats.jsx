@@ -1,4 +1,5 @@
 import PanelLayout from '@/Layouts/PanelLayout';
+import StaleDeadBanner from '@/Components/StaleDeadBanner';
 import { router, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 
@@ -56,6 +57,7 @@ export default function OfferStats({
     perPageOptions = [50],
     showUserColumn = false,
     users = [],
+    staleDeadHint = null,
 }) {
     const { flash } = usePage().props;
     const [draft, setDraft] = useState({
@@ -123,10 +125,12 @@ export default function OfferStats({
                     <div>
                         <h1>Статистика оферів</h1>
                         <p className="muted">
-                            Кліки (цільове GEO), ліди та депи. Поки лічильники порожні — далі підключимо постбеки й beacon з ленда.
+                            Кліки (цільове GEO), ліди та депи. GEO-кліки рахуються з ленда (CF-IPCountry ∈ GEO офера, 1/відвідувач/доба).
                         </p>
                     </div>
                 </div>
+
+                <StaleDeadBanner hint={staleDeadHint} />
 
                 <form
                     className="filters-bar"

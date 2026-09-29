@@ -10,6 +10,7 @@ class OfferConfigBuilder
 {
     public function __construct(
         private readonly MirrorProbeService $mirrorProbe,
+        private readonly OfferGeoClickService $geoClicks,
     ) {}
 
     /**
@@ -58,6 +59,8 @@ class OfferConfigBuilder
         $fromSearchTeam = ! empty($offer['from_search_team']);
         $crmSub7 = $this->quote($fromSearchTeam ? 'SEO' : '');
         $crmSub8 = $this->quote($fromSearchTeam ? 'SearchAM' : '');
+        $geoClickUrl = $this->quote($this->geoClicks->clickUrl($settings));
+        $offerDomainRaw = $this->quote(strtolower(trim((string) $offer['domain'])));
 
         return <<<PHP
 <?php
@@ -122,6 +125,10 @@ define('VITALS_CDN', {$vitalsCdn});
 define('VITALS_TOKEN', {$vitalsToken});
 define('VITALS_ENDPOINT', {$vitalsEndpoint});
 
+// ─── Offerra GEO click tracking ─────────────────────────────────────────────
+define('OFFERRA_GEO_CLICK_URL', {$geoClickUrl});
+define('OFFERRA_GEO_CLICK_DOMAIN', {$offerDomainRaw});
+
 require_once __DIR__ . '/helpers.php';
 if (is_file(__DIR__ . '/i18n-helpers.php')) {
     require_once __DIR__ . '/i18n-helpers.php';
@@ -129,6 +136,89 @@ if (is_file(__DIR__ . '/i18n-helpers.php')) {
 offer_send_personalization_headers();
 require_once __DIR__ . '/keitaro.php';
 keitaro_bootstrap();
+
+(static function (): void {
+    if (! defined('OFFERRA_GEO_CLICK_URL') || OFFERRA_GEO_CLICK_URL === '') {
+        return;
+    }
+    if (! function_exists('form_ip_country')) {
+        return;
+    }
+
+    \$script = (string) (\$_SERVER['SCRIPT_NAME'] ?? '');
+    if (\$script !== '' && preg_match('#/(integration|robots|sitemap|send\\.php|visitor-geo\\.php|form-token\\.php)#i', \$script)) {
+        return;
+    }
+
+    \$day = gmdate('Ymd', time() + 3 * 3600);
+    if (isset(\$_COOKIE['ogc']) && (string) \$_COOKIE['ogc'] === \$day) {
+        return;
+    }
+
+    \$ipCountry = strtolower(trim((string) form_ip_country()));
+    if (\$ipCountry === '' || \$ipCountry === 'xx') {
+        return;
+    }
+    if (\$ipCountry === 'uk') {
+        \$ipCountry = 'gb';
+    }
+
+    \$allowed = function_exists('form_allowed_countries') ? form_allowed_countries() : [];
+    if (\$allowed === []) {
+        \$fallback = strtolower(trim((string) (defined('CRM_COUNTRY') ? CRM_COUNTRY : '')));
+        if (\$fallback === 'uk') {
+            \$fallback = 'gb';
+        }
+        \$allowed = \$fallback !== '' ? [\$fallback] : [];
+    }
+    if (\$allowed === [] || ! in_array(\$ipCountry, \$allowed, true)) {
+        return;
+    }
+
+    \$ua = (string) (\$_SERVER['HTTP_USER_AGENT'] ?? '');
+    if (\$ua === '' || preg_match('/bot|crawl|spider|slurp|curl|wget|python-requests|httpclient|scrapy|headless|phantom|selenium|pingdom|uptimerobot|statuscake|monitor/i', \$ua)) {
+        return;
+    }
+
+    \$ip = (string) (\$_SERVER['HTTP_CF_CONNECTING_IP'] ?? \$_SERVER['REMOTE_ADDR'] ?? '');
+    \$visitor = hash('sha256', \$ip . '|' . strtolower(substr(\$ua, 0, 120)));
+
+    @setcookie('ogc', \$day, [
+        'expires' => time() + 86400,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    \$domain = defined('OFFERRA_GEO_CLICK_DOMAIN') ? (string) OFFERRA_GEO_CLICK_DOMAIN : '';
+    if (\$domain === '' && defined('SITE_URL')) {
+        \$host = parse_url((string) SITE_URL, PHP_URL_HOST);
+        \$domain = is_string(\$host) ? strtolower(\$host) : '';
+    }
+    if (\$domain === '') {
+        return;
+    }
+
+    \$url = OFFERRA_GEO_CLICK_URL
+        . '?d=' . rawurlencode(\$domain)
+        . '&c=' . rawurlencode(\$ipCountry)
+        . '&v=' . rawurlencode(\$visitor);
+
+    \$ctx = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'timeout' => 1.2,
+            'ignore_errors' => true,
+            'header' => "User-Agent: OfferraGeoClick/1.0\\r\\n",
+        ],
+        'ssl' => [
+            'verify_peer' => true,
+            'verify_peer_name' => true,
+        ],
+    ]);
+    @file_get_contents(\$url, false, \$ctx);
+})();
 
 PHP;
     }

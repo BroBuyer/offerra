@@ -398,6 +398,34 @@ SH;
         }
     }
 
+    /**
+     * Upload a single local file into the offer public_html (relative path).
+     */
+    public function uploadOfferRelativeFile(UserSetting $settings, string $domain, string $localFile, string $relativeRemote): void
+    {
+        if (! is_file($localFile)) {
+            throw new RuntimeException('Local file missing: '.$localFile);
+        }
+
+        $remoteRoot = $this->publicHtmlPath($settings, $domain);
+        $relativeRemote = ltrim(str_replace('\\', '/', $relativeRemote), '/');
+        $remoteFile = rtrim($remoteRoot, '/').'/'.$relativeRemote;
+        $remoteDir = dirname($remoteFile);
+
+        $this->exec(
+            $settings,
+            'mkdir -p '.$this->quote($remoteDir),
+            30,
+        );
+
+        $this->uploadFile($settings, $localFile, $remoteFile);
+        $this->exec(
+            $settings,
+            'chown www-data:www-data '.$this->quote($remoteFile).' && chmod 644 '.$this->quote($remoteFile),
+            20,
+        );
+    }
+
     private function exec(UserSetting $settings, string $command, int $timeout = 20): string
     {
         [$host, $port, $username, $password] = $this->credentials($settings);

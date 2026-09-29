@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Offer;
 use App\Models\User;
+use App\Services\StaleDeadOfferService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,7 +30,7 @@ class OfferStatsController extends Controller
         'deployed_at',
     ];
 
-    public function index(Request $request): Response
+    public function index(Request $request, StaleDeadOfferService $staleDead): Response
     {
         $user = $request->user();
         $filters = $this->filters($request, $user);
@@ -68,6 +69,7 @@ class OfferStatsController extends Controller
             'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
+            'staleDeadHint' => $staleDead->hintFor($user),
         ]);
     }
 
