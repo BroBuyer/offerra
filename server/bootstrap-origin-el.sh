@@ -24,7 +24,7 @@ dnf -y module enable php:8.2
 dnf -y install \
   nginx \
   php-fpm php-cli php-mbstring php-xml php-json php-gd php-intl php-zip php-opcache \
-  unzip curl ca-certificates bind-utils firewalld python3
+  tar gzip unzip curl ca-certificates bind-utils firewalld python3
 
 if ! php -r 'exit((int) PHP_MAJOR_VERSION >= 8 ? 0 : 1);' 2>/dev/null; then
   echo "PHP 8.x required; got $(php -v | head -1)"

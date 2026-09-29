@@ -88,8 +88,9 @@ SH;
             $pack = $this->quote($remoteArchive);
             $this->exec(
                 $settings,
-                "find {$root} -mindepth 1 -delete && tar -xzf {$pack} -C {$root} && chown -R www-data:www-data {$root} && chmod -R u+rwX,g+rX,o+rX {$root} && test -f {$root}/index.php && rm -f {$pack}",
-                90,
+                $this->ensureTarCommand()
+                ." && find {$root} -mindepth 1 -delete && tar -xzf {$pack} -C {$root} && chown -R www-data:www-data {$root} && chmod -R u+rwX,g+rX,o+rX {$root} && test -f {$root}/index.php && rm -f {$pack}",
+                180,
             );
         } finally {
             @unlink($archive);
@@ -461,6 +462,18 @@ SH;
         }
 
         return $domain;
+    }
+
+    /**
+     * Minimal Alma/RHEL images ship without tar; deploy unpacks landers with tar -xzf.
+     */
+    private function ensureTarCommand(): string
+    {
+        return 'if ! command -v tar >/dev/null 2>&1; then '
+            .'(command -v dnf >/dev/null 2>&1 && dnf -y install tar gzip) '
+            .'|| (command -v yum >/dev/null 2>&1 && yum -y install tar gzip) '
+            .'|| (command -v apt-get >/dev/null 2>&1 && DEBIAN_FRONTEND=noninteractive apt-get install -y tar gzip) '
+            .'|| { echo tar-missing; exit 127; }; fi';
     }
 
     private function quote(string $path): string

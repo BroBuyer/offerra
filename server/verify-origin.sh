@@ -10,6 +10,12 @@ bad() { echo "[FAIL] $*"; FAIL=1; }
 
 echo "=== Offerra origin verify ==="
 
+if ! command -v tar >/dev/null 2>&1; then
+  bad "tar not installed (deploy unpacks landers with tar -xzf)"
+else
+  ok "tar $(command -v tar)"
+fi
+
 if ! systemctl is-active --quiet nginx; then
   bad "nginx not active"
 else

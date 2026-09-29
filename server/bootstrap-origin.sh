@@ -19,7 +19,7 @@ apt-get update -y
 apt-get install -y \
   nginx \
   php-fpm php-cli php-mbstring php-xml php-curl php-zip php-gd php-intl \
-  unzip curl ca-certificates ufw dnsutils
+  tar gzip unzip curl ca-certificates ufw dnsutils
 apt-get install -y php-opcache || true
 
 # Ubuntu 22.04/24.04 ship PHP 8.x. 20.04 is 7.4 and ondrej no longer
