@@ -347,10 +347,11 @@ export default function OriginServersIndex({
                 <div>
                     <h2>Origin-сервери</h2>
                     <p>
-                        Єдиний пул серверів для всіх юзерів. Нові оффери автоматично йдуть на
-                        найменш завантажений сервер з роллю «Пул»; «Запасні» моніторяться, але
-                        нових оферів не отримують. Якщо сервер падає — «Evacuate» розкидає його
-                        оффери по решті пулу.
+                        Єдиний пул серверів для всіх юзерів. Нові оффери однієї воронки
+                        (бренд) розкидаються по різних серверах з роллю «Пул»; якщо IP
+                        забанять, решта доменів бренду лишаються на інших. «Запасні»
+                        моніторяться, але нових оферів не отримують. Якщо сервер падає —
+                        «Evacuate» розкидає його оффери по решті пулу.
                     </p>
                 </div>
                 <button
@@ -394,7 +395,9 @@ export default function OriginServersIndex({
                                 {' · оферів у пулі: '}
                                 <strong>{poolSummary.offers}</strong>
                                 {poolSummary.capacity != null ? ` · вільних місць: ${poolSummary.capacity}` : ''}
-                                {poolSummary.next_host ? ` · наступний: ${poolSummary.next_host}` : ''}
+                                {poolSummary.next_host
+                                    ? ` · найменш завантажений: ${poolSummary.next_host}`
+                                    : ''}
                             </>
                         ) : (
                             <span style={{ color: '#f87171' }}>

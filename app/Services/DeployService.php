@@ -148,7 +148,8 @@ class DeployService
 
     /**
      * SSH comes from the admin-managed origin pool: the offer's bound server when
-     * it already has one, otherwise the least loaded server in the pool.
+     * it already has one, otherwise a pool host with the fewest offers of this
+     * brand (then the least total load).
      */
     public function resolveDeploySettings(User $user, Offer $offer, bool $allocate = true): UserSetting
     {

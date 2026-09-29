@@ -45,9 +45,11 @@ panel and need their own backups:
 ## Origin servers
 
 Servers belong to the admin, not to user settings. `OriginPool` assigns each new
-offer to the least loaded server with role `pool`; `spare` servers stay warm but
-idle. An offer is pinned to its server via `infra_meta.deploy_host` and must not
-move unless an admin evacuates it (`OriginEvacuationService`).
+offer to the `pool` server with the fewest other offers of the same brand, then
+the least total load, so a multi-domain funnel is not stacked on one IP; `spare`
+servers stay warm but idle. An offer is pinned to its server via
+`infra_meta.deploy_host` and must not move unless an admin evacuates it
+(`OriginEvacuationService`).
 
 Check pool health with `php scripts/audit-origin-pool.php report` on the panel.
 `unbound > 0` means offers the pool cannot see — they would be reassigned and

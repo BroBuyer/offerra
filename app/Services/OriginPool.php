@@ -13,9 +13,11 @@ use RuntimeException;
 /**
  * Central pool of admin-managed origin servers.
  *
- * Offers are no longer pinned to a per-user SSH host from Settings: new offers
- * are spread across every active server whose role is "pool", and an offer keeps
- * its assigned host in infra_meta.deploy_host until an admin evacuates it.
+ * Offers are no longer pinned to a per-user SSH host from Settings. A new offer
+ * prefers a pool server that has the fewest other offers of the same brand, then
+ * the least total load. That way a 5-domain funnel is spread across origins: if
+ * one IP is abused, the rest of the brand stays up. An offer keeps its assigned
+ * host in infra_meta.deploy_host until an admin evacuates it.
  */
 class OriginPool
 {
@@ -49,7 +51,7 @@ class OriginPool
     }
 
     /**
-     * Servers that may receive a new offer, least loaded first.
+     * Servers that may receive a new offer.
      *
      * @return list<array{server: OriginServer, offers: int}>
      */
@@ -69,8 +71,6 @@ class OriginPool
             $rows[] = ['server' => $server, 'offers' => $offers];
         }
 
-        usort($rows, fn (array $a, array $b) => $a['offers'] <=> $b['offers']);
-
         return $rows;
     }
 
@@ -80,9 +80,78 @@ class OriginPool
     }
 
     /**
-     * Pick the least loaded pool server.
+     * Active offers of this brand already bound to each host.
+     *
+     * @return array<string, int>
      */
-    public function allocate(): OriginServer
+    public function brandCountsByHost(string $brand): array
+    {
+        $key = mb_strtolower(trim($brand));
+        if ($key === '') {
+            return [];
+        }
+
+        $counts = [];
+
+        Offer::query()
+            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereRaw('LOWER(TRIM(brand)) = ?', [$key])
+            ->orderBy('id')
+            ->select(['id', 'deploy_panel_name', 'infra_meta'])
+            ->chunkById(500, function ($chunk) use (&$counts): void {
+                foreach ($chunk as $offer) {
+                    $host = $this->sync->normalizeHost($this->boundHost($offer));
+                    if ($host === '') {
+                        continue;
+                    }
+                    $counts[$host] = ($counts[$host] ?? 0) + 1;
+                }
+            });
+
+        return $counts;
+    }
+
+    /**
+     * Pick a pool server: fewest offers of this brand first, then least total load.
+     *
+     * @param  list<array{server: OriginServer, offers: int}>  $candidates
+     * @param  array<string, int>  $brandOnHost
+     */
+    private function pickCandidate(array $candidates, array $brandOnHost = []): OriginServer
+    {
+        $best = null;
+        $bestBrand = null;
+        $bestLoad = null;
+
+        foreach ($candidates as $row) {
+            $host = $this->sync->normalizeHost((string) $row['server']->host);
+            $brandN = (int) ($brandOnHost[$host] ?? 0);
+            $load = (int) $row['offers'];
+
+            if (
+                $best === null
+                || $brandN < $bestBrand
+                || ($brandN === $bestBrand && $load < $bestLoad)
+            ) {
+                $best = $row['server'];
+                $bestBrand = $brandN;
+                $bestLoad = $load;
+            }
+        }
+
+        if ($best === null) {
+            throw new RuntimeException(
+                'Немає доступних origin-серверів у пулі. Додайте або активуйте сервер у розділі Origin Servers.',
+            );
+        }
+
+        return $best;
+    }
+
+    /**
+     * Pick a pool server for this offer (brand anti-affinity, then least loaded).
+     */
+    public function allocate(?Offer $offer = null): OriginServer
     {
         $candidates = $this->candidates();
 
@@ -92,7 +161,12 @@ class OriginPool
             );
         }
 
-        return $candidates[0]['server'];
+        $brandOnHost = [];
+        if ($offer !== null) {
+            $brandOnHost = $this->brandCountsByHost((string) ($offer->brand ?? ''));
+        }
+
+        return $this->pickCandidate($candidates, $brandOnHost);
     }
 
     /**
@@ -118,39 +192,53 @@ class OriginPool
         }
 
         $load = [];
-        $hosts = [];
         $limits = [];
         foreach ($candidates as $row) {
             $host = trim((string) $row['server']->host);
-            $hosts[] = $host;
             $load[$host] = $row['offers'];
             $max = (int) ($row['server']->max_offers ?? 0);
             $limits[$host] = $max > 0 ? $max : null;
         }
 
-        $assignment = [];
-        foreach ($offerIds as $offerId) {
-            $target = null;
-            $best = null;
+        $offers = Offer::query()
+            ->whereIn('id', $offerIds)
+            ->get(['id', 'brand'])
+            ->keyBy('id');
 
-            foreach ($hosts as $host) {
+        $brandLoads = [];
+        $assignment = [];
+
+        foreach ($offerIds as $offerId) {
+            $offerId = (int) $offerId;
+            $brandKey = mb_strtolower(trim((string) ($offers->get($offerId)?->brand ?? '')));
+            if ($brandKey !== '' && ! isset($brandLoads[$brandKey])) {
+                $brandLoads[$brandKey] = $this->brandCountsByHost($brandKey);
+            }
+
+            $eligible = [];
+            foreach ($candidates as $row) {
+                $host = trim((string) $row['server']->host);
                 if ($limits[$host] !== null && $load[$host] >= $limits[$host]) {
                     continue;
                 }
-                if ($best === null || $load[$host] < $best) {
-                    $best = $load[$host];
-                    $target = $host;
+                $eligible[] = ['server' => $row['server'], 'offers' => $load[$host]];
+            }
+
+            if ($eligible === []) {
+                foreach ($candidates as $row) {
+                    $eligible[] = ['server' => $row['server'], 'offers' => $load[trim((string) $row['server']->host)]];
                 }
             }
 
-            // Every server is at its cap — keep filling the least loaded one
-            // instead of silently dropping offers from the migration.
-            if ($target === null) {
-                $target = collect($hosts)->sortBy(fn (string $host) => $load[$host])->first();
-            }
+            $targetServer = $this->pickCandidate($eligible, $brandLoads[$brandKey] ?? []);
+            $target = trim((string) $targetServer->host);
 
-            $assignment[(int) $offerId] = $target;
-            $load[$target]++;
+            $assignment[$offerId] = $target;
+            $load[$target] = ($load[$target] ?? 0) + 1;
+            if ($brandKey !== '') {
+                $norm = $this->sync->normalizeHost($target);
+                $brandLoads[$brandKey][$norm] = (int) ($brandLoads[$brandKey][$norm] ?? 0) + 1;
+            }
         }
 
         return $assignment;
@@ -249,13 +337,24 @@ class OriginPool
             );
         }
 
-        $server = $this->allocate();
+        return Cache::lock('origin-pool-allocate', 20)->block(25, function () use ($settings, $offer, $bind) {
+            $offer->refresh();
+            $host = $this->boundHost($offer);
+            if ($host !== '') {
+                $server = $this->serverForHost($host);
+                if ($server && $server->hasSshCredentials()) {
+                    return $this->applyTo($settings, $server);
+                }
+            }
 
-        if ($bind) {
-            $this->bind($offer, $server);
-        }
+            $server = $this->allocate($offer);
 
-        return $this->applyTo($settings, $server);
+            if ($bind) {
+                $this->bind($offer, $server);
+            }
+
+            return $this->applyTo($settings, $server);
+        });
     }
 
     /**
@@ -297,7 +396,7 @@ class OriginPool
             'accepting' => count($candidates),
             'offers' => array_sum($counts),
             'capacity' => $unlimited ? null : $capacity,
-            'next_host' => $candidates[0]['server']->host ?? null,
+            'next_host' => collect($candidates)->sortBy('offers')->value('server')?->host,
         ];
     }
 
