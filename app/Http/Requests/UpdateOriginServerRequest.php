@@ -15,11 +15,6 @@ class UpdateOriginServerRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $owner = $this->input('owner_user_id');
-        if ($owner === '' || $owner === false) {
-            $owner = null;
-        }
-
         $this->merge([
             'host' => trim((string) $this->input('host', '')),
             'username' => trim((string) $this->input('username', '')),
@@ -29,7 +24,6 @@ class UpdateOriginServerRequest extends FormRequest
             'ram' => trim((string) $this->input('ram', '')),
             'disk' => trim((string) $this->input('disk', '')),
             'price' => trim((string) $this->input('price', '')),
-            'owner_user_id' => $owner,
             'port' => (int) ($this->input('port') ?: 22),
             'role' => OriginServer::normalizeRole($this->input('role')),
             'max_offers' => (int) $this->input('max_offers'),
@@ -64,7 +58,6 @@ class UpdateOriginServerRequest extends FormRequest
             'max_offers' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'is_active' => ['required', 'boolean'],
             'alerts_enabled' => ['required', 'boolean'],
-            'owner_user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
         ];
     }
 }

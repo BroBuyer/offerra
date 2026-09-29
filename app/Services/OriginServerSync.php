@@ -40,7 +40,6 @@ class OriginServerSync
                 'deploy_driver' => DeployDriver::normalize($row->deploy_driver),
                 'deploy_path_template' => $row->deploy_path_template
                     ?: DeployDriver::defaultPath($row->deploy_driver),
-                'owner_user_id' => $existing?->owner_user_id ?: $row->user_id,
             ];
 
             if (filled($row->deploy_password) && (! $existing || ! filled($existing->password))) {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOriginServerRequest;
 use App\Http\Requests\UpdateOriginServerRequest;
 use App\Models\OriginServer;
-use App\Models\User;
 use App\Services\OriginEvacuationService;
 use App\Services\OriginHealthMonitor;
 use App\Services\OriginPool;
@@ -24,7 +23,6 @@ class OriginServerController extends Controller
         $counts = $sync->offerCountsByHost();
 
         $servers = OriginServer::query()
-            ->with('owner:id,name,email')
             ->orderByDesc('is_active')
             ->orderBy('host')
             ->get()
@@ -38,7 +36,6 @@ class OriginServerController extends Controller
         return Inertia::render('Panel/OriginServers/Index', [
             'servers' => $servers,
             'orphans' => $sync->orphanOfferHosts(),
-            'users' => User::query()->orderBy('name')->get(['id', 'name', 'email']),
             'defaultPath' => DeployDriver::UBUNTU_PATH,
             'poolSummary' => $pool->summary(),
             'roles' => OriginServer::ROLES,
@@ -67,7 +64,6 @@ class OriginServerController extends Controller
             'max_offers' => ((int) ($data['max_offers'] ?? 0)) ?: null,
             'is_active' => $request->boolean('is_active', true),
             'alerts_enabled' => $request->boolean('alerts_enabled', true),
-            'owner_user_id' => $data['owner_user_id'] ?? null,
         ]);
 
         return redirect()
@@ -99,7 +95,6 @@ class OriginServerController extends Controller
             'max_offers' => ((int) ($data['max_offers'] ?? 0)) ?: null,
             'is_active' => (bool) ($data['is_active'] ?? $request->boolean('is_active')),
             'alerts_enabled' => (bool) ($data['alerts_enabled'] ?? $request->boolean('alerts_enabled')),
-            'owner_user_id' => $data['owner_user_id'] ?? null,
         ]);
 
         if ($password !== '') {

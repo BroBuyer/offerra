@@ -34,7 +34,6 @@ class StoreOriginServerRequest extends FormRequest
             'max_offers' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'is_active' => ['sometimes', 'boolean'],
             'alerts_enabled' => ['sometimes', 'boolean'],
-            'owner_user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
         ];
     }
 }

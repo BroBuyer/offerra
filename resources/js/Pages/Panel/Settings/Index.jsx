@@ -621,17 +621,6 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                     )}
                 </section>
 
-                <section className="card">
-                    <div>
-                        <h3>Сервери</h3>
-                        <p className="card-desc">
-                            SSH більше не задається тут. Усі origin-сервери веде адмін у розділі
-                            Origin Servers, а нові оффери самі розкидаються по активних серверах
-                            пулу (запасні залишаються вільними).
-                        </p>
-                    </div>
-                </section>
-
                 <div className="btn-row">
                     <button type="submit" className="btn btn-primary" disabled={processing}>
                         {processing ? 'Збереження…' : 'Зберегти налаштування'}

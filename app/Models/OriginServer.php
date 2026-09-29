@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Support\DeployDriver;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OriginServer extends Model
 {
@@ -36,7 +35,6 @@ class OriginServer extends Model
         'role',
         'max_offers',
         'alerts_enabled',
-        'owner_user_id',
         'health',
     ];
 
@@ -103,11 +101,6 @@ class OriginServer extends Model
         return $free === null || $free > 0;
     }
 
-    public function owner(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'owner_user_id');
-    }
-
     public function hasSshCredentials(): bool
     {
         return filled($this->host)
@@ -167,9 +160,6 @@ class OriginServer extends Model
             'free_capacity' => $this->freeCapacityFrom($offerCount),
             'accepts_new_offers' => $this->acceptsNewOffers($offerCount),
             'alerts_enabled' => (bool) ($this->alerts_enabled ?? true),
-            'owner_user_id' => $this->owner_user_id,
-            'owner_name' => $this->owner?->name,
-            'owner_email' => $this->owner?->email,
             'password' => filled($this->password) ? (string) $this->password : '',
             'has_password' => filled($this->password),
             'has_ssh' => $this->hasSshCredentials(),

@@ -83,13 +83,11 @@ const emptyCreate = (defaultPath) => ({
     max_offers: '',
     is_active: true,
     alerts_enabled: true,
-    owner_user_id: '',
 });
 
 export default function OriginServersIndex({
     servers = [],
     orphans = [],
-    users = [],
     defaultPath = '/var/www/offers/{domain}/public_html',
     poolSummary = null,
     roles = ['pool', 'spare', 'drain'],
@@ -122,7 +120,6 @@ export default function OriginServersIndex({
         max_offers: '',
         is_active: true,
         alerts_enabled: true,
-        owner_user_id: '',
         has_password: false,
     });
 
@@ -191,7 +188,6 @@ export default function OriginServersIndex({
             max_offers: Number(data.max_offers) || 0,
             is_active: Boolean(data.is_active),
             alerts_enabled: Boolean(data.alerts_enabled),
-            owner_user_id: data.owner_user_id === '' ? null : Number(data.owner_user_id),
         };
 
         setSubmitError('');
@@ -232,7 +228,6 @@ export default function OriginServersIndex({
             max_offers: server.max_offers ? String(server.max_offers) : '',
             is_active: server.is_active !== false,
             alerts_enabled: server.alerts_enabled !== false,
-            owner_user_id: server.owner_user_id ? String(server.owner_user_id) : '',
             has_password: Boolean(server.has_password || server.has_ssh || server.password),
         });
     };
@@ -261,9 +256,6 @@ export default function OriginServersIndex({
             max_offers: Number(editData.max_offers) || 0,
             is_active: Boolean(editData.is_active),
             alerts_enabled: Boolean(editData.alerts_enabled),
-            owner_user_id: editData.owner_user_id === ''
-                ? null
-                : Number(editData.owner_user_id),
         };
 
         if (!payload.host) {
@@ -456,7 +448,6 @@ export default function OriginServersIndex({
                             <th>Статус</th>
                             <th>Офферів</th>
                             <th>SSH</th>
-                            <th>Власник</th>
                             <th />
                         </tr>
                     </thead>
@@ -488,7 +479,6 @@ export default function OriginServersIndex({
                                     )}
                                 </td>
                                 <td>{server.has_ssh ? 'так' : 'немає'}</td>
-                                <td className="field-hint">{server.owner_email || '—'}</td>
                                 <td>
                                     <button
                                         type="button"
@@ -527,7 +517,7 @@ export default function OriginServersIndex({
                         ))}
                         {servers.length === 0 && (
                             <tr>
-                                <td colSpan={12} className="field-hint">
+                                <td colSpan={11} className="field-hint">
                                     Реєстр порожній — натисніть «+» або «Синхронізувати».
                                 </td>
                             </tr>
@@ -637,18 +627,6 @@ export default function OriginServersIndex({
                                 <p className="field-hint">
                                     Натисни око, щоб побачити пароль. Після збереження він знову підтягнеться сюди.
                                 </p>
-                            </div>
-                            <div className="field">
-                                <label>Власник</label>
-                                <select
-                                    value={editData.owner_user_id}
-                                    onChange={(e) => setEditField('owner_user_id', e.target.value)}
-                                >
-                                    <option value="">—</option>
-                                    {users.map((u) => (
-                                        <option key={u.id} value={u.id}>{u.name}</option>
-                                    ))}
-                                </select>
                             </div>
                         </div>
                         <div className="field-row">
@@ -835,19 +813,6 @@ export default function OriginServersIndex({
                                         onChange={(e) => createForm.setData('password', e.target.value)}
                                         autoComplete="new-password"
                                     />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="os-owner">Власник (алерти)</label>
-                                    <select
-                                        id="os-owner"
-                                        value={createForm.data.owner_user_id}
-                                        onChange={(e) => createForm.setData('owner_user_id', e.target.value)}
-                                    >
-                                        <option value="">—</option>
-                                        {users.map((u) => (
-                                            <option key={u.id} value={u.id}>{u.name} ({u.email})</option>
-                                        ))}
-                                    </select>
                                 </div>
                             </div>
                             <div className="field-row">

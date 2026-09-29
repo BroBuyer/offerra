@@ -7,6 +7,7 @@ use App\Models\OriginServer;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OriginHealthMonitor
 {
@@ -295,20 +296,10 @@ class OriginHealthMonitor
         $text = $this->alertTextForServer($server, $result, $kind);
         $sent = false;
 
-        $server->loadMissing('owner.settings');
-        $ownerSettings = $server->owner?->settings;
-        if ($ownerSettings && $this->settingsHasTelegram($ownerSettings) && ($ownerSettings->origin_health_alerts !== false)) {
-            $sent = $this->telegram->send($ownerSettings, $text) || $sent;
-        }
-
-        // Always try admin TG as well (dedupe if same settings).
         $admins = User::query()->where('role', User::ROLE_ADMIN)->with('settings')->get();
         foreach ($admins as $admin) {
             $settings = $admin->settings;
             if (! $settings || ! $this->settingsHasTelegram($settings)) {
-                continue;
-            }
-            if ($ownerSettings && $settings->id === $ownerSettings->id) {
                 continue;
             }
             $this->telegram->send($settings, $text);
@@ -316,20 +307,10 @@ class OriginHealthMonitor
         }
 
         if (! $sent) {
-            // Fallback: any user settings with TG that currently points deploy_host here.
-            UserSetting::query()
-                ->whereNotNull('deploy_host')
-                ->where('deploy_host', '!=', '')
-                ->get()
-                ->each(function (UserSetting $settings) use ($server, $text): void {
-                    if ($this->sync->normalizeHost((string) $settings->deploy_host) !== $this->sync->normalizeHost((string) $server->host)) {
-                        return;
-                    }
-                    if (! $this->settingsHasTelegram($settings) || $settings->origin_health_alerts === false) {
-                        return;
-                    }
-                    $this->telegram->send($settings, $text);
-                });
+            Log::warning('Origin health alert had no admin Telegram to send to', [
+                'host' => $server->host,
+                'kind' => $kind,
+            ]);
         }
     }
 
@@ -383,13 +364,11 @@ class OriginHealthMonitor
         $offers = $this->offerCountOnHost($host);
         $issues = is_array($result['issues'] ?? null) ? $result['issues'] : [];
         $detail = $issues !== [] ? implode(', ', $issues) : (string) ($result['message'] ?? '');
-        $owner = trim((string) ($server->owner?->name ?? ''));
 
         return match ($kind) {
             'down' => implode("\n", array_filter([
                 '🔴 Origin недоступний',
                 "Сервер: {$host}".($label !== $host ? " ({$label})" : ''),
-                $owner !== '' ? "Власник: {$owner}" : null,
                 $detail !== '' ? $detail : 'SSH/HTTP не відповідає',
                 "Оферів на цьому хості: {$offers}",
                 '→ Перевірте сервер у розділі Origin-сервери.',
@@ -397,7 +376,6 @@ class OriginHealthMonitor
             'degraded' => implode("\n", array_filter([
                 '⚠️ Origin з проблемами',
                 "Сервер: {$host}".($label !== $host ? " ({$label})" : ''),
-                $owner !== '' ? "Власник: {$owner}" : null,
                 $detail !== '' ? $detail : 'Сервер живий, але є проблеми',
                 "Оферів на цьому хості: {$offers}",
                 '→ Перевірте диск, nginx/php-fpm або SSH-креди.',
@@ -405,7 +383,6 @@ class OriginHealthMonitor
             default => implode("\n", array_filter([
                 '✅ Origin знову доступний',
                 "Сервер: {$host}".($label !== $host ? " ({$label})" : ''),
-                $owner !== '' ? "Власник: {$owner}" : null,
                 "Оферів на цьому хості: {$offers}",
             ])),
         };
