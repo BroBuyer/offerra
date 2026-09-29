@@ -1797,6 +1797,11 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
+.col-index .indexing-cell {
+  align-items: center;
+  min-width: 0;
+}
+
 .index-tick {
   display: inline-flex;
   align-items: center;

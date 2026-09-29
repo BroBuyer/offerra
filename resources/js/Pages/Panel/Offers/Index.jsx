@@ -1700,7 +1700,7 @@ export default function OffersIndex({
                                         </td>
                                     )}
                                     {colVisible('indexing') && (
-                                        <td>
+                                        <td className="col-index">
                                             <div className="indexing-cell">
                                                 {canManageOffer(offer) ? (
                                                     <label
