@@ -39,3 +39,13 @@ scripts/_tmp_*
 scripts/_tmp-*
 templates/**/_mirror/
 templates/**/_live-extracted.css
+
+# One-off agent runners: throwaway, and they carry panel/server passwords.
+scripts/_*.cjs
+scripts/_*.mjs
+scripts/_*.php
+
+# One-off scripts with hardcoded provider credentials. Never commit these —
+# GitHub push protection rejects the whole push when they slip in.
+scripts/map-ego-*
+scripts/send-lead-*
