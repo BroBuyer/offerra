@@ -219,13 +219,14 @@ export default function OfferStats({
                                 <SortTh label="Ост. лід" column="last_lead_at" filters={filters} onSort={onSort} />
                                 <SortTh label="Депи" column="deposits_count" filters={filters} onSort={onSort} align="right" />
                                 <SortTh label="Ост. деп" column="last_deposit_at" filters={filters} onSort={onSort} />
-                                <SortTh label="Indexed" column="indexed_at" filters={filters} onSort={onSort} />
+                                <SortTh label="Подано" column="indexed_at" filters={filters} onSort={onSort} />
+                                <SortTh label="Індекс" column="google_indexed_at" filters={filters} onSort={onSort} />
                             </tr>
                         </thead>
                         <tbody>
                             {(rows?.data || []).length === 0 && (
                                 <tr>
-                                    <td colSpan={showUserColumn ? 12 : 11} className="muted">
+                                    <td colSpan={showUserColumn ? 13 : 12} className="muted">
                                         Немає оферів за фільтром.
                                     </td>
                                 </tr>
@@ -253,6 +254,13 @@ export default function OfferStats({
                                     <td className="text-right">{row.deposits_count}</td>
                                     <td className="muted">{formatDt(row.last_deposit_at)}</td>
                                     <td className="muted">{formatDt(row.indexed_at)}</td>
+                                    <td>
+                                        {row.google_indexed ? (
+                                            <span className="badge badge-ok" title={row.google_indexed_at || undefined}>так</span>
+                                        ) : (
+                                            <span className="muted">—</span>
+                                        )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

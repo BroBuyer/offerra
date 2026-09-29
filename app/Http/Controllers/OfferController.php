@@ -729,7 +729,13 @@ class OfferController extends Controller
 
         $offer->update([
             'submitted_for_indexing' => $submitted,
-            'indexed_at' => $submitted ? now() : null,
+            'indexed_at' => $submitted ? ($offer->indexed_at ?? now()) : null,
+            ...($submitted ? [] : [
+                'google_index_status' => null,
+                'google_indexed_at' => null,
+                'google_index_checked_at' => null,
+                'google_index_coverage' => null,
+            ]),
         ]);
 
         return redirect()->back();

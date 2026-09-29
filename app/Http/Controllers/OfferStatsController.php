@@ -27,6 +27,7 @@ class OfferStatsController extends Controller
         'deposits_count',
         'last_deposit_at',
         'indexed_at',
+        'google_indexed_at',
         'deployed_at',
     ];
 
@@ -155,6 +156,9 @@ class OfferStatsController extends Controller
             'lang' => $offer->lang,
             'status' => $offer->status,
             'indexed_at' => $offer->indexed_at?->format('Y-m-d H:i:s'),
+            'google_index_status' => (string) ($offer->google_index_status ?? ''),
+            'google_indexed' => (bool) $offer->google_indexed_at,
+            'google_indexed_at' => $offer->google_indexed_at?->format('Y-m-d H:i:s'),
             'deployed_at' => $offer->deployed_at?->format('Y-m-d H:i:s'),
             'clicks_geo_count' => (int) ($stats?->clicks_geo_count ?? 0),
             'last_click_geo_at' => $stats?->last_click_geo_at?->format('Y-m-d H:i:s'),

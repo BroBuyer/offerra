@@ -85,6 +85,66 @@ class GoogleSearchConsoleClient
         return $this->deleteSite($accessToken, $siteUrl);
     }
 
+    /**
+     * URL Inspection: is this homepage on Google yet.
+     *
+     * @return array{
+     *     verdict: string,
+     *     coverage: string,
+     *     indexing_state: string,
+     *     last_crawl_at: ?string,
+     *     indexed: bool
+     * }
+     */
+    public function inspectUrl(Offer $offer, UserSetting $settings): array
+    {
+        $domain = strtolower(trim((string) $offer->domain));
+        if ($domain === '') {
+            throw new RuntimeException('Offer has no domain.');
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+        $siteUrl = trim((string) ($gsc['site_url'] ?? ''));
+        if ($siteUrl === '') {
+            $siteUrl = 'https://'.$domain.'/';
+        }
+
+        $inspectionUrl = 'https://'.$domain.'/';
+        $accessToken = $this->oauth->accessTokenFor($settings);
+
+        $response = Http::timeout(30)
+            ->withToken($accessToken)
+            ->acceptJson()
+            ->asJson()
+            ->post('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect', [
+                'inspectionUrl' => $inspectionUrl,
+                'siteUrl' => $siteUrl,
+                'languageCode' => 'en-US',
+            ]);
+
+        if (! $response->successful()) {
+            throw new RuntimeException(
+                'Search Console URL inspection failed (HTTP '.$response->status().'): '.$this->shortError((string) $response->body()),
+            );
+        }
+
+        $index = $response->json('inspectionResult.indexStatusResult') ?? [];
+        $verdict = strtoupper(trim((string) ($index['verdict'] ?? '')));
+        $coverage = trim((string) ($index['coverageState'] ?? ''));
+        $indexingState = strtoupper(trim((string) ($index['indexingState'] ?? '')));
+        $lastCrawl = trim((string) ($index['lastCrawlTime'] ?? ''));
+        $indexed = in_array($verdict, ['PASS', 'PARTIAL'], true);
+
+        return [
+            'verdict' => $verdict,
+            'coverage' => $coverage,
+            'indexing_state' => $indexingState,
+            'last_crawl_at' => $lastCrawl !== '' ? $lastCrawl : null,
+            'indexed' => $indexed,
+        ];
+    }
+
     public function assertHttpsLive(string $domain): void
     {
         $this->assertPublicDnsResolves($domain);

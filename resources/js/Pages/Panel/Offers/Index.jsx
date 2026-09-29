@@ -23,7 +23,8 @@ const OFFER_TABLE_COLUMNS = [
     { id: 'deployed', label: 'Deployed' },
     { id: 'status', label: 'Status' },
     { id: 'dns', label: 'DNS' },
-    { id: 'indexing', label: 'Indexing' },
+    { id: 'indexing', label: 'Подано' },
+    { id: 'google_index', label: 'Індекс' },
     { id: 'actions', label: 'Actions', locked: true },
 ];
 
@@ -129,6 +130,43 @@ function infraBadge(offer) {
         default:
             return null;
     }
+}
+
+function googleIndexHint(offer) {
+    if (offer.google_indexed) {
+        return {
+            checked: true,
+            text: 'Так',
+            title: offer.google_indexed_at
+                ? `В індексі Google: ${offer.google_indexed_at}${offer.google_index_coverage ? ` · ${offer.google_index_coverage}` : ''}`
+                : (offer.google_index_coverage || 'В індексі Google'),
+        };
+    }
+
+    const status = offer.google_index_status || '';
+    const coverage = offer.google_index_coverage || '';
+
+    if (status === 'waiting' || (offer.submitted_for_indexing && !status)) {
+        return {
+            checked: false,
+            text: '…',
+            title: 'Очікує перевірку (~24 год після подачі, далі раз на добу)',
+        };
+    }
+    if (status === 'unknown') {
+        return { checked: false, text: '—', title: coverage || 'Google ще не знає цей URL' };
+    }
+    if (status === 'not_indexed') {
+        return { checked: false, text: '—', title: coverage || 'Знайдено/прокраулено, ще не в індексі' };
+    }
+    if (status === 'timeout') {
+        return { checked: false, text: 'ні', title: coverage || 'Не в індексі за 14 днів після подачі' };
+    }
+    if (status === 'error') {
+        return { checked: false, text: '!', title: coverage || 'Помилка URL Inspection' };
+    }
+
+    return { checked: false, text: '—', title: 'Ще не подано в Search Console' };
 }
 
 function formatOfferError(message) {
@@ -347,13 +385,13 @@ function buildActiveFilterChips(filters, users) {
     if (filters.indexing === 'yes') {
         chips.push({
             id: 'indexing',
-            label: 'Indexing: yes',
+            label: 'Подано: так',
             clear: { indexing: '' },
         });
     } else if (filters.indexing === 'no') {
         chips.push({
             id: 'indexing',
-            label: 'Indexing: no',
+            label: 'Подано: ні',
             clear: { indexing: '' },
         });
     }
@@ -1257,13 +1295,13 @@ export default function OffersIndex({
                     </select>
                 )}
                 <select
-                    aria-label="Indexing"
+                    aria-label="Подано в GSC"
                     value={filters.indexing ?? ''}
                     onChange={(e) => reloadOffers({ indexing: e.target.value })}
                 >
-                    <option value="">Indexing</option>
-                    <option value="no">Not submitted</option>
-                    <option value="yes">Submitted</option>
+                    <option value="">Подано</option>
+                    <option value="no">Не подано</option>
+                    <option value="yes">Подано</option>
                 </select>
                 <select
                     aria-label="Availability dots"
@@ -1487,7 +1525,12 @@ export default function OffersIndex({
                             {colVisible('deployed') && <th className="col-deployed">Deployed</th>}
                             {colVisible('status') && <th>Status</th>}
                             {colVisible('dns') && <th>DNS</th>}
-                            {colVisible('indexing') && <th>Indexing</th>}
+                            {colVisible('indexing') && (
+                                <th title="Sitemap відправлено в Search Console">Подано</th>
+                            )}
+                            {colVisible('google_index') && (
+                                <th title="Google вже тримає URL у індексі (URL Inspection)">Індекс</th>
+                            )}
                             {colVisible('actions') && <th />}
                         </tr>
                     </thead>
@@ -1645,7 +1688,7 @@ export default function OffersIndex({
                                                             offer.gsc_error
                                                                 ? offer.gsc_error
                                                                 : offer.submitted_for_indexing && offer.indexed_at
-                                                                  ? `Подано: ${offer.indexed_at}`
+                                                                  ? `Подано в GSC: ${offer.indexed_at}`
                                                                   : 'Автоматично після DNS + зеленого кружечка (якщо Google підключений)'
                                                         }
                                                     >
@@ -1676,6 +1719,25 @@ export default function OffersIndex({
                                                     </div>
                                                 )}
                                             </div>
+                                        </td>
+                                    )}
+                                    {colVisible('google_index') && (
+                                        <td>
+                                            {(() => {
+                                                const idx = googleIndexHint(offer);
+                                                return (
+                                                    <label className="indexing-check indexing-check--readonly" title={idx.title}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={idx.checked}
+                                                            readOnly
+                                                            disabled
+                                                            tabIndex={-1}
+                                                        />
+                                                        <span className="indexing-check__label">{idx.text}</span>
+                                                    </label>
+                                                );
+                                            })()}
                                         </td>
                                     )}
                                     {colVisible('actions') && (
@@ -1784,7 +1846,7 @@ export default function OffersIndex({
                                             onChange={(e) => toggleIndexing(offer, e.target.checked)}
                                         />
                                         <span className="indexing-check__label">
-                                            Індексація:{' '}
+                                            Подано:{' '}
                                             {offer.submitted_for_indexing
                                                 ? 'Так'
                                                 : offer.gsc_status === 'waiting'
@@ -1797,9 +1859,18 @@ export default function OffersIndex({
                                 </div>
                             ) : (
                                 <span className="field-hint">
-                                    Індексація: {offer.submitted_for_indexing ? 'Так' : '—'}
+                                    Подано: {offer.submitted_for_indexing ? 'Так' : '—'}
                                 </span>
                             )}
+                            {(() => {
+                                const idx = googleIndexHint(offer);
+                                return (
+                                    <label className="indexing-check indexing-check--readonly" title={idx.title}>
+                                        <input type="checkbox" checked={idx.checked} readOnly disabled tabIndex={-1} />
+                                        <span className="indexing-check__label">Індекс: {idx.text}</span>
+                                    </label>
+                                );
+                            })()}
                             {offer.gsc_error && (
                                 <p className="field-hint" style={{ color: '#f87171', margin: '0.35rem 0 0' }}>
                                     {formatOfferError(offer.gsc_error)}

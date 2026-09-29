@@ -35,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ->everyTenMinutes()
             ->withoutOverlapping(9);
 
+        // GSC URL inspection: 24h after sitemap submit, then daily until indexed or 14d.
+        $schedule->command('offers:inspect-google-index')
+            ->hourly()
+            ->withoutOverlapping(50);
+
         // Daily stale-dead scan for Stats/Archive panel banner (no auto-archive).
         $schedule->command('offers:scan-stale-dead')
             ->dailyAt('12:00')

@@ -13,6 +13,7 @@ class OfferGscSubmitter
 {
     public function __construct(
         private readonly GoogleSearchConsoleClient $gsc,
+        private readonly OfferGoogleIndexInspector $indexInspector,
     ) {}
 
     public function canSubmit(Offer $offer): bool
@@ -140,8 +141,15 @@ class OfferGscSubmitter
             $fresh->update([
                 'submitted_for_indexing' => true,
                 'indexed_at' => $fresh->indexed_at ?? now(),
+                'google_index_status' => $fresh->google_indexed_at
+                    ? $fresh->google_index_status
+                    : OfferGoogleIndexInspector::STATUS_WAITING,
                 'infra_meta' => $meta,
             ]);
+
+            if (! $fresh->google_indexed_at) {
+                $this->indexInspector->queueFirstCheck($fresh);
+            }
 
             return [
                 'site_url' => $result['site_url'],

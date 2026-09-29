@@ -160,6 +160,10 @@ class OfferTeardownService
             'infra_meta' => $infraMeta,
             'submitted_for_indexing' => false,
             'indexed_at' => null,
+            'google_index_status' => null,
+            'google_indexed_at' => null,
+            'google_index_checked_at' => null,
+            'google_index_coverage' => null,
             'teardown_meta' => $meta,
         ]);
     }

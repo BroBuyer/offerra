@@ -2130,6 +2130,15 @@ tr:last-child td { border-bottom: none; }
   color: var(--accent);
 }
 
+.indexing-check--readonly {
+  cursor: default;
+}
+
+.indexing-check--readonly input {
+  cursor: default;
+  accent-color: var(--accent);
+}
+
 .domain-cell {
   display: flex;
   align-items: center;
