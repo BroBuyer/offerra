@@ -2165,6 +2165,7 @@ tr:last-child td { border-bottom: none; }
   height: 1rem;
   margin: 0;
   cursor: pointer;
+  accent-color: var(--accent);
 }
 
 .indexing-check__label {

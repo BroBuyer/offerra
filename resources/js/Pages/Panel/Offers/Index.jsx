@@ -132,28 +132,6 @@ function infraBadge(offer) {
     }
 }
 
-function submittedTick(offer) {
-    if (offer.submitted_for_indexing) {
-        return {
-            tone: 'ok',
-            title: offer.indexed_at
-                ? `Submitted to Search Console: ${offer.indexed_at}`
-                : 'Submitted to Search Console',
-        };
-    }
-    if (offer.gsc_status === 'failed') {
-        return {
-            tone: 'fail',
-            title: offer.gsc_error || 'Search Console submit failed',
-        };
-    }
-    if (offer.gsc_status === 'waiting') {
-        return { tone: 'wait', title: 'Submitting sitemap to Search Console…' };
-    }
-
-    return { tone: 'wait', title: 'Not submitted to Search Console yet' };
-}
-
 function indexedTick(offer) {
     if (offer.google_indexed) {
         return {
@@ -1722,28 +1700,37 @@ export default function OffersIndex({
                                         </td>
                                     )}
                                     {colVisible('indexing') && (
-                                        <td className="col-index">
-                                            {(() => {
-                                                const mark = submittedTick(offer);
-                                                return (
-                                                    <>
-                                                        <IndexTick
-                                                            tone={mark.tone}
-                                                            title={offer.gsc_error ? offer.gsc_error : mark.title}
-                                                            busy={indexingId === offer.id}
-                                                            onClick={canManageOffer(offer)
-                                                                ? () => toggleIndexing(offer, !offer.submitted_for_indexing)
-                                                                : undefined}
-                                                            label={offer.submitted_for_indexing ? 'Submitted' : 'Not submitted'}
+                                        <td>
+                                            <div className="indexing-cell">
+                                                {canManageOffer(offer) ? (
+                                                    <label
+                                                        className="indexing-check"
+                                                        title={
+                                                            offer.gsc_error
+                                                                ? offer.gsc_error
+                                                                : offer.submitted_for_indexing && offer.indexed_at
+                                                                  ? `Submitted to GSC: ${offer.indexed_at}`
+                                                                  : 'Tick if you submitted indexing manually (auto after DNS + green availability)'
+                                                        }
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={Boolean(offer.submitted_for_indexing)}
+                                                            disabled={indexingId === offer.id}
+                                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
                                                         />
-                                                        {offer.gsc_error && (
-                                                            <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
-                                                                {formatOfferError(offer.gsc_error)}
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                );
-                                            })()}
+                                                    </label>
+                                                ) : (
+                                                    <span className="field-hint">
+                                                        {offer.submitted_for_indexing ? 'yes' : '—'}
+                                                    </span>
+                                                )}
+                                                {offer.gsc_error && (
+                                                    <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
+                                                        {formatOfferError(offer.gsc_error)}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </td>
                                     )}
                                     {colVisible('google_index') && (
@@ -1856,21 +1843,36 @@ export default function OffersIndex({
                         )}
 
                         <div className="offer-mobile-card__footer">
+                            {canManageOffer(offer) ? (
+                                <div className="indexing-cell">
+                                    <label
+                                        className="indexing-check"
+                                        title={
+                                            offer.gsc_error
+                                                ? offer.gsc_error
+                                                : offer.submitted_for_indexing && offer.indexed_at
+                                                  ? `Submitted to GSC: ${offer.indexed_at}`
+                                                  : 'Tick if you submitted indexing manually'
+                                        }
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(offer.submitted_for_indexing)}
+                                            disabled={indexingId === offer.id}
+                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                        />
+                                        <span className="indexing-check__label">Submitted</span>
+                                    </label>
+                                </div>
+                            ) : (
+                                <span className="field-hint">
+                                    Submitted: {offer.submitted_for_indexing ? 'yes' : '—'}
+                                </span>
+                            )}
                             {(() => {
-                                const submitted = submittedTick(offer);
                                 const indexed = indexedTick(offer);
                                 return (
                                     <div className="offer-mobile-ticks">
-                                        <span className="field-hint">Submitted</span>
-                                        <IndexTick
-                                            tone={submitted.tone}
-                                            title={offer.gsc_error ? offer.gsc_error : submitted.title}
-                                            busy={indexingId === offer.id}
-                                            onClick={canManageOffer(offer)
-                                                ? () => toggleIndexing(offer, !offer.submitted_for_indexing)
-                                                : undefined}
-                                            label={offer.submitted_for_indexing ? 'Submitted' : 'Not submitted'}
-                                        />
                                         <span className="field-hint">Indexed</span>
                                         <IndexTick tone={indexed.tone} title={indexed.title} />
                                     </div>
