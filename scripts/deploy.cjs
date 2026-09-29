@@ -91,10 +91,15 @@ async function main() {
   }
 
   const dirty = await exec(conn, `cd ${REMOTE} && git status --porcelain`, { timeoutMs: 60000 });
-  const dirtyLines = dirty.out.split("\n").map((l) => l.trim()).filter(Boolean);
+  const dirtyLines = dirty.out
+    .split("\n")
+    .map((l) => l.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "").trim())
+    .filter(Boolean)
+    .filter((l) => !l.startsWith("??"));
   if (dirtyLines.length > 0 && !FORCE) {
     throw new Error(
-      `Panel checkout has ${dirtyLines.length} local change(s). Commit them to git or rerun with --force to discard.`,
+      `Panel checkout has ${dirtyLines.length} tracked change(s). Commit them to git or rerun with --force to discard.\n` +
+        dirtyLines.slice(0, 20).join("\n"),
     );
   }
 

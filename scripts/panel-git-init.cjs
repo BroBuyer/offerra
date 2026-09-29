@@ -98,15 +98,26 @@ async function main() {
   const fresh = isRepo.out.includes("no");
 
   if (fresh) {
-    step("git init + remote");
+    step("git init");
     await exec(conn, `cd ${REMOTE} && git init -q -b ${BRANCH}`, { allowFail: false });
-    await exec(conn, `cd ${REMOTE} && git remote add origin ${REPO_HTTPS}`, { allowFail: false });
-    // Prod only ever reads; never let it try to push.
-    await exec(conn, `cd ${REMOTE} && git remote set-url --push origin DISABLED`);
     await exec(conn, `cd ${REMOTE} && git config core.fileMode false`);
   } else {
     console.log("already a git checkout, reusing it");
   }
+
+  step("ensure origin remote");
+  // A previous failed init can leave an empty .git with no remotes. Always
+  // (re)point origin at GitHub so fetch is never "origin does not appear to be
+  // a git repository". Prefer SSH when a deploy key exists.
+  const hasKey = await exec(conn, `test -f /root/.ssh/id_ed25519 && echo yes || echo no`, {
+    timeoutMs: 15000,
+  });
+  const originUrl = hasKey.out.includes("yes") ? REPO_SSH : REPO_HTTPS;
+  await exec(conn, `cd ${REMOTE} && git remote remove origin`, { timeoutMs: 15000 });
+  await exec(conn, `cd ${REMOTE} && git remote add origin ${originUrl}`, { allowFail: false });
+  // Prod only ever reads; never let it try to push.
+  await exec(conn, `cd ${REMOTE} && git remote set-url --push origin DISABLED`);
+  await exec(conn, `cd ${REMOTE} && git remote -v`);
 
   step(`fetch origin/${BRANCH}`);
   await exec(conn, `cd ${REMOTE} && git fetch --depth=1 origin ${BRANCH}`, {
@@ -125,7 +136,10 @@ async function main() {
 
   step("drift: prod vs git (tracked files only)");
   const status = await exec(conn, `cd ${REMOTE} && git status --porcelain`, { timeoutMs: 120000 });
-  const lines = status.out.split("\n").map((l) => l.trimEnd()).filter((l) => l.trim());
+  const lines = status.out
+    .split("\n")
+    .map((l) => l.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "").trimEnd())
+    .filter((l) => l.trim());
   const modified = lines.filter((l) => l.startsWith(" M") || l.startsWith("M "));
   const deleted = lines.filter((l) => l.includes("D "));
   const untracked = lines.filter((l) => l.startsWith("??"));
