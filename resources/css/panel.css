@@ -1792,6 +1792,52 @@ a:hover { text-decoration: underline; }
   color: var(--muted);
 }
 
+.col-index {
+  min-width: 4.5rem;
+  text-align: center;
+}
+
+.index-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: inherit;
+}
+
+.index-tick--ok {
+  color: var(--accent);
+}
+
+.index-tick--wait {
+  color: var(--muted);
+}
+
+.index-tick--fail {
+  color: #f87171;
+}
+
+.index-tick--button {
+  cursor: pointer;
+}
+
+.index-tick--button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.offer-mobile-ticks {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
 @keyframes dns-pulse {
   0%, 100% { opacity: 0.35; }
   50% { opacity: 1; }
@@ -2128,15 +2174,6 @@ tr:last-child td { border-bottom: none; }
 
 .indexing-check input:checked + .indexing-check__label {
   color: var(--accent);
-}
-
-.indexing-check--readonly {
-  cursor: default;
-}
-
-.indexing-check--readonly input {
-  cursor: default;
-  accent-color: var(--accent);
 }
 
 .domain-cell {

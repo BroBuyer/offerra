@@ -27,7 +27,7 @@ class OfferGoogleIndexInspector
 
     public const RECHECK_HOURS = 24;
 
-    public const TIMEOUT_DAYS = 14;
+    public const TIMEOUT_DAYS = 7;
 
     public function __construct(
         private readonly GoogleSearchConsoleClient $gsc,

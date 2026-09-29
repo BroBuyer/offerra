@@ -521,7 +521,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                         Файл <code>google….html</code> з GSC — один раз тут, далі додається до кожного нового оффера.
                         Після підключення Google: коли DNS готовий і сайт реально відкривається (зелений кружечок),
                         система сама додає домен у Search Console і сабмітить sitemap.
-                        Галочка «Індекс» з’явиться, коли Google реально візьме URL (перевірка через ~24 год, далі раз на добу).
+                        Зелена галочка Indexed з’явиться, коли Google візьме URL (перевірка через ~24 год, далі раз на добу; червона — якщо за 7 днів немає).
                     </p>
                     <input
                         ref={gscVerificationInputRef}

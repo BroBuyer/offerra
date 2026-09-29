@@ -35,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ->everyTenMinutes()
             ->withoutOverlapping(9);
 
-        // GSC URL inspection: 24h after sitemap submit, then daily until indexed or 14d.
+        // GSC URL inspection: 24h after sitemap submit, then daily until indexed or 7d.
         $schedule->command('offers:inspect-google-index')
             ->hourly()
             ->withoutOverlapping(50);

@@ -23,8 +23,8 @@ const OFFER_TABLE_COLUMNS = [
     { id: 'deployed', label: 'Deployed' },
     { id: 'status', label: 'Status' },
     { id: 'dns', label: 'DNS' },
-    { id: 'indexing', label: 'Подано' },
-    { id: 'google_index', label: 'Індекс' },
+    { id: 'indexing', label: 'Submitted' },
+    { id: 'google_index', label: 'Indexed' },
     { id: 'actions', label: 'Actions', locked: true },
 ];
 
@@ -132,41 +132,84 @@ function infraBadge(offer) {
     }
 }
 
-function googleIndexHint(offer) {
+function submittedTick(offer) {
+    if (offer.submitted_for_indexing) {
+        return {
+            tone: 'ok',
+            title: offer.indexed_at
+                ? `Submitted to Search Console: ${offer.indexed_at}`
+                : 'Submitted to Search Console',
+        };
+    }
+    if (offer.gsc_status === 'failed') {
+        return {
+            tone: 'fail',
+            title: offer.gsc_error || 'Search Console submit failed',
+        };
+    }
+    if (offer.gsc_status === 'waiting') {
+        return { tone: 'wait', title: 'Submitting sitemap to Search Console…' };
+    }
+
+    return { tone: 'wait', title: 'Not submitted to Search Console yet' };
+}
+
+function indexedTick(offer) {
     if (offer.google_indexed) {
         return {
-            checked: true,
-            text: 'Так',
+            tone: 'ok',
             title: offer.google_indexed_at
-                ? `В індексі Google: ${offer.google_indexed_at}${offer.google_index_coverage ? ` · ${offer.google_index_coverage}` : ''}`
-                : (offer.google_index_coverage || 'В індексі Google'),
+                ? `Indexed by Google: ${offer.google_indexed_at}${offer.google_index_coverage ? ` · ${offer.google_index_coverage}` : ''}`
+                : (offer.google_index_coverage || 'Indexed by Google'),
         };
     }
 
-    const status = offer.google_index_status || '';
     const coverage = offer.google_index_coverage || '';
-
-    if (status === 'waiting' || (offer.submitted_for_indexing && !status)) {
+    if (offer.google_index_status === 'timeout') {
         return {
-            checked: false,
-            text: '…',
-            title: 'Очікує перевірку (~24 год після подачі, далі раз на добу)',
+            tone: 'fail',
+            title: coverage || 'Not indexed within 7 days after submit',
         };
     }
-    if (status === 'unknown') {
-        return { checked: false, text: '—', title: coverage || 'Google ще не знає цей URL' };
+    if (offer.google_index_status === 'error') {
+        return { tone: 'wait', title: coverage || 'Index check error — will retry' };
     }
-    if (status === 'not_indexed') {
-        return { checked: false, text: '—', title: coverage || 'Знайдено/прокраулено, ще не в індексі' };
+    if (offer.google_index_status === 'not_indexed') {
+        return { tone: 'wait', title: coverage || 'Crawled, not in the index yet' };
     }
-    if (status === 'timeout') {
-        return { checked: false, text: 'ні', title: coverage || 'Не в індексі за 14 днів після подачі' };
+    if (offer.google_index_status === 'unknown') {
+        return { tone: 'wait', title: coverage || 'Google does not know this URL yet' };
     }
-    if (status === 'error') {
-        return { checked: false, text: '!', title: coverage || 'Помилка URL Inspection' };
+    if (offer.submitted_for_indexing || offer.google_index_status === 'waiting') {
+        return { tone: 'wait', title: 'Waiting for Google (~24h after submit, then daily)' };
     }
 
-    return { checked: false, text: '—', title: 'Ще не подано в Search Console' };
+    return { tone: 'wait', title: 'Not submitted yet' };
+}
+
+function IndexTick({ tone, title, onClick, busy = false, label }) {
+    const className = `index-tick index-tick--${tone}${onClick ? ' index-tick--button' : ''}`;
+
+    if (typeof onClick === 'function') {
+        return (
+            <button
+                type="button"
+                className={className}
+                title={title}
+                aria-label={label || title}
+                disabled={busy}
+                onClick={onClick}
+            >
+                ✓
+            </button>
+        );
+    }
+
+    return (
+        <span className={className} title={title} aria-label={label || title}>
+            ✓
+        </span>
+    );
 }
 
 function formatOfferError(message) {
@@ -385,13 +428,13 @@ function buildActiveFilterChips(filters, users) {
     if (filters.indexing === 'yes') {
         chips.push({
             id: 'indexing',
-            label: 'Подано: так',
+            label: 'Submitted: yes',
             clear: { indexing: '' },
         });
     } else if (filters.indexing === 'no') {
         chips.push({
             id: 'indexing',
-            label: 'Подано: ні',
+            label: 'Submitted: no',
             clear: { indexing: '' },
         });
     }
@@ -1295,13 +1338,13 @@ export default function OffersIndex({
                     </select>
                 )}
                 <select
-                    aria-label="Подано в GSC"
+                    aria-label="Submitted to GSC"
                     value={filters.indexing ?? ''}
                     onChange={(e) => reloadOffers({ indexing: e.target.value })}
                 >
-                    <option value="">Подано</option>
-                    <option value="no">Не подано</option>
-                    <option value="yes">Подано</option>
+                    <option value="">Submitted</option>
+                    <option value="no">Not submitted</option>
+                    <option value="yes">Submitted</option>
                 </select>
                 <select
                     aria-label="Availability dots"
@@ -1526,10 +1569,10 @@ export default function OffersIndex({
                             {colVisible('status') && <th>Status</th>}
                             {colVisible('dns') && <th>DNS</th>}
                             {colVisible('indexing') && (
-                                <th title="Sitemap відправлено в Search Console">Подано</th>
+                                <th className="col-index" title="Sitemap submitted to Search Console">Submitted</th>
                             )}
                             {colVisible('google_index') && (
-                                <th title="Google вже тримає URL у індексі (URL Inspection)">Індекс</th>
+                                <th className="col-index" title="Google has the URL in the index">Indexed</th>
                             )}
                             {colVisible('actions') && <th />}
                         </tr>
@@ -1679,63 +1722,40 @@ export default function OffersIndex({
                                         </td>
                                     )}
                                     {colVisible('indexing') && (
-                                        <td>
-                                            <div className="indexing-cell">
-                                                {canManageOffer(offer) ? (
-                                                    <label
-                                                        className="indexing-check"
-                                                        title={
-                                                            offer.gsc_error
-                                                                ? offer.gsc_error
-                                                                : offer.submitted_for_indexing && offer.indexed_at
-                                                                  ? `Подано в GSC: ${offer.indexed_at}`
-                                                                  : 'Автоматично після DNS + зеленого кружечка (якщо Google підключений)'
-                                                        }
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={Boolean(offer.submitted_for_indexing)}
-                                                            disabled={indexingId === offer.id}
-                                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
+                                        <td className="col-index">
+                                            {(() => {
+                                                const mark = submittedTick(offer);
+                                                return (
+                                                    <>
+                                                        <IndexTick
+                                                            tone={mark.tone}
+                                                            title={offer.gsc_error ? offer.gsc_error : mark.title}
+                                                            busy={indexingId === offer.id}
+                                                            onClick={canManageOffer(offer)
+                                                                ? () => toggleIndexing(offer, !offer.submitted_for_indexing)
+                                                                : undefined}
+                                                            label={offer.submitted_for_indexing ? 'Submitted' : 'Not submitted'}
                                                         />
-                                                        <span className="indexing-check__label">
-                                                            {offer.submitted_for_indexing
-                                                                ? 'Так'
-                                                                : offer.gsc_status === 'waiting'
-                                                                  ? '…'
-                                                                  : offer.gsc_status === 'failed'
-                                                                    ? '!'
-                                                                    : 'Ні'}
-                                                        </span>
-                                                    </label>
-                                                ) : (
-                                                    <span className="field-hint">
-                                                        {offer.submitted_for_indexing ? 'Так' : '—'}
-                                                    </span>
-                                                )}
-                                                {offer.gsc_error && (
-                                                    <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
-                                                        {formatOfferError(offer.gsc_error)}
-                                                    </div>
-                                                )}
-                                            </div>
+                                                        {offer.gsc_error && (
+                                                            <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
+                                                                {formatOfferError(offer.gsc_error)}
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
                                         </td>
                                     )}
                                     {colVisible('google_index') && (
-                                        <td>
+                                        <td className="col-index">
                                             {(() => {
-                                                const idx = googleIndexHint(offer);
+                                                const mark = indexedTick(offer);
                                                 return (
-                                                    <label className="indexing-check indexing-check--readonly" title={idx.title}>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={idx.checked}
-                                                            readOnly
-                                                            disabled
-                                                            tabIndex={-1}
-                                                        />
-                                                        <span className="indexing-check__label">{idx.text}</span>
-                                                    </label>
+                                                    <IndexTick
+                                                        tone={mark.tone}
+                                                        title={mark.title}
+                                                        label={mark.tone === 'ok' ? 'Indexed' : mark.tone === 'fail' ? 'Not indexed' : 'Indexing pending'}
+                                                    />
                                                 );
                                             })()}
                                         </td>
@@ -1836,39 +1856,24 @@ export default function OffersIndex({
                         )}
 
                         <div className="offer-mobile-card__footer">
-                            {canManageOffer(offer) ? (
-                                <div className="indexing-cell">
-                                    <label className="indexing-check">
-                                        <input
-                                            type="checkbox"
-                                            checked={Boolean(offer.submitted_for_indexing)}
-                                            disabled={indexingId === offer.id}
-                                            onChange={(e) => toggleIndexing(offer, e.target.checked)}
-                                        />
-                                        <span className="indexing-check__label">
-                                            Подано:{' '}
-                                            {offer.submitted_for_indexing
-                                                ? 'Так'
-                                                : offer.gsc_status === 'waiting'
-                                                  ? 'очікує'
-                                                  : offer.gsc_status === 'failed'
-                                                    ? 'помилка'
-                                                    : 'Ні'}
-                                        </span>
-                                    </label>
-                                </div>
-                            ) : (
-                                <span className="field-hint">
-                                    Подано: {offer.submitted_for_indexing ? 'Так' : '—'}
-                                </span>
-                            )}
                             {(() => {
-                                const idx = googleIndexHint(offer);
+                                const submitted = submittedTick(offer);
+                                const indexed = indexedTick(offer);
                                 return (
-                                    <label className="indexing-check indexing-check--readonly" title={idx.title}>
-                                        <input type="checkbox" checked={idx.checked} readOnly disabled tabIndex={-1} />
-                                        <span className="indexing-check__label">Індекс: {idx.text}</span>
-                                    </label>
+                                    <div className="offer-mobile-ticks">
+                                        <span className="field-hint">Submitted</span>
+                                        <IndexTick
+                                            tone={submitted.tone}
+                                            title={offer.gsc_error ? offer.gsc_error : submitted.title}
+                                            busy={indexingId === offer.id}
+                                            onClick={canManageOffer(offer)
+                                                ? () => toggleIndexing(offer, !offer.submitted_for_indexing)
+                                                : undefined}
+                                            label={offer.submitted_for_indexing ? 'Submitted' : 'Not submitted'}
+                                        />
+                                        <span className="field-hint">Indexed</span>
+                                        <IndexTick tone={indexed.tone} title={indexed.title} />
+                                    </div>
                                 );
                             })()}
                             {offer.gsc_error && (

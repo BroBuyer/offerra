@@ -12,7 +12,7 @@ class InspectGoogleIndexOffers extends Command
         {--limit=400 : Max offers to queue this run}
         {--dry-run : List due offers, do not inspect}';
 
-    protected $description = 'Inspect GSC index status for submitted offers (24h after submit, then daily until indexed or 14d timeout)';
+    protected $description = 'Inspect GSC index status for submitted offers (24h after submit, then daily until indexed or 7d timeout)';
 
     public function handle(OfferGoogleIndexInspector $inspector): int
     {

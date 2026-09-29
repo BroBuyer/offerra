@@ -219,8 +219,8 @@ export default function OfferStats({
                                 <SortTh label="Ост. лід" column="last_lead_at" filters={filters} onSort={onSort} />
                                 <SortTh label="Депи" column="deposits_count" filters={filters} onSort={onSort} align="right" />
                                 <SortTh label="Ост. деп" column="last_deposit_at" filters={filters} onSort={onSort} />
-                                <SortTh label="Подано" column="indexed_at" filters={filters} onSort={onSort} />
-                                <SortTh label="Індекс" column="google_indexed_at" filters={filters} onSort={onSort} />
+                                <SortTh label="Submitted" column="indexed_at" filters={filters} onSort={onSort} />
+                                <SortTh label="Indexed" column="google_indexed_at" filters={filters} onSort={onSort} />
                             </tr>
                         </thead>
                         <tbody>
