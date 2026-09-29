@@ -95,7 +95,8 @@ async function main() {
     .split("\n")
     .map((l) => l.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "").trim())
     .filter(Boolean)
-    .filter((l) => !l.startsWith("??"));
+    .filter((l) => !l.startsWith("??"))
+    .filter((l) => !l.endsWith("resources/js/ziggy.js"));
   if (dirtyLines.length > 0 && !FORCE) {
     throw new Error(
       `Panel checkout has ${dirtyLines.length} tracked change(s). Commit them to git or rerun with --force to discard.\n` +
