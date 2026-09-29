@@ -66,3 +66,5 @@ SSL на origin **не потрібен**: Cloudflare → origin по HTTP :80 (
 - `README.md` — ця інструкція
 
 Не використовуй старі `_tmp-bootstrap-ubuntu-origin.sh` — канон лише тут у `server/`.
+
+AlmaLinux / RHEL 8: `bash server/bootstrap-origin-el.sh` (PHP 8.2 module, user `www-data`, той самий шлях `/var/www/offers/{domain}/public_html`).
