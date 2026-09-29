@@ -77,6 +77,11 @@ async function main() {
     }),
   );
 
+  await exec(conn, `git config --global --add safe.directory ${REMOTE}`, {
+    timeoutMs: 30000,
+    allowFail: true,
+  });
+
   step("checkout state");
   const isRepo = await exec(conn, `test -d ${REMOTE}/.git && echo yes || echo no`, { timeoutMs: 30000 });
   if (!isRepo.out.includes("yes")) {

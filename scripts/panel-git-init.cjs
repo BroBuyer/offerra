@@ -89,6 +89,10 @@ async function main() {
     return;
   }
 
+  // The web root is owned by the web user, so root's git refuses to touch it
+  // ("dubious ownership") until the path is whitelisted.
+  await exec(conn, `git config --global --add safe.directory ${REMOTE}`, { timeoutMs: 30000 });
+
   step("current state");
   const isRepo = await exec(conn, `test -d ${REMOTE}/.git && echo yes || echo no`, { timeoutMs: 30000 });
   const fresh = isRepo.out.includes("no");
