@@ -18,8 +18,10 @@ use App\Services\OfferGenerator;
 use App\Services\OfferGscSubmitter;
 use App\Services\OfferRestoreService;
 use App\Services\OfferTeardownService;
+use App\Services\StaleDeadOfferService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -37,6 +39,7 @@ class OfferController extends Controller
 
         $deploy->resetStuckDeploys();
 
+        $deployReady = $deploy->poolReady();
         $today = now();
         $filters = $this->indexFilters($user);
         $baseQuery = $this->offerScopeQuery($user);
@@ -48,7 +51,7 @@ class OfferController extends Controller
             ->paginate($filters['per_page'], ['*'], 'page', $filters['page'])
             ->withQueryString()
             ->through(fn (Offer $offer) => array_merge($offer->toPanelArray(), [
-                'deploy_ready' => $deploy->settingsReady($offer->user?->settings),
+                'deploy_ready' => $deployReady,
             ]));
 
         return Inertia::render('Panel/Offers/Index', [
@@ -62,7 +65,7 @@ class OfferController extends Controller
             ],
             'createdCounts' => $this->createdCounts($baseQuery, $today),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
-            'canDeploy' => app(DeployService::class)->settingsReady($settings),
+            'canDeploy' => $deployReady,
             'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'hasCloudflarePrimary' => (bool) $settings?->hasCloudflareSlot('primary'),
             'hasCloudflareBackup' => (bool) $settings?->hasCloudflareSlot('backup'),
@@ -302,6 +305,39 @@ class OfferController extends Controller
             'initialLang' => request()->string('lang')->toString() ?: null,
             'initialFromSearch' => request()->boolean('from_search'),
             'canProvisionInfrastructure' => InfrastructureProvisioner::settingsReady($settings),
+        ]);
+    }
+
+    public function brandLookup(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'brand' => ['required', 'string', 'max:120'],
+        ]);
+
+        $brand = trim($validated['brand']);
+        if ($brand === '') {
+            return response()->json([
+                'brand' => '',
+                'active' => 0,
+                'archived' => 0,
+            ]);
+        }
+
+        $user = $request->user();
+        $needle = mb_strtolower($brand);
+
+        $active = $this->offerScopeQuery($user, archived: false)
+            ->whereRaw('LOWER(TRIM(brand)) = ?', [$needle])
+            ->count();
+
+        $archived = $this->offerScopeQuery($user, archived: true)
+            ->whereRaw('LOWER(TRIM(brand)) = ?', [$needle])
+            ->count();
+
+        return response()->json([
+            'brand' => $brand,
+            'active' => $active,
+            'archived' => $archived,
         ]);
     }
 
@@ -748,7 +784,7 @@ class OfferController extends Controller
             );
     }
 
-    public function archiveIndex(DeployService $deploy): Response
+    public function archiveIndex(DeployService $deploy, StaleDeadOfferService $staleDead): Response
     {
         $user = auth()->user();
         $today = now();
@@ -784,7 +820,23 @@ class OfferController extends Controller
                 'weekStart' => $today->copy()->startOfWeek()->toDateString(),
                 'monthStart' => $today->copy()->startOfMonth()->toDateString(),
             ],
+            'staleDeadHint' => $staleDead->hintFor($user),
         ]);
+    }
+
+    public function archiveStaleDead(StaleDeadOfferService $staleDead): RedirectResponse
+    {
+        $enqueued = $staleDead->archiveAllFor(auth()->user());
+
+        if ($enqueued === 0) {
+            return redirect()
+                ->back()
+                ->with('success', 'Немає оферів для архівації за цими критеріями.');
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Поставлено в чергу архіву: {$enqueued}.");
     }
 
     public function archive(Offer $offer, OfferTeardownService $teardown): RedirectResponse

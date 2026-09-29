@@ -14,20 +14,23 @@ class InfrastructureProvisioner
         private readonly CloudflareClient $cloudflare,
         private readonly DynadotClient $dynadot,
         private readonly OriginHostService $origin,
+        private readonly OriginPool $pool,
     ) {}
 
+    /**
+     * SSH is no longer part of user settings — the origin comes from the admin
+     * pool, so here we only check the provider credentials the user still owns.
+     */
     public static function settingsReady(?UserSetting $settings): bool
     {
         if ($settings === null) {
             return false;
         }
 
-        return filled($settings->deploy_host)
-            && filled($settings->deploy_username)
-            && filled($settings->deploy_password)
-            && filled($settings->cloudflare_api_token)
+        return filled($settings->cloudflare_api_token)
             && filled($settings->cloudflare_account_id)
-            && filled($settings->dynadot_api_key);
+            && filled($settings->dynadot_api_key)
+            && app(OriginPool::class)->hasCapacity();
     }
 
     public function enqueue(Offer $offer): void
@@ -60,7 +63,20 @@ class InfrastructureProvisioner
         if (! $settings || ! self::settingsReady($settings)) {
             $offer->update([
                 'infra_status' => 'failed',
-                'infra_error' => 'Заповніть SSH, Cloudflare і Dynadot у налаштуваннях.',
+                'infra_error' => 'Заповніть Cloudflare і Dynadot у налаштуваннях, і переконайтесь, що в пулі є активний origin-сервер.',
+            ]);
+
+            return;
+        }
+
+        try {
+            // Binds the offer to its pool server (or keeps the existing one) and
+            // hands every origin step the matching SSH credentials.
+            $settings = $this->pool->settingsForOffer($settings, $offer);
+        } catch (\Throwable $e) {
+            $offer->update([
+                'infra_status' => 'failed',
+                'infra_error' => $e->getMessage(),
             ]);
 
             return;
@@ -660,6 +676,8 @@ class InfrastructureProvisioner
             throw new \RuntimeException('Потрібен Dynadot API key, щоб змінити NS.');
         }
 
+        $userSettings = $this->withPoolOrigin($userSettings, $offer);
+
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
         $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
         $domain = strtolower(trim((string) $offer->domain));
@@ -851,28 +869,42 @@ class InfrastructureProvisioner
             return null;
         }
 
-        if (! filled($offer->cloudflare_api_token) && ! filled($offer->dynadot_api_key)) {
+        if (filled($offer->cloudflare_api_token) || filled($offer->dynadot_api_key)) {
+            $merged = $settings->replicate();
+
+            if (filled($offer->cloudflare_api_token)) {
+                $merged->cloudflare_api_token = CloudflareClient::normalizeApiToken($offer->cloudflare_api_token);
+
+                if (filled($offer->cloudflare_account_id)) {
+                    $merged->cloudflare_account_id = $offer->cloudflare_account_id;
+                }
+            }
+
+            if (filled($offer->dynadot_api_key)) {
+                $merged->dynadot_api_key = $offer->dynadot_api_key;
+
+                if (filled($offer->dynadot_contact_id)) {
+                    $merged->dynadot_contact_id = $offer->dynadot_contact_id;
+                }
+            }
+
+            $settings = $merged;
+        }
+
+        return $this->withPoolOrigin($settings, $offer);
+    }
+
+    /**
+     * Attach the offer's pool origin (host/user/password) to a settings clone so
+     * every origin call keeps reading $settings->deploy_*. Read-only paths never
+     * allocate a new server — provision() re-resolves strictly with binding.
+     */
+    private function withPoolOrigin(UserSetting $settings, Offer $offer, bool $bind = false): UserSetting
+    {
+        try {
+            return $this->pool->settingsForOffer($settings, $offer, $bind);
+        } catch (\Throwable) {
             return $settings;
         }
-
-        $merged = $settings->replicate();
-
-        if (filled($offer->cloudflare_api_token)) {
-            $merged->cloudflare_api_token = CloudflareClient::normalizeApiToken($offer->cloudflare_api_token);
-
-            if (filled($offer->cloudflare_account_id)) {
-                $merged->cloudflare_account_id = $offer->cloudflare_account_id;
-            }
-        }
-
-        if (filled($offer->dynadot_api_key)) {
-            $merged->dynadot_api_key = $offer->dynadot_api_key;
-
-            if (filled($offer->dynadot_contact_id)) {
-                $merged->dynadot_contact_id = $offer->dynadot_contact_id;
-            }
-        }
-
-        return $merged;
     }
 }

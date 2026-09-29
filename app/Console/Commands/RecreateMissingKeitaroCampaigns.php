@@ -149,7 +149,7 @@ class RecreateMissingKeitaroCampaigns extends Command
                         $okPushed++;
                         $this->line('  → config pushed (owner)');
                     } catch (\Throwable $ownerError) {
-                        if ($admin && $admin->id !== $offer->user_id && $deploy->settingsReady($admin->settings)) {
+                        if ($admin && $admin->id !== $offer->user_id && $deploy->poolReady()) {
                             $deploy->pushConfig($admin, $offer->fresh());
                             $okPushed++;
                             $this->line('  → config pushed (admin fallback)');

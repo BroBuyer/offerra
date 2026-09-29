@@ -13,6 +13,7 @@ class OfferStatusReconciler
     public function __construct(
         private readonly DeployConnection $deploy,
         private readonly KeitaroClient $keitaro,
+        private readonly OriginPool $pool,
         private readonly string $offersPath,
     ) {}
 
@@ -28,18 +29,34 @@ class OfferStatusReconciler
             throw new \RuntimeException('Налаштування користувача не знайдено.');
         }
 
-        $deployConfig = $this->deployConfig($settings);
-        $canProbeServer = filled($deployConfig['host'])
-            && filled($deployConfig['username'])
-            && filled($deployConfig['password']);
-
         $rows = [];
 
         foreach (Offer::query()->when($userId, fn ($q) => $q->where('user_id', $userId))->orderBy('id')->get() as $offer) {
-            $rows[] = $this->reconcileOffer($offer, $settings, $deployConfig, $canProbeServer, $apply);
+            // Each offer lives on its own pool server, so SSH config is per offer.
+            $originSettings = $this->originSettings($settings, $offer);
+            $deployConfig = $this->deployConfig($originSettings ?? $settings);
+            $canProbeServer = $originSettings !== null
+                && filled($deployConfig['host'])
+                && filled($deployConfig['username'])
+                && filled($deployConfig['password']);
+
+            $rows[] = $this->reconcileOffer($offer, $originSettings ?? $settings, $deployConfig, $canProbeServer, $apply);
         }
 
         return $rows;
+    }
+
+    private function originSettings(UserSetting $settings, Offer $offer): ?UserSetting
+    {
+        if ($this->pool->boundHost($offer) === '') {
+            return null;
+        }
+
+        try {
+            return $this->pool->settingsForOffer($settings, $offer, bind: false);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**

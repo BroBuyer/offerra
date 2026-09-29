@@ -6,7 +6,9 @@ use App\Http\Requests\StoreOriginServerRequest;
 use App\Http\Requests\UpdateOriginServerRequest;
 use App\Models\OriginServer;
 use App\Models\User;
+use App\Services\OriginEvacuationService;
 use App\Services\OriginHealthMonitor;
+use App\Services\OriginPool;
 use App\Services\OriginServerSync;
 use App\Support\DeployDriver;
 use App\Support\SecretValue;
@@ -17,7 +19,7 @@ use Inertia\Response;
 
 class OriginServerController extends Controller
 {
-    public function index(OriginServerSync $sync): Response
+    public function index(OriginServerSync $sync, OriginPool $pool): Response
     {
         $counts = $sync->offerCountsByHost();
 
@@ -38,6 +40,8 @@ class OriginServerController extends Controller
             'orphans' => $sync->orphanOfferHosts(),
             'users' => User::query()->orderBy('name')->get(['id', 'name', 'email']),
             'defaultPath' => DeployDriver::UBUNTU_PATH,
+            'poolSummary' => $pool->summary(),
+            'roles' => OriginServer::ROLES,
         ]);
     }
 
@@ -59,6 +63,8 @@ class OriginServerController extends Controller
             'price' => filled($data['price'] ?? null) ? trim((string) $data['price']) : null,
             'deploy_driver' => DeployDriver::UBUNTU,
             'deploy_path_template' => $data['deploy_path_template'] ?? DeployDriver::UBUNTU_PATH,
+            'role' => OriginServer::normalizeRole($data['role'] ?? null),
+            'max_offers' => ((int) ($data['max_offers'] ?? 0)) ?: null,
             'is_active' => $request->boolean('is_active', true),
             'alerts_enabled' => $request->boolean('alerts_enabled', true),
             'owner_user_id' => $data['owner_user_id'] ?? null,
@@ -89,6 +95,8 @@ class OriginServerController extends Controller
             'disk' => filled($data['disk'] ?? null) ? trim((string) $data['disk']) : null,
             'price' => filled($data['price'] ?? null) ? trim((string) $data['price']) : null,
             'deploy_path_template' => $data['deploy_path_template'] ?? DeployDriver::UBUNTU_PATH,
+            'role' => OriginServer::normalizeRole($data['role'] ?? $originServer->role),
+            'max_offers' => ((int) ($data['max_offers'] ?? 0)) ?: null,
             'is_active' => (bool) ($data['is_active'] ?? $request->boolean('is_active')),
             'alerts_enabled' => (bool) ($data['alerts_enabled'] ?? $request->boolean('alerts_enabled')),
             'owner_user_id' => $data['owner_user_id'] ?? null,
@@ -113,6 +121,31 @@ class OriginServerController extends Controller
         return redirect()
             ->route('origin-servers.index')
             ->with('success', "Сервер {$host} видалено з реєстру.");
+    }
+
+    public function evacuate(OriginServer $originServer, OriginEvacuationService $evacuation): RedirectResponse
+    {
+        try {
+            $result = $evacuation->evacuate($originServer);
+        } catch (\RuntimeException $e) {
+            return redirect()
+                ->route('origin-servers.index')
+                ->withErrors(['evacuate' => $e->getMessage()]);
+        }
+
+        if ($result['offers'] === 0) {
+            return redirect()
+                ->route('origin-servers.index')
+                ->with('success', "{$originServer->host}: активних оферів немає, сервер позначено drain.");
+        }
+
+        $spread = collect($result['targets'])
+            ->map(fn (int $count, string $host) => "{$host}: {$count}")
+            ->implode(', ');
+
+        return redirect()
+            ->route('origin-servers.index')
+            ->with('success', "Евакуація {$originServer->host}: {$result['offers']} оферів у черзі → {$spread}");
     }
 
     public function check(OriginServer $originServer, OriginHealthMonitor $monitor): RedirectResponse

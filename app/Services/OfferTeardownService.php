@@ -15,8 +15,11 @@ class OfferTeardownService
     public function __construct(
         private readonly CloudflareClient $cloudflare,
         private readonly KeitaroClient $keitaro,
+        private readonly GoogleSearchConsoleClient $gsc,
         private readonly OfferVerificationFileService $verificationFiles,
         private readonly OriginHostService $origin,
+        private readonly DeployService $deploy,
+        private readonly OriginPool $pool,
         private readonly string $offersPath,
     ) {}
 
@@ -58,20 +61,13 @@ class OfferTeardownService
 
         $ownerSettings = $offer->user?->settings;
 
-        if ($ownerSettings) {
-            try {
-                $this->origin->deleteWebRoot($ownerSettings, $domain);
-                $steps['origin'] = 'deleted';
-            } catch (\Throwable $e) {
-                $steps['origin'] = 'error: '.$e->getMessage();
-                $errors[] = 'Origin: '.$e->getMessage();
-                Log::warning('Offer teardown origin failed', [
-                    'offer_id' => $offer->id,
-                    'domain' => $domain,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
+        // Drop from Search Console while Google OAuth still works — soft-fail like Keitaro.
+        $steps['gsc'] = $this->removeFromSearchConsole($offer, $ownerSettings);
+
+        // Delete from the offer's actual Server column host (infra_meta), not only
+        // Settings.deploy_host — otherwise archive removes files from the wrong VPS
+        // and the live lander keeps answering HTTP 200.
+        $steps['origin'] = $this->removeOriginFiles($offer, $ownerSettings, $domain, $errors);
 
         $cloudflareOk = false;
         $cloudflareHardErrors = [];
@@ -151,6 +147,9 @@ class OfferTeardownService
             return;
         }
 
+        $infraMeta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        unset($infraMeta['gsc'], $infraMeta['gsc_error']);
+
         $offer->update([
             'status' => 'archived',
             'archived_at' => now(),
@@ -158,8 +157,119 @@ class OfferTeardownService
             'deploy_error' => null,
             'infra_status' => null,
             'infra_error' => null,
+            'infra_meta' => $infraMeta,
+            'submitted_for_indexing' => false,
+            'indexed_at' => null,
             'teardown_meta' => $meta,
         ]);
+    }
+
+    /**
+     * Remove /var/www/offers/{domain} from every reachable host that may hold it:
+     * primary = offer deploy host via OriginServer SSH; also Settings host as fallback.
+     *
+     * @param  list<string>  $errors
+     */
+    private function removeOriginFiles(Offer $offer, ?UserSetting $ownerSettings, string $domain, array &$errors): string
+    {
+        if (! $ownerSettings && ! $offer->user) {
+            return 'skipped_no_settings';
+        }
+
+        /** @var array<string, UserSetting> $byHost */
+        $byHost = [];
+
+        if ($offer->user && $ownerSettings) {
+            try {
+                $resolved = $this->deploy->resolveDeploySettings($offer->user, $offer, allocate: false);
+                $host = strtolower(trim((string) $resolved->deploy_host));
+                if ($host !== '') {
+                    $byHost[$host] = $resolved;
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Offer teardown could not resolve offer origin SSH', [
+                    'offer_id' => $offer->id,
+                    'domain' => $domain,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($ownerSettings) {
+            $settingsHost = strtolower(trim((string) $ownerSettings->deploy_host));
+            if ($settingsHost !== '' && ! isset($byHost[$settingsHost])) {
+                $byHost[$settingsHost] = $ownerSettings;
+            }
+        }
+
+        if ($byHost === []) {
+            // No bound origin host means nothing was ever uploaded for this offer.
+            if ($this->pool->boundHost($offer) === '') {
+                return 'skipped_no_host';
+            }
+
+            $errors[] = 'Origin: немає SSH до привʼязаного сервера офера';
+
+            return 'error: no_ssh_targets';
+        }
+
+        $results = [];
+        $anyDeleted = false;
+
+        foreach ($byHost as $host => $settings) {
+            try {
+                $this->origin->deleteWebRoot($settings, $domain);
+                $results[] = $host.':deleted';
+                $anyDeleted = true;
+            } catch (\Throwable $e) {
+                $results[] = $host.':error:'.$e->getMessage();
+                Log::warning('Offer teardown origin failed', [
+                    'offer_id' => $offer->id,
+                    'domain' => $domain,
+                    'host' => $host,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if (! $anyDeleted) {
+            $msg = implode('; ', $results);
+            $errors[] = 'Origin: '.$msg;
+
+            return 'error: '.$msg;
+        }
+
+        return implode('; ', $results);
+    }
+
+    private function removeFromSearchConsole(Offer $offer, ?UserSetting $settings): string
+    {
+        if (! $settings || ! $settings->hasGoogleOAuth()) {
+            return 'skipped_no_google';
+        }
+
+        if (! filled(config('services.google.client_id'))) {
+            return 'skipped_no_oauth_config';
+        }
+
+        $wasSubmitted = (bool) $offer->submitted_for_indexing;
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gscStatus = (string) (($meta['gsc']['status'] ?? null) ?: '');
+        if (! $wasSubmitted && $gscStatus === '') {
+            return 'skipped_not_submitted';
+        }
+
+        try {
+            return $this->gsc->removeOffer($offer, $settings);
+        } catch (\Throwable $e) {
+            Log::warning('Offer teardown GSC failed', [
+                'offer_id' => $offer->id,
+                'domain' => $offer->domain,
+                'error' => $e->getMessage(),
+            ]);
+
+            return 'error: '.$e->getMessage();
+        }
     }
 
     /**
@@ -170,16 +280,64 @@ class OfferTeardownService
         $candidates = [];
         $owner = $offer->user?->settings;
 
-        if ($owner && filled($owner->cloudflare_api_token)) {
-            $candidates['owner'] = $owner;
+        $push = function (string $label, ?UserSetting $base, ?string $token, ?string $accountId = null, ?string $accountName = null) use (&$candidates): void {
+            $token = CloudflareClient::normalizeApiToken($token);
+            if ($token === '' || $base === null) {
+                return;
+            }
+
+            // Deduplicate by token fingerprint so primary/backup/offer do not triple-delete.
+            foreach ($candidates as $existing) {
+                if (CloudflareClient::normalizeApiToken($existing->cloudflare_api_token) === $token) {
+                    return;
+                }
+            }
+
+            $probe = $base->replicate();
+            $probe->cloudflare_api_token = $token;
+            if ($accountId !== null && $accountId !== '') {
+                $probe->cloudflare_account_id = $accountId;
+            }
+            if ($accountName !== null && $accountName !== '') {
+                $probe->cloudflare_account_name = $accountName;
+            }
+            $candidates[$label] = $probe;
+        };
+
+        // 1) Token stored on the offer (last successful CF account after switch/migrate).
+        if ($owner) {
+            $push(
+                'offer',
+                $owner,
+                $offer->cloudflare_api_token,
+                $offer->cloudflare_account_id,
+                $offer->cloudflare_account_name,
+            );
         }
 
+        // 2) Owner primary + backup slots from Settings.
+        if ($owner) {
+            $push('owner', $owner, $owner->cloudflare_api_token, $owner->cloudflare_account_id, $owner->cloudflare_account_name);
+            $push(
+                'owner_backup',
+                $owner,
+                $owner->cloudflare_backup_api_token,
+                $owner->cloudflare_backup_account_id,
+                $owner->cloudflare_backup_account_name,
+            );
+        }
+
+        // 3) Admin primary + backup (shared / fallback accounts).
         $admin = $this->adminSettings();
-        if ($admin && filled($admin->cloudflare_api_token)) {
-            $ownerToken = (string) ($owner?->cloudflare_api_token ?? '');
-            if ($ownerToken === '' || $admin->cloudflare_api_token !== $ownerToken) {
-                $candidates['admin'] = $admin;
-            }
+        if ($admin) {
+            $push('admin', $admin, $admin->cloudflare_api_token, $admin->cloudflare_account_id, $admin->cloudflare_account_name);
+            $push(
+                'admin_backup',
+                $admin,
+                $admin->cloudflare_backup_api_token,
+                $admin->cloudflare_backup_account_id,
+                $admin->cloudflare_backup_account_name,
+            );
         }
 
         return $candidates;

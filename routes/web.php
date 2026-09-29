@@ -25,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/offers/stats', [OfferStatsController::class, 'index'])->name('offers.stats');
     Route::get('/offers/archive', [OfferController::class, 'archiveIndex'])->name('offers.archive.index');
     Route::get('/offers/create', [OfferController::class, 'create'])->name('offers.create');
+    Route::get('/offers/brand-lookup', [OfferController::class, 'brandLookup'])->name('offers.brand-lookup');
+    Route::post('/offers/stale-dead/archive', [OfferController::class, 'archiveStaleDead'])->name('offers.stale-dead.archive');
     Route::post('/offers', [OfferController::class, 'store'])->name('offers.store');
     Route::post('/offers/bulk', [OfferController::class, 'storeBulk'])->name('offers.bulk');
     Route::post('/offers/bulk-action', [OfferController::class, 'bulkAction'])->name('offers.bulk-action');
@@ -52,7 +54,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::post('/settings/test-origin', [SettingsController::class, 'testOrigin'])->name('settings.test-origin');
     Route::post('/settings/test-cloudflare', [SettingsController::class, 'testCloudflare'])->name('settings.test-cloudflare');
     Route::post('/settings/gsc-verification', [SettingsController::class, 'storeGscVerification'])->name('settings.gsc-verification.store');
     Route::delete('/settings/gsc-verification', [SettingsController::class, 'destroyGscVerification'])->name('settings.gsc-verification.destroy');
@@ -78,6 +79,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('origin-servers.update');
         Route::delete('/origin-servers/{originServer}', [OriginServerController::class, 'destroy'])->name('origin-servers.destroy');
         Route::post('/origin-servers/{originServer}/check', [OriginServerController::class, 'check'])->name('origin-servers.check');
+        Route::post('/origin-servers/{originServer}/evacuate', [OriginServerController::class, 'evacuate'])
+            ->name('origin-servers.evacuate');
         Route::post('/origin-servers/sync', [OriginServerController::class, 'sync'])->name('origin-servers.sync');
         Route::post('/origin-servers/check-all', [OriginServerController::class, 'checkAll'])->name('origin-servers.check-all');
 

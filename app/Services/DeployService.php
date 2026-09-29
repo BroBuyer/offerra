@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Jobs\DeployOfferJob;
 use App\Models\Offer;
-use App\Models\OriginServer;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Contracts\Cache\LockTimeoutException;
@@ -34,6 +33,7 @@ class DeployService
     public function __construct(
         private readonly OfferGenerator $generator,
         private readonly OriginHostService $origin,
+        private readonly OriginPool $pool,
         private readonly string $offersPath,
     ) {}
 
@@ -142,59 +142,32 @@ class DeployService
 
     public function assertCanDeploy(User $user, Offer $offer): void
     {
-        // Resolves SSH for the offer's current Server column (or Settings fallback).
+        // Resolves SSH for the offer's bound origin, or allocates one from the pool.
         $this->resolveDeploySettings($user, $offer);
     }
 
     /**
-     * Prefer the offer's existing origin (table "Server"), fall back to Settings.
+     * SSH comes from the admin-managed origin pool: the offer's bound server when
+     * it already has one, otherwise the least loaded server in the pool.
      */
-    public function resolveDeploySettings(User $user, Offer $offer): UserSetting
+    public function resolveDeploySettings(User $user, Offer $offer, bool $allocate = true): UserSetting
     {
         $offer->loadMissing('user.settings');
-        $settings = $user->settings;
+        $settings = $user->settings ?? $offer->user?->settings;
 
         if (! $settings) {
-            throw new InvalidArgumentException('Заповніть SSH-налаштування в розділі «Server».');
+            throw new InvalidArgumentException('Заповніть налаштування користувача перед деплоєм.');
         }
 
-        $targetHost = $this->offerDeployHost($offer);
-        $settingsHost = $this->normalizeHost((string) $settings->deploy_host);
-
-        if ($targetHost === '') {
-            if (! $this->settingsReady($settings)) {
-                throw new InvalidArgumentException('Заповніть SSH-налаштування в розділі «Server».');
-            }
-
-            return $settings;
+        if (! $allocate && $this->pool->boundHost($offer) === '') {
+            throw new InvalidArgumentException("Оффер #{$offer->id} не привʼязаний до origin-сервера.");
         }
 
-        if ($settingsHost !== '' && $settingsHost === $this->normalizeHost($targetHost)) {
-            if (! $this->settingsReady($settings)) {
-                throw new InvalidArgumentException('Заповніть SSH-налаштування в розділі «Server».');
-            }
-
-            return $settings;
+        try {
+            return $this->pool->settingsForOffer($settings, $offer, $allocate);
+        } catch (RuntimeException $e) {
+            throw new InvalidArgumentException($e->getMessage(), 0, $e);
         }
-
-        $server = $this->originServerForHost($targetHost);
-        if ($server && $server->hasSshCredentials()) {
-            $probe = $settings->replicate();
-            $probe->deploy_host = trim((string) $server->host);
-            $probe->deploy_port = (int) ($server->port ?: 22);
-            $probe->deploy_username = trim((string) $server->username);
-            $probe->deploy_password = $server->password;
-            $probe->deploy_driver = $server->deploy_driver ?: $settings->deploy_driver;
-            $probe->deploy_path_template = $server->deploy_path_template
-                ?: $settings->deploy_path_template;
-            $probe->deploy_panel_name = $probe->deploy_host;
-
-            return $probe;
-        }
-
-        throw new InvalidArgumentException(
-            "Немає SSH-доступу до сервера {$targetHost} (колонка Server у офера). Додайте його в Origin-сервери.",
-        );
     }
 
     public function offerDeployHost(Offer $offer): string
@@ -343,12 +316,43 @@ class DeployService
         }
     }
 
-    public function settingsReady(?UserSetting $settings): bool
+    /**
+     * Deploy is possible when the admin pool has at least one server that can
+     * take offers — per-user SSH settings no longer exist.
+     */
+    public function poolReady(): bool
     {
-        return $settings
-            && filled($settings->deploy_host)
-            && filled($settings->deploy_username)
-            && filled($settings->deploy_password);
+        return $this->pool->hasCapacity();
+    }
+
+    /**
+     * Refresh local includes/config.php and upload only that file to origin.
+     */
+    public function pushConfig(User $user, Offer $offer): void
+    {
+        $offer->loadMissing('user.settings');
+        $settings = $this->resolveDeploySettings($user, $offer);
+
+        $this->generator->refreshConfig($offer);
+        $localPath = $this->generator->ensureLocalFolder($offer);
+        $localConfig = $localPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'config.php';
+
+        if (! File::isFile($localConfig)) {
+            throw new RuntimeException("Local config.php missing for offer #{$offer->id}");
+        }
+
+        $this->origin->uploadOfferRelativeFile(
+            $settings,
+            $offer->domain,
+            $localConfig,
+            'includes/config.php',
+        );
+
+        Log::info('Pushed config.php to origin', [
+            'offer' => $offer->id,
+            'domain' => $offer->domain,
+            'host' => $settings->deploy_host,
+        ]);
     }
 
     private function purgeLocalFolder(string $localPath, Offer $offer): void
@@ -393,34 +397,6 @@ class DeployService
         // Do not move an already-deployed offer just because Settings.deploy_host changed.
         // Redeploy always targets the offer's Server column.
         return false;
-    }
-
-    private function originServerForHost(string $host): ?OriginServer
-    {
-        $normalized = $this->normalizeHost($host);
-        if ($normalized === '') {
-            return null;
-        }
-
-        $exact = OriginServer::query()->where('host', $host)->first()
-            ?? OriginServer::query()->where('host', $normalized)->first();
-        if ($exact) {
-            return $exact;
-        }
-
-        return OriginServer::query()
-            ->get(['id', 'host', 'port', 'username', 'password', 'deploy_driver', 'deploy_path_template'])
-            ->first(fn (OriginServer $server) => $this->normalizeHost((string) $server->host) === $normalized);
-    }
-
-    private function normalizeHost(string $host): string
-    {
-        $host = strtolower(trim($host));
-        $host = preg_replace('#^https?://#', '', $host) ?? $host;
-        $host = explode('/', $host)[0] ?? $host;
-        $host = explode(':', $host)[0] ?? $host;
-
-        return rtrim($host, '.');
     }
 
     private function acquireDeployHostSlot(UserSetting $settings): \Illuminate\Contracts\Cache\Lock

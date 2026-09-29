@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OriginServer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,6 +30,8 @@ class StoreOriginServerRequest extends FormRequest
             'disk' => ['nullable', 'string', 'max:80'],
             'price' => ['nullable', 'string', 'max:80'],
             'deploy_path_template' => ['nullable', 'string', 'max:255'],
+            'role' => ['nullable', 'string', Rule::in(OriginServer::ROLES)],
+            'max_offers' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'is_active' => ['sometimes', 'boolean'],
             'alerts_enabled' => ['sometimes', 'boolean'],
             'owner_user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],

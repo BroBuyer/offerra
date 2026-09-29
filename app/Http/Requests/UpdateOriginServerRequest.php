@@ -31,6 +31,8 @@ class UpdateOriginServerRequest extends FormRequest
             'price' => trim((string) $this->input('price', '')),
             'owner_user_id' => $owner,
             'port' => (int) ($this->input('port') ?: 22),
+            'role' => OriginServer::normalizeRole($this->input('role')),
+            'max_offers' => (int) $this->input('max_offers'),
             'is_active' => $this->boolean('is_active'),
             'alerts_enabled' => $this->boolean('alerts_enabled'),
         ]);
@@ -58,6 +60,8 @@ class UpdateOriginServerRequest extends FormRequest
             'disk' => ['nullable', 'string', 'max:80'],
             'price' => ['nullable', 'string', 'max:80'],
             'deploy_path_template' => ['nullable', 'string', 'max:255'],
+            'role' => ['nullable', 'string', Rule::in(OriginServer::ROLES)],
+            'max_offers' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'is_active' => ['required', 'boolean'],
             'alerts_enabled' => ['required', 'boolean'],
             'owner_user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],

@@ -96,7 +96,7 @@ class RepairKeitaroIntegrations extends Command
                     try {
                         $deploy->pushConfig($offer->user, $offer->fresh());
                     } catch (\Throwable $ownerError) {
-                        if ($admin && $admin->id !== $offer->user_id && $deploy->settingsReady($admin->settings)) {
+                        if ($admin && $admin->id !== $offer->user_id && $deploy->poolReady()) {
                             $this->line('  → retry via admin SFTP');
                             $deploy->pushConfig($admin, $offer->fresh());
                         } else {

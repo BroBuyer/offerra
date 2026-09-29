@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Services\DeployConnection;
 use App\Services\DeployService;
 use App\Services\CloudflareClient;
+use App\Services\GoogleSearchConsoleClient;
 use App\Services\KeitaroClient;
 use App\Services\OfferConfigBuilder;
 use App\Services\OfferGenerator;
@@ -13,6 +14,7 @@ use App\Services\OfferStatusReconciler;
 use App\Services\OfferTeardownService;
 use App\Services\OfferVerificationFileService;
 use App\Services\OriginHostService;
+use App\Services\OriginPool;
 use App\Services\TemplateCatalog;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,6 +44,7 @@ class OfferServiceProvider extends ServiceProvider
             return new DeployService(
                 $app->make(OfferGenerator::class),
                 $app->make(OriginHostService::class),
+                $app->make(OriginPool::class),
                 config('offerra.offers_path'),
             );
         });
@@ -61,6 +64,7 @@ class OfferServiceProvider extends ServiceProvider
             return new OfferStatusReconciler(
                 $app->make(DeployConnection::class),
                 $app->make(KeitaroClient::class),
+                $app->make(OriginPool::class),
                 config('offerra.offers_path'),
             );
         });
@@ -69,8 +73,11 @@ class OfferServiceProvider extends ServiceProvider
             return new OfferTeardownService(
                 $app->make(CloudflareClient::class),
                 $app->make(KeitaroClient::class),
+                $app->make(GoogleSearchConsoleClient::class),
                 $app->make(OfferVerificationFileService::class),
                 $app->make(OriginHostService::class),
+                $app->make(DeployService::class),
+                $app->make(OriginPool::class),
                 config('offerra.offers_path'),
             );
         });

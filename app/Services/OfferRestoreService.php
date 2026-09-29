@@ -105,7 +105,8 @@ class OfferRestoreService
             'deploy_error' => null,
             'remote_path' => null,
             'deployed_at' => null,
-            'deploy_panel_name' => trim((string) $settings->deploy_host) ?: $offer->deploy_panel_name,
+            // Fresh pool allocation on restore — the old server may be gone or full.
+            'deploy_panel_name' => null,
             'provision_infrastructure' => true,
             'infra_status' => 'pending',
             'infra_error' => null,

@@ -142,7 +142,8 @@ class OfferGenerator
                 'currency' => strtoupper((string) $input['currency']),
                 'template' => $template,
                 'status' => 'generated',
-                'deploy_panel_name' => trim((string) $settings->deploy_host) ?: null,
+                // Bound later by OriginPool on first provision/deploy.
+                'deploy_panel_name' => null,
                 'keitaro_campaign_id' => $keitaro['id'] ?? null,
                 'keitaro_alias' => $keitaro['alias'] ?? null,
                 'keitaro_campaign_token' => $keitaro['token'] ?? null,

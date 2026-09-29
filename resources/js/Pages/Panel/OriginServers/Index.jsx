@@ -34,6 +34,31 @@ function formErrorList(formErrors) {
     return Object.values(formErrors || {}).flat().filter(Boolean);
 }
 
+const ROLE_LABELS = {
+    pool: 'Пул',
+    spare: 'Запасний',
+    drain: 'Звільняється',
+};
+
+const ROLE_COLORS = {
+    pool: '#16a34a',
+    spare: '#2563eb',
+    drain: '#ca8a04',
+};
+
+function roleBadge(role, acceptsNewOffers) {
+    const key = ROLE_LABELS[role] ? role : 'pool';
+
+    return (
+        <>
+            <span style={{ color: ROLE_COLORS[key], fontWeight: 600 }}>{ROLE_LABELS[key]}</span>
+            {key === 'pool' && !acceptsNewOffers && (
+                <div className="field-hint" style={{ color: '#ca8a04' }}>не приймає нові</div>
+            )}
+        </>
+    );
+}
+
 function PlusIcon() {
     return (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
@@ -54,6 +79,8 @@ const emptyCreate = (defaultPath) => ({
     price: '',
     hoster: '',
     deploy_path_template: defaultPath,
+    role: 'pool',
+    max_offers: '',
     is_active: true,
     alerts_enabled: true,
     owner_user_id: '',
@@ -64,6 +91,8 @@ export default function OriginServersIndex({
     orphans = [],
     users = [],
     defaultPath = '/var/www/offers/{domain}/public_html',
+    poolSummary = null,
+    roles = ['pool', 'spare', 'drain'],
 }) {
     const { flash } = usePage().props;
     const [busyId, setBusyId] = useState(null);
@@ -72,6 +101,7 @@ export default function OriginServersIndex({
     const [syncing, setSyncing] = useState(false);
     const [checkingAll, setCheckingAll] = useState(false);
     const [savingEdit, setSavingEdit] = useState(false);
+    const [savingCreate, setSavingCreate] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
     const createForm = useForm(emptyCreate(defaultPath));
@@ -88,6 +118,8 @@ export default function OriginServersIndex({
         price: '',
         hoster: '',
         deploy_path_template: defaultPath,
+        role: 'pool',
+        max_offers: '',
         is_active: true,
         alerts_enabled: true,
         owner_user_id: '',
@@ -106,7 +138,7 @@ export default function OriginServersIndex({
     };
 
     const closeCreate = () => {
-        if (createForm.processing) {
+        if (savingCreate) {
             return;
         }
         setCreateOpen(false);
@@ -124,32 +156,60 @@ export default function OriginServersIndex({
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [createOpen, createForm.processing]);
+    }, [createOpen, savingCreate]);
 
     const submitCreate = (e) => {
         e.preventDefault();
-        setSubmitError('');
-        createForm.transform((data) => ({
-            ...data,
-            owner_user_id: data.owner_user_id === '' ? null : Number(data.owner_user_id),
+        const data = createForm.data;
+        const host = String(data.host || '').trim();
+        if (!host) {
+            setSubmitError('Вкажіть Host / IP');
+            return;
+        }
+        if (!String(data.username || '').trim()) {
+            setSubmitError('Вкажіть SSH user');
+            return;
+        }
+        if (!String(data.password || '').trim()) {
+            setSubmitError('Вкажіть SSH password');
+            return;
+        }
+
+        const payload = {
+            host,
             port: Number(data.port) || 22,
-            is_active: Boolean(data.is_active),
-            alerts_enabled: Boolean(data.alerts_enabled),
+            username: String(data.username || '').trim(),
+            password: String(data.password || ''),
+            label: String(data.label || '').trim(),
             cpu: String(data.cpu || '').trim() || null,
             ram: String(data.ram || '').trim() || null,
             disk: String(data.disk || '').trim() || null,
             price: String(data.price || '').trim() || null,
             hoster: String(data.hoster || '').trim() || null,
-        })).post(route('origin-servers.store'), {
+            deploy_path_template: String(data.deploy_path_template || defaultPath),
+            role: String(data.role || 'pool'),
+            max_offers: Number(data.max_offers) || 0,
+            is_active: Boolean(data.is_active),
+            alerts_enabled: Boolean(data.alerts_enabled),
+            owner_user_id: data.owner_user_id === '' ? null : Number(data.owner_user_id),
+        };
+
+        setSubmitError('');
+        createForm.clearErrors();
+        setSavingCreate(true);
+
+        router.post(route('origin-servers.store'), payload, {
             preserveScroll: true,
             onSuccess: () => {
                 createForm.reset();
                 createForm.setData(emptyCreate(defaultPath));
                 setCreateOpen(false);
+                setSubmitError('');
             },
             onError: (errs) => {
                 setSubmitError(formErrorList(errs)[0] || 'Не вдалося додати сервер');
             },
+            onFinish: () => setSavingCreate(false),
         });
     };
 
@@ -168,6 +228,8 @@ export default function OriginServersIndex({
             price: server.price ?? '',
             hoster: server.hoster ?? '',
             deploy_path_template: server.deploy_path_template || defaultPath,
+            role: server.role || 'pool',
+            max_offers: server.max_offers ? String(server.max_offers) : '',
             is_active: server.is_active !== false,
             alerts_enabled: server.alerts_enabled !== false,
             owner_user_id: server.owner_user_id ? String(server.owner_user_id) : '',
@@ -195,6 +257,8 @@ export default function OriginServersIndex({
             price: String(editData.price || '').trim(),
             hoster: String(editData.hoster || '').trim(),
             deploy_path_template: String(editData.deploy_path_template || defaultPath),
+            role: String(editData.role || 'pool'),
+            max_offers: Number(editData.max_offers) || 0,
             is_active: Boolean(editData.is_active),
             alerts_enabled: Boolean(editData.alerts_enabled),
             owner_user_id: editData.owner_user_id === ''
@@ -241,6 +305,23 @@ export default function OriginServersIndex({
         });
     };
 
+    const evacuateServer = (server) => {
+        const confirmText = server.offers_count > 0
+            ? `Перенести ${server.offers_count} оферів з ${server.host} на інші сервери пулу?`
+            + '\n\nСервер буде позначено «Звільняється», оффери — перезадеплоєні й перепривʼязані в Cloudflare.'
+            : `На ${server.host} немає активних оферів. Позначити сервер як «Звільняється»?`;
+
+        if (!window.confirm(confirmText)) {
+            return;
+        }
+
+        setBusyId(server.id);
+        router.post(route('origin-servers.evacuate', server.id), {}, {
+            preserveScroll: true,
+            onFinish: () => setBusyId(null),
+        });
+    };
+
     const removeServer = (server) => {
         if (!window.confirm(`Видалити ${server.host} з реєстру? Оффери не чіпаються.`)) {
             return;
@@ -274,8 +355,10 @@ export default function OriginServersIndex({
                 <div>
                     <h2>Origin-сервери</h2>
                     <p>
-                        Реєстр усіх origin-хостів для моніторингу. User settings лишаються лише
-                        «куди деплоїти нові оффери». Cron перевіряє активні сервери та orphan з офферами.
+                        Єдиний пул серверів для всіх юзерів. Нові оффери автоматично йдуть на
+                        найменш завантажений сервер з роллю «Пул»; «Запасні» моніторяться, але
+                        нових оферів не отримують. Якщо сервер падає — «Evacuate» розкидає його
+                        оффери по решті пулу.
                     </p>
                 </div>
                 <button
@@ -301,6 +384,34 @@ export default function OriginServersIndex({
                         {submitError}
                     </p>
                 </div>
+            )}
+
+            {poolSummary && (
+                <section
+                    className="card"
+                    style={{ marginBottom: '1rem', borderColor: poolSummary.accepting > 0 ? undefined : '#f87171' }}
+                >
+                    <h3>Пул</h3>
+                    <p className="card-desc">
+                        {poolSummary.accepting > 0 ? (
+                            <>
+                                Приймають нові оффери: <strong>{poolSummary.accepting}</strong>
+                                {' · запасних: '}
+                                <strong>{poolSummary.spare}</strong>
+                                {poolSummary.drain > 0 ? ` · звільняється: ${poolSummary.drain}` : ''}
+                                {' · оферів у пулі: '}
+                                <strong>{poolSummary.offers}</strong>
+                                {poolSummary.capacity != null ? ` · вільних місць: ${poolSummary.capacity}` : ''}
+                                {poolSummary.next_host ? ` · наступний: ${poolSummary.next_host}` : ''}
+                            </>
+                        ) : (
+                            <span style={{ color: '#f87171' }}>
+                                Жоден сервер не приймає нові оффери — створення й деплой зупиняться.
+                                Додайте сервер або переведіть запасний у роль «Пул».
+                            </span>
+                        )}
+                    </p>
+                </section>
             )}
 
             <div className="btn-row" style={{ marginBottom: '1rem' }}>
@@ -341,6 +452,7 @@ export default function OriginServersIndex({
                             <th>RAM</th>
                             <th>Диск</th>
                             <th>Ціна</th>
+                            <th>Роль</th>
                             <th>Статус</th>
                             <th>Офферів</th>
                             <th>SSH</th>
@@ -367,8 +479,14 @@ export default function OriginServersIndex({
                                 <td className="field-hint">{server.ram || '—'}</td>
                                 <td className="field-hint">{server.disk || '—'}</td>
                                 <td className="field-hint">{server.price || '—'}</td>
+                                <td>{roleBadge(server.role, server.accepts_new_offers)}</td>
                                 <td>{statusBadge(server.health?.status)}</td>
-                                <td>{server.offers_count}</td>
+                                <td>
+                                    {server.offers_count}
+                                    {server.max_offers > 0 && (
+                                        <div className="field-hint">ліміт {server.max_offers}</div>
+                                    )}
+                                </td>
                                 <td>{server.has_ssh ? 'так' : 'немає'}</td>
                                 <td className="field-hint">{server.owner_email || '—'}</td>
                                 <td>
@@ -391,6 +509,15 @@ export default function OriginServersIndex({
                                         type="button"
                                         className="btn btn-ghost btn-sm"
                                         disabled={busyId === server.id}
+                                        onClick={() => evacuateServer(server)}
+                                        title="Розкидати оффери цього сервера по решті пулу"
+                                    >
+                                        Evacuate
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-ghost btn-sm"
+                                        disabled={busyId === server.id}
                                         onClick={() => removeServer(server)}
                                     >
                                         Del
@@ -400,7 +527,7 @@ export default function OriginServersIndex({
                         ))}
                         {servers.length === 0 && (
                             <tr>
-                                <td colSpan={11} className="field-hint">
+                                <td colSpan={12} className="field-hint">
                                     Реєстр порожній — натисніть «+» або «Синхронізувати».
                                 </td>
                             </tr>
@@ -522,6 +649,33 @@ export default function OriginServersIndex({
                                         <option key={u.id} value={u.id}>{u.name}</option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+                        <div className="field-row">
+                            <div className="field">
+                                <label>Роль у пулі</label>
+                                <select
+                                    value={editData.role}
+                                    onChange={(e) => setEditField('role', e.target.value)}
+                                >
+                                    {roles.map((r) => (
+                                        <option key={r} value={r}>{ROLE_LABELS[r] || r}</option>
+                                    ))}
+                                </select>
+                                <p className="field-hint">
+                                    Пул — приймає нові оффери. Запасний — тільки моніторинг.
+                                    Звільняється — готується до евакуації.
+                                </p>
+                            </div>
+                            <div className="field">
+                                <label>Ліміт оферів</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={editData.max_offers}
+                                    onChange={(e) => setEditField('max_offers', e.target.value)}
+                                    placeholder="0 = без ліміту"
+                                />
                             </div>
                         </div>
                         <div className="field-row">
@@ -697,6 +851,34 @@ export default function OriginServersIndex({
                                 </div>
                             </div>
                             <div className="field-row">
+                                <div className="field">
+                                    <label htmlFor="os-role">Роль у пулі</label>
+                                    <select
+                                        id="os-role"
+                                        value={createForm.data.role}
+                                        onChange={(e) => createForm.setData('role', e.target.value)}
+                                    >
+                                        {roles.map((r) => (
+                                            <option key={r} value={r}>{ROLE_LABELS[r] || r}</option>
+                                        ))}
+                                    </select>
+                                    <p className="field-hint">
+                                        Запасний сервер прогрітий і моніториться, але нових оферів не отримує.
+                                    </p>
+                                </div>
+                                <div className="field">
+                                    <label htmlFor="os-max-offers">Ліміт оферів</label>
+                                    <input
+                                        id="os-max-offers"
+                                        type="number"
+                                        min="0"
+                                        value={createForm.data.max_offers}
+                                        onChange={(e) => createForm.setData('max_offers', e.target.value)}
+                                        placeholder="0 = без ліміту"
+                                    />
+                                </div>
+                            </div>
+                            <div className="field-row">
                                 <label className="field" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <input
                                         type="checkbox"
@@ -715,10 +897,10 @@ export default function OriginServersIndex({
                                 </label>
                             </div>
                             <div className="btn-row" style={{ marginTop: '0.75rem' }}>
-                                <button type="submit" className="btn btn-primary" disabled={createForm.processing}>
-                                    {createForm.processing ? 'Додавання…' : 'Додати'}
+                                <button type="submit" className="btn btn-primary" disabled={savingCreate}>
+                                    {savingCreate ? 'Додавання…' : 'Додати'}
                                 </button>
-                                <button type="button" className="btn btn-ghost" onClick={closeCreate} disabled={createForm.processing}>
+                                <button type="button" className="btn btn-ghost" onClick={closeCreate} disabled={savingCreate}>
                                     Скасувати
                                 </button>
                             </div>
