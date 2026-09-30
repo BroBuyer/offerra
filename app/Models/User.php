@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasOne(UserSetting::class);
     }
 
+    public function googleAccounts(): HasMany
+    {
+        return $this->hasMany(GoogleAccount::class)->orderByDesc('is_primary')->orderBy('id');
+    }
+
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class);

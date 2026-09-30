@@ -12,11 +12,11 @@ class InspectOfferGoogleIndexJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 60;
+    public int $timeout = 180;
 
     public int $tries = 2;
 
-    public int $uniqueFor = 93600;
+    public int $uniqueFor = 7200;
 
     public function __construct(public int $offerId)
     {
@@ -30,7 +30,7 @@ class InspectOfferGoogleIndexJob implements ShouldBeUnique, ShouldQueue
 
     public function handle(OfferGoogleIndexInspector $inspector): void
     {
-        $offer = Offer::query()->with('user.settings')->find($this->offerId);
+        $offer = Offer::query()->with(['user.settings.googleAccounts', 'user.googleAccounts'])->find($this->offerId);
         if (! $offer) {
             return;
         }

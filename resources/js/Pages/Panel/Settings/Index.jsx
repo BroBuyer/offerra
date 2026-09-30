@@ -518,10 +518,9 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                 <section className="card">
                     <h3>Google Search Console</h3>
                     <p className="card-desc">
-                        Файл <code>google….html</code> з GSC — один раз тут, далі додається до кожного нового оффера.
-                        Після підключення Google: коли DNS готовий і сайт реально відкривається (зелений кружечок),
-                        система сама додає домен у Search Console і сабмітить sitemap.
-                        Зелена галочка Indexed з’явиться, коли Google візьме URL (перевірка через ~24 год, далі раз на добу; червона — якщо за 7 днів немає).
+                        Файл <code>google….html</code> з головного GSC — один раз тут, далі додається до кожного нового оффера.
+                        Нові офери сабмітяться на <strong>головний</strong> Google. Indexed перевіряється по всіх підключених акаунтах
+                        (старі домени, які сабмітили в іншому GSC). Перевірка через ~24 год, далі раз на добу; червона — якщо за 7 днів немає.
                     </p>
                     <input
                         ref={gscVerificationInputRef}
@@ -556,49 +555,74 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                         )}
                     </div>
 
+                    {(settings.google_accounts ?? []).length > 0 && (
+                        <ul className="google-account-list">
+                            {(settings.google_accounts ?? []).map((account) => (
+                                <li key={account.id} className="google-account-row">
+                                    <div className="google-account-row__meta">
+                                        <span className="google-account-row__email">{account.email}</span>
+                                        {account.is_primary ? (
+                                            <span className="google-account-row__badge">Головний</span>
+                                        ) : (
+                                            <span className="google-account-row__hint">перевірка</span>
+                                        )}
+                                        {account.connected_at && (
+                                            <span className="field-hint" style={{ margin: 0 }}>
+                                                з {account.connected_at}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="google-account-row__actions">
+                                        {!account.is_primary && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                onClick={() =>
+                                                    router.post(
+                                                        route('settings.google.primary', account.id),
+                                                        { user_id: settingsUser.id },
+                                                        { preserveScroll: true },
+                                                    )
+                                                }
+                                            >
+                                                Зробити головним
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className="btn btn-ghost btn-sm"
+                                            onClick={() =>
+                                                router.delete(route('settings.google.disconnect', account.id), {
+                                                    data: { user_id: settingsUser.id },
+                                                    preserveScroll: true,
+                                                })
+                                            }
+                                        >
+                                            Відключити
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
                     <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                        {settings.google_oauth_connected ? (
-                            <>
-                                <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
-                                    Google підключено
-                                    {settings.google_oauth_email ? `: ${settings.google_oauth_email}` : ''}
-                                </span>
-                                {settings.google_oauth_connected_at && (
-                                    <span className="field-hint" style={{ margin: 0 }}>
-                                        з {settings.google_oauth_connected_at}
-                                    </span>
-                                )}
-                                <button
-                                    type="button"
-                                    className="btn btn-ghost btn-sm"
-                                    onClick={() =>
-                                        router.delete(route('settings.google.disconnect'), {
-                                            data: { user_id: settingsUser.id },
-                                            preserveScroll: true,
-                                        })
-                                    }
-                                >
-                                    Відключити
-                                </button>
-                            </>
-                        ) : (
-                            <a
-                                className={`btn btn-sm ${settings.google_oauth_configured && settings.has_gsc_verification_file ? '' : 'btn-ghost'}`}
-                                href={
-                                    settings.google_oauth_configured
-                                        ? route('settings.google.redirect', { user_id: settingsUser.id })
-                                        : undefined
+                        <a
+                            className={`btn btn-sm ${settings.google_oauth_configured ? '' : 'btn-ghost'}`}
+                            href={
+                                settings.google_oauth_configured
+                                    ? route('settings.google.redirect', { user_id: settingsUser.id })
+                                    : undefined
+                            }
+                            aria-disabled={!settings.google_oauth_configured}
+                            onClick={(e) => {
+                                if (!settings.google_oauth_configured) {
+                                    e.preventDefault();
                                 }
-                                aria-disabled={!settings.google_oauth_configured}
-                                onClick={(e) => {
-                                    if (!settings.google_oauth_configured) {
-                                        e.preventDefault();
-                                    }
-                                }}
-                            >
-                                Підключити Google
-                            </a>
-                        )}
+                            }}
+                        >
+                            {(settings.google_accounts ?? []).length > 0 ? 'Додати Google' : 'Підключити Google'}
+                        </a>
                     </div>
                     {!settings.google_oauth_configured && (
                         <p className="field-hint" style={{ color: '#f87171', marginTop: '0.5rem' }}>
@@ -607,7 +631,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                     )}
                     {settings.google_oauth_configured && !settings.has_gsc_verification_file && (
                         <p className="field-hint" style={{ marginTop: '0.5rem' }}>
-                            Спочатку завантажте HTML-файл верифікації з того ж Google-акаунта.
+                            Для нових оферів завантажте HTML-файл верифікації з головного Google-акаунта.
+                            Додаткові акаунти можна додати лише для перевірки Indexed.
                         </p>
                     )}
                     {pageErrors?.gsc_verification && (

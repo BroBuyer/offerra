@@ -135,6 +135,8 @@ class OfferGscSubmitter
                 'site_url' => $result['site_url'],
                 'sitemap_url' => $result['sitemap_url'],
                 'submitted_at' => now()->toIso8601String(),
+                'email' => $result['email'] ?? null,
+                'google_account_id' => $result['google_account_id'] ?? null,
             ];
             unset($meta['gsc_error']);
 

@@ -59,7 +59,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/settings/gsc-verification', [SettingsController::class, 'destroyGscVerification'])->name('settings.gsc-verification.destroy');
     Route::get('/settings/google/redirect', [SettingsController::class, 'redirectGoogle'])->name('settings.google.redirect');
     Route::get('/settings/google/callback', [SettingsController::class, 'callbackGoogle'])->name('settings.google.callback');
-    Route::delete('/settings/google', [SettingsController::class, 'disconnectGoogle'])->name('settings.google.disconnect');
+    Route::post('/settings/google/{googleAccount}/primary', [SettingsController::class, 'setPrimaryGoogle'])->name('settings.google.primary');
+    Route::delete('/settings/google/{googleAccount}', [SettingsController::class, 'disconnectGoogle'])->name('settings.google.disconnect');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

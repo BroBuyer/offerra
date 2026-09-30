@@ -6,6 +6,8 @@ use App\Services\CloudflareClient;
 use App\Support\DeployDriver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class UserSetting extends Model
 {
@@ -82,6 +84,62 @@ class UserSetting extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function googleAccounts(): HasMany
+    {
+        return $this->hasMany(GoogleAccount::class, 'user_id', 'user_id')
+            ->orderByDesc('is_primary')
+            ->orderBy('id');
+    }
+
+    public function primaryGoogleAccount(): ?GoogleAccount
+    {
+        if ($this->relationLoaded('googleAccounts')) {
+            return $this->googleAccounts->firstWhere('is_primary', true)
+                ?? $this->googleAccounts->first();
+        }
+
+        return $this->googleAccounts()->where('is_primary', true)->first()
+            ?? $this->googleAccounts()->first();
+    }
+
+    /**
+     * @return Collection<int, GoogleAccount>
+     */
+    public function googleAccountsForInspect(): Collection
+    {
+        $this->loadMissing('googleAccounts');
+
+        return $this->googleAccounts
+            ->filter(fn (GoogleAccount $account) => filled($account->refresh_token))
+            ->values();
+    }
+
+    public function syncPrimaryGoogleMirror(): void
+    {
+        unset($this->relations['googleAccounts']);
+
+        $primary = $this->primaryGoogleAccount();
+
+        $this->forceFill([
+            'google_oauth_refresh_token' => $primary?->refresh_token,
+            'google_oauth_email' => $primary?->email,
+            'google_oauth_connected_at' => $primary?->connected_at,
+        ])->save();
+    }
+
+    /**
+     * @return list<array{id: int, email: string, is_primary: bool, connected_at: ?string}>
+     */
+    public function googleAccountsForPanel(): array
+    {
+        $this->loadMissing('googleAccounts');
+
+        return $this->googleAccounts
+            ->map(fn (GoogleAccount $account) => $account->toPanelArray())
+            ->values()
+            ->all();
+    }
+
     public function isUbuntuDriver(): bool
     {
         return DeployDriver::isUbuntu($this->deploy_driver);
@@ -141,6 +199,7 @@ class UserSetting extends Model
             'google_oauth_connected' => $this->hasGoogleOAuth(),
             'google_oauth_email' => $this->google_oauth_email ?? '',
             'google_oauth_connected_at' => $this->google_oauth_connected_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
+            'google_accounts' => $this->googleAccountsForPanel(),
             'google_oauth_configured' => filled(config('services.google.client_id'))
                 && filled(config('services.google.client_secret')),
         ];

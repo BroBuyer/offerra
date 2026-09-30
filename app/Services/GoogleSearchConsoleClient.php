@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\GoogleAccount;
 use App\Models\Offer;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +18,7 @@ class GoogleSearchConsoleClient
     /**
      * Add URL-prefix property, verify via HTML file, submit sitemap.
      *
-     * @return array{site_url: string, sitemap_url: string, verified: bool, added: bool, sitemap_submitted: bool}
+     * @return array{site_url: string, sitemap_url: string, verified: bool, added: bool, sitemap_submitted: bool, email: string, google_account_id: int}
      */
     public function submitOffer(Offer $offer, UserSetting $settings): array
     {
@@ -33,10 +34,15 @@ class GoogleSearchConsoleClient
             throw new RuntimeException('GSC verification HTML file is missing in Settings.');
         }
 
-        $accessToken = $this->oauth->accessTokenFor($settings);
+        $account = $settings->primaryGoogleAccount();
+        if (! $account) {
+            throw new RuntimeException('Google account is not connected.');
+        }
 
         $this->assertVerificationFileLive($domain, $verificationFile);
         $this->assertHttpsLive($domain);
+
+        $accessToken = $this->oauth->accessTokenForAccount($account);
 
         // Search Console: add property first, then verify ownership, then sitemap.
         // Submitting the sitemap before ownership has propagated often yields HTTP 403.
@@ -50,6 +56,8 @@ class GoogleSearchConsoleClient
             'verified' => $verified,
             'added' => $added,
             'sitemap_submitted' => $sitemapSubmitted,
+            'email' => (string) ($account->email ?? ''),
+            'google_account_id' => $account->id,
         ];
     }
 
@@ -78,11 +86,34 @@ class GoogleSearchConsoleClient
             $sitemapUrl = 'https://'.$domain.'/sitemap.xml';
         }
 
-        $accessToken = $this->oauth->accessTokenFor($settings);
+        $deleted = false;
+        $lastError = null;
 
-        $this->deleteSitemap($accessToken, $siteUrl, $sitemapUrl);
+        foreach ($this->accountsForOffer($offer, $settings) as $account) {
+            try {
+                $accessToken = $this->oauth->accessTokenForAccount($account);
+                $this->deleteSitemap($accessToken, $siteUrl, $sitemapUrl);
+                if ($this->deleteSite($accessToken, $siteUrl) === 'deleted') {
+                    $deleted = true;
+                }
+            } catch (RuntimeException $e) {
+                if ($this->isNotOwnerError($e)) {
+                    continue;
+                }
 
-        return $this->deleteSite($accessToken, $siteUrl);
+                $lastError = $e;
+            }
+        }
+
+        if ($deleted) {
+            return 'deleted';
+        }
+
+        if ($lastError) {
+            throw $lastError;
+        }
+
+        return 'already_gone';
     }
 
     /**
@@ -96,7 +127,7 @@ class GoogleSearchConsoleClient
      *     indexed: bool
      * }
      */
-    public function inspectUrl(Offer $offer, UserSetting $settings): array
+    public function inspectUrl(Offer $offer, UserSetting|GoogleAccount $source): array
     {
         $domain = strtolower(trim((string) $offer->domain));
         if ($domain === '') {
@@ -111,7 +142,9 @@ class GoogleSearchConsoleClient
         }
 
         $inspectionUrl = 'https://'.$domain.'/';
-        $accessToken = $this->oauth->accessTokenFor($settings);
+        $accessToken = $source instanceof GoogleAccount
+            ? $this->oauth->accessTokenForAccount($source)
+            : $this->oauth->accessTokenFor($source);
 
         $response = Http::timeout(30)
             ->withToken($accessToken)
@@ -143,6 +176,52 @@ class GoogleSearchConsoleClient
             'last_crawl_at' => $lastCrawl !== '' ? $lastCrawl : null,
             'indexed' => $indexed,
         ];
+    }
+
+    public function isNotOwnerError(RuntimeException $e): bool
+    {
+        $message = strtolower($e->getMessage());
+
+        return str_contains($message, 'http 403')
+            || str_contains($message, 'http 404')
+            || str_contains($message, 'permission')
+            || str_contains($message, 'does not have access')
+            || str_contains($message, 'not found');
+    }
+
+    /**
+     * @return list<GoogleAccount>
+     */
+    private function accountsForOffer(Offer $offer, UserSetting $settings): array
+    {
+        $accounts = $settings->googleAccountsForInspect();
+        if ($accounts->isEmpty()) {
+            $primary = $settings->primaryGoogleAccount();
+
+            return $primary ? [$primary] : [];
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+        $pinnedId = (int) ($gsc['google_account_id'] ?? 0);
+        $pinnedEmail = strtolower(trim((string) ($gsc['email'] ?? '')));
+
+        return $accounts
+            ->sortBy(function (GoogleAccount $account) use ($pinnedId, $pinnedEmail) {
+                if ($pinnedId > 0 && $account->id === $pinnedId) {
+                    return 0;
+                }
+                if ($pinnedEmail !== '' && strtolower((string) $account->email) === $pinnedEmail) {
+                    return 1;
+                }
+                if ($account->is_primary) {
+                    return 2;
+                }
+
+                return 3;
+            })
+            ->values()
+            ->all();
     }
 
     public function assertHttpsLive(string $domain): void

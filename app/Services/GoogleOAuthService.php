@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\GoogleAccount;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
@@ -33,7 +34,7 @@ class GoogleOAuthService
             'scope' => implode(' ', config('services.google.scopes', [])),
             'access_type' => 'offline',
             'include_granted_scopes' => 'true',
-            'prompt' => 'consent',
+            'prompt' => 'select_account consent',
             'state' => $state,
         ]);
 
@@ -73,11 +74,31 @@ class GoogleOAuthService
 
     public function accessTokenFor(UserSetting $settings): string
     {
+        $account = $settings->primaryGoogleAccount();
+        if ($account) {
+            return $this->accessTokenForAccount($account);
+        }
+
         $refresh = trim((string) ($settings->google_oauth_refresh_token ?? ''));
         if ($refresh === '') {
             throw new RuntimeException('Google account is not connected.');
         }
 
+        return $this->refreshAccessToken($refresh);
+    }
+
+    public function accessTokenForAccount(GoogleAccount $account): string
+    {
+        $refresh = trim((string) ($account->refresh_token ?? ''));
+        if ($refresh === '') {
+            throw new RuntimeException('Google account is not connected.');
+        }
+
+        return $this->refreshAccessToken($refresh);
+    }
+
+    private function refreshAccessToken(string $refresh): string
+    {
         $response = Http::asForm()->timeout(20)->post('https://oauth2.googleapis.com/token', [
             'client_id' => config('services.google.client_id'),
             'client_secret' => config('services.google.client_secret'),

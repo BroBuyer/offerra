@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateSettingsRequest;
+use App\Models\GoogleAccount;
 use App\Models\User;
 use App\Models\UserSetting;
 use App\Services\CloudflareClient;
@@ -265,49 +266,98 @@ class SettingsController extends Controller
         }
 
         $settings = $targetUser->settings()->firstOrCreate([]);
-        $refresh = $tokens['refresh_token'] ?: $settings->google_oauth_refresh_token;
+        $email = strtolower(trim((string) ($tokens['email'] ?? '')));
+        if ($email === '') {
+            return redirect()
+                ->route('settings.index', $authUser->isAdmin() && $targetUser->id !== $authUser->id ? ['user' => $targetUser->id] : [])
+                ->withErrors(['google_oauth' => 'Google не повернув email акаунта.']);
+        }
+
+        $existing = GoogleAccount::query()
+            ->where('user_id', $targetUser->id)
+            ->where('email', $email)
+            ->first();
+
+        $refresh = $tokens['refresh_token'] ?: $existing?->refresh_token;
         if (! filled($refresh)) {
             return redirect()
                 ->route('settings.index', $authUser->isAdmin() && $targetUser->id !== $authUser->id ? ['user' => $targetUser->id] : [])
                 ->withErrors(['google_oauth' => 'Google не повернув refresh token. Відключіть доступ Offerra в акаунті Google і підключіть знову.']);
         }
 
-        $settings->forceFill([
-            'google_oauth_refresh_token' => $refresh,
-            'google_oauth_email' => $tokens['email'],
-            'google_oauth_connected_at' => now(),
-        ])->save();
+        $isFirst = ! GoogleAccount::query()->where('user_id', $targetUser->id)->exists();
+
+        if ($existing) {
+            $existing->forceFill([
+                'refresh_token' => $refresh,
+                'connected_at' => now(),
+            ])->save();
+        } else {
+            GoogleAccount::query()->create([
+                'user_id' => $targetUser->id,
+                'email' => $email,
+                'refresh_token' => $refresh,
+                'is_primary' => $isFirst,
+                'connected_at' => now(),
+            ]);
+        }
+
+        $settings->syncPrimaryGoogleMirror();
 
         $redirect = redirect()->route('settings.index');
         if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
             $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
         }
 
-        $label = $tokens['email'] ?: 'Google';
+        $label = $email;
 
-        return $redirect->with('success', "Google підключено: {$label}");
+        return $redirect->with('success', $existing
+            ? "Google оновлено: {$label}"
+            : "Google підключено: {$label}");
     }
 
-    public function disconnectGoogle(Request $request): RedirectResponse
+    public function setPrimaryGoogle(Request $request, GoogleAccount $googleAccount): RedirectResponse
     {
         $authUser = $request->user();
         $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
-        $settings = $targetUser->settings;
 
-        if ($settings) {
-            $settings->forceFill([
-                'google_oauth_refresh_token' => null,
-                'google_oauth_email' => null,
-                'google_oauth_connected_at' => null,
-            ])->save();
+        if ($googleAccount->user_id !== $targetUser->id) {
+            abort(403);
         }
+
+        $googleAccount->makePrimary();
+        $targetUser->settings()->firstOrCreate([])->syncPrimaryGoogleMirror();
 
         $redirect = redirect()->route('settings.index');
         if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
             $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
         }
 
-        return $redirect->with('success', 'Google відключено');
+        return $redirect->with('success', "Головний Google: {$googleAccount->email}");
+    }
+
+    public function disconnectGoogle(Request $request, GoogleAccount $googleAccount): RedirectResponse
+    {
+        $authUser = $request->user();
+        $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
+
+        if ($googleAccount->user_id !== $targetUser->id) {
+            abort(403);
+        }
+
+        $label = $googleAccount->email;
+        $googleAccount->promoteReplacementIfPrimary();
+        $googleAccount->delete();
+
+        $settings = $targetUser->settings;
+        $settings?->syncPrimaryGoogleMirror();
+
+        $redirect = redirect()->route('settings.index');
+        if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
+            $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
+        }
+
+        return $redirect->with('success', "Google відключено: {$label}");
     }
 
     private function resolveSettingsUser(User $authUser, ?int $userId = null): User
