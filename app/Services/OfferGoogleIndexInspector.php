@@ -87,6 +87,18 @@ class OfferGoogleIndexInspector
     }
 
     /**
+     * Timed-out offers that were submitted but never confirmed in the index.
+     */
+    public function timeoutQuery(): Builder
+    {
+        return Offer::query()
+            ->where('submitted_for_indexing', true)
+            ->whereNull('google_indexed_at')
+            ->where('google_index_status', self::STATUS_TIMEOUT)
+            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed']);
+    }
+
+    /**
      * @return array{status: string, indexed: bool, coverage: ?string}
      */
     public function inspect(Offer $offer): array

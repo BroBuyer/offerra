@@ -18,14 +18,14 @@ class InspectOfferGoogleIndexJob implements ShouldBeUnique, ShouldQueue
 
     public int $uniqueFor = 7200;
 
-    public function __construct(public int $offerId)
+    public function __construct(public int $offerId, public bool $force = false)
     {
         $this->onQueue('deploy');
     }
 
     public function uniqueId(): string
     {
-        return 'gsc-inspect:'.$this->offerId;
+        return ($this->force ? 'gsc-inspect-force:' : 'gsc-inspect:').$this->offerId;
     }
 
     public function handle(OfferGoogleIndexInspector $inspector): void

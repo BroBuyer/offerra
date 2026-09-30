@@ -9,6 +9,7 @@
  * --force   discard local edits in the panel checkout (default: abort on them)
  * --branch  branch to deploy (default: main)
  * --skip-build / --skip-deps   skip the asset build / dependency install
+ * --exec    extra command to run in the panel checkout after deploy
  */
 const { Client } = require("ssh2");
 
@@ -29,6 +30,7 @@ const BRANCH = opt("branch", "main");
 const FORCE = flag("force");
 const SKIP_BUILD = flag("skip-build");
 const SKIP_DEPS = flag("skip-deps");
+const EXEC = opt("exec", "");
 
 if (!HOST || !PASS) {
   console.error("PANEL_HOST / PANEL_PASS required");
@@ -169,6 +171,11 @@ async function main() {
     timeoutMs: 300000,
     allowFail: true,
   });
+
+  if (EXEC) {
+    step("exec");
+    await exec(conn, `cd ${REMOTE} && ${EXEC}`, { timeoutMs: 300000 });
+  }
 
   conn.end();
   console.log(`\nDEPLOYED ${from.slice(0, 8)} -> ${to.slice(0, 8)} (origin/${BRANCH})`);
