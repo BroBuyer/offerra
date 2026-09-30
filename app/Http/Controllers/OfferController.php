@@ -134,6 +134,7 @@ class OfferController extends Controller
             'template' => trim(request()->string('template')->toString()),
             'panel' => trim(request()->string('panel')->toString()),
             'indexing' => request()->string('indexing')->toString(),
+            'google_index' => request()->string('google_index')->toString(),
             'availability' => request()->string('availability')->toString(),
             'archive_status' => request()->string('archive_status')->toString(),
             'created' => request()->string('created')->toString(),
@@ -219,6 +220,22 @@ class OfferController extends Controller
             $query->where('submitted_for_indexing', true);
         } elseif ($filters['indexing'] === 'no') {
             $query->where('submitted_for_indexing', false);
+        }
+
+        if (($filters['google_index'] ?? '') === 'indexed') {
+            $query->whereNotNull('google_indexed_at');
+        } elseif (($filters['google_index'] ?? '') === 'pending') {
+            $query->whereNull('google_indexed_at')
+                ->where(function (Builder $builder): void {
+                    $builder->where('submitted_for_indexing', true)
+                        ->orWhereIn('google_index_status', ['waiting', 'unknown', 'not_indexed', 'error']);
+                })
+                ->where(function (Builder $builder): void {
+                    $builder->whereNull('google_index_status')
+                        ->orWhereNotIn('google_index_status', ['indexed', 'timeout']);
+                });
+        } elseif (($filters['google_index'] ?? '') === 'timeout') {
+            $query->where('google_index_status', 'timeout');
         }
 
         if (($filters['availability'] ?? '') === 'ok') {

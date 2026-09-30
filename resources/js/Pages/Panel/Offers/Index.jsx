@@ -417,6 +417,26 @@ function buildActiveFilterChips(filters, users) {
         });
     }
 
+    if (filters.google_index === 'indexed') {
+        chips.push({
+            id: 'google_index',
+            label: 'Indexed: yes',
+            clear: { google_index: '' },
+        });
+    } else if (filters.google_index === 'pending') {
+        chips.push({
+            id: 'google_index',
+            label: 'Indexed: pending',
+            clear: { google_index: '' },
+        });
+    } else if (filters.google_index === 'timeout') {
+        chips.push({
+            id: 'google_index',
+            label: 'Indexed: timed out',
+            clear: { google_index: '' },
+        });
+    }
+
     if (filters.availability === 'ok') {
         chips.push({
             id: 'availability',
@@ -651,6 +671,7 @@ export default function OffersIndex({
             template: '',
             panel: '',
             indexing: '',
+            google_index: '',
             availability: '',
             created: '',
             created_from: '',
@@ -1323,6 +1344,16 @@ export default function OffersIndex({
                     <option value="">Submitted</option>
                     <option value="no">Not submitted</option>
                     <option value="yes">Submitted</option>
+                </select>
+                <select
+                    aria-label="Google index status"
+                    value={filters.google_index ?? ''}
+                    onChange={(e) => reloadOffers({ google_index: e.target.value })}
+                >
+                    <option value="">Indexed</option>
+                    <option value="indexed">Indexed</option>
+                    <option value="pending">Pending</option>
+                    <option value="timeout">Timed out</option>
                 </select>
                 <select
                     aria-label="Availability dots"
