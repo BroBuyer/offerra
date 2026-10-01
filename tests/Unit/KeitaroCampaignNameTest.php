@@ -41,6 +41,26 @@ class KeitaroCampaignNameTest extends TestCase
         );
     }
 
+    public function test_picks_group_named_like_affiliate_tag_when_configured_id_is_invisible(): void
+    {
+        $groups = [
+            ['id' => 19, 'name' => 'BRO'],
+            ['id' => 23, 'name' => 'EGO'],
+            ['id' => 27, 'name' => 'JEL'],
+        ];
+
+        $this->assertSame(23, KeitaroClient::pickCampaignGroupId(51, 'EGO', $groups));
+        $this->assertSame(19, KeitaroClient::pickCampaignGroupId(51, 'BRO', $groups));
+        $this->assertSame(27, KeitaroClient::pickCampaignGroupId(51, 'JEL', $groups));
+    }
+
+    public function test_keeps_configured_group_when_it_is_visible(): void
+    {
+        $this->assertSame(23, KeitaroClient::pickCampaignGroupId(23, 'EGO', [
+            ['id' => 23, 'name' => 'EGO'],
+        ]));
+    }
+
     private function client(): KeitaroClient
     {
         return new KeitaroClient(Mockery::mock(SalesPostbackService::class));

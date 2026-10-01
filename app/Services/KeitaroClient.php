@@ -10,6 +10,9 @@ use RuntimeException;
 
 class KeitaroClient
 {
+    /** @var array<int, list<array{id: int, name: string}>> */
+    private array $campaignGroupsCache = [];
+
     public function __construct(
         private readonly SalesPostbackService $salesPostbacks,
     ) {}
@@ -606,15 +609,20 @@ class KeitaroClient
 
         $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
 
+        $payload = ['name' => $name];
+        $campaign = $this->getCampaign($settings, $campaignId) ?? [];
+        $groupId = $this->resolveGroupIdForUpdate($settings, $campaign);
+        if ($groupId !== null) {
+            $payload['group_id'] = $groupId;
+        }
+
         $response = Http::withHeaders([
             'Api-Key' => $apiKey,
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ])
             ->timeout(30)
-            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", [
-                'name' => $name,
-            ]);
+            ->put("{$baseUrl}/admin_api/v1/campaigns/{$campaignId}", $payload);
 
         if ($response->failed()) {
             throw new RuntimeException(
@@ -630,11 +638,105 @@ class KeitaroClient
         return $tag !== '' ? $tag : 'BRO';
     }
 
+    /**
+     * Pick a visible Keitaro campaign group: configured id if it exists, else
+     * the group named like the affiliate tag (EGO/BRO/JEL), else the only group.
+     *
+     * @param  list<array{id: int, name: string}>  $groups
+     */
+    public static function pickCampaignGroupId(?int $configured, string $affiliateTag, array $groups): ?int
+    {
+        $ids = [];
+        foreach ($groups as $group) {
+            $id = (int) ($group['id'] ?? 0);
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+
+        if ($configured && $configured > 0 && in_array($configured, $ids, true)) {
+            return $configured;
+        }
+
+        $tag = strtoupper(trim($affiliateTag));
+        if ($tag !== '') {
+            foreach ($groups as $group) {
+                $id = (int) ($group['id'] ?? 0);
+                $name = strtoupper(trim((string) ($group['name'] ?? '')));
+                if ($id > 0 && $name === $tag) {
+                    return $id;
+                }
+            }
+        }
+
+        if (count($ids) === 1) {
+            return $ids[0];
+        }
+
+        return null;
+    }
+
     private function targetGroupId(UserSetting $settings): ?int
     {
-        $groupId = (int) trim((string) ($settings->keitaro_group_id ?? ''));
+        $configured = (int) trim((string) ($settings->keitaro_group_id ?? ''));
+        $picked = self::pickCampaignGroupId(
+            $configured > 0 ? $configured : null,
+            (string) ($settings->affiliate_tag ?? ''),
+            $this->campaignGroups($settings),
+        );
 
-        return $groupId > 0 ? $groupId : null;
+        if ($picked !== null && $picked !== $configured) {
+            $settings->forceFill(['keitaro_group_id' => (string) $picked])->save();
+        }
+
+        return $picked;
+    }
+
+    /**
+     * @return list<array{id: int, name: string}>
+     */
+    private function campaignGroups(UserSetting $settings): array
+    {
+        $cacheKey = (int) $settings->id;
+        if (isset($this->campaignGroupsCache[$cacheKey])) {
+            return $this->campaignGroupsCache[$cacheKey];
+        }
+
+        $apiKey = $settings->keitaro_api_key;
+        if (! $apiKey) {
+            return $this->campaignGroupsCache[$cacheKey] = [];
+        }
+
+        $baseUrl = rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/');
+
+        try {
+            $response = Http::withHeaders([
+                'Api-Key' => $apiKey,
+                'Accept' => 'application/json',
+            ])
+                ->timeout(20)
+                ->get("{$baseUrl}/admin_api/v1/groups", ['type' => 'campaigns']);
+        } catch (\Throwable) {
+            return $this->campaignGroupsCache[$cacheKey] = [];
+        }
+
+        if ($response->failed() || ! is_array($response->json())) {
+            return $this->campaignGroupsCache[$cacheKey] = [];
+        }
+
+        $out = [];
+        foreach ($response->json() as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            $id = (int) ($row['id'] ?? 0);
+            $name = trim((string) ($row['name'] ?? ''));
+            if ($id > 0) {
+                $out[] = ['id' => $id, 'name' => $name];
+            }
+        }
+
+        return $this->campaignGroupsCache[$cacheKey] = $out;
     }
 
     /**
@@ -643,8 +745,12 @@ class KeitaroClient
     private function resolveGroupIdForUpdate(UserSetting $settings, array $campaign): ?int
     {
         $existing = (int) ($campaign['group_id'] ?? 0);
+        $visibleIds = array_map(
+            static fn (array $group): int => $group['id'],
+            $this->campaignGroups($settings),
+        );
 
-        if ($existing > 0) {
+        if ($existing > 0 && in_array($existing, $visibleIds, true)) {
             return $existing;
         }
 

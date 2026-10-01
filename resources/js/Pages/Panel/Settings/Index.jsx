@@ -245,6 +245,9 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             value={data.keitaro_group}
                             onChange={(e) => setData('keitaro_group', e.target.value)}
                         />
+                        <p className="field-hint">
+                            ID групи кампаній у Keitaro (BRO / EGO / JEL). Якщо ID невірний, панель візьме групу з назвою як affiliate tag.
+                        </p>
                     </div>
                     {settings.sales_postback_url && (
                         <div className="field">
