@@ -116,10 +116,10 @@ async function main() {
   const to = after.out.trim().slice(0, 40);
 
   step("what changed");
-  await exec(conn, `cd ${REMOTE} && git log --oneline -5`, { timeoutMs: 30000 });
+  await exec(conn, `cd ${REMOTE} && git --no-pager log --oneline -5`, { timeoutMs: 30000 });
   const changed = await exec(
     conn,
-    `cd ${REMOTE} && git diff --name-only ${from} ${to} 2>/dev/null || echo ALL`,
+    `cd ${REMOTE} && git --no-pager diff --name-only ${from} ${to} 2>/dev/null || echo ALL`,
     { timeoutMs: 60000, allowFail: true },
   );
   const touched = changed.out;
