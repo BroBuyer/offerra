@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('FAQ');
-$page_description = 'Answers about trading, features, security, fees, and getting started with ' . SITE_NAME . '.';
+$page_description = 'Odgovori o trgovanju, funkcijah, varnosti, provizijah in začetku z ' . SITE_NAME . '.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 
@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <p class="eyebrow">FAQ</p>
       <h1>Pogosta vprašanja</h1>
-      <p class="lead">Everything you need to know before you start.</p>
+      <p class="lead">Vse, kar morate vedeti pred začetkom.</p>
     </div>
   </section>
 
@@ -24,64 +24,64 @@ require_once __DIR__ . '/includes/header.php';
       <div class="faq-list" data-faq>
         <div class="faq-item is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            How do I get started?
+            Kako začnem?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              Create an account, verify your email, and deposit a minimum of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. You'll get immediate access to charts, tools, and onboarding guides.
+              Ustvarite račun, potrdite e-pošto in položite najmanj <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Takoj dobite dostop do grafikonov, orodij in vodičev za začetek.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Is <?= e(SITE_NAME) ?> safe and legitimate?
+            Ali je <?= e(SITE_NAME) ?> varna in zakonita?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              We use industry-standard SSL encryption, 2FA, and verified payment processors. Varnost is built into every layer of the platform.
+              Uporabljamo standardno šifriranje SSL, 2FA in preverjene plačilne procesorje. Varnost je vgrajena v vsako plast platforme.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            What are the fees?
+            Kakšne so provizije?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Fees are transparent and displayed before you confirm any transaction. No hidden charges on deposits or withdrawals.
+              Provizije so pregledne in prikazane pred potrditvijo vsake transakcije. Ni skritih stroškov pri pologih ali dvigih.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Can I use automated trading?
+            Ali lahko uporabljam samodejno trgovanje?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Yes. Configure AI-assisted bots with your risk preferences, or trade manually — switch anytime.
+              Da. Nastavite bote z umetno inteligenco glede na tveganje ali trgujte ročno — preklopite kadar koli.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do withdrawals work?
+            Kako delujejo dvigi?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request a withdrawal from your dashboard. Processing typically takes 1–3 business days depending on your payment method.
+              Dvig zahtevajte z nadzorne plošče. Obdelava običajno traja 1–3 delovne dni, glede na način plačila.
             </div>
           </div>
         </div>
       </div>
 
       <div style="text-align: center; margin-top: 2.5rem;">
-        <p class="lead" style="margin-bottom: 1rem;">Still have questions?</p>
-        <a href="contacts.php" class="btn btn-outline">Kontakt support</a>
+        <p class="lead" style="margin-bottom: 1rem;">Imate še vprašanja?</p>
+        <a href="contacts.php" class="btn btn-outline">Kontaktirajte podporo</a>
       </div>
     </div>
   </section>

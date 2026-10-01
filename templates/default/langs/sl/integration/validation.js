@@ -1,11 +1,11 @@
 const forms = document.querySelectorAll('.leadform');
 
 const phoneErrorMap = {
-  0: 'Inserisci un numero di telefono valido',
-  1: 'Prefisso paese non valido',
-  2: 'Il numero di telefono è troppo corto',
-  3: 'Il numero di telefono è troppo lungo',
-  4: 'Inserisci un numero di telefono valido',
+  0: 'Vnesite veljavno telefonsko številko',
+  1: 'Neveljavna koda države',
+  2: 'Telefonska številka je prekratka',
+  3: 'Telefonska številka je predolga',
+  4: 'Vnesite veljavno telefonsko številko',
 };
 
 function getLeadCookieName(form) {
@@ -98,10 +98,10 @@ function validateNativeFields(form) {
 
 function validateTelefon(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return 'Inserisci il tuo numero di telefono';
+  if (!trimmed) return 'Vnesite svojo telefonsko številko';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || 'Inserisci un numero di telefono valido';
+    return phoneErrorMap[code] || 'Vnesite veljavno telefonsko številko';
   }
   return '';
 }
@@ -302,7 +302,7 @@ function setupFormValidation(form) {
       const data = await res.json();
 
       if (!data.ok) {
-        showFormMessage(form, data.error || 'Qualcosa è andato storto. Riprova più tardi.');
+        showFormMessage(form, data.error || 'Nekaj je šlo narobe. Poskusite znova pozneje.');
         return;
       }
 

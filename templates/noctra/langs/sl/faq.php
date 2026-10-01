@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('FAQ');
-$page_description = 'Answers on funding, security, fees, and getting started on ' . SITE_NAME . '.';
+$page_description = 'Odgovori o financiranju, varnosti, provizijah in začetku na ' . SITE_NAME . '.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 
@@ -14,8 +14,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">FAQ</p>
-      <h1>Before you fund your account</h1>
-      <p class="lead">Straight answers on access, safety, and how the platform works.</p>
+      <h1>Preden napolnite račun</h1>
+      <p class="lead">Neposredni odgovori o dostopu, varnosti in delovanju platforme.</p>
     </div>
   </section>
 
@@ -24,64 +24,64 @@ require_once __DIR__ . '/includes/header.php';
       <div class="faq-list" data-faq>
         <div class="faq-item is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            How do I get started?
+            Kako začnem?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              Create an account, verify email, and deposit from <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Charts, tools, and onboarding unlock immediately after.
+              Ustvarite račun, potrdite e-pošto in položite od <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Grafikoni, orodja in uvajanje se odklenijo takoj zatem.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How is <?= e(SITE_NAME) ?> secured?
+            Kako je <?= e(SITE_NAME) ?> zaščitena?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              SSL encryption, two-factor authentication, and verified payment processors sit under every account action.
+              Šifriranje SSL, dvofaktorsko overjanje in preverjeni plačilni procesorji spremljajo vsako dejanje na računu.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            What about fees?
+            Kaj pa provizije?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Fees show before you confirm. No surprise charges on deposits or withdrawals.
+              Provizije so prikazane pred potrditvijo. Ni presenečenj pri pologih ali dvigih.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Can I automate trades?
+            Ali lahko avtomatiziram posle?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Yes — set up AI-assisted bots with risk limits, or stay fully manual and switch anytime.
+              Da — nastavite bote UI z omejitvami tveganja ali ostanite povsem ročni in preklopite kadar koli.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do withdrawals work?
+            Kako delujejo dvigi?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request from the dashboard. Most methods settle in 1–3 business days depending on the payment method.
+              Zahtevajte z nadzorne plošče. Večina načinov se poravna v 1–3 delovnih dneh, glede na način plačila.
             </div>
           </div>
         </div>
       </div>
 
       <div style="text-align: center; margin-top: 2.5rem;">
-        <p class="lead" style="margin-bottom: 1rem;">Still have questions?</p>
-        <a href="contacts.php" class="btn btn-outline">Kontakt support</a>
+        <p class="lead" style="margin-bottom: 1rem;">Imate še vprašanja?</p>
+        <a href="contacts.php" class="btn btn-outline">Kontaktirajte podporo</a>
       </div>
     </div>
   </section>

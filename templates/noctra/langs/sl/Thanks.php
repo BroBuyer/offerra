@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/header.php';
       <h1>Ste noter.</h1>
       <p class="lead thanks-lead">
         Hvala za prijavo pri <?= e(SITE_NAME) ?>.
-        Our team will reach out shortly to finish setting up your account — keep your phone nearby.
+        Naša ekipa vas bo kmalu kontaktirala, da dokončamo nastavitev računa. Telefon imejte pri roki.
       </p>
     </div>
   </section>

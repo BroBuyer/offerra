@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-sm">
     <div class="container prose">
-      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Pogoji uporabe. If you do not agree, please do not use our services.</p>
+      <p>Z dostopom do <?= e(SITE_NAME) ?> sprejemate te pogoje uporabe. Če se ne strinjate, storitev ne uporabljajte.</p>
 
       <h2>Upravičenost</h2>
       <p>Morate biti stari vsaj 18 let in v svoji jurisdikciji zakonito smeti trgovati s finančnimi instrumenti.</p>

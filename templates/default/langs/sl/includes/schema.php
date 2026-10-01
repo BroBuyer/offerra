@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => 'Trgovalna platforma z umetno inteligenco for crypto, forex, and global markets.',
+        'description' => 'Trgovalna platforma z umetno inteligenco za kripto, forex in svetovne trge.',
     ];
 
     $website = [
@@ -30,7 +30,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => 'Smarttrgovalna platforma with real-time market analysis and AI-assisted signals.',
+        'description' => 'Pametna trgovalna platforma z analizo trgov v realnem času in signali UI.',
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
@@ -40,7 +40,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
             'bestRating' => '5',
         ],
         'offers' => [
-            '@type' => 'Ponudba',
+            '@type' => 'Offer',
             'price' => MIN_DEPOSIT,
             'priceCurrency' => CURRENCY,
         ],
@@ -52,34 +52,34 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => 'How do I get started?',
+                'name' => 'Kako začnem?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Create an account in minutes, complete a short verification step, and fund your account with a minimum deposit of ' . MIN_DEPOSIT . ' ' . CURRENCY . '. You will unlock the full platform including live charts and trading tools.',
+                    'text' => 'Ustvarite račun v minutah, opravite kratko preverjanje in napolnite račun z najmanjšim pologom ' . MIN_DEPOSIT . ' ' . CURRENCY . '. Odklenili boste celotno platformo z grafikoni v živo in trgovalnimi orodji.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Is my money and data safe?',
+                'name' => 'Ali sta moj denar in podatki varna?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'We protect accounts with SSL encryption, two-factor authentication, and secure fund handling through trusted payment providers. Your personal data is managed under strict security policies.',
+                    'text' => 'Račune varujemo s šifriranjem SSL, dvofaktorskim overjanjem in varnim ravnanjem s sredstvi pri zaupanja vrednih ponudnikih. Osebni podatki so obravnavani po strogih varnostnih pravilih.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'When can I withdraw profits?',
+                'name' => 'Kdaj lahko dvignem dobiček?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Dvigi can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
+                    'text' => 'Dvig lahko zahtevate kadar koli z nadzorne plošče. Obdelava običajno traja 1–3 delovne dni, glede na način. Provizije in roki so prikazani vnaprej.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Do I need trading experience?',
+                'name' => 'Ali potrebujem izkušnje s trgovanjem?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No prior experience is required. Guided onboarding, simple tutorials, and AI-assisted tools help you learn at your own pace with Podpora 24/7 available.',
+                    'text' => 'Predhodne izkušnje niso potrebne. Vodeno uvajanje, preprosti vodiči in orodja UI vam pomagajo učiti se v lastnem tempu. Podpora je na voljo 24/7.',
                 ],
             ],
         ],
@@ -88,11 +88,11 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $howto = [
         '@context' => 'https://schema.org',
         '@type' => 'HowTo',
-        'name' => 'Kako začeti trgovati z' . $site,
+        'name' => 'Kako začeti trgovati z ' . $site,
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Ustvarite svoj račun', 'text' => 'Prijavite se s svojimi osnovnimi podatki in pridobite varen dostop do platforme.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Potrdite svoj e-poštni naslov', 'text' => 'Potrdite svoj e-poštni naslov, da odklenete popoln dostop do platforme.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte svoj račun', 'text' => 'Položite najmanj' . MIN_DEPOSIT . ' ' . CURRENCY . 'prek bančnega nakazila, kartice ali e-denarnice.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte svoj račun', 'text' => 'Položite najmanj ' . MIN_DEPOSIT . ' ' . CURRENCY . ' prek bančnega nakazila, kartice ali e-denarnice.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Določite svojo strategijo', 'text' => 'Izberite stopnjo tveganja in trgovalne nastavitve – ročno ali samodejno.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Začni trgovati', 'text' => 'Samozavestno vstopite na trg z uporabo podatkov v realnem času in vpogledov AI.'],
         ],

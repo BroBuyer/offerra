@@ -3,7 +3,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
 $page_title = $page_title ?? SITE_NAME . ' | Market Terminal';
-$page_description = $page_description ?? 'Trade crypto, forex, and multi-asset markets on ' . SITE_NAME . ' — live terminal UI, AI-assisted signals, and transparent funding.';
+$page_description = $page_description ?? 'Trgujte s kriptovalutami, forexom in več sredstvi na ' . SITE_NAME . ' — terminal v živo, signali UI in pregledno financiranje.';
 $page_canonical = isset($page_canonical) ? canonical_url($page_canonical) : page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

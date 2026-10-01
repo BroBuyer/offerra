@@ -2,11 +2,11 @@ const forms = document.querySelectorAll('.leadform');
 const L = window.APP_LANG || {};
 
 const phoneErrorMap = {
-  0: L.valPhoneInvalid || 'Enter a valid phone number',
-  1: L.valPhoneCountry || 'Invalid country code',
-  2: L.valPhoneShort || 'The phone number is too short',
-  3: L.valPhoneLong || 'The phone number is too long',
-  4: L.valPhoneInvalid || 'Enter a valid phone number',
+  0: L.valPhoneInvalid || 'Vnesite veljavno telefonsko številko',
+  1: L.valPhoneCountry || 'Neveljavna koda države',
+  2: L.valPhoneShort || 'Telefonska številka je prekratka',
+  3: L.valPhoneLong || 'Telefonska številka je predolga',
+  4: L.valPhoneInvalid || 'Vnesite veljavno telefonsko številko',
 };
 
 function getLeadCookieName(form) {
@@ -99,10 +99,10 @@ function validateNativeFields(form) {
 
 function validatePhone(phoneInput, iti) {
   const trimmed = phoneInput.value.trim();
-  if (!trimmed) return L.valPhoneRequired || 'Enter your phone number';
+  if (!trimmed) return L.valPhoneRequired || 'Vnesite telefonsko številko';
   if (!iti.isValidNumber()) {
     const code = iti.getValidationError();
-    return phoneErrorMap[code] || L.valPhoneInvalid || 'Enter a valid phone number';
+    return phoneErrorMap[code] || L.valPhoneInvalid || 'Vnesite veljavno telefonsko številko';
   }
   return '';
 }
@@ -295,7 +295,7 @@ function setupFormValidation(form) {
     if (!tokenOk) {
       showFormMessage(
         form,
-        L.valSessionExpired || 'Session expired. Please reload the page and try again.',
+        L.valSessionExpired || 'Seja je potekla. Ponovno naložite stran in poskusite znova.',
       );
       preloader?.classList.add('hidden');
       return;
@@ -314,7 +314,7 @@ function setupFormValidation(form) {
       if (!data.ok) {
         showFormMessage(
           form,
-          data.error || L.valGenericError || 'Something went wrong. Please try again later.',
+          data.error || L.valGenericError || 'Nekaj je šlo narobe. Poskusite znova pozneje.',
         );
         return;
       }
@@ -329,7 +329,7 @@ function setupFormValidation(form) {
       showFormMessage(
         form,
         L.valConnectionError ||
-          'Connection error. Check your internet connection and try again.',
+          'Napaka povezave. Preverite internet in poskusite znova.',
       );
     } finally {
       preloader?.classList.add('hidden');

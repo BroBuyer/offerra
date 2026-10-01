@@ -50,11 +50,11 @@ require_once __DIR__ . '/includes/header.php';
   </section>
 
   <!-- Stats -->
-  <section class="stats" aria-label="Platforma statistics">
+  <section class="stats" aria-label="Statistika platforme">
     <div class="container stats-grid">
       <div class="stat-item">
         <div class="stat-value">70<span class="unit">+</span></div>
-        <div class="stat-label">Currencies available</div>
+        <div class="stat-label">Razpoložljive valute</div>
       </div>
       <div class="stat-item">
         <div class="stat-value">42<span class="unit">m</span></div>
@@ -62,7 +62,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
       <div class="stat-item">
         <div class="stat-value">$440<span class="unit">m</span></div>
-        <div class="stat-label">Trading volume</div>
+        <div class="stat-label">Obseg trgovanja</div>
       </div>
       <div class="stat-item">
         <div class="stat-value">100<span class="unit">+</span></div>
@@ -97,7 +97,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="features">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow">Why <?= e(SITE_NAME) ?></p>
+        <p class="eyebrow">Zakaj <?= e(SITE_NAME) ?></p>
         <h2>Vse, kar potrebujete za samozavestno trgovanje</h2>
         <p class="lead">Varnost, hitrost in inteligenca — združene v eni pregledni platformi za sodobne trgovce.</p>
       </div>
@@ -107,43 +107,43 @@ require_once __DIR__ . '/includes/header.php';
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <h3>Bank-grade security</h3>
-          <p>SSL encryption, 2FA, and secure fund handling protect your data and capital at every step.</p>
+          <h3>Varnost na ravni bank</h3>
+          <p>Šifriranje SSL, 2FA in varno ravnanje s sredstvi varujejo vaše podatke in kapital na vsakem koraku.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg>
           </div>
-          <h3>AI market signals</h3>
-          <p>Accurate, real-time insights help you spot opportunities and make informed decisions faster.</p>
+          <h3>Tržni signali UI</h3>
+          <p>Natančni vpogledi v realnem času pomagajo prepoznati priložnosti in hitreje sprejemati odločitve.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
           </div>
-          <h3>Automated trading</h3>
-          <p>AI-powered bots work around the clock to execute strategies efficiently while you stay in control.</p>
+          <h3>Samodejno trgovanje</h3>
+          <p>Boti z umetno inteligenco delujejo ves čas in učinkovito izvajajo strategije, vi pa ohranite nadzor.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>
           </div>
-          <h3>Multi-market access</h3>
-          <p>Trade crypto, forex, stocks, and commodities from a single unified environment.</p>
+          <h3>Dostop do več trgov</h3>
+          <p>Trgujte s kriptovalutami, forexom, delnicami in surovinami v enem okolju.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
-          <h3>Low-latency execution</h3>
-          <p>Optimized infrastructure delivers stable order execution even during peak market activity.</p>
+          <h3>Izvedba z nizko zakasnitvijo</h3>
+          <p>Optimizirana infrastruktura omogoča stabilno izvedbo naročil tudi ob vrhuncu tržne aktivnosti.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
           </div>
-          <h3>Clean interface</h3>
-          <p>Minimal design that reduces noise so you can focus on strategy, not navigation.</p>
+          <h3>Pregleden vmesnik</h3>
+          <p>Minimalistična zasnova zmanjša šum, da se osredotočite na strategijo, ne na navigacijo.</p>
         </article>
       </div>
     </div>
@@ -154,14 +154,14 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container split">
       <div>
         <p class="eyebrow">Trgi v živo</p>
-        <h2>Trade Bitcoin, Ethereum, and more</h2>
+        <h2>Trgujte z Bitcoinom, Ethereumom in več</h2>
         <p class="lead" style="margin: 1rem 0 2rem;">
-          Real-time prices, advanced indicators, and a professional-grade view of the markets you care about.
+          Cene v realnem času, napredni indikatorji in profesionalni pregled trgov, ki vas zanimajo.
         </p>
-        <a href="sign.php" class="btn btn-primary">Get market access</a>
+        <a href="sign.php" class="btn btn-primary">Dostop do trgov</a>
       </div>
 
-      <div class="exchange-panel" data-ticker-panel aria-label="Live market prices">
+      <div class="exchange-panel" data-ticker-panel aria-label="Cene trgov v živo">
         <div class="exchange-panel-header">
           <span>Trgi</span>
           <span class="live-dot">Live</span>
@@ -197,18 +197,18 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header centered">
         <p class="eyebrow">Kako začeti</p>
-        <h2>From signup to your first trade in minutes</h2>
-        <p class="lead">A guided path — no complexity, no guesswork.</p>
+        <h2>Od prijave do prvega posla v nekaj minutah</h2>
+        <p class="lead">Vodena pot — brez zapletenosti in ugibanja.</p>
       </div>
 
       <div class="steps">
         <article class="step-card">
           <h3>Ustvarite svoj račun</h3>
-          <p>Prijavite se with your details and get instant, secure access to the platform.</p>
+          <p>Prijavite se s svojimi podatki in takoj dobite varen dostop do platforme.</p>
         </article>
         <article class="step-card">
           <h3>Potrdite svoj e-poštni naslov</h3>
-          <p>Confirm your address to unlock the full trading environment.</p>
+          <p>Potrdite naslov, da odklenete celotno trgovalno okolje.</p>
         </article>
         <article class="step-card">
           <h3>Financirajte svoj račun</h3>
@@ -216,11 +216,11 @@ require_once __DIR__ . '/includes/header.php';
         </article>
         <article class="step-card">
           <h3>Določite svojo strategijo</h3>
-          <p>Define risk level and preferences — go manual or let AI automation handle execution.</p>
+          <p>Določite raven tveganja in nastavitve — ročno ali naj avtomatizacija UI izvede naročila.</p>
         </article>
         <article class="step-card">
           <h3>Začni trgovati</h3>
-          <p>Enter the market with live charts, tools, and support whenever you need it.</p>
+          <p>Vstopite na trg z grafikoni v živo, orodji in podporo, kadar koli jo potrebujete.</p>
         </article>
       </div>
 
@@ -234,10 +234,10 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm payment-section">
     <div class="container" style="max-width: 720px; margin-inline: auto; text-align: center;">
       <p class="eyebrow" style="justify-content: center;">Financiranje</p>
-      <h2 style="margin-bottom: 0.75rem;">Deposit with methods you already trust</h2>
-      <p class="lead" style="margin-bottom: 1.75rem;">Cards, e-wallets, and bank transfers — secured with SSL encryption.</p>
+      <h2 style="margin-bottom: 0.75rem;">Položite z načini, ki jim že zaupate</h2>
+      <p class="lead" style="margin-bottom: 1.75rem;">Kartice, e-denarnice in bančna nakazila — zaščitena s šifriranjem SSL.</p>
       <?php
-      $payment_context = 'account funding and deposits';
+      $payment_context = 'financiranje računa in pologi';
       $payment_compact = false;
       require __DIR__ . '/includes/payment-icons.php';
       ?>
@@ -249,7 +249,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header centered" style="margin-bottom: 2rem;">
         <p class="eyebrow">Zaupanja vredna infrastruktura</p>
-        <h2>Built on industry-standard partners</h2>
+        <h2>Zgrajena na uveljavljenih partnerskih standardih</h2>
       </div>
       <?php require __DIR__ . '/includes/partners.php'; ?>
     </div>
@@ -260,51 +260,51 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header">
         <p class="eyebrow">Ocene</p>
-        <h2>What traders are saying</h2>
+        <h2>Kaj pravijo trgovci</h2>
       </div>
 
       <div class="reviews-grid">
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Registration took minutes, fees are transparent, and support actually responds. Smooth, reliable experience — a platform I'm happy to stick with.</p>
+          <p class="review-text">Registracija je trajala nekaj minut, provizije so pregledne, podpora pa res odgovarja. Gladka, zanesljiva izkušnja — platforma, pri kateri ostanem.</p>
           <div class="review-author">
             <div class="review-avatar">OR</div>
             <div>
               <div class="review-name">Oliver Reed</div>
-              <div class="review-role">Independent trader</div>
+              <div class="review-role">Neodvisni trgovec</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Finally tried crypto trading here — no regrets. Setup was quick, everything explained clearly. Solid choice especially if you're just getting started.</p>
+          <p class="review-text">Končno sem tu preizkusil kripto trgovanje — brez obžalovanja. Nastavitev je bila hitra, vse jasno razloženo. Dobra izbira, zlasti če šele začenjate.</p>
           <div class="review-author">
             <div class="review-avatar">AM</div>
             <div>
               <div class="review-name">Anna Mitchell</div>
-              <div class="review-role">Crypto enthusiast</div>
+              <div class="review-role">Kripto navdušenec</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Stable and dependable. Account opening was simple, terms were clear, and the team knows their stuff. Surprisingly comfortable trading experience.</p>
+          <p class="review-text">Stabilno in zanesljivo. Odprtje računa je bilo preprosto, pogoji jasni, ekipa pa pozna delo. Presenetljivo udobna izkušnja trgovanja.</p>
           <div class="review-author">
             <div class="review-avatar">DK</div>
             <div>
               <div class="review-name">Daniel Kim</div>
-              <div class="review-role">Digital assets operator</div>
+              <div class="review-role">Operater digitalnih sredstev</div>
             </div>
           </div>
         </article>
         <article class="review-card">
           <div class="review-stars">★★★★★</div>
-          <p class="review-text">Trading no longer feels overwhelming. Simple signup, clear fees, and support when I need it. As a beginner, that makes all the difference.</p>
+          <p class="review-text">Trgovanje ni več preobremenjujoče. Preprosta prijava, jasne provizije in podpora, ko jo potrebujem. Kot začetniku mi to pomeni vse.</p>
           <div class="review-author">
             <div class="review-avatar">LP</div>
             <div>
               <div class="review-name">Laura Price</div>
-              <div class="review-role">Private investor</div>
+              <div class="review-role">Zasebni vlagatelj</div>
             </div>
           </div>
         </article>
@@ -317,62 +317,62 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 800px; margin-inline: auto;">
       <div class="section-header centered">
         <p class="eyebrow">FAQ</p>
-        <h2>Common questions</h2>
+        <h2>Pogosta vprašanja</h2>
       </div>
 
       <div class="faq-list" data-faq>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do I get started?
+            Kako začnem?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Create an account with your basic details, complete a short verification step, and deposit the minimum of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. You'll unlock the full platform — live charts, trading tools, and guided onboarding.
+              Ustvarite račun z osnovnimi podatki, opravite kratko preverjanje in položite najmanj <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Odklenili boste celotno platformo — grafikone v živo, trgovalna orodja in vodeno uvajanje.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Is my money and data safe?
+            Ali sta moj denar in podatki varna?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              We use SSL encryption, two-factor authentication, and secure processing through trusted providers. Your personal data is handled under strict security policies at every level.
+              Uporabljamo šifriranje SSL, dvofaktorsko overjanje in varno obdelavo pri zaupanja vrednih ponudnikih. Osebni podatki so na vseh ravneh obravnavani po strogih varnostnih pravilih.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            When can I withdraw profits?
+            Kdaj lahko dvignem dobiček?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request withdrawals anytime from your dashboard. Processing usually takes 1–3 business days. Applicable fees and timelines are always shown upfront — no surprises.
+              Dvig zahtevajte kadar koli z nadzorne plošče. Obdelava običajno traja 1–3 delovne dni. Veljavne provizije in roki so vedno prikazani vnaprej — brez presenečenj.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Do I need trading experience?
+            Ali potrebujem izkušnje s trgovanjem?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Not at all. Guided onboarding, simple tutorials, and AI-assisted tools help you learn at your own pace. Whether you're new or experienced, support is available 24/7.
+              Sploh ne. Vodeno uvajanje, preprosti vodiči in orodja z umetno inteligenco vam pomagajo učiti se v lastnem tempu. Ne glede na izkušnje je podpora na voljo 24/7.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            What markets can I trade?
+            Na katerih trgih lahko trgujem?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Access cryptocurrencies, forex, global stocks, and commodities from one interface. Real-time data, integrated analytics, and support for both manual and automated strategies.
+              Do kriptovalut, forexa, svetovnih delnic in surovin dostopate iz enega vmesnika. Podatki v realnem času, vgrajena analitika ter podpora za ročne in samodejne strategije.
             </div>
           </div>
         </div>
@@ -385,37 +385,37 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header" style="margin-bottom: 2rem;">
         <p class="eyebrow">Platforma</p>
-        <h2>Core capabilities at a glance</h2>
+        <h2>Ključne zmožnosti na prvi pogled</h2>
       </div>
 
       <div class="specs-table">
         <div class="specs-row">
-          <div class="specs-label">AI trading engine</div>
-          <div class="specs-value">Advanced market analysis powered by machine learning</div>
+          <div class="specs-label">Sistem trgovanja z UI</div>
+          <div class="specs-value">Napredna tržna analiza s strojnim učenjem</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Financiranje methods</div>
-          <div class="specs-value">Credit cards, bank transfers, PayPal, e-wallets</div>
+          <div class="specs-label">Načini financiranja</div>
+          <div class="specs-value">Kreditne kartice, bančna nakazila, PayPal, e-denarnice</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Device access</div>
-          <div class="specs-value">Web, tablet, and mobile — fully responsive</div>
+          <div class="specs-label">Dostop z naprav</div>
+          <div class="specs-value">Splet, tablica in telefon — povsem odzivno</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Signal accuracy</div>
-          <div class="specs-value">Up to 85% on supported AI strategies</div>
+          <div class="specs-label">Natančnost signalov</div>
+          <div class="specs-value">Do 85 % pri podprtih strategijah UI</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Trgi</div>
-          <div class="specs-value">Crypto, forex, stocks, commodities</div>
+          <div class="specs-value">Kripto, forex, delnice, surovine</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Uvajanje</div>
-          <div class="specs-value">Fast account setup with guided verification</div>
+          <div class="specs-value">Hitra nastavitev računa z vodenim preverjanjem</div>
         </div>
         <div class="specs-row specs-row-highlight">
           <div class="specs-label">Podpora</div>
-          <div class="specs-value">Professional 24/7 assistance — <a href="contacts.php" style="color: var(--accent); font-weight: 600;">Kontaktirajte nas</a></div>
+          <div class="specs-value">Strokovna pomoč 24/7 — <a href="contacts.php" style="color: var(--accent); font-weight: 600;">Kontaktirajte nas</a></div>
         </div>
       </div>
     </div>
@@ -432,7 +432,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="trust-score">4.7</div>
         <div class="trust-stars">★★★★★</div>
         <div class="trust-meta">
-          <strong>342</strong> ocen · Na podlagi<strong>1,842</strong> ratings
+          <strong>342</strong> ocen · Na podlagi <strong>1&nbsp;842</strong> ocen
         </div>
       </div>
     </div>
@@ -442,8 +442,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="cta-band">
     <div class="container cta-band-grid">
       <div>
-        <h2>Ready to trade on a platform built for clarity?</h2>
-        <p class="lead">Join private traders and businesses who buy, sell, and manage digital assets with confidence.</p>
+        <h2>Pripravljeni trgovati na platformi, zasnovani za jasnost?</h2>
+        <p class="lead">Pridružite se zasebnim trgovcem in podjetjem, ki z zaupanjem kupujejo, prodajajo in upravljajo digitalna sredstva.</p>
       </div>
       <div class="form-card">
         <?php

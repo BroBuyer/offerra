@@ -6,7 +6,7 @@ $audience = market_audience();
 
 $page_title = page_title_lead('FAQ');
 $page_description = 'Pogosta vprašanja o ' . $brand . ' — kako trgovalna platforma z umetno inteligenco deluje za ' . $audience
-    . ', security, fees, markets, and how to open an account.';
+    . ', varnost, provizije, trgi in kako odpreti račun.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
 
@@ -50,67 +50,67 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Is <?= e($brand) ?> safe?
+            Ali je <?= e($brand) ?> varna?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
- <?= e($brand) ?> uses SSL, 2FA, and verified payment processors. Trading still involves a risk of losing capital.
+ <?= e($brand) ?> uporablja SSL, 2FA in preverjene plačilne procesorje. Trgovanje še vedno prinaša tveganje izgube kapitala.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            What are <?= e($brand) ?> fees?
+            Kakšne so provizije <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
- <?= e($brand) ?> shows fees before you confirm a transaction. No hidden charges on deposits or withdrawals beyond what the <?= e($brand) ?> screen lists.
+ <?= e($brand) ?> pred potrditvijo transakcije pokaže provizije. Ni skritih stroškov pri pologih ali dvigih razen tistih, ki so navedeni na zaslonu <?= e($brand) ?>.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Can I use automation on <?= e($brand) ?>?
+            Ali lahko na <?= e($brand) ?> uporabljam avtomatizacijo?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Yes. Configure <?= e($brand) ?> AI-assisted bots with your risk preferences, or trade manually — switch anytime inside <?= e($brand) ?>.
+              Da. Nastavite bote <?= e($brand) ?> z umetno inteligenco glede na tveganje ali trgujte ročno — preklopite kadar koli v <?= e($brand) ?>.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do <?= e($brand) ?> withdrawals work?
+            Kako delujejo dvigi na <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Request a withdrawal from the <?= e($brand) ?> dashboard. Processing typically takes 1–3 business days depending on the method.
+              Dvig zahtevajte z nadzorne plošče <?= e($brand) ?>. Obdelava običajno traja 1–3 delovne dni, glede na način.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            Does <?= e($brand) ?> work on mobile?
+            Ali <?= e($brand) ?> deluje na telefonu?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Yes. <?= e($brand) ?> is responsive. Watchlists and alerts stay in sync between phone and browser.
+              Da. <?= e($brand) ?> je odziven. Seznami spremljanja in opozorila ostanejo usklajeni med telefonom in brskalnikom.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do I contact <?= e($brand) ?>?
+            Kako stopim v stik z <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Use the <?= e($brand) ?> <a href="contacts.php">contact page</a> for account, deposit, and platform questions.
+              Za vprašanja o računu, pologu in platformi uporabite <a href="contacts.php">kontaktno stran</a> <?= e($brand) ?>.
             </div>
           </div>
         </div>

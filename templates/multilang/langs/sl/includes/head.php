@@ -2,8 +2,8 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/schema.php';
 
-$page_title = $page_title ?? SITE_NAME . ' |Trgovalna platforma AI';
-$page_description = $page_description ?? 'Trade smarter with ' . SITE_NAME . ' — real-time analytics, AI signals, and a clean platform built for crypto, forex, and global markets.';
+$page_title = $page_title ?? SITE_NAME . ' | Trgovalna platforma z UI';
+$page_description = $page_description ?? 'Trgujte pametneje z ' . SITE_NAME . ' — analitika v realnem času, signali UI in pregledna platforma za kripto, forex in svetovne trge.';
 $page_canonical = $page_canonical ?? page_url();
 $active_page = $active_page ?? 'home';
 $og_image = page_url($og_image_path ?? og_image_path());

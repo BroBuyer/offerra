@@ -163,7 +163,7 @@ require_once __DIR__ . '/includes/header.php';
         <a href="sign.php" class="btn btn-primary">Dostop do trgov <?= e($brand) ?></a>
       </div>
 
-      <div class="exchange-panel" data-ticker-panel aria-label="Live market prices">
+      <div class="exchange-panel" data-ticker-panel aria-label="Cene trgov v živo">
         <div class="exchange-panel-header">
           <span>Trgi <?= e($brand) ?></span>
           <span class="live-dot">Live</span>

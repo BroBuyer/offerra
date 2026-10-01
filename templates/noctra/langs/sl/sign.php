@@ -33,7 +33,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="board-card-body">
           <?php
           $form_id = 'signup-form';
-          $form_heading = 'Enter your details';
+          $form_heading = 'Vnesite svoje podatke';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>

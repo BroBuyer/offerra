@@ -9,13 +9,13 @@ $partners = [
     ['file' => 'partner-2.svg', 'alt' => 'Binance — market infrastructure partner'],
     ['file' => 'partner-3.svg', 'alt' => 'CoinDesk — market media partner'],
     ['file' => 'partner-4.svg', 'alt' => 'TradingView — charting partner'],
-    ['file' => 'partner-5.svg', 'alt' => 'Deloitte — audit and advisory partner'],
+    ['file' => 'partner-5.svg', 'alt' => 'Deloitte — partnerski revizijski in svetovalni partner'],
     ['file' => 'partner-6.svg', 'alt' => 'Ledger — hardware security partner'],
     ['file' => 'partner-7.svg', 'alt' => 'Decrypt — crypto media partner'],
     ['file' => 'partner-8.svg', 'alt' => 'Nansen — on-chain analytics partner'],
 ];
 ?>
-<div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> trusted infrastructure and payment partners">
+<div class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> zaupanja vredni partnerji za infrastrukturo in plačila">
   <?php foreach ($partners as $partner): ?>
     <div class="partners-grid-item" role="listitem">
       <img

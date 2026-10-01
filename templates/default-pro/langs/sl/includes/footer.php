@@ -11,22 +11,22 @@
         <span class="logo-text"><?= e(SITE_NAME) ?></span>
       </a>
 
-      <nav class="footer-nav" aria-label="Footer navigation">
+      <nav class="footer-nav" aria-label="Navigacija v nogi strani">
         <a href="<?= page_url() ?>">Domov</a>
         <a href="product.php">Izdelek</a>
         <a href="offer.php">Ponudba</a>
         <a href="contacts.php">Kontakt</a>
         <a href="faq.php">FAQ</a>
-        <a href="privacy.php">Privacy</a>
-        <a href="conditions.php">Terms</a>
+        <a href="privacy.php">Zasebnost</a>
+        <a href="conditions.php">Pogoji</a>
       </nav>
     </div>
 
     <div class="footer-risk">
       <p>
- <?= e(SITE_NAME) ?> is not responsible for any loss or damage arising from the use of information on this site.
-        Trading financial markets involves risk. Only invest funds you can afford to lose. FX, CFDs, and cryptocurrencies
-        may not be suitable for all investors. Consider seeking advice from a qualified professional before trading.
+ <?= e(SITE_NAME) ?> ne odgovarja za izgube ali škodo, nastalo z uporabo informacij na tej strani.
+        Trgovanje na finančnih trgih prinaša tveganje. Vlagajte le sredstva, ki si jih lahko privoščite izgubiti. FX, CFD-ji in kriptovalute
+        morda niso primerni za vse vlagatelje. Pred trgovanjem se posvetujte s kvalificiranim strokovnjakom.
       </p>
     </div>
 

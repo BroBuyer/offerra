@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-sm">
     <div class="container prose">
-      <p>This Politika zasebnosti describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
+      <p>Ta politika zasebnosti opisuje, kako <?= e(SITE_NAME) ?> («mi») zbira in obdeluje osebne podatke, ko uporabljate naše spletno mesto in storitve.</p>
 
       <h2>Katere podatke zbiramo</h2>
       <p>Lahko zbiramo: ime, e-poštni naslov, telefonsko številko, državo prebivališča, naslov IP in podatke, ki jih navedete v obrazcih ali zahtevkih za podporo.</p>
@@ -37,10 +37,10 @@ require_once __DIR__ . '/includes/header.php';
       <p>Izvajamo tehnične in organizacijske ukrepe, vključno s šifriranjem SSL in nadzorom dostopa, da zaščitimo vaše podatke.</p>
 
       <h2>Vaše pravice</h2>
-      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Kontakt <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
+      <p>Glede na jurisdikcijo imate lahko pravico do dostopa, popravka ali izbrisa osebnih podatkov. Pišite na <?= e(SUPPORT_EMAIL) ?>, da uveljavite te pravice.</p>
 
       <h2>Kontakt</h2>
-      <p>Questions about this policy? E-pošta <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
+      <p>Vprašanja o tej politiki? Pišite na <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
 </main>

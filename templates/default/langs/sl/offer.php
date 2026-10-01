@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Ponudba');
-$page_description = 'Choose your ' . SITE_NAME . ' plan — start with a ' . MIN_DEPOSIT . ' ' . CURRENCY . ' minimum deposit and unlock the fulltrgovalna platforma.';
+$page_description = 'Izberite paket na ' . SITE_NAME . ' — začnite z najmanjšim pologom ' . MIN_DEPOSIT . ' ' . CURRENCY . ' in odklenite celotno trgovalno platformo.';
 $page_canonical = page_url('offer.php');
 $active_page = 'offer';
 $schema_extra = ['breadcrumb' => [
@@ -18,8 +18,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Ponudba</p>
-      <h1>Get your portfolio tracker — free with signup</h1>
-      <p class="lead">Start with <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Scale when you're ready.</p>
+      <h1>Sledilnik portfelja — brezplačno ob registraciji</h1>
+      <p class="lead">Začnite z <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Razširite, ko boste pripravljeni.</p>
     </div>
   </section>
 
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="specs-table" style="margin-bottom: 2rem;">
         <div class="specs-row specs-row-highlight">
           <div class="specs-label">Začetni dostop</div>
-          <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> minimum deposit · Full platform · AI signals · Podpora 24/7</div>
+          <div class="specs-value"><strong><?= MIN_DEPOSIT ?> <?= CURRENCY ?></strong> najmanjši polog · Celotna platforma · Signali UI · Podpora 24/7</div>
         </div>
         <div class="specs-row">
           <div class="specs-label">Kaj je vključeno</div>
@@ -51,7 +51,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card form-card-accent" style="max-width: 480px; margin-inline: auto;">
         <?php
         $form_id = 'offer-form';
-        $form_heading = 'Claim your offer now';
+        $form_heading = 'Izkoristite ponudbo zdaj';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

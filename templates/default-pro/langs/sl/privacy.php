@@ -39,7 +39,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2>Vaše pravice</h2>
       <p>Glede na jurisdikcijo imate lahko pravico do dostopa, popravka ali izbrisa osebnih podatkov. Pišite na <?= e(SUPPORT_EMAIL) ?>, da uveljavite te pravice.</p>
 
-      <h2>Contact</h2>
+      <h2>Kontakt</h2>
       <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>

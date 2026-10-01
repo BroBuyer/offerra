@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Izdelek');
-$page_description = 'Explore ' . SITE_NAME . ' trading tools — real-time analytics, AI signals, multi-market access, and automated strategies.';
+$page_description = 'Raziščite orodja za trgovanje ' . SITE_NAME . ' — analitika v realnem času, signali UI, dostop do več trgov in samodejne strategije.';
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 $schema_extra = ['breadcrumb' => [
@@ -18,8 +18,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Izdelek</p>
-      <h1>Digital analytics built for traders</h1>
-      <p class="lead">One platform. Every market. Tools that keep up with you.</p>
+      <h1>Digitalna analitika za trgovce</h1>
+      <p class="lead">Ena platforma. Vsi trgi. Orodja, ki sledijo vašemu tempu.</p>
     </div>
   </section>
 
@@ -30,43 +30,43 @@ require_once __DIR__ . '/includes/header.php';
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>
           </div>
-          <h3>Real-time charts</h3>
-          <p>Live price feeds, advanced indicators, and market depth across all supported assets.</p>
+          <h3>Grafikoni v realnem času</h3>
+          <p>Tokovi cen v živo, napredni indikatorji in globina trga za vsa podprta sredstva.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg>
           </div>
-          <h3>AI signal engine</h3>
-          <p>Machine-learning models surface high-probability setups with clear entry and exit context.</p>
+          <h3>Sistem signalov UI</h3>
+          <p>Modeli strojnega učenja pokažejo priložnosti z visoko verjetnostjo ter jasnim vstopom in izstopom.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
           </div>
-          <h3>Automation suite</h3>
-          <p>Configure bots with custom risk parameters — set it and monitor, or trade manually side by side.</p>
+          <h3>Avtomatizacija</h3>
+          <p>Nastavite bote z lastnimi parametri tveganja — nastavite in spremljajte ali trgujte ročno ob njih.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M9 12l2 2 4-4"/></svg>
           </div>
-          <h3>Risk controls</h3>
-          <p>Stop-loss, take-profit, and position sizing tools integrated into every workflow.</p>
+          <h3>Nadzor tveganja</h3>
+          <p>Orodja stop-loss, take-profit in velikosti pozicije so vgrajena v vsak potek dela.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           </div>
-          <h3>Portfolio tracker</h3>
-          <p>Unified view of holdings, P&amp;L, and allocation across crypto and traditional markets.</p>
+          <h3>Sledilnik portfelja</h3>
+          <p>Enoten pregled imetja, dobička in izgube ter razporeditve po kripto in tradicionalnih trgih.</p>
         </article>
         <article class="feature-card">
           <div class="feature-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           </div>
-          <h3>Learning hub</h3>
-          <p>Guided tutorials and market explainers for beginners and intermediate traders alike.</p>
+          <h3>Središče za učenje</h3>
+          <p>Vodeni vodiči in razlage trga za začetnike in trgovce srednje ravni.</p>
         </article>
       </div>
 

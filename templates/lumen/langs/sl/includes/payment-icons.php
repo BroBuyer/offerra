@@ -5,19 +5,19 @@
  */
 require_once __DIR__ . '/config.php';
 
-$payment_context = $payment_context ?? 'secure checkout';
+$payment_context = $payment_context ?? 'varno plačilo';
 $payment_compact = $payment_compact ?? false;
 
 $methods = [
-    ['file' => 'visa.svg',        'alt' => 'Visa — accepted payment method on ' . SITE_NAME],
-    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — accepted payment method on ' . SITE_NAME],
-    ['file' => 'paypal.svg',      'alt' => 'PayPal — accepted payment method on ' . SITE_NAME],
-    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — accepted payment method on ' . SITE_NAME],
-    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — accepted payment method on ' . SITE_NAME],
-    ['file' => 'banktransfer.svg','alt' => 'Bančno nakazilo and SEPA — accepted on ' . SITE_NAME],
+    ['file' => 'visa.svg',        'alt' => 'Visa — sprejeto plačilo na ' . SITE_NAME],
+    ['file' => 'mastercard.svg',  'alt' => 'Mastercard — sprejeto plačilo na ' . SITE_NAME],
+    ['file' => 'paypal.svg',      'alt' => 'PayPal — sprejeto plačilo na ' . SITE_NAME],
+    ['file' => 'applepay.svg',    'alt' => 'Apple Pay — sprejeto plačilo na ' . SITE_NAME],
+    ['file' => 'googlepay.svg',   'alt' => 'Google Pay — sprejeto plačilo na ' . SITE_NAME],
+    ['file' => 'banktransfer.svg','alt' => 'Bančno nakazilo in SEPA — sprejeto na ' . SITE_NAME],
 ];
 ?>
-<div class="payment-icons <?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Accepted payment methods for <?= e($payment_context) ?>">
+<div class="payment-icons <?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Sprejeti načini plačila za <?= e($payment_context) ?>">
   <?php if (!$payment_compact): ?>
     <p class="payment-icons-label">Varno payments accepted</p>
   <?php endif; ?>
@@ -38,7 +38,7 @@ $methods = [
     <li>
       <img
         src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
-        alt="256-bit SSL encryption — secure data transfer on <?= e(SITE_NAME) ?>"
+        alt="256-bitno šifriranje SSL — varen prenos podatkov na <?= e(SITE_NAME) ?>"
         title="SSL varnost"
         width="32"
         height="32"

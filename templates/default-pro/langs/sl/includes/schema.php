@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => $site . ' is an AI-powered trading platform for ' . market_audience() . ' covering crypto, forex, and global markets.',
+        'description' => $site . ' je trgovalna platforma z umetno inteligenco za ' . market_audience() . ' in pokriva kripto, forex ter svetovne trge.',
     ];
 
     $website = [
@@ -30,7 +30,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'operatingSystem' => 'Web, Android, iOS',
         'applicationCategory' => 'FinanceApplication',
-        'description' => $site . ' — AI trading platform for ' . market_audience() . ' with real-time market analysis and assisted signals.',
+        'description' => $site . ' — trgovalna platforma z UI za ' . market_audience() . ' z analizo trgov v realnem času in podprtimi signali.',
         'image' => $platform_image,
         'screenshot' => $platform_image,
         'aggregateRating' => [
@@ -52,50 +52,50 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'mainEntity' => [
             [
                 '@type' => 'Question',
-                'name' => 'What is ' . $site . ' and how does it work?',
+                'name' => 'Kaj je ' . $site . ' in kako deluje?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => $site . ' is an AI-assisted trading platform that analyses financial markets in real time and highlights setups with alerts and risk tools. Create an account, complete verification, and fund from ' . MIN_DEPOSIT . ' ' . CURRENCY . '.',
+                    'text' => $site . ' je trgovalna platforma z umetno inteligenco, ki v realnem času analizira trge in označi priložnosti z opozorili ter orodji za tveganje. Ustvarite račun, opravite preverjanje in napolnite od ' . MIN_DEPOSIT . ' ' . CURRENCY . '.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Are my data and funds handled securely on ' . $site . '?',
+                'name' => 'Ali so moji podatki in sredstva na ' . $site . ' varno obravnavani?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => $site . ' protects accounts with SSL encryption, two-factor authentication, and documented deposit and withdrawal steps. Trading still involves a risk of losing capital.',
+                    'text' => $site . ' varuje račune s šifriranjem SSL, dvofaktorskim overjanjem ter dokumentiranimi koraki pologa in dviga. Trgovanje še vedno prinaša tveganje izgube kapitala.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'When can I withdraw from ' . $site . '?',
+                'name' => 'Kdaj lahko dvignem s ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Dvigi can be requested anytime from the ' . $site . ' dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown on ' . $site . ' before you confirm.',
+                    'text' => 'Dvig lahko zahtevate kadar koli z nadzorne plošče ' . $site . '. Obdelava običajno traja 1–3 delovne dni. Provizije in roki so na ' . $site . ' prikazani pred potrditvijo.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Do I need trading experience to use ' . $site . '?',
+                'name' => 'Ali potrebujem izkušnje s trgovanjem za ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'No. ' . $site . ' guides registration, deposit, and basic navigation for ' . market_audience() . '. Advanced tools stay available when you are ready. Support is available 24/7.',
+                    'text' => 'Ne. ' . $site . ' vodi registracijo, polog in osnovno navigacijo za ' . market_audience() . '. Napredna orodja ostanejo na voljo, ko ste pripravljeni. Podpora je na voljo 24/7.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'What returns can I expect on ' . $site . '?',
+                'name' => 'Kakšne donose lahko pričakujem na ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => $site . ' does not guarantee returns. Results depend on capital, strategy, volatility, and how you manage risk.',
+                    'text' => $site . ' ne jamči donosov. Rezultati so odvisni od kapitala, strategije, volatilnosti in tega, kako upravljate tveganje.',
                 ],
             ],
             [
                 '@type' => 'Question',
-                'name' => 'Which markets are available on ' . $site . '?',
+                'name' => 'Kateri trgi so na voljo na ' . $site . '?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => $site . ' covers digital assets and multi-market instruments in one dashboard, with alerts and assisted automation for ' . market_audience() . '.',
+                    'text' => $site . ' pokriva digitalna sredstva in instrumente več trgov na eni plošči, z opozorili in podprto avtomatizacijo za ' . market_audience() . '.',
                 ],
             ],
         ],
@@ -104,13 +104,13 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $howto = [
         '@context' => 'https://schema.org',
         '@type' => 'HowTo',
-        'name' => 'How to start trading with ' . $site,
+        'name' => 'Kako začeti trgovati z ' . $site,
         'step' => [
-            ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Register on ' . $site, 'text' => 'Sign up with your name, email, and phone to create a ' . $site . ' account.'],
-            ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Verify the ' . $site . ' account', 'text' => 'Finish guided verification and set risk preferences.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Fund your ' . $site . ' account', 'text' => 'Deposit a minimum of ' . MIN_DEPOSIT . ' ' . CURRENCY . ' via bank transfer, card, or e-wallet.'],
-            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Set ' . $site . ' limits', 'text' => 'Choose risk level and trading preferences — manual or automated.'],
-            ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Trade in the ' . $site . ' desk', 'text' => 'Use live charts, tickets, and support inside ' . $site . '.'],
+            ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Registracija na ' . $site, 'text' => 'Prijavite se z imenom, e-pošto in telefonom ter ustvarite račun ' . $site . '.'],
+            ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Preverite račun ' . $site, 'text' => 'Opravite vodeno preverjanje in nastavite preference tveganja.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Napolnite račun ' . $site, 'text' => 'Položite najmanj ' . MIN_DEPOSIT . ' ' . CURRENCY . ' z bančnim nakazilom, kartico ali e-denarnico.'],
+            ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Nastavite omejitve ' . $site, 'text' => 'Izberite raven tveganja in nastavitve — ročno ali samodejno.'],
+            ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Trgujte na mizi ' . $site, 'text' => 'Uporabite grafikone v živo, naročila in podporo v ' . $site . '.'],
         ],
     ];
 
@@ -124,10 +124,10 @@ function render_schema(string $page = 'home', array $extra = []): void {
             '@context' => 'https://schema.org',
             '@type' => 'ImageObject',
             'name' => $site . ' AI Trading Platform',
-            'description' => $site . ' mobile trading interface with live BTC/USDT cryptocurrency chart and portfolio tools',
+            'description' => $site . ' — mobilni vmesnik za trgovanje z grafikonom BTC/USDT v živo in orodji portfelja',
             'contentUrl' => $platform_image,
             'thumbnailUrl' => $platform_image,
-            'caption' => $site . ' | AI Trading Platform — mobile chart view',
+            'caption' => $site . ' | trgovalna platforma z UI — pogled grafikona na telefonu',
             'representativeOfPage' => true,
         ];
     }

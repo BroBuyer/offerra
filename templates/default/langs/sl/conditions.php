@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Pogoji uporabe');
-$page_description = 'Read the terms and conditions for using the ' . SITE_NAME . 'trgovalna platforma and website.';
+$page_description = 'Preberite pogoje uporabe trgovalne platforme in spletnega mesta ' . SITE_NAME . '.';
 $page_canonical = page_url('conditions.php');
 $active_page = 'terms';
 
@@ -20,7 +20,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="section-sm">
     <div class="container prose">
-      <p>By accessing <?= e(SITE_NAME) ?> you agree to these Pogoji uporabe. If you do not agree, please do not use our services.</p>
+      <p>Z dostopom do <?= e(SITE_NAME) ?> sprejemate te pogoje uporabe. Če se ne strinjate, storitev ne uporabljajte.</p>
 
       <h2>Upravičenost</h2>
       <p>Morate biti stari vsaj 18 let in v svoji jurisdikciji zakonito smeti trgovati s finančnimi instrumenti.</p>

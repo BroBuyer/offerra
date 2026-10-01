@@ -19,7 +19,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <p class="eyebrow">Začnite</p>
       <h1>Odprite trgovalni račun</h1>
-      <p class="lead">Join thousands of traders. Minimalni depozit <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.</p>
+      <p class="lead">Pridružite se tisočim trgovcev. Najmanjši polog <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.</p>
     </div>
   </section>
 
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card form-card-accent">
         <?php
         $form_id = 'signup-form';
-        $form_heading = 'Enter your details below';
+        $form_heading = 'Vnesite podatke spodaj';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

@@ -88,11 +88,11 @@ function render_schema(string $page = 'home', array $extra = []): void {
     $howto = [
         '@context' => 'https://schema.org',
         '@type' => 'HowTo',
-        'name' => 'Kako začeti trgovati z' . $site,
+        'name' => 'Kako začeti trgovati z ' . $site,
         'step' => [
             ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Ustvarite svoj račun', 'text' => 'Prijavite se s svojimi osnovnimi podatki in pridobite varen dostop do platforme.'],
             ['@type' => 'HowToStep', 'position' => 2, 'name' => 'Potrdite svoj e-poštni naslov', 'text' => 'Potrdite svoj e-poštni naslov, da odklenete popoln dostop do platforme.'],
-            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte svoj račun', 'text' => 'Položite najmanj' . MIN_DEPOSIT . ' ' . CURRENCY . 'prek bančnega nakazila, kartice ali e-denarnice.'],
+            ['@type' => 'HowToStep', 'position' => 3, 'name' => 'Financirajte svoj račun', 'text' => 'Položite najmanj ' . MIN_DEPOSIT . ' ' . CURRENCY . ' prek bančnega nakazila, kartice ali e-denarnice.'],
             ['@type' => 'HowToStep', 'position' => 4, 'name' => 'Določite svojo strategijo', 'text' => 'Izberite stopnjo tveganja in trgovalne nastavitve – ročno ali samodejno.'],
             ['@type' => 'HowToStep', 'position' => 5, 'name' => 'Začni trgovati', 'text' => 'Samozavestno vstopite na trg z uporabo podatkov v realnem času in vpogledov AI.'],
         ],

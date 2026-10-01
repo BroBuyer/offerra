@@ -56,7 +56,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="board-card-body">
           <?php
           $form_id = 'offer-form';
-          $form_heading = 'Register to unlock the offer';
+          $form_heading = 'Registrirajte se in odklenite ponudbo';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>

@@ -56,7 +56,7 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#gp0nit">Na katerem koli zaslonu</a></li>
       <li><a href="#esypwbx">Vračila</a></li>
       <li><a href="#evp8w6d">Zaščitni ukrepi</a></li>
-      <li><a href="#vzo0q">Why <?= e(SITE_NAME) ?></a></li>
+      <li><a href="#vzo0q">Zakaj <?= e(SITE_NAME) ?></a></li>
       <li><a href="#br1y4s">Kaj pravijo člani</a></li>
       <li><a href="#vatll">Vaš analitik</a></li>
       <li><a href="#rb8p3">Vaše izhodišče</a></li>
@@ -167,7 +167,7 @@ require __DIR__ . '/includes/header.php';
 
     <section class="xrn58" data-u="sec" id="vzo0q" aria-labelledby="mzn56z">
       <div class="wdsnx3j">
-        <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
+        <span class="vd7z9k">Zakaj <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Brez preglednic. Brez zaslonov. Brez dvomov v zadnjem trenutku</h2>
         <p class="rmct9">Poglejte, kako <?= e(SITE_NAME) ?> primerja s tradicionalnimi posredniki in z ročnim trgovanjem.</p>
       </div>

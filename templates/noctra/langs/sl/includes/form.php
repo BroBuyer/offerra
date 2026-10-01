@@ -78,10 +78,10 @@ $lead_cookie = site_slug() . '_lead';
       </label>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-block submit">Create free account</button>
+    <button type="submit" class="btn btn-primary btn-block submit">Ustvarite brezplačen račun</button>
 
     <?php
-    $payment_context = 'account registration';
+    $payment_context = 'registracija računa';
     $payment_compact = true;
     require __DIR__ . '/payment-icons.php';
     ?>
@@ -93,7 +93,7 @@ $lead_cookie = site_slug() . '_lead';
 
     <p class="form-legal">
       Z oddajo vaših podatkov se strinjate z našimi
-      <a href="privacy.php">Politika zasebnosti</a> and
+      <a href="privacy.php">Politiko zasebnosti</a> in
       <a href="conditions.php">Pogoji uporabe</a>.
     </p>
   </div>

@@ -15,10 +15,10 @@ require_once __DIR__ . '/includes/header.php';
   <section class="thanks-page">
     <div class="container" style="max-width: 520px;">
       <div class="thanks-icon" aria-hidden="true">✓</div>
-      <h1>Tutto pronto!</h1>
+      <h1>Vse je pripravljeno!</h1>
       <p class="lead thanks-lead">
-        Grazie per esserti registrato su <?= e(SITE_NAME) ?>.
-        Il nostro team ti contatterà a breve per completare la configurazione del tuo account. Tieni il telefono a portata di mano.
+        Hvala, da ste se registrirali na <?= e(SITE_NAME) ?>.
+        Naša ekipa vas bo kmalu kontaktirala, da dokončamo nastavitev računa. Telefon imejte pri roki.
       </p>
     </div>
   </section>

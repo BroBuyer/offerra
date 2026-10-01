@@ -25,7 +25,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2>Upravičenost</h2>
       <p>Morate biti stari vsaj 18 let in v svoji jurisdikciji zakonito smeti trgovati s finančnimi instrumenti.</p>
 
-      <h2>Risk disclosure</h2>
+      <h2>Razkritje tveganja</h2>
       <p>Trgovanje s kriptovalutami, forexom, CFD-ji in drugimi finančnimi instrumenti prinaša precejšnje tveganje izgube. Pretekla uspešnost ne jamči prihodnjih rezultatov. Trgujte le s kapitalom, ki si ga lahko privoščite izgubiti.</p>
 
       <h2>Odgovornosti računa</h2>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/includes/header.php';
       <h2>Omejitev odgovornosti</h2>
       <p><?= e(SITE_NAME) ?> ni odgovoren za trgovalne izgube ali škodo zaradi uporabe informacij na tem mestu. Po potrebi poiščite neodvisen finančni nasvet.</p>
 
-      <h2>Contact</h2>
+      <h2>Kontakt</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>
     </div>
   </section>
