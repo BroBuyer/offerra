@@ -212,4 +212,15 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' €',
   },
+  sl: {
+    siteLang: 'sl',
+    crmCountry: 'SI',
+    phoneCountry: 'si',
+    currency: 'EUR',
+    ogLocale: 'sl_SI',
+    phonePlaceholder: '40 123 456',
+    moneyLocale: 'sl-SI',
+    moneyPrefix: '',
+    moneySuffix: ' €',
+  },
 };

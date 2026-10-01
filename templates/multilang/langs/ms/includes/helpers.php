@@ -313,6 +313,7 @@ function ip_country_allowed_langs(string $ipCountry): array
         'MD' => ['ro'],
         'PL' => ['pl'],
         'HR' => ['hr'],
+        'SI' => ['sl'],
         'TR' => ['tr'],
         'GR' => ['el'],
         'CY' => ['el', 'tr', 'en'],

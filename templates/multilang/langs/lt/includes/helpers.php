@@ -52,6 +52,7 @@ function lang_flag_code(string $lang): string
         'ja' => 'jp',
         'lv' => 'lv',
         'lt' => 'lt',
+        'sl' => 'si',
     ];
 
     return $map[strtolower($lang)] ?? strtolower($lang);
@@ -103,6 +104,7 @@ function lang_display_name(string $lang): string
         'ja' => '日本語',
         'lv' => 'Latviešu',
         'lt' => 'Lietuvių',
+        'sl' => 'Slovenščina',
         'ms' => 'Bahasa Melayu',
     ];
 
@@ -168,6 +170,7 @@ function site_locale(): string
         'ms' => 'ms-MY',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
+        'sl' => 'sl-SI',
         'lt' => 'lt-LT',
     ];
     $lang = active_lang();
@@ -387,6 +390,7 @@ function ip_country_allowed_langs(string $ipCountry): array
         'JP' => ['ja'],
         'LV' => ['lv'],
         'LT' => ['lt'],
+        'SI' => ['sl'],
         'HK' => ['en'],
         'PK' => ['en'],
         'NG' => ['en'],

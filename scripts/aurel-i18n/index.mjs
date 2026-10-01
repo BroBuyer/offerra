@@ -8,6 +8,7 @@ import hu from './hu.mjs';
 import pl from './pl.mjs';
 import ro from './ro.mjs';
 import sk from './sk.mjs';
+import sl from './sl.mjs';
 import sv from './sv.mjs';
 import tr from './tr.mjs';
 
@@ -120,6 +121,15 @@ export const LOCALES = {
     bcp47: 'lv-LV',
     areaServed: 'Latvia',
   },
+  sl: {
+    siteLang: 'sl',
+    crmCountry: 'SI',
+    phoneCountry: 'si',
+    currency: 'EUR',
+    ogLocale: 'sl_SI',
+    bcp47: 'sl-SI',
+    areaServed: 'Slovenia',
+  },
 };
 
-export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja, lv };
+export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja, lv, sl };

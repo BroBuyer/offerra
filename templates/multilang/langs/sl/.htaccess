@@ -1,0 +1,21 @@
+RewriteEngine On
+
+RewriteRule ^robots\.txt$ robots.php [L]
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# Lang routing: /{lang}/... -> langs/{lang}/...
+# EN (en) має лишатися без префікса: /privacy.php та / працюють як root en.
+# Для /{lang}/ (крім integration/static) віддаємо файл з langs/{lang}/.
+RewriteCond %{REQUEST_URI} ^/([a-z]{2})/?$
+RewriteRule ^([a-z]{2})/?$ langs/$1/index.php [L,QSA]
+
+RewriteCond %{REQUEST_URI} ^/([a-z]{2})/(.+)$
+RewriteCond %2 !^(integration/|static/|robots\.txt$|sitemap\.xml$)
+RewriteRule ^([a-z]{2})/(.+)$ langs/$1/$2 [L,QSA]
+
+<IfModule mod_headers.c>
+  SetEnvIf Request_URI "/integration/(validation\.js|default-integration\.css|visitor-geo\.php|form-token\.php)(\?.*)?$" integration_asset=1
+  Header set Cache-Control "no-cache, no-store, must-revalidate" env=integration_asset
+  Header set Pragma "no-cache" env=integration_asset
+  Header set Expires "0" env=integration_asset
+</IfModule>

@@ -18,6 +18,7 @@ import pl from './pl.mjs';
 import pt from './pt.mjs';
 import ro from './ro.mjs';
 import sk from './sk.mjs';
+import sl from './sl.mjs';
 import sv from './sv.mjs';
 import tr from './tr.mjs';
 
@@ -154,6 +155,12 @@ export const LOCALES = {
     phoneCountry: 'lv',
     currency: 'EUR',
   },
+  sl: {
+    siteLang: 'sl',
+    crmCountry: 'SI',
+    phoneCountry: 'si',
+    currency: 'EUR',
+  },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, id, ja, lv };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, id, ja, lv, sl };

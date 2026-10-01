@@ -1,7 +1,7 @@
 /** SERP title/description + chrome for default-pro lang packs. */
 export const LANGS = [
   'cs', 'da', 'de', 'el', 'es', 'fi', 'fr', 'hr', 'hu',
-  'id', 'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sv', 'tr',
+  'id', 'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv', 'tr',
 ];
 
 /**
@@ -197,6 +197,15 @@ export const SEO = {
     create: 'Vytvoriť účet <?= e(SITE_NAME) ?>',
     h1Lead: 'AI obchodná platforma ',
     h1Accent: 'automatická analýza a múdrejšie obchodovanie',
+  },
+  sl: {
+    title: 'Pametna trgovalna platforma',
+    descBefore: ' je globalna trgovalna platforma, zasnovana za ',
+    descAfter: ', ki iščejo dosledno zmogljivost, hitro izvedbo in popoln nadzor nad okoljem.',
+    open: 'Odpri <?= e(SITE_NAME) ?>',
+    create: 'Ustvari račun <?= e(SITE_NAME) ?>',
+    h1Lead: 'AI trgovalna platforma ',
+    h1Accent: 'samodejna analiza in pametnejše trgovanje',
   },
   sv: {
     title: 'Intelligent handelsplattform',

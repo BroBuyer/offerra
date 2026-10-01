@@ -24,4 +24,5 @@ export const META = {
   id: { siteLang: 'id', crmCountry: 'ID', phoneCountry: 'id', currency: 'IDR', ogLocale: 'id_ID', phonePlaceholder: '812 3456 7890' },
   ja: { siteLang: 'ja', crmCountry: 'JP', phoneCountry: 'jp', currency: 'JPY', ogLocale: 'ja_JP', phonePlaceholder: '90-1234-5678' },
   lv: { siteLang: 'lv', crmCountry: 'LV', phoneCountry: 'lv', currency: 'EUR', ogLocale: 'lv_LV', phonePlaceholder: '21 234 567' },
+  sl: { siteLang: 'sl', crmCountry: 'SI', phoneCountry: 'si', currency: 'EUR', ogLocale: 'sl_SI', phonePlaceholder: '40 123 456' },
 };

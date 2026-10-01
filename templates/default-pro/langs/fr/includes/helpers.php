@@ -25,6 +25,7 @@ function site_locale(): string
         'ms' => 'ms-MY',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
+        'sl' => 'sl-SI',
     ];
     $lang = strtolower(SITE_LANG);
 
@@ -200,7 +201,7 @@ function market_country_name(): string
         'LK' => 'Sri Lanka', 'LV' => 'Latvia', 'MX' => 'Mexico', 'MY' => 'Malaysia',
         'NG' => 'Nigeria', 'NL' => 'the Netherlands', 'NO' => 'Norway', 'NZ' => 'New Zealand',
         'PH' => 'the Philippines', 'PL' => 'Poland', 'PT' => 'Portugal', 'RO' => 'Romania',
-        'SE' => 'Sweden', 'SG' => 'Singapore', 'SK' => 'Slovakia', 'TH' => 'Thailand',
+        'SE' => 'Sweden', 'SG' => 'Singapore', 'SK' => 'Slovakia', 'SI' => 'Slovenia', 'TH' => 'Thailand',
         'TR' => 'Turkey', 'US' => 'the United States', 'ZA' => 'South Africa',
     ];
 
@@ -223,10 +224,12 @@ function market_audience(): string
         'fi' => 'treidaajille maassa '.$country,
         'fr' => 'traders en '.$country,
         'hr' => 'traderima u zemlji '.$country,
+        'sl' => 'traderjem v državi '.$country,
         'hu' => 'trader számára itt: '.$country,
         'it' => 'trader in '.$country,
         'ja' => $country.' のトレーダー',
         'lv' => 'tirgotājiem valstī '.$country,
+        'sl' => 'traderjem v državi '.$country,
         'ms' => 'trader di '.$country,
         'nl' => 'traders in '.$country,
         'no' => 'tradere i '.$country,
@@ -234,6 +237,7 @@ function market_audience(): string
         'pt' => 'traders em '.$country,
         'ro' => 'traderi din '.$country,
         'sk' => 'traderov v krajine '.$country,
+        'sl' => 'traderjem v državi '.$country,
         'sv' => 'traders i '.$country,
         'tr' => $country.' bölgesindeki yatırımcılar',
         default => 'traders in '.$country,
