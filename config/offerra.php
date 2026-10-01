@@ -108,7 +108,7 @@ return [
         ['code' => 'ES', 'name' => 'Іспанія', 'lang' => 'es', 'phone' => 'es'],
         ['code' => 'PT', 'name' => 'Португалія', 'lang' => 'pt', 'phone' => 'pt'],
         ['code' => 'NL', 'name' => 'Нідерланди', 'lang' => 'nl', 'phone' => 'nl'],
-        ['code' => 'BE', 'name' => 'Бельгія', 'lang' => 'en', 'phone' => 'be'],
+        ['code' => 'BE', 'name' => 'Бельгія', 'lang' => 'fr', 'phone' => 'be'],
         ['code' => 'PL', 'name' => 'Польща', 'lang' => 'pl', 'phone' => 'pl'],
         ['code' => 'CZ', 'name' => 'Чехія', 'lang' => 'cs', 'phone' => 'cz'],
         ['code' => 'SK', 'name' => 'Словаччина', 'lang' => 'sk', 'phone' => 'sk'],
