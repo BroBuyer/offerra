@@ -221,6 +221,10 @@ function formatOfferError(message) {
         return 'Dynadot зайнятий паралельними запитами. Інфра повторить set_ns автоматично.';
     }
 
+    if (/HTTP 429|Quota exceeded|Low rate user requests|rate-limited \(HTTP 429\)|GSC ліміт запитів/i.test(redacted)) {
+        return 'Google Search Console тимчасово обмежив запити. Панель повторить подачу сама.';
+    }
+
     return redacted;
 }
 

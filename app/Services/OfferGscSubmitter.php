@@ -90,8 +90,10 @@ class OfferGscSubmitter
         }
 
         $pending = SubmitOfferToGscJob::dispatch($offer->id)->onQueue('deploy');
-        if ($delaySeconds > 0) {
-            $pending->delay(now()->addSeconds($delaySeconds));
+        // Spread a batch of greens so they do not all hit GSC sites.add in the same minute.
+        $spread = max(0, $delaySeconds) + (($offer->id % 10) * 8);
+        if ($spread > 0) {
+            $pending->delay(now()->addSeconds($spread));
         }
     }
 
@@ -159,18 +161,15 @@ class OfferGscSubmitter
             ];
         } catch (\Throwable $e) {
             $message = $e->getMessage();
-            $notReady = str_contains($message, 'HTTPS is not live')
-                || str_contains($message, 'Cannot fetch verification file')
-                || str_contains($message, 'Verification file HTTP')
-                || str_contains($message, 'NXDOMAIN')
-                || str_contains($message, 'не резолвиться')
-                || (str_contains($message, 'sitemaps.submit failed') && str_contains($message, '403'));
+            $retryable = self::isRetryableError($message);
 
             $fresh = $offer->fresh() ?? $offer;
             $meta = is_array($fresh->infra_meta) ? $fresh->infra_meta : [];
-            $meta['gsc_error'] = substr($message, 0, 400);
+            $meta['gsc_error'] = $retryable
+                ? self::retryableErrorLabel($message)
+                : substr($message, 0, 400);
             $meta['gsc'] = [
-                'status' => $notReady ? 'waiting' : 'failed',
+                'status' => $retryable ? 'waiting' : 'failed',
                 'updated_at' => now()->toIso8601String(),
             ];
             $fresh->update(['infra_meta' => $meta]);
@@ -179,6 +178,42 @@ class OfferGscSubmitter
                 ? $e
                 : new RuntimeException($message, 0, $e);
         }
+    }
+
+    public static function isRetryableError(string $message): bool
+    {
+        $m = strtolower($message);
+
+        if (str_contains($m, 'http 429')
+            || str_contains($m, 'quota exceeded')
+            || str_contains($m, 'rate-limited')
+            || str_contains($m, 'rate limit')
+            || str_contains($m, 'low rate user requests')) {
+            return true;
+        }
+
+        return str_contains($message, 'HTTPS is not live')
+            || str_contains($message, 'Cannot fetch verification file')
+            || str_contains($message, 'Verification file HTTP')
+            || str_contains($message, 'NXDOMAIN')
+            || str_contains($message, 'не резолвиться')
+            || str_contains($message, 'Timeout')
+            || str_contains($message, 'DNS resolve')
+            || (str_contains($message, 'sitemaps.submit failed') && str_contains($message, '403'));
+    }
+
+    public static function retryableErrorLabel(string $message): string
+    {
+        $m = strtolower($message);
+        if (str_contains($m, '429')
+            || str_contains($m, 'quota exceeded')
+            || str_contains($m, 'rate-limited')
+            || str_contains($m, 'rate limit')
+            || str_contains($m, 'low rate user requests')) {
+            return 'GSC ліміт запитів — повторюємо автоматично';
+        }
+
+        return 'GSC ще не готовий — повторюємо автоматично';
     }
 
     private function baseReady(Offer $offer): bool

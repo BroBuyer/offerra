@@ -378,6 +378,8 @@ class GoogleSearchConsoleClient
             'body' => $body,
         ]);
 
+        $this->throwIfRateLimited($response->status(), $body, 'siteVerification');
+
         throw new RuntimeException('Site Verification FILE failed (HTTP '.$response->status().'): '.$this->shortError($body));
     }
 
@@ -398,6 +400,8 @@ class GoogleSearchConsoleClient
         if ($response->status() === 409 || str_contains(strtolower($body), 'already')) {
             return true;
         }
+
+        $this->throwIfRateLimited($response->status(), $body, 'sites.add');
 
         // Property may already exist in the account.
         if ($response->status() === 403 && str_contains(strtolower($body), 'permission')) {
@@ -451,8 +455,12 @@ class GoogleSearchConsoleClient
                 return true;
             }
 
+            $this->throwIfRateLimited($retry->status(), $body, 'sitemaps.submit');
+
             throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$retry->status().'): '.$this->shortError($body));
         }
+
+        $this->throwIfRateLimited($response->status(), $body, 'sitemaps.submit');
 
         throw new RuntimeException('Search Console sitemaps.submit failed (HTTP '.$response->status().'): '.$this->shortError($body));
     }
@@ -530,6 +538,13 @@ class GoogleSearchConsoleClient
             ])
             ->withBody('', 'application/octet-stream')
             ->send('PUT', $url);
+    }
+
+    private function throwIfRateLimited(int $status, string $body, string $action): void
+    {
+        if ($status === 429 || str_contains(strtolower($body), 'quota exceeded')) {
+            throw new RuntimeException('Search Console '.$action.' rate-limited (HTTP 429)');
+        }
     }
 
     private function shortError(string $body): string
