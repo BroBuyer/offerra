@@ -318,33 +318,49 @@ class OriginPool
     }
 
     /**
-     * Settings ready to deploy this offer: its bound server, or a freshly
-     * allocated one when the offer has no host yet.
+     * Bound origin that can still receive this offer's files.
+     *
+     * A deleted IP must not keep retrying SSH. Active rows without credentials
+     * still throw so a mis-typed password is visible; inactive orphans fall through
+     * to a new pool allocation.
      */
-    public function settingsForOffer(UserSetting $settings, Offer $offer, bool $bind = true): UserSetting
+    public function usableBoundServer(Offer $offer): ?OriginServer
     {
         $host = $this->boundHost($offer);
+        if ($host === '') {
+            return null;
+        }
 
-        if ($host !== '') {
-            $server = $this->serverForHost($host);
+        $server = $this->serverForHost($host);
+        if ($server && $server->hasSshCredentials()) {
+            return $server;
+        }
 
-            if ($server && $server->hasSshCredentials()) {
-                return $this->applyTo($settings, $server);
-            }
-
+        if ($server && $server->is_active) {
             throw new RuntimeException(
                 "Немає SSH-доступу до сервера {$host} (колонка Server у офера). Додайте його в Origin Servers.",
             );
         }
 
+        return null;
+    }
+
+    /**
+     * Settings ready to deploy this offer: its bound server, or a freshly
+     * allocated one when the offer has no host yet (or the old host was deleted).
+     */
+    public function settingsForOffer(UserSetting $settings, Offer $offer, bool $bind = true): UserSetting
+    {
+        $bound = $this->usableBoundServer($offer);
+        if ($bound !== null) {
+            return $this->applyTo($settings, $bound);
+        }
+
         return Cache::lock('origin-pool-allocate', 20)->block(25, function () use ($settings, $offer, $bind) {
             $offer->refresh();
-            $host = $this->boundHost($offer);
-            if ($host !== '') {
-                $server = $this->serverForHost($host);
-                if ($server && $server->hasSshCredentials()) {
-                    return $this->applyTo($settings, $server);
-                }
+            $bound = $this->usableBoundServer($offer);
+            if ($bound !== null) {
+                return $this->applyTo($settings, $bound);
             }
 
             $server = $this->allocate($offer);

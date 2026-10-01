@@ -108,14 +108,43 @@ class OriginServerController extends Controller
             ->with('success', "Сервер {$host} оновлено.");
     }
 
-    public function destroy(OriginServer $originServer): RedirectResponse
-    {
+    public function destroy(
+        OriginServer $originServer,
+        OriginEvacuationService $evacuation,
+        OriginServerSync $sync,
+        OriginPool $pool,
+    ): RedirectResponse {
         $host = $originServer->host;
+        $sync->clearSettingsForHost((string) $host);
+
+        $evacuated = 0;
+        $spread = '';
+        if ($evacuation->offerIdsOn($originServer) !== []) {
+            try {
+                $result = $evacuation->evacuate($originServer, false);
+            } catch (\RuntimeException $e) {
+                return redirect()
+                    ->route('origin-servers.index')
+                    ->withErrors(['delete' => "Не можна видалити {$host}: ".$e->getMessage()]);
+            }
+
+            $evacuated = (int) ($result['offers'] ?? 0);
+            $spread = collect($result['targets'] ?? [])
+                ->map(fn (int $count, string $target) => "{$target}: {$count}")
+                ->implode(', ');
+        }
+
         $originServer->delete();
+        $pool->forgetCounts();
+
+        $message = "Сервер {$host} видалено з реєстру.";
+        if ($evacuated > 0) {
+            $message .= " {$evacuated} оферів евакуйовано".($spread !== '' ? " → {$spread}" : '.');
+        }
 
         return redirect()
             ->route('origin-servers.index')
-            ->with('success', "Сервер {$host} видалено з реєстру.");
+            ->with('success', $message);
     }
 
     public function evacuate(OriginServer $originServer, OriginEvacuationService $evacuation): RedirectResponse

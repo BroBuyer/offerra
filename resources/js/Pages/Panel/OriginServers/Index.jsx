@@ -92,7 +92,7 @@ export default function OriginServersIndex({
     poolSummary = null,
     roles = ['pool', 'spare', 'drain'],
 }) {
-    const { flash } = usePage().props;
+    const { flash, errors = {} } = usePage().props;
     const [busyId, setBusyId] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [createOpen, setCreateOpen] = useState(false);
@@ -315,12 +315,21 @@ export default function OriginServersIndex({
     };
 
     const removeServer = (server) => {
-        if (!window.confirm(`Видалити ${server.host} з реєстру? Оффери не чіпаються.`)) {
+        const confirmText = server.offers_count > 0
+            ? `Видалити ${server.host} з реєстру?\n\n${server.offers_count} оферів будуть евакуйовані на інші сервери пулу.`
+            : `Видалити ${server.host} з реєстру?`;
+
+        if (!window.confirm(confirmText)) {
             return;
         }
         setBusyId(server.id);
+        setSubmitError('');
         router.delete(route('origin-servers.destroy', server.id), {
             preserveScroll: true,
+            onError: (errs) => {
+                const list = formErrorList(errs);
+                setSubmitError(list.join(' · ') || 'Не вдалося видалити сервер.');
+            },
             onFinish: () => setBusyId(null),
         });
     };
@@ -365,16 +374,16 @@ export default function OriginServersIndex({
                 </button>
             </header>
 
-            {flash?.success && (
+            {(flash?.success) && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
                     <p className="card-desc">{flash.success}</p>
                 </div>
             )}
 
-            {submitError && !createOpen && (
+            {(submitError || errors.delete || errors.evacuate) && !createOpen && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>
-                        {submitError}
+                        {submitError || errors.delete || errors.evacuate}
                     </p>
                 </div>
             )}

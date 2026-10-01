@@ -11,7 +11,10 @@ use Illuminate\Support\Collection;
 class OriginServerSync
 {
     /**
-     * Upsert registry rows from user settings + discover orphan offer hosts.
+     * Refresh credentials on already-registered hosts and surface orphan offer hosts.
+     *
+     * Origin servers belong to the admin registry, not leftover Settings.deploy_host.
+     * Creating rows from settings resurrected deleted IPs (hourly origin:sync-servers).
      *
      * @return array{synced: int, created: int, updated: int, orphans: list<string>}
      */
@@ -33,36 +36,29 @@ class OriginServerSync
             }
 
             $existing = OriginServer::query()->where('host', $host)->first();
+            if (! $existing) {
+                continue;
+            }
+
             $payload = [
                 'port' => (int) ($row->deploy_port ?: 22),
                 'username' => $row->deploy_username,
-                'label' => $existing?->label ?: ($row->deploy_panel_name ?: ($row->user?->name ? $row->user->name.' origin' : null)),
+                'label' => $existing->label ?: ($row->deploy_panel_name ?: ($row->user?->name ? $row->user->name.' origin' : null)),
                 'deploy_driver' => DeployDriver::normalize($row->deploy_driver),
                 'deploy_path_template' => $row->deploy_path_template
                     ?: DeployDriver::defaultPath($row->deploy_driver),
             ];
 
-            if (filled($row->deploy_password) && (! $existing || ! filled($existing->password))) {
+            if (filled($row->deploy_password) && ! filled($existing->password)) {
                 $payload['password'] = $row->deploy_password;
-            } elseif (filled($row->deploy_password) && $existing && trim((string) $existing->username) === trim((string) $row->deploy_username)) {
-                // Keep registry password in sync when same username still uses this host as default.
+            } elseif (filled($row->deploy_password) && trim((string) $existing->username) === trim((string) $row->deploy_username)) {
                 $payload['password'] = $row->deploy_password;
             }
 
-            if ($existing) {
-                $existing->fill($payload);
-                if ($existing->isDirty()) {
-                    $existing->save();
-                    $updated++;
-                }
-            } else {
-                OriginServer::query()->create([
-                    ...$payload,
-                    'host' => $host,
-                    'is_active' => filled($row->deploy_username) && filled($row->deploy_password),
-                    'alerts_enabled' => true,
-                ]);
-                $created++;
+            $existing->fill($payload);
+            if ($existing->isDirty()) {
+                $existing->save();
+                $updated++;
             }
         }
 
@@ -72,28 +68,45 @@ class OriginServerSync
             ->values()
             ->all();
 
-        foreach ($orphanHosts as $host) {
-            $exists = OriginServer::query()->where('host', $host)->exists();
-            OriginServer::query()->firstOrCreate(
-                ['host' => $host],
-                [
-                    'port' => 22,
-                    'label' => 'Orphan · '.$host,
-                    'is_active' => false,
-                    'alerts_enabled' => true,
-                ],
-            );
-            if (! $exists) {
-                $created++;
-            }
-        }
-
         return [
             'synced' => $created + $updated,
             'created' => $created,
             'updated' => $updated,
             'orphans' => $orphanHosts,
         ];
+    }
+
+    /**
+     * Drop leftover Settings.deploy_host rows that still point at a deleted origin.
+     * Those leftovers were the source of Del → hourly recreate.
+     */
+    public function clearSettingsForHost(string $host): int
+    {
+        $normalized = $this->normalizeHost($host);
+        if ($normalized === '') {
+            return 0;
+        }
+
+        $cleared = 0;
+
+        UserSetting::query()
+            ->whereNotNull('deploy_host')
+            ->where('deploy_host', '!=', '')
+            ->get()
+            ->each(function (UserSetting $row) use ($normalized, &$cleared): void {
+                if ($this->normalizeHost((string) $row->deploy_host) !== $normalized) {
+                    return;
+                }
+
+                $panel = $this->normalizeHost((string) ($row->deploy_panel_name ?? ''));
+                $row->forceFill([
+                    'deploy_host' => null,
+                    'deploy_panel_name' => $panel === $normalized ? null : $row->deploy_panel_name,
+                ])->save();
+                $cleared++;
+            });
+
+        return $cleared;
     }
 
     /**

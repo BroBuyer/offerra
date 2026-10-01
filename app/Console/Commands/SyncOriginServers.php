@@ -9,7 +9,7 @@ class SyncOriginServers extends Command
 {
     protected $signature = 'origin:sync-servers';
 
-    protected $description = 'Синхронізувати реєстр origin_servers з user settings і хостами офферів';
+    protected $description = 'Оновити SSH-креденшали вже зареєстрованих origin-серверів і показати orphan-хости оферів';
 
     public function handle(OriginServerSync $sync): int
     {
