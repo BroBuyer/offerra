@@ -197,17 +197,31 @@ function formatOfferError(message) {
         return '';
     }
 
-    if (/cURL error 28|Failed to connect/i.test(text)) {
-        const match = text.match(/connect to ([^\s]+) port (\d+)/i);
+    const redacted = text.replace(/([?&]key=)[^&\s]+/gi, '$1REDACTED');
+
+    if (/cURL error 35|unexpected eof|SSL routines|TLS connect|Recv failure/i.test(redacted)) {
+        return 'Dynadot API обірвав зʼєднання (TLS). Інфра повторить set_ns автоматично.';
+    }
+
+    if (/cURL error 28|Failed to connect|Connection timed out/i.test(redacted)) {
+        const match = redacted.match(/connect to ([^\s]+) port (\d+)/i);
 
         if (match) {
             return `Сервер не відповідає (${match[1]}:${match[2]}). Перевір IP і що порт відкритий для панелі.`;
         }
 
+        if (/dynadot\.com/i.test(redacted)) {
+            return 'Dynadot API не відповідає (таймаут). Інфра повторить set_ns автоматично.';
+        }
+
         return 'Сервер не відповідає (таймаут). Перевір IP і SSH-порт у налаштуваннях Server.';
     }
 
-    return text;
+    if (/Dynadot зайнятий/i.test(redacted)) {
+        return 'Dynadot зайнятий паралельними запитами. Інфра повторить set_ns автоматично.';
+    }
+
+    return redacted;
 }
 
 function dnsBadge(offer) {

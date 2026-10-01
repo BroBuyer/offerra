@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\UserSetting;
 use App\Services\DynadotClient;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -274,6 +275,66 @@ class DynadotPurchaseTest extends TestCase
         $this->expectExceptionMessage('Contact ID');
 
         app(DynadotClient::class)->register($this->makeSettings(['dynadot_contact_id' => '']), 'brand-new.online');
+    }
+
+    public function test_set_ns_retries_tls_blip_then_succeeds(): void
+    {
+        $attempts = 0;
+
+        Http::fake(function () use (&$attempts) {
+            $attempts++;
+            if ($attempts < 3) {
+                throw new ConnectionException(
+                    'cURL error 35: TLS connect error for https://api.dynadot.com/api3.json?key=super-secret&command=set_ns',
+                );
+            }
+
+            return Http::response([
+                'SetNsResponse' => [
+                    'ResponseCode' => '0',
+                    'Status' => 'success',
+                ],
+            ]);
+        });
+
+        app(DynadotClient::class)->setNameservers(
+            $this->makeSettings(),
+            'capttrusteau.online',
+            ['linda.ns.cloudflare.com', 'weston.ns.cloudflare.com'],
+        );
+
+        $this->assertSame(3, $attempts);
+    }
+
+    public function test_set_ns_tls_failure_does_not_leak_api_key(): void
+    {
+        Http::fake(function () {
+            throw new ConnectionException(
+                'cURL error 35: unexpected eof while reading for https://api.dynadot.com/api3.json?key=super-secret&command=set_ns',
+            );
+        });
+
+        try {
+            app(DynadotClient::class)->setNameservers(
+                $this->makeSettings(),
+                'capttrusteau.online',
+                ['linda.ns.cloudflare.com', 'weston.ns.cloudflare.com'],
+            );
+            $this->fail('Expected RuntimeException');
+        } catch (\RuntimeException $e) {
+            $this->assertStringNotContainsString('super-secret', $e->getMessage());
+            $this->assertTrue(DynadotClient::isRetryableNsError($e->getMessage()));
+        }
+    }
+
+    public function test_redact_secrets_strips_key_query(): void
+    {
+        $raw = 'cURL error 35 for https://api.dynadot.com/api3.json?key=dummy-secret&command=set_ns';
+
+        $this->assertSame(
+            'cURL error 35 for https://api.dynadot.com/api3.json?key=REDACTED&command=set_ns',
+            DynadotClient::redactSecrets($raw),
+        );
     }
 
     /**

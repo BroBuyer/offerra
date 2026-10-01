@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\UserSetting;
 use App\Support\DomainName;
 use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
@@ -347,6 +348,52 @@ class DynadotClient
             || str_contains($normalized, 'domain initialization');
     }
 
+    public static function isTransientTransportError(?string $message): bool
+    {
+        if ($message === null || $message === '') {
+            return false;
+        }
+
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'curl error 28')
+            || str_contains($normalized, 'curl error 35')
+            || str_contains($normalized, 'curl error 52')
+            || str_contains($normalized, 'curl error 56')
+            || str_contains($normalized, 'unexpected eof')
+            || str_contains($normalized, 'connection reset')
+            || str_contains($normalized, 'connection timed out')
+            || str_contains($normalized, 'ssl routines')
+            || str_contains($normalized, 'tls connect')
+            || str_contains($normalized, 'тимчасово недоступний');
+    }
+
+    /**
+     * set_ns can wait — do not fail the whole infra run for a Dynadot blip.
+     */
+    public static function isRetryableNsError(?string $message): bool
+    {
+        if ($message === null || $message === '') {
+            return false;
+        }
+
+        $normalized = strtolower($message);
+
+        return self::isNsNotReadyError($message)
+            || self::isTransientTransportError($message)
+            || str_contains($normalized, 'зайнятий')
+            || str_contains($normalized, 'system_busy')
+            || str_contains($normalized, 'currently processing');
+    }
+
+    public static function redactSecrets(string $message): string
+    {
+        $message = preg_replace('/([?&]key=)[^&\s]+/i', '$1REDACTED', $message) ?? $message;
+        $message = preg_replace('/(api[_-]?key["\'\s:=]+)[^\s&"\']+/i', '$1REDACTED', $message) ?? $message;
+
+        return $message;
+    }
+
     private function shouldRetrySetNs(string $message, int $attempt): bool
     {
         if ($attempt >= 5) {
@@ -443,23 +490,79 @@ class DynadotClient
      */
     private function apiGet(UserSetting $settings, string $apiKey, array $params): array
     {
-        $response = Http::timeout(40)->get($this->apiBaseUrl((bool) $settings->dynadot_sandbox), [
+        return $this->requestJson($settings, [
             'key' => $apiKey,
             ...$params,
         ]);
+    }
 
-        if ($response->failed()) {
-            throw new RuntimeException('Dynadot HTTP '.$response->status());
+    /**
+     * @param  array<string, scalar|null>  $params
+     * @return array<string, mixed>
+     */
+    private function requestJson(UserSetting $settings, array $params, int $timeout = 25): array
+    {
+        $url = $this->apiBaseUrl((bool) $settings->dynadot_sandbox);
+        $lastError = 'Dynadot HTTP error';
+
+        for ($attempt = 1; $attempt <= 4; $attempt++) {
+            try {
+                $response = Http::timeout($timeout)
+                    ->connectTimeout(8)
+                    ->get($url, $params);
+
+                if ($response->failed()) {
+                    $lastError = 'Dynadot HTTP '.$response->status();
+                    if ($response->serverError() && $attempt < 4) {
+                        $this->sleepBeforeRetry($attempt);
+                        continue;
+                    }
+
+                    throw new RuntimeException($lastError);
+                }
+
+                /** @var array<string, mixed> $payload */
+                $payload = $response->json() ?? [];
+
+                if ($payload === []) {
+                    throw new RuntimeException('Порожня відповідь Dynadot');
+                }
+
+                return $payload;
+            } catch (RuntimeException $e) {
+                throw $e;
+            } catch (ConnectionException|\Throwable $e) {
+                $lastError = $this->transportErrorMessage($e);
+                if ($attempt < 4 && self::isTransientTransportError($e->getMessage())) {
+                    $this->sleepBeforeRetry($attempt);
+                    continue;
+                }
+
+                throw new RuntimeException($lastError);
+            }
         }
 
-        /** @var array<string, mixed> $payload */
-        $payload = $response->json() ?? [];
+        throw new RuntimeException($lastError);
+    }
 
-        if ($payload === []) {
-            throw new RuntimeException('Порожня відповідь Dynadot');
+    private function sleepBeforeRetry(int $attempt): void
+    {
+        if (app()->environment('testing')) {
+            return;
         }
 
-        return $payload;
+        usleep(400_000 * $attempt);
+    }
+
+    private function transportErrorMessage(\Throwable $e): string
+    {
+        $raw = self::redactSecrets($e->getMessage());
+
+        if (self::isTransientTransportError($raw)) {
+            return 'Dynadot API тимчасово недоступний (TLS/мережа). Повтор через хвилину.';
+        }
+
+        return 'Dynadot API: '.mb_substr($raw, 0, 180);
     }
 
     /**
@@ -748,14 +851,11 @@ class DynadotClient
             $params["domain{$index}"] = $domain;
         }
 
-        $response = Http::timeout(40)->get($this->apiBaseUrl($sandbox), $params);
-
-        if ($response->failed()) {
+        try {
+            $payload = $this->requestJson($settings, $params, 25);
+        } catch (RuntimeException) {
             return null;
         }
-
-        /** @var array<string, mixed> $payload */
-        $payload = $response->json() ?? [];
 
         if ($payload === []) {
             return null;
@@ -843,28 +943,23 @@ class DynadotClient
      */
     private function searchOne(UserSetting $settings, string $apiKey, string $domain, string $currency = 'USD'): array
     {
-        $baseUrl = $this->apiBaseUrl((bool) $settings->dynadot_sandbox);
-
-        $response = Http::timeout(25)->get($baseUrl, [
-            'key' => $apiKey,
-            'command' => 'search',
-            'domain0' => $domain,
-            'show_price' => 1,
-            'currency' => $currency,
-        ]);
-
-        if ($response->failed()) {
+        try {
+            $payload = $this->requestJson($settings, [
+                'key' => $apiKey,
+                'command' => 'search',
+                'domain0' => $domain,
+                'show_price' => 1,
+                'currency' => $currency,
+            ], 25);
+        } catch (RuntimeException $e) {
             return [
                 'domain' => $domain,
                 'available' => false,
                 'price' => null,
                 'status' => 'error',
-                'message' => 'HTTP '.$response->status(),
+                'message' => $e->getMessage(),
             ];
         }
-
-        /** @var array<string, mixed> $payload */
-        $payload = $response->json() ?? [];
 
         if ($payload === []) {
             return [

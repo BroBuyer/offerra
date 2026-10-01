@@ -76,7 +76,7 @@ class InfrastructureProvisioner
         } catch (\Throwable $e) {
             $offer->update([
                 'infra_status' => 'failed',
-                'infra_error' => $e->getMessage(),
+                'infra_error' => DynadotClient::redactSecrets($e->getMessage()),
             ]);
 
             return;
@@ -130,7 +130,7 @@ class InfrastructureProvisioner
         } catch (\Throwable $e) {
             $offer->update([
                 'infra_status' => 'failed',
-                'infra_error' => $e->getMessage(),
+                'infra_error' => DynadotClient::redactSecrets($e->getMessage()),
                 'infra_meta' => $meta,
             ]);
 
@@ -176,7 +176,7 @@ class InfrastructureProvisioner
             $this->runSteps($settings, $domain, $options, $meta, $offer);
             $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : $expectedNs;
         } catch (\Throwable $e) {
-            $meta['dns_error'] = $e->getMessage();
+            $meta['dns_error'] = DynadotClient::redactSecrets($e->getMessage());
 
             // Якщо сайт уже живий — не блокуємо статус через збій повторного provision.
             if ($this->markDnsDoneIfReady($offer, $meta, $domain, $serverIp, $expectedNs)) {
@@ -312,14 +312,14 @@ class InfrastructureProvisioner
                     $meta['dynadot_ns'] = 'done';
                     unset($meta['dynadot_ns_error']);
                 } catch (\Throwable $e) {
-                    if (! DynadotClient::isNsNotReadyError($e->getMessage())) {
+                    if (! DynadotClient::isRetryableNsError($e->getMessage())) {
                         throw $e;
                     }
 
-                    // Fresh Dynadot regs are not NS-writable for a few minutes.
-                    // Do not fail infra — DNS recheck will retry set_ns.
+                    // Fresh regs, TLS blips, and account lock contention are
+                    // recoverable — DNS recheck will retry set_ns.
                     $meta['dynadot_ns'] = 'pending';
-                    $meta['dynadot_ns_error'] = $e->getMessage();
+                    $meta['dynadot_ns_error'] = DynadotClient::redactSecrets($e->getMessage());
                     $meta['dns'] = 'pending';
                 }
             }
@@ -808,7 +808,7 @@ class InfrastructureProvisioner
             unset($meta['cloudflare_migrating_to']);
             $offer->update([
                 'infra_status' => 'failed',
-                'infra_error' => $e->getMessage(),
+                'infra_error' => DynadotClient::redactSecrets($e->getMessage()),
                 'infra_meta' => $meta,
             ]);
 
