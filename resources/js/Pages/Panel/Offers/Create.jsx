@@ -1203,8 +1203,9 @@ export default function OffersCreate({
 
     const keitaroNamePreview = useMemo(() => {
         const date = new Date().toLocaleDateString('uk-UA');
-        return `SEO ${data.geo || '…'} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
-    }, [data.brand, data.domain, data.geo, affiliateTag]);
+        const geoLang = [data.geo || '…', data.lang || null].filter(Boolean).join(' ');
+        return `SEO ${geoLang} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
+    }, [data.brand, data.domain, data.geo, data.lang, affiliateTag]);
 
     const canProceedStep0 = Boolean(data.brand.trim()) && (
         bulkItems.length > 0

@@ -17,7 +17,7 @@ class ImportOffersFromKeitaro extends Command
         {--fix-tags : Виставити affiliate_tag BRO/EGO/JEL за email}
         {--limit=0 : Ліміт кампаній (0 = усі)}';
 
-    protected $description = 'Імпорт офферів з Keitaro за назвою кампанії SEO {GEO} {TAG} {Brand} ({d.m.Y}) {domain}';
+    protected $description = 'Імпорт офферів з Keitaro за назвою кампанії SEO {GEO} [{lang}] {TAG} {Brand} ({d.m.Y}) {domain}';
 
     public function handle(KeitaroClient $keitaro): int
     {
@@ -205,26 +205,44 @@ class ImportOffersFromKeitaro extends Command
             return null;
         }
 
-        if (! preg_match(
+        // New: SEO BE fr BRO Brand (02.10.2026) example.com
+        // Old: SEO BE BRO Brand (02.10.2026) example.com
+        if (preg_match(
+            '/^SEO\s+([A-Za-z]{2})\s+([a-z]{2,3})\s+([A-Za-z0-9]+)\s+(.+?)\s+\((\d{2}\.\d{2}\.\d{4})\)\s+([A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z]{2,})$/u',
+            $name,
+            $m,
+        )) {
+            $geo = strtoupper($m[1]);
+            $tag = strtoupper($m[3]);
+            $brand = trim($m[4]);
+            $dateRaw = $m[5];
+            $domain = strtolower($m[6]);
+        } elseif (preg_match(
             '/^SEO\s+([A-Za-z]{2})\s+([A-Za-z0-9]+)\s+(.+?)\s+\((\d{2}\.\d{2}\.\d{4})\)\s+([A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z]{2,})$/u',
             $name,
             $m,
         )) {
+            $geo = strtoupper($m[1]);
+            $tag = strtoupper($m[2]);
+            $brand = trim($m[3]);
+            $dateRaw = $m[4];
+            $domain = strtolower($m[5]);
+        } else {
             return null;
         }
 
         try {
-            $createdAt = Carbon::createFromFormat('d.m.Y', $m[4], (string) config('app.timezone', 'UTC'));
+            $createdAt = Carbon::createFromFormat('d.m.Y', $dateRaw, (string) config('app.timezone', 'UTC'));
         } catch (\Throwable) {
             return null;
         }
 
         return [
-            'geo' => strtoupper($m[1]),
-            'tag' => strtoupper($m[2]),
-            'brand' => trim($m[3]),
+            'geo' => $geo,
+            'tag' => $tag,
+            'brand' => $brand,
             'created_at' => $createdAt->startOfDay(),
-            'domain' => strtolower($m[5]),
+            'domain' => $domain,
         ];
     }
 

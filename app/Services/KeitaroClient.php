@@ -556,10 +556,13 @@ class KeitaroClient
     {
         $date = $this->resolveCampaignDate($input);
         $affiliate = $this->normalizeAffiliateTag($affiliateTag ?? $input['affiliate_tag'] ?? null);
+        $geo = strtoupper(trim((string) ($input['geo'] ?? '')));
+        $lang = strtolower(trim((string) ($input['lang'] ?? '')));
+        $geoLang = $lang !== '' ? $geo.' '.$lang : $geo;
 
         return sprintf(
             'SEO %s %s %s (%s) %s',
-            strtoupper((string) $input['geo']),
+            $geoLang,
             $affiliate,
             $input['brand'],
             $date,
