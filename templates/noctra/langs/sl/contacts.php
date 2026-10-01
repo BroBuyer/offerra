@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title_lead('Kontakt');
-$page_description = 'Kontakt ' . SITE_NAME . ' support — account, trading, and technical help available 24/7.';
+$page_description = 'Kontakt ' . SITE_NAME . ' — pomoč pri računu, trgovanju in tehničnih vprašanjih 24/7.';
 $page_canonical = page_url('contacts.php');
 $active_page = 'contacts';
 
@@ -14,8 +14,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Kontakt</p>
-      <h1>Talk to support</h1>
-      <p class="lead">Account, trading, and technical questions — covered around the clock.</p>
+      <h1>Oglasite se podpori</h1>
+      <p class="lead">Vprašanja o računu, trgovanju in tehniki — ves dan.</p>
     </div>
   </section>
 
@@ -23,17 +23,17 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 640px; margin-inline: auto;">
       <div class="features-grid" style="grid-template-columns: 1fr;">
         <article class="feature-card">
-          <h3>E-pošta support</h3>
-          <p style="margin-bottom: 1rem;">For account and general requests:</p>
+          <h3>E-poštna podpora</h3>
+          <p style="margin-bottom: 1rem;">Za račun in splošna vprašanja:</p>
           <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" class="btn btn-outline"><?= e(SUPPORT_EMAIL) ?></a>
         </article>
         <article class="feature-card">
-          <h3>Response time</h3>
-          <p>Most tickets clear within a few hours. Live trading issues are prioritized.</p>
+          <h3>Odzivni čas</h3>
+          <p>Večina zahtevkov je rešenih v nekaj urah. Nujna trgovalna vprašanja imajo prednost.</p>
         </article>
         <article class="feature-card">
-          <h3>Prefer self-serve?</h3>
-          <p style="margin-bottom: 1rem;">Odpri račun in minutes — no call required.</p>
+          <h3>Raje sami?</h3>
+          <p style="margin-bottom: 1rem;">Odprite račun v minutah — klic ni potreben.</p>
           <a href="sign.php" class="btn btn-primary">Ustvari račun</a>
         </article>
       </div>

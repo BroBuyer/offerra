@@ -1,7 +1,7 @@
 <?php require_once __DIR__ . '/config.php'; ?>
 <header class="header site-header" data-header>
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:94px;">
-    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?>domov">
+    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> domov">
       <div class="logo-icon" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
           <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -24,8 +24,8 @@
       <a href="<?= e($sec('#security')) ?>" class="nav-link">Varnost</a>
       <a href="<?= e($sec('#reviews')) ?>" class="nav-link">Ocene</a>
       <a href="<?= e($sec('#faq')) ?>" class="nav-link">pogosta vprašanja</a>
-      <a href="product.php" class="nav-link<?= ($active_page ?? '') === 'product' ? ' is-active' : '' ?>">O tem</a>
-      <a href="contacts.php" class="nav-link<?= ($active_page ?? '') === 'contacts' ? ' is-active' : '' ?>">Kontakt</a>
+      <a href="product.php" class="nav-link <?= ($active_page ?? '') === 'product' ? ' is-active' : '' ?>">O tem</a>
+      <a href="contacts.php" class="nav-link <?= ($active_page ?? '') === 'contacts' ? ' is-active' : '' ?>">Kontakt</a>
     </nav>
 
     <div style="display:flex;gap:14px;align-items:center;">

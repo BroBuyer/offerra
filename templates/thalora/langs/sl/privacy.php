@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="container-narrow grid gap-8 md:gap-12">
           <div class="grid gap-5 md:gap-7">
 <nav
-  aria-label="drobtina"
+  aria-label="potek strani"
   class="flex flex-wrap items-center text-sm text-gray-500 md:text-lg"
 >
   <a href="<?= page_url() ?>" class="breadcrumb-item">Domov</a>

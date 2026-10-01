@@ -23,17 +23,17 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 640px; margin-inline: auto;">
       <div class="features-grid" style="grid-template-columns: 1fr;">
         <article class="feature-card">
-          <h3>E-pošta support</h3>
+          <h3>E-poštna podpora</h3>
           <p style="margin-bottom: 1rem;">For general inquiries and account assistance:</p>
           <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" class="btn btn-outline"><?= e(SUPPORT_EMAIL) ?></a>
         </article>
         <article class="feature-card">
-          <h3>Response time</h3>
+          <h3>Odzivni čas</h3>
           <p>Most requests are answered within a few hours. Urgent trading issues are prioritised.</p>
         </article>
         <article class="feature-card">
           <h3>Ready to start?</h3>
-          <p style="margin-bottom: 1rem;">Odpri račun in minutes — no call required.</p>
+          <p style="margin-bottom: 1rem;">Odprite račun v minutah — klic ni potreben.</p>
           <a href="sign.php" class="btn btn-primary">Ustvari račun</a>
         </article>
       </div>

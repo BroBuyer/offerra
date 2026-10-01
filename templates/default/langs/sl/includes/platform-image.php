@@ -10,7 +10,7 @@ $platform_alt = platform_image_alt();
 $platform_caption = platform_image_caption();
 ?>
 <figure class="platform-figure" itemscope itemtype="https://schema.org/ImageObject">
-  <meta itemprop="name" content="<?= e(SITE_NAME) ?>Trgovalna platforma AI">
+  <meta itemprop="name" content="<?= e(SITE_NAME) ?> Trgovalna platforma AI">
   <meta itemprop="description" content="<?= e($platform_alt) ?>">
   <meta itemprop="contentUrl" content="<?= e(page_url($platform_path)) ?>">
   <div class="platform-figure-media">
@@ -28,6 +28,6 @@ $platform_caption = platform_image_caption();
     >
   </div>
   <figcaption class="platform-figure-caption" itemprop="caption">
-    <?= e($platform_caption) ?>
+ <?= e($platform_caption) ?>
   </figcaption>
 </figure>

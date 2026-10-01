@@ -19,7 +19,7 @@
     {
       bot:
         L.chatStep1Bot ||
-        "zdravo Sem Lisa, tvoja pomočnica pri vkrcanju. Ste pripravljeni odpreti trgovalni račun v nekaj hitrih korakih?",
+        "Pozdravljeni. Sem Lisa, vaša pomočnica pri uvajanju. Ste pripravljeni odpreti trgovalni račun v nekaj hitrih korakih?",
       choices: [
         { label: L.chatStep1Yes || "Ja, začnimo", value: 'start' },
         { label: L.chatStep1More || 'Najprej mi povej več', value: 'more' },

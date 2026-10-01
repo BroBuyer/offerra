@@ -27,30 +27,30 @@ $faq_chevron = '<svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24
         <div class="faq-item is-open active">
           <button class="faq-trigger" type="button" aria-expanded="true">
             Kako naj začnem?
-            <?= $faq_chevron ?>
+ <?= $faq_chevron ?>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              Ustvarite račun, opravite kratko preverjanje in položite pri<?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
-              Grafikoni, orodja in vodeno vkrcanje se odklenejo takoj zatem. Lahko tudi klepetaš z Liso v kotu.
+              Ustvarite račun, opravite kratko preverjanje in položite pri <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
+              Grafikoni, orodja in vodeno uvajanje se odklenejo takoj zatem. Lahko tudi klepetaš z Liso v kotu.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Kako mi AI pomaga trgovati?
-            <?= $faq_chevron ?>
+ <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              <?= e(SITE_NAME) ?>prikazuje kratke tržne vpoglede v preprostem jeziku. Vedno se odločite, ali boste ukrepali.
+ <?= e(SITE_NAME) ?> prikazuje kratke tržne vpoglede v preprostem jeziku. Vedno se odločite, ali boste ukrepali.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Kako je moj račun zavarovan?
-            <?= $faq_chevron ?>
+ <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
@@ -61,7 +61,7 @@ $faq_chevron = '<svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Ali obstajajo skriti stroški?
-            <?= $faq_chevron ?>
+ <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
@@ -72,11 +72,11 @@ $faq_chevron = '<svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
             Kdo je Lisa v pripomočku za klepet?
-            <?= $faq_chevron ?>
+ <?= $faq_chevron ?>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Lisa je naša pomočnica pri vkrcanju. Vodi vas skozi kratek kviz in vam pomaga oddati zahtevo za varen račun.
+              Lisa je naša pomočnica pri uvajanju. Vodi vas skozi kratek kviz in vam pomaga oddati zahtevo za varen račun.
             </div>
           </div>
         </div>

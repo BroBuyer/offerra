@@ -60,16 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Передаємо змінні з PHP масиву в JS об'єкт
     const quizLang = {
-        welcome: `pozdravljena Jaz sem Olivia, tvoja<?= e(SITE_NAME) ?>vodnik po vkrcanju. Vaš dostop je vnaprej odobren. Začnimo graditi vaš profil.`,
-        q1: `Prosimo, potrdite, da ste prebivalec<?= e(geo_country_in()) ?>v celoti izpolnjevati zakonske zahteve.`,
+        welcome: `Pozdravljeni. Sem Olivia, vaša vodnica pri uvajanju na <?= e(SITE_NAME) ?>. Dostop je že predhodno odobren. Začnimo z vašim profilom.`,
+        q1: `Potrdite, da ste prebivalec <?= e(geo_country_in()) ?> in v celoti izpolnjujete zakonske zahteve.`,
         a1_yes: `Ja, zdaj živim tukaj`,
         a1_no: `Ne`,
-        q2: `super Izberite svojo starostno skupino, da vam lahko priporočimo ustrezne finančne produkte:`,
+        q2: `Odlično. Izberite starostno skupino, da vam predlagamo ustrezne finančne produkte:`,
         q3: `Ali imate trenutno aktiven bančni račun ali račun s kreditno kartico za prejemanje dnevnih izplačil dividend?`,
         a3_yes: `Da, moj račun je aktiven`,
         a3_no: `Trenutno ne`,
         q4: `Kaj je vaš glavni vir dohodka? To nam pomaga prilagoditi nastavitve tveganja platforme vam.`,
-        a4_1: `Zaposlen ali svoboden`,
+        a4_1: `Zaposlen ali samostojni podjetnik`,
         a4_2: `Varčevanje ali pasivni dohodek`,
         a4_3: `Druge vrste dohodkov`,
         q5: `Samo še malo! Nekdo iz naše ekipe vas bo poklical med 11.00 in 20.00 uro za kratko verifikacijo. Boste lahko sprejeli klic?`,

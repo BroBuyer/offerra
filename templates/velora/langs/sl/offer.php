@@ -14,7 +14,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow">Cene</p>
-      <h1>Začnite od<?= MIN_DEPOSIT ?> <?= CURRENCY ?></h1>
+      <h1>Začnite od <?= MIN_DEPOSIT ?> <?= CURRENCY ?></h1>
       <p class="lead">Ena preprosta vstopna točka. Popoln dostop do platforme po financiranju – vključno z vpogledi AI in trgi v živo.</p>
     </div>
   </section>

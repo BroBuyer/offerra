@@ -28,6 +28,6 @@ $platform_caption = platform_image_caption();
     >
   </div>
   <figcaption class="platform-figure-caption" itemprop="caption">
-    <?= e($platform_caption) ?>
+ <?= e($platform_caption) ?>
   </figcaption>
 </figure>

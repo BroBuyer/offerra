@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <p class="eyebrow">Začnite</p>
       <h1>Ustvarite svoj račun</h1>
-      <p class="lead">Minimalni depozit<?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Traja manj kot 3 minute.</p>
+      <p class="lead">Minimalni depozit <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Traja manj kot 3 minute.</p>
     </div>
   </section>
 

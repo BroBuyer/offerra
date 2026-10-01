@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Privacy Policy');
-$page_description = 'Learn how ' . SITE_NAME . ' collects, uses, and protects your personal data.';
+$page_title = page_title_lead('Politika zasebnosti');
+$page_description = 'Kako ' . SITE_NAME . ' zbira, uporablja in varuje vaše osebne podatke.';
 $page_canonical = page_url('privacy.php');
 $active_page = 'privacy';
 
@@ -13,31 +13,31 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <h1>Privacy Policy</h1>
-      <p class="lead">Last updated: <?= date('F j, Y') ?></p>
+      <h1>Politika zasebnosti</h1>
+      <p class="lead">Nazadnje posodobljeno: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>This Privacy Policy describes how <?= e(SITE_NAME) ?> ("we", "us") collects and processes personal information when you use our website and services.</p>
+      <p>Ta politika zasebnosti opisuje, kako <?= e(SITE_NAME) ?> (»mi«) zbira in obdeluje osebne podatke, ko uporabljate naše spletno mesto in storitve.</p>
 
-      <h2>Information we collect</h2>
-      <p>We may collect: name, email address, phone number, country of residence, IP address, and information you provide through forms or support requests.</p>
+      <h2>Katere podatke zbiramo</h2>
+      <p>Lahko zbiramo: ime, e-poštni naslov, telefonsko številko, državo prebivališča, naslov IP in podatke, ki jih navedete v obrazcih ali zahtevkih za podporo.</p>
 
-      <h2>How we use your information</h2>
+      <h2>Kako uporabljamo vaše podatke</h2>
       <ul>
-        <li>To create and manage your account</li>
-        <li>To provide trading platform access and customer support</li>
-        <li>To comply with legal and regulatory obligations</li>
-        <li>To improve our services and prevent fraud</li>
+        <li>Za ustvarjanje in upravljanje vašega računa</li>
+        <li>Za dostop do trgovalne platforme in podporo strankam</li>
+        <li>Za izpolnjevanje zakonskih in regulativnih obveznosti</li>
+        <li>Za izboljšanje storitev in preprečevanje goljufij</li>
       </ul>
 
-      <h2>Data security</h2>
-      <p>We implement technical and organisational measures including SSL encryption and access controls to protect your data.</p>
+      <h2>Varnost podatkov</h2>
+      <p>Izvajamo tehnične in organizacijske ukrepe, vključno s šifriranjem SSL in nadzorom dostopa, da zaščitimo vaše podatke.</p>
 
-      <h2>Your rights</h2>
-      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <?= e(SUPPORT_EMAIL) ?> to exercise these rights.</p>
+      <h2>Vaše pravice</h2>
+      <p>Glede na jurisdikcijo imate lahko pravico do dostopa, popravka ali izbrisa osebnih podatkov. Pišite na <?= e(SUPPORT_EMAIL) ?>, da uveljavite te pravice.</p>
 
       <h2>Contact</h2>
       <p>Questions about this policy? Email <a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>

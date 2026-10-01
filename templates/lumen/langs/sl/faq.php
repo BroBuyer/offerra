@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              Ustvarite račun, opravite kratko preverjanje in položite denar od <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Grafikoni, orodja in vodeno vkrcanje se odklenejo takoj zatem.
+              Ustvarite račun, opravite kratko preverjanje in položite denar od <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Grafikoni, orodja in vodeno uvajanje se odklenejo takoj zatem.
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              <?= e(SITE_NAME) ?> prikazuje kratke vpoglede na trg v preprostem jeziku. Vedno se odločite, ali boste ukrepali.
+ <?= e(SITE_NAME) ?> prikazuje kratke vpoglede na trg v preprostem jeziku. Vedno se odločite, ali boste ukrepali.
             </div>
           </div>
         </div>

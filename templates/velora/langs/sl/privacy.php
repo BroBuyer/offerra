@@ -14,13 +14,13 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <h1>Politika zasebnosti</h1>
-      <p class="lead">Zadnja posodobitev:<?= date('F j, Y') ?></p>
+      <p class="lead">Zadnja posodobitev: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Ta pravilnik o zasebnosti opisuje, kako<?= e(SITE_NAME) ?>("mi", "nas") zbira in obdeluje osebne podatke, ko uporabljate naše spletno mesto in storitve.</p>
+      <p>Ta pravilnik o zasebnosti opisuje, kako <?= e(SITE_NAME) ?>("mi", "nas") zbira in obdeluje osebne podatke, ko uporabljate naše spletno mesto in storitve.</p>
 
       <h2>Podatki, ki jih zbiramo</h2>
       <p>Zbiramo lahko: ime, e-poštni naslov, telefonsko številko, državo prebivališča, naslov IP in informacije, ki jih posredujete prek obrazcev ali zahtevkov za podporo.</p>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/includes/header.php';
       <p>Za zaščito vaših podatkov izvajamo tehnične in organizacijske ukrepe, vključno s šifriranjem SSL in nadzorom dostopa.</p>
 
       <h2>Vaše pravice</h2>
-      <p>Odvisno od vaše jurisdikcije imate morda pravico do dostopa, popravka ali izbrisa svojih osebnih podatkov. Kontakt<?= e(SUPPORT_EMAIL) ?>za uveljavljanje teh pravic.</p>
+      <p>Odvisno od vaše jurisdikcije imate morda pravico do dostopa, popravka ali izbrisa svojih osebnih podatkov. Kontakt <?= e(SUPPORT_EMAIL) ?> za uveljavljanje teh pravic.</p>
 
       <h2>Kontakt</h2>
       <p>Imate vprašanja o tej politiki? E-pošta<a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--color-accent);"><?= e(SUPPORT_EMAIL) ?></a></p>

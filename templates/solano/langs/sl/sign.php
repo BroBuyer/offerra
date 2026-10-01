@@ -28,7 +28,7 @@ require __DIR__ . '/includes/header.php';
     </ol>
     <p class="jkkyl">Naložba vključuje tveganje, vključno z možno izgubo dela ali celotnega kapitala, ki ga vložite. Vrednost naložb se lahko zniža ali poveča, povrnjeno pa lahko dobite manj, kot ste prvotno vložili. Ne vlagajte denarja, ki si ga ne morete privoščiti izgubiti.</p>
     <div class="tw9z4by">
-      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Pogosta vprašanja</a>
     </div>
   </div>

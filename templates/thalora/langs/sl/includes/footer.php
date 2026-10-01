@@ -8,7 +8,7 @@
               <span class="inline-block">
                   <img src="<?= asset('static/img/favicon.svg') ?>" class="footer-logo" alt="<?= e(SITE_NAME) ?>">
               </span>
-              <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
             </a>
             <ul class="flex flex-col gap-x-5 gap-y-4 md:flex-row md:gap-x-7 lg:gap-x-12">
               <li><a href="<?= page_url() ?>">Domov</a></li>
@@ -43,7 +43,7 @@
         </div>
         <div class="grid gap-2.5 text-sm text-gray-500">
             <p>
-                <?= e(SITE_NAME) ?>ne prevzema nobene odgovornosti za kakršno koli izgubo ali škodo, ki bi nastala zaradi uporabe informacij te spletne strani, vključno z izobraževalno vsebino, cenami, grafikoni ali tržno analizo. Trgovanje s finančnimi instrumenti prinaša precejšnje tveganje; prosim, temeljito ocenite svoje osebne okoliščine. Preden se lotite trgovanja, se posvetujte s strokovnim svetovalcem. Namenite samo kapital, ki si ga lahko privoščite izgubiti, saj izdelki, kot so forex, CFD-ji in kriptovalute, morda niso primerni za vse vlagatelje.
+ <?= e(SITE_NAME) ?> ne prevzema nobene odgovornosti za kakršno koli izgubo ali škodo, ki bi nastala zaradi uporabe informacij te spletne strani, vključno z izobraževalno vsebino, cenami, grafikoni ali tržno analizo. Trgovanje s finančnimi instrumenti prinaša precejšnje tveganje; prosim, temeljito ocenite svoje osebne okoliščine. Preden se lotite trgovanja, se posvetujte s strokovnim svetovalcem. Namenite samo kapital, ki si ga lahko privoščite izgubiti, saj izdelki, kot so forex, CFD-ji in kriptovalute, morda niso primerni za vse vlagatelje.
             </p>
         </div>
         <div class="text-center text-white">

@@ -3,7 +3,7 @@
   <div class="ggh3sm br3bd0">
     <a class="lifld2" href="<?= page_url() ?>">
       <img src="<?= asset('static/img/brand/logo.webp') ?>" alt="<?= e(SITE_NAME) ?>" width="28" height="28" decoding="async" title="<?= e(SITE_NAME) ?>" loading="eager">
-      <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
     </a>
     <nav class="cpy3s" aria-label="Glavni">
       <button class="eaoigpo" type="button" aria-label="Zapri meni">&times;</button>

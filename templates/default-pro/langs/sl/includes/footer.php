@@ -24,7 +24,7 @@
 
     <div class="footer-risk">
       <p>
-        <?= e(SITE_NAME) ?> is not responsible for any loss or damage arising from the use of information on this site.
+ <?= e(SITE_NAME) ?> is not responsible for any loss or damage arising from the use of information on this site.
         Trading financial markets involves risk. Only invest funds you can afford to lose. FX, CFDs, and cryptocurrencies
         may not be suitable for all investors. Consider seeking advice from a qualified professional before trading.
       </p>

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
-$page_title = SITE_NAME . ' ᐉ Kako deluje — Od prvega klika do vašega prvega položaja';
+$page_title = SITE_NAME . ' ᐉ Kako deluje — Od prvega klika do vaše prve pozicije';
 $page_description = 'Popolno potovanje z ' . SITE_NAME . ', od začetka do konca.';
 $page_canonical = page_url("product.php");
 $active_page = "product";
@@ -30,7 +30,7 @@ require __DIR__ . '/includes/header.php';
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Dvigi se vrnejo na vaš način depozita z navedenim časom obdelave.</span></li>
     </ul>
     <div class="tw9z4by">
-      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Pogosta vprašanja</a>
     </div>
   </div>
@@ -79,7 +79,7 @@ require __DIR__ . '/includes/header.php';
       <li itemprop="step" itemscope itemtype="https://schema.org/HowToStep">
         <h3 itemprop="name">Potrdite svoj e-poštni naslov</h3><p itemprop="text">Potrdite svoj naslov, da zaščitite svoj račun.</p></li>
       <li itemprop="step" itemscope itemtype="https://schema.org/HowToStep">
-        <h3 itemprop="name">Depozitna sredstva</h3><p itemprop="text">Dodajte kapital iz<?= e(money_min()) ?>, z metodo, ki vam je ljubša.</p></li>
+        <h3 itemprop="name">Depozitna sredstva</h3><p itemprop="text">Dodajte kapital iz <?= e(money_min()) ?>, z metodo, ki vam je ljubša.</p></li>
       <li itemprop="step" itemscope itemtype="https://schema.org/HowToStep">
         <h3 itemprop="name">Določite svojo strategijo</h3><p itemprop="text">Izberite svoje cilje; vaš analitik oblikuje načrt okoli vas.</p></li>
       <li itemprop="step" itemscope itemtype="https://schema.org/HowToStep">

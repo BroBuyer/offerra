@@ -15,7 +15,7 @@ require __DIR__ . '/includes/header.php';
     <h1 id="rrqdpt"><?= e(SITE_NAME) ?></h1>
     <p class="ymraes">Osebni finančni analitik, podprt z umetno inteligenco, ki navadnim ljudem pomaga ustvariti dodaten dohodek brez predhodnih izkušenj. Vaš analitik vas vodi na vsakem koraku, medtem ko nadzorna plošča v realnem času prikazuje, kako deluje vaš kapital.</p><!--hero-trust--><div style="margin:1.5rem -.7rem 1.6rem;font-size:.85rem;font-weight:500;line-height:1.7;color:var(--muted,#9aa3b2)"><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🛡</span>Regulirano</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">🔒</span>Ločena sredstva</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true">👥</span>39.600 strank</span><span style="display:inline-flex;align-items:center;gap:.4rem;margin:.3rem .7rem;vertical-align:middle"><span aria-hidden="true" style="color:var(--accent,#e8b84b)">★</span><span style="font-variant-numeric:tabular-nums">4.9</span>ocena</span></div>
     <div class="vseuxnl">
-      <a class="qou73xg fi3abjs" href="#nl3qm8">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="#nl3qm8">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('product.php') ?>">Kako deluje</a>
     </div>
     <ul class="wxlxk">
@@ -62,7 +62,7 @@ require __DIR__ . '/includes/header.php';
       <li><a href="#rb8p3">Vaše izhodišče</a></li>
       <li><a href="#nw3j7wd">Vprašanja</a></li>
     </ol>
-    <a class="qou73xg fi3abjs" href="#nl3qm8">Začetek —<?= e(money_min()) ?> od</a>
+    <a class="qou73xg fi3abjs" href="#nl3qm8">Začetek — <?= e(money_min()) ?> od</a>
   </details>
 
   <div>
@@ -169,7 +169,7 @@ require __DIR__ . '/includes/header.php';
       <div class="wdsnx3j">
         <span class="vd7z9k">Why <?= e(SITE_NAME) ?></span>
         <h2 id="mzn56z">Brez preglednic. Brez zaslonov. Brez dvomov v zadnjem trenutku</h2>
-        <p class="rmct9">Poglejte, kako<?= e(SITE_NAME) ?>primerja s tradicionalnimi posredniki in z ročnim trgovanjem.</p>
+        <p class="rmct9">Poglejte, kako <?= e(SITE_NAME) ?> primerja s tradicionalnimi posredniki in z ročnim trgovanjem.</p>
       </div>
       <div class="smnsm2" role="region" tabindex="0" aria-label="Brez preglednic. Brez zaslonov. Brez dvomov v zadnjem trenutku"><table class="by635s">
         <thead><tr><th scope="col">Platforma</th><th scope="col"><?= e(SITE_NAME) ?></th><th scope="col">Tradicionalni posrednik</th><th scope="col">Trgujte sami</th></tr></thead>
@@ -226,7 +226,7 @@ require __DIR__ . '/includes/header.php';
       <div class="wdsnx3j">
         <span class="vd7z9k">Vračila</span>
         <h2 id="rq8es">Primer z vašim depozitom</h2>
-        <p class="rmct9">Premaknite drsnik, da simulirate večji depozit: številke so izračunane iz reprezentativnega načrta z najmanjšim depozitom<?= e(money_min()) ?>. To je primer, ne obljuba; vaši dejanski donosi so odvisni od tega, koliko vložite, in strategije, ki jo izberete s svojim analitikom.</p>
+        <p class="rmct9">Premaknite drsnik, da simulirate večji depozit: številke so izračunane iz reprezentativnega načrta z najmanjšim depozitom <?= e(money_min()) ?>. To je primer, ne obljuba; vaši dejanski donosi so odvisni od tega, koliko vložite, in strategije, ki jo izberete s svojim analitikom.</p>
       </div>
       <div class="wmuyc">
         <div>
@@ -301,7 +301,7 @@ require __DIR__ . '/includes/header.php';
       <ol class="zzk9i">
         <li><span class="vpx6kk">01</span><div><h3>Ustvarite svoj račun</h3><p>Registrirajte se v nekaj minutah samo s svojim e-poštnim naslovom.</p></div></li>
         <li><span class="vpx6kk">02</span><div><h3>Potrdite svoj e-poštni naslov</h3><p>Potrdite svoj naslov, da zaščitite svoj račun.</p></div></li>
-        <li><span class="vpx6kk">03</span><div><h3>Depozitna sredstva</h3><p>Dodajte kapital iz<?= e(money_min()) ?>z metodo, ki vam je ljubša.</p></div></li>
+        <li><span class="vpx6kk">03</span><div><h3>Depozitna sredstva</h3><p>Dodajte kapital iz <?= e(money_min()) ?> z metodo, ki vam je ljubša.</p></div></li>
         <li><span class="vpx6kk">04</span><div><h3>Določite svojo strategijo</h3><p>Izberite svoje cilje; vaš analitik oblikuje načrt okoli vas.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Začnite vlagati</h3><p>Sledite vodenim signalom in opazujte svoj napredek v realnem času.</p></div></li>
       </ol>
@@ -352,12 +352,12 @@ require __DIR__ . '/includes/header.php';
         <p class="rmct9">Vsako trgovanje, ki ga vaš analitik izvede, je zabeleženo tukaj – vpisi, izstopi in preverjeni rezultati za vsak par, pretakanje v živo.</p>
       </div>
       <ol class="zzk9i">
-        <li><span class="vpx6kk">01</span><div><h3>Subsekundna izvedba na vsakem povezanem trgu</h3><p><?= e(SITE_NAME) ?>ohranja stalne povezave API z nizko zakasnitvijo z vsako podprto izmenjavo. Ko model ustvari signal, se naročilo pošlje, izpolni in zabeleži na nadzorni plošči pred naslednjo kljukico.</p></div></li>
-        <li><span class="vpx6kk">02</span><div><h3>Deluje 24/7, skozi vsako tržno sejo</h3><p>Kripto ne počiva in tudi ne<?= e(SITE_NAME) ?>. Motor še naprej analizira pare ob vikendih in praznikih, tako da priložnosti ne zamudite.</p></div></li>
+        <li><span class="vpx6kk">01</span><div><h3>Subsekundna izvedba na vsakem povezanem trgu</h3><p><?= e(SITE_NAME) ?> ohranja stalne povezave API z nizko zakasnitvijo z vsako podprto borzo. Ko model ustvari signal, se naročilo pošlje, izpolni in zabeleži na nadzorni plošči pred naslednjo kljukico.</p></div></li>
+        <li><span class="vpx6kk">02</span><div><h3>Deluje 24/7, skozi vsako tržno sejo</h3><p>Kripto ne počiva in tudi ne <?= e(SITE_NAME) ?>. Motor še naprej analizira pare ob vikendih in praznikih, tako da priložnosti ne zamudite.</p></div></li>
         <li><span class="vpx6kk">03</span><div><h3>Večvalutno poročanje</h3><p>Vsako stanje, vsako trgovanje in vsak dvig je prikazan v vaši lokalni valuti. Na nobeni točki ni skritih korakov pretvorbe.</p></div></li>
-        <li><span class="vpx6kk">04</span><div><h3>Ločen kapital</h3><p>Vaša sredstva ostanejo na vašem računu.<?= e(SITE_NAME) ?>nikoli jih ne zadrži: motor ima samo dovoljenje za pošiljanje naročil.</p></div></li>
+        <li><span class="vpx6kk">04</span><div><h3>Ločen kapital</h3><p>Vaša sredstva ostanejo na vašem računu. <?= e(SITE_NAME) ?> nikoli jih ne zadrži: sistem ima samo dovoljenje za pošiljanje naročil.</p></div></li>
         <li><span class="vpx6kk">05</span><div><h3>Varnost bančnega razreda</h3><p>Šifriranje TLS na celotni platformi, privzeto preverjanje v dveh korakih in četrtletne revizije infrastrukture tretjih oseb. Trgovinski prejemki, prijavljeni v verigi.</p></div></li>
-        <li><span class="vpx6kk">06</span><div><h3>Trije razredi sredstev, ena platforma</h3><p>Večina maloprodajnih platform vas omejuje na en trg.<?= e(SITE_NAME) ?>trguje s kriptovalutami, delnicami, ki kotirajo na borzi, in glavnimi valutnimi pari z iste nadzorne plošče.</p></div></li>
+        <li><span class="vpx6kk">06</span><div><h3>Trije razredi sredstev, ena platforma</h3><p>Večina maloprodajnih platform vas omejuje na en trg. <?= e(SITE_NAME) ?> trguje s kriptovalutami, delnicami, ki kotirajo na borzi, in glavnimi valutnimi pari z iste nadzorne plošče.</p></div></li>
         <li><span class="vpx6kk">07</span><div><h3>Vnaprej nastavljene omejitve tveganja za vsako pozicijo</h3><p>Stopnja izgube, največja dovoljena izguba in omejitev dodelitve kapitala so konfigurirane glede na razred sredstev. Mehanizem samodejno zapre vsako trgovanje, ki preseže prag, in dogodek se zabeleži v vaši zgodovini revizije.</p></div></li>
       </ol>
     </section>
@@ -371,7 +371,7 @@ require __DIR__ . '/includes/header.php';
         <details open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary><h3 itemprop="name">Kakšen je minimalni depozit za začetek?</h3></summary>
           <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-            <p itemprop="text">Svoj račun lahko odprete in financirate iz<?= e(money_min()) ?>najmanj. Prosto lahko dodajate več sredstev, ko vaš naložbeni načrt napreduje.</p>
+            <p itemprop="text">Svoj račun lahko odprete in financirate iz <?= e(money_min()) ?> najmanj. Prosto lahko dodajate več sredstev, ko vaš naložbeni načrt napreduje.</p>
           </div>
         </details>
         <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
@@ -458,7 +458,7 @@ require __DIR__ . '/includes/header.php';
   </div>
 </div>
 
-<!--reviews-block--><section aria-label="Ocene strank" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUPANJA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?>Ocene</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b>ocene · Na podlagi<b style="color:var(--text,#fff)">4,902</b>ocene</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
+<!--reviews-block--><section aria-label="Ocene strank" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUPANJA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Ocene</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.9</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:98.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">817</b>ocene · Na podlagi<b style="color:var(--text,#fff)">4,902</b>ocene</div></div></section><section class="bjiwuc" id="nlokf" aria-labelledby="fglj2pf">
   <div class="ggh3sm kdbtf1i">
     <div>
       <span class="vd7z9k">Začnite</span>

@@ -6,7 +6,7 @@ $page_description = 'Explore the ' . SITE_NAME . ' platform — live charts, AI 
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Domov', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Izdelek', 'item' => page_url('product.php')],
 ]];
 

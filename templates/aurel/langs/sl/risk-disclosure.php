@@ -31,7 +31,7 @@ require __DIR__ . '/includes/header.php';
     <p>Cene finančnih instrumentov in digitalnih sredstev lahko v kratkih obdobjih znatno nihajo zaradi tržnih razmer, makroekonomskih dogodkov, regulativnega razvoja, likvidnostnih razmer in drugih dejavnikov, na katere nimamo vpliva. Izgube lahko presežejo začetne vloge pri produktih s finančnim vzvodom.</p>
 
     <h2>3. Volatilnost digitalnih sredstev</h2>
-    <p>Kriptovalute in druga digitalna sredstva so še posebej nestanovitna. Na njihovo vrednost lahko vplivajo omrežni dogodki, forki, izpadi izmenjave, vdori ali nenadna izguba zaupanja. Nobenega zagotovila ni, da bo katero koli digitalno sredstvo ohranilo določeno vrednost ali ostalo trgovalno.</p>
+    <p>Kriptovalute in druga digitalna sredstva so še posebej nestanovitna. Na njihovo vrednost lahko vplivajo omrežni dogodki, forki, izpadi borze, vdori ali nenadna izguba zaupanja. Nobenega zagotovila ni, da bo katero koli digitalno sredstvo ohranilo določeno vrednost ali ostalo trgovalno.</p>
 
     <h2>4. Tveganje finančnega vzvoda</h2>
     <p>Kjer je finančni vzvod na voljo, poveča tako dobičke kot izgube. Relativno majhno gibanje trga lahko povzroči sorazmerno večje gibanje vrednosti vaše pozicije in lahko povzroči popolno izgubo vaših sredstev ali dolgovanih zneskov, ki presegajo vaš depozit.</p>

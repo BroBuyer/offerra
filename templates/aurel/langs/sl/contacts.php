@@ -27,7 +27,7 @@ require __DIR__ . '/includes/header.php';
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><a href="<?= page_url('product.php') ?>" style="color:var(--accent)">Kako deluje</a>— kaj se zgodi po vaši registraciji, korak za korakom.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><a href="<?= page_url('pricing.php') ?>" style="color:var(--accent)">Cene</a>— kaj je brezplačno in kje se lahko pojavijo stroški.</span></li>
     </ul>
-    <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a></div>
+    <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a></div>
   </div>
 </section>
 

@@ -16,15 +16,15 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="hero-grid">
         <div class="hero-content">
-          <h1><?= e(SITE_NAME) ?>: pametnejši in čistejši način dostopa<span class="text-accent">svetovnih trgih</span></h1>
+          <h1><?= e(SITE_NAME) ?>: pametnejši in čistejši način dostopa do <span class="text-accent">svetovnih trgov</span></h1>
 
           <p class="hero-desc">
-            Novi v trgovanju?<?= e(SITE_NAME) ?>ponuja strukturirana orodja, podprta z umetno inteligenco, ki so zasnovana za preglednost vašega potovanja.
+            Novi v trgovanju? <?= e(SITE_NAME) ?> ponuja strukturirana orodja, podprta z umetno inteligenco, ki so zasnovana za preglednost vašega potovanja.
             Raziščite kripto, forex in delnice brez tehničnega kaosa.
           </p>
 
           <div class="hero-actions">
-            <a href="#signup-form-anchor" class="btn btn-primary">Začni trgovati —<?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
+            <a href="#signup-form-anchor" class="btn btn-primary">Začni trgovati — <?= MIN_DEPOSIT ?> <?= CURRENCY ?></a>
             <a href="#features" class="btn btn-secondary">Odkrijte funkcije</a>
           </div>
 
@@ -156,7 +156,7 @@ require_once __DIR__ . '/includes/header.php';
               <div class="overlay-content">
                 <h4 id="overlayHeadline">Na voljo je takojšnja izvedba</h4>
                 <p>
-                  Če želite takoj usmeriti to naročilo in zajeti aktivno raven cene, aktivirajte varno<?= e(SITE_NAME) ?>terminal.
+                  Če želite takoj usmeriti to naročilo in zajeti aktivno raven cene, aktivirajte varno <?= e(SITE_NAME) ?> terminal.
                 </p>
                 <button type="button" class="btn btn-primary" onclick="window.redirectToForm && window.redirectToForm()">
                   Ustvari varen račun
@@ -204,7 +204,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Zmogljivosti platforme</div>
-        <h2 class="section-title">Vse, kar potrebujete za samozavestno trgovanje<?= e(SITE_NAME) ?></h2>
+        <h2 class="section-title">Vse, kar potrebujete za samozavestno trgovanje <?= e(SITE_NAME) ?></h2>
         <p class="section-subtitle">Varnost, hitrost in nevronska tržna inteligenca združeni v jasni predstavitvi</p>
       </div>
 
@@ -249,7 +249,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="markets-grid">
         <div>
           <div class="section-label">Sredstva v realnem času</div>
-          <h2 class="section-title">Poenoteno<?= e(SITE_NAME) ?>nadzorna plošča za globalne meritve</h2>
+          <h2 class="section-title">Poenoteno <?= e(SITE_NAME) ?> nadzorna plošča za globalne meritve</h2>
           <p class="section-subtitle">
             Sledite premikom sredstev v realnem času, spremljajte zagon in uporabite samodejno analizo umetne inteligence za hitro preslikavo vzorcev.
           </p>
@@ -258,7 +258,7 @@ require_once __DIR__ . '/includes/header.php';
             <p>
               <strong>Operativna učinkovitost:</strong>
               Tradicionalno trgovanje pomeni ročno spremljanje na stotine indikatorjev.
-              <?= e(SITE_NAME) ?>algoritmi obdelajo na tisoče sprememb cen vsako milisekundo,
+ <?= e(SITE_NAME) ?> algoritmi obdelajo na tisoče sprememb cen vsako milisekundo,
               ustvarjanje jasnih matematičnih modelov, tako da lahko zgodaj ujamete poteze.
             </p>
           </div>
@@ -347,8 +347,8 @@ require_once __DIR__ . '/includes/header.php';
   <section id="onboarding">
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-        <div class="section-label">Postopek vkrcanja</div>
-        <h2 class="section-title"><?= e(SITE_NAME) ?>omogoča začetek brez stresa</h2>
+        <div class="section-label">Postopek uvajanja</div>
+        <h2 class="section-title"><?= e(SITE_NAME) ?> omogoča začetek brez stresa</h2>
         <p class="section-subtitle">Nimate predhodnih izkušenj s kripto? Naš samodejni vodnik vas vodi skozi vsak korak.</p>
       </div>
 
@@ -399,7 +399,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="section-label">Mobilni dostop</div>
           <h2 class="section-title">Vaš portfelj, v vašem žepu</h2>
           <p class="section-subtitle">
-            Polno<?= e(SITE_NAME) ?>motor, stisnjen v hitro mobilno izkušnjo z domačim občutkom.
+            Polno <?= e(SITE_NAME) ?> motor, stisnjen v hitro mobilno izkušnjo z domačim občutkom.
             Sledite sredstvom, sklepajte posle in sledite signalom umetne inteligence od koder koli.
           </p>
 
@@ -568,7 +568,7 @@ require_once __DIR__ . '/includes/header.php';
             </tr>
             <tr>
               <td><strong>Samodejna opozorila o tveganjih</strong></td>
-              <td>Nastavljiva obvestila, ki označujejo nenavadno volatilnost, preden doseže položaje.</td>
+              <td>Nastavljiva obvestila, ki označujejo nenavadno volatilnost, preden doseže pozicije.</td>
               <td class="cap-table-center"><span class="cap-check" aria-label="Vključeno">✓</span></td>
             </tr>
             <tr>
@@ -662,7 +662,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
         <div class="section-label">Povratne informacije uporabnikov</div>
-        <h2 class="section-title">Kaj trgovci pravijo o<?= e(SITE_NAME) ?></h2>
+        <h2 class="section-title">Kaj trgovci pravijo o <?= e(SITE_NAME) ?></h2>
         <p class="section-subtitle">Iskrene povratne informacije naše globalne večtržne skupnosti.</p>
       </div>
 
@@ -671,7 +671,7 @@ require_once __DIR__ . '/includes/header.php';
           <div>
             <div class="stars-container" aria-label="5 od 5 zvezdic">★★★★★</div>
             <p class="review-text">
-              Kot začetnika me je kriptovaluta prestrašila.<?= e(SITE_NAME) ?>naredil armaturno ploščo tako intuitivno, da sem se počutil samozavestnega v nekaj minutah. Analiza AI je kristalno jasna.
+              Kot začetnika me je kriptovaluta prestrašila. <?= e(SITE_NAME) ?> naredil armaturno ploščo tako intuitivno, da sem se počutil samozavestnega v nekaj minutah. Analiza AI je kristalno jasna.
             </p>
           </div>
           <div class="reviewer-info">
@@ -738,14 +738,14 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="seo-content">
         <h2 style="font-size: 38px; margin-bottom: 28px; font-weight: 800;">
-          <?= e(SITE_NAME) ?>: opolnomočenje trgovcev z institucionalno arhitekturo AI
+ <?= e(SITE_NAME) ?>: opolnomočenje trgovcev z institucionalno arhitekturo AI
         </h2>
 
         <p class="seo-intro">
           Sodobna interakcija sredstev zahteva popolno jasnost. Ko so podatkovni okviri natrpani s promocijskimi pasicami
-          ali težke plasti vmesnika, zmogljivost uporabnika pade.<?= e(SITE_NAME) ?>rešuje sistemsko zapletenost z uvajanjem
+          ali težke plasti vmesnika, zmogljivost uporabnika pade. <?= e(SITE_NAME) ?> rešuje sistemsko zapletenost z uvajanjem
           elegantno, odzivno osnovno okolje, optimizirano za dolgoročno strateško izvajanje. Vsak modul platforme,
-          od vkrcanja do izvajanja v živo, temelji na istem načelu: odstranite šum, tako da so osnovni podatki
+          od uvajanja do izvajanja v živo, temelji na istem načelu: odstranite šum, tako da so osnovni podatki
           lahko govori sama zase – brez žrtvovanja globine, ki jo pričakujejo izkušeni udeleženci.
         </p>
 
@@ -754,7 +754,7 @@ require_once __DIR__ . '/includes/header.php';
             <h3>Napredno<span>sredstva za kripto trgovanje</span></h3>
             <p>
               Likvidnost verige blokov se hitro razvija, zaradi česar je infrastruktura z nizko zakasnitvijo kritična.
-              <?= e(SITE_NAME) ?>povezuje vozlišča po meri z glavnimi prizorišči digitalnih sredstev, kar zagotavlja povratne informacije o cenah v živo.
+ <?= e(SITE_NAME) ?> povezuje vozlišča po meri z glavnimi prizorišči digitalnih sredstev, kar zagotavlja povratne informacije o cenah v živo.
               Čiste vizualne metrike spremenijo kaotične večverižne strukture v organizirane, berljive podatkovne kanale.
             </p>
             <p>
@@ -768,7 +768,7 @@ require_once __DIR__ . '/includes/header.php';
             <h3>Globoko<span>analiza nevronskega trga</span></h3>
             <p>
               Avtomatizirani algoritmi analizirajo dohodne tržne podatke za izračun strukturnih premikov med forexom in mednarodnim blagom.
-              <?= e(SITE_NAME) ?>destilira zapletene izračune v jasne trende podatkov, ki podpirajo neodvisno presojo, namesto da bi jo nadomestili.
+ <?= e(SITE_NAME) ?> destilira zapletene izračune v jasne trende podatkov, ki podpirajo neodvisno presojo, namesto da bi jo nadomestili.
             </p>
             <p>
               Ker modeli delujejo neprekinjeno in ne po določenem urniku, se spremembe zagona pojavijo takoj, ko se zgodijo
@@ -818,12 +818,12 @@ require_once __DIR__ . '/includes/header.php';
       <div class="faq-max-width" data-faq>
         <div class="faq-item active is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            <span>Kako naj začnem z<?= e(SITE_NAME) ?>?</span>
+            <span>Kako naj začnem z <?= e(SITE_NAME) ?>?</span>
             <svg class="faq-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="faq-content" style="max-height: 200px;">
             <p>
-              Izpolnite zgornji obrazec za registracijo, sledite našemu varnemu vkrcanju po korakih,
+              Izpolnite zgornji obrazec za registracijo, sledite našemu varnemu uvajanju po korakih,
               in aktivirajte nastavitve računa prek našega strukturiranega sistema za obdelavo plačil.
             </p>
           </div>
@@ -836,7 +836,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <p>
-              št.<?= e(SITE_NAME) ?>ponuja način nadzorne plošče za začetnike, avtomatizirana analitična pojasnila,
+              št. <?= e(SITE_NAME) ?> ponuja način nadzorne plošče za začetnike, avtomatizirana analitična pojasnila,
               in poenostavljeni delovni prostori za pomoč novim trgovcem pri varni navigaciji.
             </p>
           </div>
@@ -849,7 +849,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <p>
-              Standardna osnovna aktivacija je<?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
+              Standardna osnovna aktivacija je <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.
               Ta služi kot operativni kapital za trgovanje in ostaja pod vašim ročnim nadzorom.
             </p>
           </div>
@@ -862,7 +862,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <p>
-              št.<?= e(SITE_NAME) ?>deluje s popolno transparentnostjo cen.
+              št. <?= e(SITE_NAME) ?> deluje s popolno transparentnostjo cen.
               Ne uporabljamo nepričakovanih marž za dostop do platforme ali skritih izračunov dvigov.
             </p>
           </div>
@@ -901,7 +901,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="final-cta-grid">
         <div class="final-cta-content">
-          <h2>Pripravljen na doživetje<?= e(SITE_NAME) ?>jasnost?</h2>
+          <h2>Pripravljen na doživetje <?= e(SITE_NAME) ?> jasnost?</h2>
           <p class="section-subtitle" style="color: var(--color-text-secondary);">
             Pridružite se sodobnemu sistemu, optimiziranemu za hitro delovanje, zaščito podatkov in pregleden dostop.
           </p>

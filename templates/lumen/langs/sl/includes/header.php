@@ -1,7 +1,7 @@
 <?php require_once __DIR__ . '/config.php'; ?>
 <header class="site-header" data-header>
   <div class="container header-inner">
-    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?>domov">
+    <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> domov">
       <img class="logo-mark" src="<?= asset('static/img/logo.svg') ?>" width="28" height="28" alt="">
       <span class="logo-text"><?= e(SITE_NAME) ?></span>
     </a>

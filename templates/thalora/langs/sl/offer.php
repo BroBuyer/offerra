@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="pt-5">
         <div class="container-base">
           <nav
-            aria-label="drobtina"
+            aria-label="potek strani"
             class="flex flex-wrap items-center text-sm text-gray-500 md:text-lg"
           >
 <a href="<?= page_url() ?>" class="breadcrumb-item">Domov</a>
@@ -30,7 +30,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="border-primary rounded-custom flex flex-col justify-between gap-6 lg:min-h-[540px] lg:overflow-hidden lg:border lg:p-8"
           >
- <h1 class="relative z-20">Začnite svoje potovanje z<?= e(SITE_NAME) ?>: spremljanje trga, analiza in podpora</h1>
+ <h1 class="relative z-20">Začnite svoje potovanje z <?= e(SITE_NAME) ?>: spremljanje trga, analiza in podpora</h1>
 <p class="relative z-20">
   Prijavite se, potrdite svojo identiteto in hitro dodajte sredstva. Izkoristite sledenje portfelju, pomoč pri trgovanju z umetno inteligenco in vodeno izkušnjo, ki vas jasno vodi od vaše prve prijave do vaše nadzorne plošče.</p>
           </div>
@@ -119,9 +119,9 @@ require_once __DIR__ . '/includes/header.php';
       <!-- offer seo depth -->
 <div class="py-8 md:py-10">
   <div class="container-base grid gap-6 md:gap-8">
-    <p class="text-lg max-w-4xl">Naša storitev ponuja vodeno vkrcanje, popoln dostop do tržnih orodij in stalno pomoč. Zagotavljamo preprosto in pregledno pot od registracije do vsakodnevnega trgovanja brez bližnjic.</p>    <p class="max-w-4xl">Najmanjši depozit odklene vse funkcije platforme. Raziščite strategije, ki temeljijo na umetni inteligenci, upravljajte nadzor tveganja in spremljajte napredek svojega portfelja.</p>    <p class="max-w-4xl">Vedno preverite provizije, čas dviga in korake preverjanja, kot je prikazano na platformi. Naš cilj je zagotoviti operativni nadzor: omejitve, velikost položaja in ročne možnosti ostanejo dostopne tudi, ko so aktivna samodejna opozorila.</p>    <p class="max-w-4xl">Podpora pojasnjuje, kako<?= e(SITE_NAME) ?>deluje in status transakcije; ne daje osebnih nasvetov. Trgi nosijo tveganje: skrbno razmislite o svoji izpostavljenosti in trgujte samo z denarjem, ki si ga lahko privoščite izgubiti.</p>    <div class="grid gap-4 md:grid-cols-3">
+    <p class="text-lg max-w-4xl">Naša storitev ponuja vodeno uvajanje, popoln dostop do tržnih orodij in stalno pomoč. Zagotavljamo preprosto in pregledno pot od registracije do vsakodnevnega trgovanja brez bližnjic.</p>    <p class="max-w-4xl">Najmanjši depozit odklene vse funkcije platforme. Raziščite strategije, ki temeljijo na umetni inteligenci, upravljajte nadzor tveganja in spremljajte napredek svojega portfelja.</p>    <p class="max-w-4xl">Vedno preverite provizije, čas dviga in korake preverjanja, kot je prikazano na platformi. Naš cilj je zagotoviti operativni nadzor: omejitve, velikost pozicije in ročne možnosti ostanejo dostopne tudi, ko so aktivna samodejna opozorila.</p>    <p class="max-w-4xl">Podpora pojasnjuje, kako <?= e(SITE_NAME) ?> deluje in status transakcije; ne daje osebnih nasvetov. Trgi nosijo tveganje: skrbno razmislite o svoji izpostavljenosti in trgujte samo z denarjem, ki si ga lahko privoščite izgubiti.</p>    <div class="grid gap-4 md:grid-cols-3">
             <div class="border-primary rounded-custom border p-4 md:p-6">
-        <h2 class="h3 mb-2">Enostavno vkrcanje</h2>
+        <h2 class="h3 mb-2">Enostavno uvajanje</h2>
         <p>Enostavno ustvarjanje računa, potrditev identitete in pregleden dostop do nadzorne plošče.</p>
       </div>
             <div class="border-primary rounded-custom border p-4 md:p-6">
@@ -204,9 +204,9 @@ require_once __DIR__ . '/includes/header.php';
                 </defs>
               </svg>
             </div>
-<h2>Uradnik<?= e(SITE_NAME) ?>Platforma za metodično trgovanje</h2>
+<h2>Uradnik <?= e(SITE_NAME) ?> Platforma za metodično trgovanje</h2>
 <p>
-  <?= e(SITE_NAME) ?>je zasnovan za posameznike in skupine, ki upravljajo digitalne valute in sredstva, ponuja pa jasna orodja, šifriranje SSL in hitro pomoč. Enotna platforma za analizo, trgovanje in upravljanje portfelja.</p>
+ <?= e(SITE_NAME) ?> je zasnovan za posameznike in skupine, ki upravljajo digitalne valute in sredstva, ponuja pa jasna orodja, šifriranje SSL in hitro pomoč. Enotna platforma za analizo, trgovanje in upravljanje portfelja.</p>
           </div>
         
 

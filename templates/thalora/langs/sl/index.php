@@ -39,7 +39,7 @@ require_once __DIR__ . '/includes/header.php';
             </svg>
           </div>
           <h1 id="heading-style-h1">Trgujte transparentno. Ohranite nadzor nad vsako odločitvijo.</h1>
-            <p>Dostopajte do kriptovalut, forexa in globalnih sredstev prek ene platforme.<?= e(SITE_NAME) ?>združuje analitiko v živo, podprto avtomatizacijo in strokovno podporo, ki vam pomaga krmariti po trgih z jasnimi orodji in doslednimi procesi.</p>
+            <p>Dostopajte do kriptovalut, forexa in globalnih sredstev prek ene platforme. <?= e(SITE_NAME) ?> združuje analitiko v živo, podprto avtomatizacijo in strokovno podporo, ki vam pomaga krmariti po trgih z jasnimi orodji in doslednimi procesi.</p>
         </div>
         
 
@@ -81,7 +81,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="py-8 md:py-10">
   <div class="container-base grid items-center gap-3 md:gap-6 lg:grid-cols-2">
     <div class="grid gap-6 max-lg:order-2 md:gap-10">
-      <h2>Zakaj izbrati<?= e(SITE_NAME) ?></h2>
+      <h2>Zakaj izbrati <?= e(SITE_NAME) ?></h2>
       <p class="md:text-lg">
         Ta platforma, ki jo najraje uporabljajo sodobni kripto trgovci, postavlja nov standard. Združujemo močno varnost, popolno preglednost, napreden AI in intuitiven vmesnik za podporo samozavestnemu trgovanju.      </p>
       <div class="rounded-custom border bg-white p-4 md:p-6 overflow-x-auto">
@@ -164,7 +164,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <p class="h3">
-        Izboljšajte svojo finančno pot z<?= e(SITE_NAME) ?>.
+        Izboljšajte svojo finančno pot z <?= e(SITE_NAME) ?>.
       </p>
       <a class="btn btn-black" href="<?= page_url('sign.php') ?>">Prijavite se zdaj</a>
     </div>
@@ -256,7 +256,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="grid content-start gap-2 md:gap-4">
           <p class="h3">Ustvarite svoj račun</p>
-          <p>Registrirajte se s svojimi osnovnimi podatki za varen dostop do uradnika<?= e(SITE_NAME) ?>platforma. Ta hiter korak omogoča dostop do vaše glavne nadzorne plošče.</p>
+          <p>Registrirajte se s svojimi osnovnimi podatki za varen dostop do uradnika <?= e(SITE_NAME) ?> platforma. Ta hiter korak omogoča dostop do vaše glavne nadzorne plošče.</p>
         </div>
       </div>
       <div class="flex gap-3 md:gap-6">
@@ -276,7 +276,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="grid content-start gap-2 md:gap-4">
           <p class="h3">Dostopajte do svoje platforme za trgovanje</p>
-          <p>Na svoj račun naložite najmanj<?= e(money_min()) ?>. Izberete lahko višje zneske glede na svoje cilje, pri čemer so vse možnosti plačila in stroški jasno prikazani pred potrditvijo.</p>
+          <p>Na svoj račun naložite najmanj <?= e(money_min()) ?>. Izberete lahko višje zneske glede na svoje cilje, pri čemer so vse možnosti plačila in stroški jasno prikazani pred potrditvijo.</p>
         </div>
       </div>
       <div class="flex gap-3 md:gap-6">
@@ -296,7 +296,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div class="grid content-start gap-2 md:gap-4">
           <p class="h3">Določite svojo strategijo</p>
-          <p>Prilagodite svoje nastavitve tveganja, prednostne trge in pristop trgovanja.<?= e(SITE_NAME) ?>Podpora AI skrbi za signale in sledenje trgu, ne da bi preglasila vaše izbire.</p>
+          <p>Prilagodite svoje nastavitve tveganja, prednostne trge in pristop trgovanja. <?= e(SITE_NAME) ?> Podpora AI skrbi za signale in sledenje trgu, ne da bi preglasila vaše izbire.</p>
         </div>
       </div>
       <div class="flex gap-3 md:gap-6">
@@ -319,7 +319,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="py-8 md:py-10">
       <div class="container-base grid items-center gap-6 lg:grid-cols-2">
         <p class="text-lg">
-          <?= e(SITE_NAME) ?>podpira različne načine plačila za stranke po vsem svetu.        </p>
+ <?= e(SITE_NAME) ?> podpira različne načine plačila za stranke po vsem svetu.        </p>
         <div class="flex flex-wrap justify-center gap-3 md:gap-6">
           <div class="max-sm:w-[74px]">
             <img class="aspect-135/94" src="<?= asset('static/img/svg/payment-1.svg') ?>" alt="payment 1" width="135" height="94"
@@ -376,12 +376,10 @@ require_once __DIR__ . '/includes/header.php';
               <div
                 class="border-primary rounded-custom flex h-full flex-col justify-between gap-4 border px-4 py-6 md:gap-6 md:px-8 md:py-10">
                 <p>
-                  A fantastictrgovalna platforma is <?= e(SITE_NAME) ?>! The
-                  registration process is straightforward, fees are
-                  transparent, and the support team is highly professional,
-                  making the trading experience smooth and efficient. I am
-                  very satisfied with the service and would recommend it to
-                  anyone interested in trading.
+                  Odlična trgovalna platforma je <?= e(SITE_NAME) ?>! Registracija
+                  je preprosta, provizije so pregledne, ekipa podpore pa zelo
+                  profesionalna, zato je trgovanje tekoče in učinkovito. S storitvijo
+                  sem zelo zadovoljen in jo priporočam vsakomur, ki ga zanima trgovanje.
                 </p>
                 <div class="flex items-center gap-3.5 md:gap-7">
                   <p class="initials" data-initials="1"></p>
@@ -395,10 +393,10 @@ require_once __DIR__ . '/includes/header.php';
               <div
                 class="border-primary rounded-custom flex h-full flex-col justify-between gap-4 border px-4 py-6 md:gap-6 md:px-8 md:py-10">
                 <p>
-                  Finally decided to try cryptocurrency and chose <?= e(SITE_NAME) ?>                  — very pleased with the choice. Registration was
-                  straightforward and completed in minutes, with transparent
-                  pricing from the outset. It feels like a dependable
-                  platform, particularly for those new to the space.
+                  Končno sem se odločil poskusiti kriptovalute in izbral <?= e(SITE_NAME) ?> — z izbiro sem zelo zadovoljen. Registracija je
+                  bila preprosta in končana v minutah, cene pa so bile od začetka
+                  pregledne. Deluje kot zanesljiva platforma, zlasti za tiste,
+                  ki so v tem prostoru novi.
                 </p>
                 <div class="flex items-center gap-3.5 md:gap-7">
                   <p class="initials" data-initials="2"></p>
@@ -410,10 +408,10 @@ require_once __DIR__ . '/includes/header.php';
               <div
                 class="border-primary rounded-custom flex h-full flex-col justify-between gap-4 border px-4 py-6 md:gap-6 md:px-8 md:py-10">
                 <p>
-                  A dependable partner in the cryptocurrency trading sector.
-                  Straightforward account setup, transparent conditions and
-                  knowledgeable assistance. Trading on this platform is
-                  genuinely enjoyable.
+                  Zanesljiv partner pri trgovanju s kriptovalutami.
+                  Preprosta nastavitev računa, pregledni pogoji in
+                  poučena pomoč. Trgovanje na tej platformi je
+                  res prijetno.
                 </p>
                 <div class="flex items-center gap-3.5 md:gap-7">
                   <p class="initials" data-initials="3"></p>
@@ -427,11 +425,11 @@ require_once __DIR__ . '/includes/header.php';
               <div
                 class="border-primary rounded-custom flex h-full flex-col justify-between gap-4 border px-4 py-6 md:gap-6 md:px-8 md:py-10">
                 <p>
-                  Thanks to <?= e(SITE_NAME) ?>, I've found crypto trading
-                  straightforward and accessible. The registration process was
-                  smooth, and I appreciate the clarity around fees. As someone
-                  new to trading, I feel well-supported and confident using
-                  this platform.
+                  Zaradi <?= e(SITE_NAME) ?> se mi zdi trgovanje s kriptovalutami
+                  preprosto in dostopno. Registracija je potekla gladko,
+                  cenim pa tudi jasnost glede provizij. Kot nekdo, ki je
+                  v trgovanju nov, se počutim podprtega in samozavestnega
+                  na tej platformi.
                 </p>
                 <div class="flex items-center gap-3.5 md:gap-7">
                   <p class="initials" data-initials="4"></p>
@@ -480,7 +478,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="swiper-slide">
           <div class="border flex flex-col justify-between gap-6 p-6 md:p-10 w-full swiper-border" style="border: 1px solid #ddd; border-radius: 20px;">
             <p>
-              <?= e(SITE_NAME) ?>presegel moja pričakovanja. Prijava je bila preprosta, stroški so jasni, podpora pa takojšnja. Na splošno zanesljiva in tekoča platforma, ki jo z veseljem uporabljam.            </p>
+ <?= e(SITE_NAME) ?> presegel moja pričakovanja. Prijava je bila preprosta, stroški so jasni, podpora pa takojšnja. Na splošno zanesljiva in tekoča platforma, ki jo z veseljem uporabljam.            </p>
             <div class="flex items-center gap-4">
               <div class="initials">FE</div>
               <p class="font-bold">Specialist za devizne tečaje</p>
@@ -490,7 +488,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="swiper-slide">
           <div class="border flex flex-col justify-between gap-6 p-6 md:p-10 w-full swiper-border" style="border: 1px solid #ddd; border-radius: 20px;">
                 <p>
-                  Izbral sem<?= e(SITE_NAME) ?>za kripto trgovanje in bili zadovoljni. Postopek namestitve je bil preprost in pregleden. Zdi se kot zaupanja vredna izbira, zlasti za novince.                </p>
+                  Izbral sem <?= e(SITE_NAME) ?> za kripto trgovanje in bili zadovoljni. Postopek namestitve je bil preprost in pregleden. Zdi se kot zaupanja vredna izbira, zlasti za novince.                </p>
             <div class="flex items-center gap-4">
               <div class="initials">IM</div>
               <p class="font-bold">Analitik investicijskega trga</p>
@@ -500,7 +498,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="swiper-slide">
           <div class="border flex flex-col justify-between gap-6 p-6 md:p-10 w-full swiper-border" style="border: 1px solid #ddd; border-radius: 20px;">
                 <p>
-                  najdem<?= e(SITE_NAME) ?>biti zanesljiva in dosledna platforma. Nastavitev računa je bila enostavna, pogoji so pregledni, podpora pa usposobljena. Trgovanje tukaj je bilo udobno.                </p>
+                  najdem <?= e(SITE_NAME) ?> biti zanesljiva in dosledna platforma. Nastavitev računa je bila enostavna, pogoji so pregledni, podpora pa usposobljena. Trgovanje tukaj je bilo udobno.                </p>
             <div class="flex items-center gap-4">
               <div class="initials">OT</div>
               <p class="font-bold">Spletni trgovec</p>
@@ -510,7 +508,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="swiper-slide">
           <div class="border flex flex-col justify-between gap-6 p-6 md:p-10 w-full swiper-border" style="border: 1px solid #ddd; border-radius: 20px;">
                 <p>
-                  Trgovanje s kriptovalutami<?= e(SITE_NAME) ?>se počuti dostopnega. Registracija je bila enostavna, pristojbine razumljive in pomoč na voljo, ko je bila potrebna. Kot novemu trgovcu je to resnično spremenilo.                </p>
+                  Trgovanje s kriptovalutami <?= e(SITE_NAME) ?> se počuti dostopnega. Registracija je bila enostavna, pristojbine razumljive in pomoč na voljo, ko je bila potrebna. Kot novemu trgovcu je to resnično spremenilo.                </p>
             <div class="flex items-center gap-4">
               <div class="initials">FA</div>
               <p class="font-bold">Finančni analitik</p>
@@ -608,7 +606,7 @@ require_once __DIR__ . '/includes/header.php';
         </button>
         <div id="content-1" class="max-h-0 overflow-hidden transition-all">
           <div class="px-4 pb-5 md:px-8 md:pb-8">
-            <p>Začeti je enostavno. Preprosto se prijavite z bistvenimi podatki, potrdite svoj e-poštni naslov in napolnite svoj račun z najmanj<?= e(money_min()) ?>. To odklene celoten nabor funkcij platforme, vključno z grafikoni v živo, orodji za trgovanje, analizo trga in namensko podporo. Ne potrebujete nobenega znanja o trgovanju – obsežne vadnice vas bodo vodile na vsakem koraku.</p>
+            <p>Začeti je enostavno. Preprosto se prijavite z bistvenimi podatki, potrdite svoj e-poštni naslov in napolnite svoj račun z najmanj <?= e(money_min()) ?>. To odklene celoten nabor funkcij platforme, vključno z grafikoni v živo, orodji za trgovanje, analizo trga in namensko podporo. Ne potrebujete nobenega znanja o trgovanju – obsežne vadnice vas bodo vodile na vsakem koraku.</p>
           </div>
         </div>
       </div>
@@ -671,7 +669,7 @@ require_once __DIR__ . '/includes/header.php';
         </button>
         <div id="content-4" class="max-h-0 overflow-hidden transition-all">
           <div class="px-4 pb-5 md:px-8 md:pb-8">
-            <p>Priporočamo, da začnete z minimalnim depozitom, da se seznanite s funkcijami platforme.<?= e(SITE_NAME) ?>ustreza tako začetnikom kot izkušenim trgovcem, saj ima uporabniku prijazen vmesnik, izbirna orodja, ki jih poganja AI, in podporo strankam 24/7. Ohranite popoln nadzor nad svojimi naročili, limiti in nastavitvami tveganja.</p>
+            <p>Priporočamo, da začnete z minimalnim depozitom, da se seznanite s funkcijami platforme. <?= e(SITE_NAME) ?> ustreza tako začetnikom kot izkušenim trgovcem, saj ima uporabniku prijazen vmesnik, izbirna orodja, ki jih poganja AI, in podporo strankam 24/7. Ohranite popoln nadzor nad svojimi naročili, limiti in nastavitvami tveganja.</p>
           </div>
         </div>
       </div>
@@ -692,7 +690,7 @@ require_once __DIR__ . '/includes/header.php';
         </button>
         <div id="content-5" class="max-h-0 overflow-hidden transition-all">
           <div class="px-4 pb-5 md:px-8 md:pb-8">
-            <p>Predhodne izkušnje s trgovanjem niso potrebne. Platforma je zasnovana tako, da je uporabniku prijazna že od samega začetka, saj zagotavlja podporo pri vkrcanju, vadnice in orodja, izboljšana z AI. Učite se lahko s svojim tempom – začenši z osrednjimi trgi in postopoma napredujte do prefinjene analize in avtomatizacije.</p>
+            <p>Predhodne izkušnje s trgovanjem niso potrebne. Platforma je zasnovana tako, da je uporabniku prijazna že od samega začetka, saj zagotavlja podporo pri uvajanju, vadnice in orodja, izboljšana z AI. Učite se lahko s svojim tempom – začenši z osrednjimi trgi in postopoma napredujte do prefinjene analize in avtomatizacije.</p>
           </div>
         </div>
       </div>
@@ -700,7 +698,7 @@ require_once __DIR__ . '/includes/header.php';
         <button
           class="group-data-active:text-primary hover:text-primary flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-5 md:px-8 md:py-10"
           onclick="toggleAccordion(7)">
-          <span class="h3 text-left transition-colors">Do katerih trgov lahko dostopam z uporabo<?= e(SITE_NAME) ?>?</span>
+          <span class="h3 text-left transition-colors">Do katerih trgov lahko dostopam z uporabo <?= e(SITE_NAME) ?>?</span>
           <span class="w-[26px] shrink-0 transition-transform group-data-active:rotate-180 md:w-10">
             <svg viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="22.7905" y="32.6563" width="4.62857" height="23.1428" rx="1"
@@ -734,7 +732,7 @@ require_once __DIR__ . '/includes/header.php';
         </button>
         <div id="content-8" class="max-h-0 overflow-hidden transition-all">
           <div class="px-4 pb-5 md:px-8 md:pb-8">
-            <p><?= e(SITE_NAME) ?>ponuja orodja AI, ki organizirajo trgovalne signale, označujejo pomembne spremembe cen in vam pomagajo pri spremljanju trga. Ta orodja podpirajo vaše izbire trgovanja, vendar ne nadomeščajo vaše strategije ali zagotavljajo določenih rezultatov. Sami odločate, kdaj boste ukrepali in koliko boste dodelili.</p>
+            <p><?= e(SITE_NAME) ?> ponuja orodja AI, ki organizirajo trgovalne signale, označujejo pomembne spremembe cen in vam pomagajo pri spremljanju trga. Ta orodja podpirajo vaše izbire trgovanja, vendar ne nadomeščajo vaše strategije ali zagotavljajo določenih rezultatov. Sami odločate, kdaj boste ukrepali in koliko boste dodelili.</p>
           </div>
         </div>
       </div>
@@ -797,7 +795,7 @@ require_once __DIR__ . '/includes/header.php';
         </button>
         <div id="content-6" class="max-h-0 overflow-hidden transition-all">
           <div class="px-4 pb-5 md:px-8 md:pb-8">
-            <p style="margin-bottom:16px;"><?= e(SITE_NAME) ?>je mednarodna trgovalna platforma, zgrajena za uporabnike, ki iščejo dosledno delovanje, hitro izvedbo in popoln nadzor nad svojim trgovalnim okoljem. Namesto upravljanja ločenih storitev ali lokalnih platform ponuja enoten sistem, ki združuje vse ključne funkcije v en potek dela.</p>
+            <p style="margin-bottom:16px;"><?= e(SITE_NAME) ?> je mednarodna trgovalna platforma, zgrajena za uporabnike, ki iščejo dosledno delovanje, hitro izvedbo in popoln nadzor nad svojim trgovalnim okoljem. Namesto upravljanja ločenih storitev ali lokalnih platform ponuja enoten sistem, ki združuje vse ključne funkcije v en potek dela.</p>
             <p style="margin-bottom:16px;">Od dostopa do trga do izvajanja in analize naročil je vsak element izdelan tako, da deluje gladko, kar zmanjšuje prekinitve. To uporabnikom omogoča, da se osredotočijo na odločitve o trgovanju in ne na preklapljanje platforme ali navigacijo.</p>
             <p style="margin-bottom:10px; font-weight:500;">Trgujte na različnih finančnih trgih na eni platformi:</p>
             <ul class="pl-5" style="margin-bottom:22px;">
@@ -821,8 +819,8 @@ require_once __DIR__ . '/includes/header.php';
               <li><span style="color:var(--color-primary);">•</span> Infrastruktura zasnovana za zanesljivo globalno povezljivost</li>
             </ul>
             <p style="margin-bottom:16px;">Enako pomembnost pripisujemo uporabniški izkušnji. Zasnova je namenoma enostavna in intuitivna, kar zmanjšuje kompleksnost, tako da se trgovci lahko popolnoma osredotočijo na svoje strategije.</p>
-            <p style="margin-bottom:16px;">Ta mešanica robustne funkcionalnosti in preprostosti omogoča<?= e(SITE_NAME) ?>idealen tako za začetnike kot za izkušene trgovce. Začetniki lahko hitro dosežejo hitrost brez zahtevne krivulje učenja, medtem ko napredni uporabniki ohranijo prilagodljivost za izvajanje zapletenih taktik.</p>
-            <p><?= e(SITE_NAME) ?>zagotavlja razširljivost, zanesljivost in visoko zmogljivost na eni platformi, kar omogoča varen, organiziran dostop do mednarodnih finančnih trgov z zaupanjem.</p>
+            <p style="margin-bottom:16px;">Ta mešanica robustne funkcionalnosti in preprostosti omogoča <?= e(SITE_NAME) ?> idealen tako za začetnike kot za izkušene trgovce. Začetniki lahko hitro dosežejo hitrost brez zahtevne krivulje učenja, medtem ko napredni uporabniki ohranijo prilagodljivost za izvajanje zapletenih taktik.</p>
+            <p><?= e(SITE_NAME) ?> zagotavlja razširljivost, zanesljivost in visoko zmogljivost na eni platformi, kar omogoča varen, organiziran dostop do mednarodnih finančnih trgov z zaupanjem.</p>
           </div>
         </div>
       </div>
@@ -891,7 +889,7 @@ require_once __DIR__ . '/includes/header.php';
           word-break:break-word;
           overflow-wrap:break-word;
         ">
-          Ključne značilnosti<span style='color:var(--color-primary);'><?= e(SITE_NAME) ?>trgovalna platforma</span>        </h2>
+          Ključne značilnosti<span style='color:var(--color-primary);'><?= e(SITE_NAME) ?> trgovalna platforma</span>        </h2>
       <p style="margin-top:14px;color:#6b7280;font-size:17px;">
         Ključne funkcije, zasnovane za izboljšanje vaše hitrosti trgovanja, natančnosti in zaupanja.      </p>
     </div>
@@ -977,7 +975,7 @@ require_once __DIR__ . '/includes/header.php';
           <span style="color:var(--color-primary);">✍️</span>
           Vodnik za nastavitev računa        </div>
         <div class="row-text" style="color:#6b7280;">
-          Hitro in brezhibno vkrcanje        </div>
+          Hitro in tekoče uvajanje        </div>
       </div>
       <div class="row-block" style="
         display:grid;

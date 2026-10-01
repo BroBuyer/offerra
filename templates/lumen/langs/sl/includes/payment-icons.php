@@ -17,7 +17,7 @@ $methods = [
     ['file' => 'banktransfer.svg','alt' => 'Bančno nakazilo and SEPA — accepted on ' . SITE_NAME],
 ];
 ?>
-<div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Accepted payment methods for <?= e($payment_context) ?>">
+<div class="payment-icons <?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Accepted payment methods for <?= e($payment_context) ?>">
   <?php if (!$payment_compact): ?>
     <p class="payment-icons-label">Varno payments accepted</p>
   <?php endif; ?>
@@ -39,7 +39,7 @@ $methods = [
       <img
         src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
         alt="256-bit SSL encryption — secure data transfer on <?= e(SITE_NAME) ?>"
-        title="SSL Varnod"
+        title="SSL varnost"
         width="32"
         height="32"
         loading="lazy"

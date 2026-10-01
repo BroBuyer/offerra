@@ -15,7 +15,7 @@ $partners = [
     ['file' => 'partner-8.svg', 'name' => 'Cloudflare', 'alt' => 'Cloudflare — partner za varnost in CDN'],
 ];
 ?>
-<ul class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?>zaupanja vredne infrastrukture in plačilnih partnerjev">
+<ul class="partners-grid" role="list" aria-label="<?= e(SITE_NAME) ?> zaupanja vredne infrastrukture in plačilnih partnerjev">
   <?php foreach ($partners as $partner): ?>
     <li class="partner-chip" role="listitem">
       <img

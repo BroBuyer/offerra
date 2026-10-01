@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/config.php';
 
 $page_title = page_title('AI Trgovalna platforma');
-$page_description = 'Trade crypto and other markets on ' . SITE_NAME . ' — secure account, clear pricing, helpful AI tools, and fast order execution.';
+$page_description = 'Trgujte s kriptovalutami in drugimi trgi na ' . SITE_NAME . ' — varen račun, jasne cene, koristna orodja UI in hitra izvedba naročil.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -18,8 +18,8 @@ require_once __DIR__ . '/includes/header.php';
       <span class="tape-item"><strong>ETH</strong> <span class="tape-up" data-change="eth">—</span></span>
       <span class="tape-item"><strong>SOL</strong> <span class="tape-down" data-change="sol">—</span></span>
       <span class="tape-item"><strong>XRP</strong> <span class="tape-up" data-change="xrp">—</span></span>
-      <span class="tape-item"><strong>Spreads</strong> from 0.1</span>
-      <span class="tape-item"><strong>Speed</strong> under 40ms</span>
+      <span class="tape-item"><strong>Razponi</strong> od 0.1</span>
+      <span class="tape-item"><strong>Hitrost</strong> pod 40 ms</span>
       <span class="tape-item"><strong>Trgi</strong> 24/7</span>
     </div>
   </div>
@@ -27,24 +27,24 @@ require_once __DIR__ . '/includes/header.php';
   <section class="hero-terminal">
     <div class="container hero-terminal-grid">
       <div>
-        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> AI-poweredtrgovalna platforma</div>
-        <h1>Trade crypto and other markets.<br><span class="text-accent">Get started with <?= e(SITE_NAME) ?></span></h1>
+        <div class="hero-kicker"><span class="dot" aria-hidden="true"></span> Trgovalna platforma z umetno inteligenco</div>
+        <h1>Trgujte s kriptovalutami in drugimi trgi.<br><span class="text-accent">Začnite z <?= e(SITE_NAME) ?></span></h1>
         <p class="lead">
-          A simple platform for crypto and multi-asset trading — strong security, clear pricing,
-          helpful AI insights, and an interface that stays easy to follow.
+          Preprosta platforma za kripto in trgovanje z več sredstvi — močna varnost, jasne cene,
+          koristni vpogledi umetne inteligence in vmesnik, ki ostane pregleden.
         </p>
-        <div class="hero-badges" aria-label="Platforma highlights">
+        <div class="hero-badges" aria-label="Prednosti platforme">
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Varno encrypted connection (SSL)
+            Šifrirana povezava SSL
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Customer support available 24/7
+            Podpora strankam 24/7
           </span>
           <span class="hero-badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Fast order execution
+            Hitra izvedba naročil
           </span>
         </div>
         <div class="hero-actions">
@@ -71,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section markets-block" id="markets">
     <div class="container split">
       <div>
-        <p class="eyebrow">Live markets</p>
+        <p class="eyebrow">Trgi v živo</p>
         <h2>See prices in real time. Start when you are ready.</h2>
         <p class="lead" style="margin: 1rem 0 1.75rem;">
           Follow Bitcoin, Ethereum, and other major pairs in a clear market panel —
@@ -111,7 +111,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <section class="platform-section" id="platform" aria-label="Trgovalna platforma preview">
+  <section class="platform-section" id="platform" aria-label="Predogled trgovalne platforme">
     <div class="container platform-layout">
       <div class="platform-copy">
         <p class="eyebrow">Platforma</p>
@@ -189,7 +189,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header centered">
-        <p class="eyebrow">Getting started</p>
+        <p class="eyebrow">Kako začeti</p>
         <h2>Five steps to your first trade</h2>
         <p class="lead">A clear path from signup to live markets.</p>
       </div>
@@ -398,11 +398,11 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Market analysis with machine-learning insights</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Funding</div>
+          <div class="specs-label">Financiranje</div>
           <div class="specs-value">Cards, bank transfers, PayPal, e-wallets</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Devices</div>
+          <div class="specs-label">Naprave</div>
           <div class="specs-value">Web, tablet, mobile — fully responsive</div>
         </div>
         <div class="specs-row">
@@ -414,7 +414,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Crypto, forex, stocks, commodities</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Onboarding</div>
+          <div class="specs-label">Uvajanje</div>
           <div class="specs-value">Fast setup with guided verification</div>
         </div>
         <div class="specs-row specs-row-highlight">
@@ -435,7 +435,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="trust-score">4.7</div>
         <div class="trust-stars">★★★★★</div>
         <div class="trust-meta">
-          <strong>342</strong> reviews · Na podlagi<strong>1,842</strong> ratings
+          <strong>342</strong> ocen · Na podlagi<strong>1,842</strong> ratings
         </div>
       </div>
     </div>
@@ -455,7 +455,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="board-card-body">
           <?php
           $form_id = 'bottom-form';
-          $form_heading = 'Create your free account';
+          $form_heading = 'Ustvarite brezplačen račun';
           require __DIR__ . '/includes/form.php';
           ?>
         </div>

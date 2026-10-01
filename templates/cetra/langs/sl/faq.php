@@ -10,7 +10,7 @@ require __DIR__ . '/includes/head.php';
   <div class="shell nav">
     <a class="brand" href="<?= page_url() ?>">
       <img src="<?= asset('static/img/brand/logo.webp') ?>" alt="" width="30" height="30" />
-      <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
     </a>
     <a class="btn btn-primary" href="<?= page_url('sign.php') ?>">Odprite svoj račun</a>
   </div>
@@ -20,7 +20,7 @@ require __DIR__ . '/includes/head.php';
     <div class="shell" style="max-width:760px">
       <h1>Pogosta vprašanja</h1>
       <div class="lede" style="margin-top:18px">
-        <p>Vprašanja o pologih, dvigih, varnosti in vkrcanju. Odprite svoj račun in strokovnjak vam bo pomagal pri prvem koraku.</p>
+        <p>Vprašanja o pologih, dvigih, varnosti in uvajanju. Odprite svoj račun in strokovnjak vam bo pomagal pri prvem koraku.</p>
       </div>
       <p style="margin-top:28px"><a class="btn btn-primary" href="<?= page_url('sign.php') ?>">Odprite svoj račun</a></p>
     </div>

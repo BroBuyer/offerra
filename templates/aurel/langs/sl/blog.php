@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-        <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?>pregled 2026: kaj pomenijo nova kripto pravila za male vlagatelje</a></h2>
+        <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> pregled 2026: kaj pomenijo nova kripto pravila za male vlagatelje</a></h2>
         <p itemprop="description">Regulator zaostruje, kako se kripto storitve ponujajo malim strankam. Tukaj je navadna angleška različica in datumi, ki so pomembni.</p>
         <a class="hwtx8q" href="/blog-1">Preberi opombo →</a>
       </li>
@@ -37,7 +37,7 @@ require __DIR__ . '/includes/header.php';
       </li>
     </ul>
     <div class="tw9z4by">
-      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('faq.php') ?>">Pogosta vprašanja</a>
     </div>
   </div>

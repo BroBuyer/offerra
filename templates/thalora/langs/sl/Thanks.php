@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container-base" style="max-width: 560px;">
       <div class="thanks-icon" aria-hidden="true">✓</div>
       <h1>Ste noter.</h1>
-      <p>Hvala za prijavo pri<?= e(SITE_NAME) ?>. Naša ekipa vas bo kmalu kontaktirala, da dokončamo nastavitev vašega računa – imejte telefon pri roki.</p>
+      <p>Hvala za prijavo pri <?= e(SITE_NAME) ?>. Naša ekipa vas bo kmalu kontaktirala, da dokončamo nastavitev vašega računa – imejte telefon pri roki.</p>
     </div>
   </section>
 </main>

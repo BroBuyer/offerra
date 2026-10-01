@@ -13,7 +13,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="qwce6q">Platformaa</span>
     <h1>En račun, jasen pogled na vse</h1>
-    <p class="kpnq92g"><?= e(SITE_NAME) ?>prinaša vaše ravnovesje, vašo strategijo in vašo uspešnost na eno pregledno nadzorno ploščo, tako da je vsaka odločitev informirana in vsaka številka na vidiku.</p>
+    <p class="kpnq92g"><?= e(SITE_NAME) ?> prinaša vaše ravnovesje, vašo strategijo in vašo uspešnost na eno pregledno nadzorno ploščo, tako da je vsaka odločitev informirana in vsaka številka na vidiku.</p>
   </div>
 </section>
 
@@ -25,7 +25,7 @@ require __DIR__ . '/includes/header.php';
     <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Tržni analitiki, ki dnevno pregledujejo razmere, ne enkrat na četrtletje.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Inženirji na voljo za platformo z 24-urnim nadzorom.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Strokovnjaki za podporo, ki skrbijo za vkrcanje, preverjanje in dvige.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Strokovnjaki za podporo, ki skrbijo za uvajanje, preverjanje in dvige.</span></li>
     </ul>
   </div>
 </section>
@@ -42,7 +42,7 @@ require __DIR__ . '/includes/header.php';
     </ul>
     <p class="jkkyl">Naložba vključuje tveganje, vključno z možno izgubo dela ali celotnega kapitala, ki ga vložite. Vrednost naložb se lahko zniža ali poveča, povrnjeno pa lahko dobite manj, kot ste prvotno vložili. Ne vlagajte denarja, ki si ga ne morete privoščiti izgubiti.</p>
     <div class="tw9z4by">
-      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('contacts.php') ?>">Pošlji sporočilo</a>
     </div>
   </div>
@@ -54,7 +54,7 @@ require __DIR__ . '/includes/header.php';
     <h2>Kako je bila platforma zgrajena</h2>
     <ol class="nxlk2qu">
       <li><h3>Izhodišče</h3><p>Majhna skupina analitikov in inženirjev je ves čas poslušala isto pritožbo: orodja obstajajo, a jih nihče ne razloži.</p></li>
-      <li><h3>Prva delovna verzija</h3><p>Prva različica je naredila eno stvar: prikazala ravnotežje in položaj v preprostih izrazih. Vse ostalo je bilo odstranjeno, dokler ta del ni bil jasen.</p></li>
+      <li><h3>Prva delovna verzija</h3><p>Prva različica je naredila eno stvar: prikazala stanje in pozicijo v preprostih izrazih. Vse ostalo je bilo odstranjeno, dokler ta del ni bil jasen.</p></li>
       <li><h3>Vnašanje človeške plati</h3><p>Avtomatizacija odgovarja, kaj in kdaj; ljudje odgovorijo zakaj. Dodani so bili strokovnjaki za podporo, tako da lahko vsak član koga vpraša.</p></li>
       <li><h3>Odpiranje na več trgov</h3><p>Lokalni načini plačila, lokalni jeziki in ure lokalne podpore.</p></li>
       <li><h3>Kje smo zdaj</h3><p>Ista načela v večjem obsegu: pregledne številke, ljudje, ki jih lahko dosežete, brez presenečenj v drobnem tisku.</p></li>

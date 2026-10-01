@@ -10,8 +10,8 @@ $platform_alt = platform_image_alt();
 $platform_caption = platform_image_caption();
 $as_phone = $as_phone ?? false;
 ?>
-<figure class="platform-figure<?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema.org/ImageObject">
-  <meta itemprop="name" content="<?= e(SITE_NAME) ?>Trgovalna platforma AI">
+<figure class="platform-figure <?= $as_phone ? ' app-phone-wrap' : '' ?>" itemscope itemtype="https://schema.org/ImageObject">
+  <meta itemprop="name" content="<?= e(SITE_NAME) ?> Trgovalna platforma AI">
   <meta itemprop="description" content="<?= e($platform_alt) ?>">
   <meta itemprop="contentUrl" content="<?= e(page_url($platform_path)) ?>">
   <div class="platform-figure-media">
@@ -21,15 +21,15 @@ $as_phone = $as_phone ?? false;
       title="<?= e(page_title('Trgovalna platforma AI')) ?>"
       width="320"
       height="640"
-      class="platform-figure-img<?= $as_phone ? ' app-phone-image' : '' ?>"
+      class="platform-figure-img <?= $as_phone ? ' app-phone-image' : '' ?>"
       loading="<?= $as_phone ? 'lazy' : 'eager' ?>"
-      <?= $as_phone ? '' : 'fetchpriority="high"' ?>
+ <?= $as_phone ? '' : 'fetchpriority="high"' ?>
       decoding="async"
       itemprop="image"
     >
   </div>
   <figcaption class="platform-figure-caption" itemprop="caption">
-    <?= e($platform_caption) ?>
+ <?= e($platform_caption) ?>
   </figcaption>
 </figure>
 <?php unset($as_phone); ?>

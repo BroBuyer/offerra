@@ -22,20 +22,20 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container prose">
       <p>By accessing <?= e(SITE_NAME) ?> you agree to these Pogoji uporabe. If you do not agree, please do not use our services.</p>
 
-      <h2>Eligibility</h2>
-      <p>You must be at least 18 years old and legally permitted to trade financial instruments in your jurisdiction.</p>
+      <h2>Upravičenost</h2>
+      <p>Morate biti stari vsaj 18 let in v svoji jurisdikciji zakonito smeti trgovati s finančnimi instrumenti.</p>
 
       <h2>Razkritje tveganja</h2>
-      <p>Trading cryptocurrencies, forex, CFDs, and other financial instruments involves substantial risk of loss. Past performance does not guarantee future results. Only trade with capital you can afford to lose.</p>
+      <p>Trgovanje s kriptovalutami, forexom, CFD-ji in drugimi finančnimi instrumenti prinaša precejšnje tveganje izgube. Pretekla uspešnost ne jamči prihodnjih rezultatov. Trgujte le s kapitalom, ki si ga lahko privoščite izgubiti.</p>
 
-      <h2>Account responsibilities</h2>
-      <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>
+      <h2>Odgovornosti računa</h2>
+      <p>Odgovorni ste za zaupnost poverilnic računa in za vso dejavnost na računu.</p>
 
-      <h2>Service availability</h2>
-      <p>We strive for continuous availability but do not guarantee uninterrupted access. Maintenance, market conditions, or technical issues may affect service.</p>
+      <h2>Razpoložljivost storitve</h2>
+      <p>Prizadevamo si za stalno dosegljivost, a ne jamčimo neprekinjenega dostopa. Vzdrževanje, razmere na trgu ali tehnične težave lahko vplivajo na storitev.</p>
 
-      <h2>Limitation of liability</h2>
-      <p><?= e(SITE_NAME) ?> is not liable for trading losses or damages arising from use of information on this site. Seek independent financial advice where appropriate.</p>
+      <h2>Omejitev odgovornosti</h2>
+      <p><?= e(SITE_NAME) ?> ni odgovoren za trgovalne izgube ali škodo zaradi uporabe informacij na tem mestu. Po potrebi poiščite neodvisen finančni nasvet.</p>
 
       <h2>Kontakt</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--accent);"><?= e(SUPPORT_EMAIL) ?></a></p>

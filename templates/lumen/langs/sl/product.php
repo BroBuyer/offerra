@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/header.php';
         <ul class="feature-list">
           <li>Tržni povzetki v preprostem jeziku</li>
           <li>Predlagani seznami za opazovanje za začetnike</li>
-          <li>Opomniki, preden določite velikost položaja</li>
+          <li>Opomniki, preden določite velikost pozicije</li>
         </ul>
         <a href="sign.php" class="btn btn-primary">Odpri račun</a>
       </div>

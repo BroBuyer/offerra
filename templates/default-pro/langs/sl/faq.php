@@ -5,7 +5,7 @@ $brand = SITE_NAME;
 $audience = market_audience();
 
 $page_title = page_title_lead('FAQ');
-$page_description = 'FAQ for ' . $brand . ' — how the AI trading platform works for ' . $audience
+$page_description = 'Pogosta vprašanja o ' . $brand . ' — kako trgovalna platforma z umetno inteligenco deluje za ' . $audience
     . ', security, fees, markets, and how to open an account.';
 $page_canonical = page_url('faq.php');
 $active_page = 'faq';
@@ -18,8 +18,8 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <p class="eyebrow"><?= e($brand) ?> FAQ</p>
-      <h1>Pogosta vprašanja about <?= e($brand) ?></h1>
-      <p class="lead">What <?= e($audience) ?> usually ask before opening a <?= e($brand) ?> account.</p>
+      <h1>Pogosta vprašanja o <?= e($brand) ?></h1>
+      <p class="lead">Kar <?= e($audience) ?> običajno vprašajo pred odprtjem računa <?= e($brand) ?>.</p>
     </div>
   </section>
 
@@ -28,23 +28,23 @@ require_once __DIR__ . '/includes/header.php';
       <div class="faq-list" data-faq>
         <div class="faq-item is-open">
           <button class="faq-trigger" type="button" aria-expanded="true">
-            What is <?= e($brand) ?>?
+            Kaj je <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content" style="max-height: none;">
             <div class="faq-content-inner">
-              <?= e($brand) ?> is an AI-assisted trading platform for <?= e($audience) ?>. It analyses markets in real time and puts charts, alerts, and account tools on one dashboard.
+ <?= e($brand) ?> je trgovalna platforma z umetno inteligenco za <?= e($audience) ?>. V realnem času analizira trge in na eni nadzorni plošči združi grafikone, opozorila in orodja računa.
             </div>
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-trigger" type="button" aria-expanded="false">
-            How do I get started with <?= e($brand) ?>?
+            Kako začnem z <?= e($brand) ?>?
             <span class="faq-icon" aria-hidden="true"></span>
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              Create a <?= e($brand) ?> account, verify your email, and deposit a minimum of <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. You then get charts, tools, and onboarding guides inside <?= e($brand) ?>.
+              Ustvarite račun <?= e($brand) ?>, potrdite e-pošto in položite najmanj <?= MIN_DEPOSIT ?> <?= CURRENCY ?>. Nato v <?= e($brand) ?> dobite grafikone, orodja in vodnike za uvajanje.
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              <?= e($brand) ?> uses SSL, 2FA, and verified payment processors. Trading still involves a risk of losing capital.
+ <?= e($brand) ?> uses SSL, 2FA, and verified payment processors. Trading still involves a risk of losing capital.
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div class="faq-content">
             <div class="faq-content-inner">
-              <?= e($brand) ?> shows fees before you confirm a transaction. No hidden charges on deposits or withdrawals beyond what the <?= e($brand) ?> screen lists.
+ <?= e($brand) ?> shows fees before you confirm a transaction. No hidden charges on deposits or withdrawals beyond what the <?= e($brand) ?> screen lists.
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="pt-5">
   <div class="container-base">
     <nav
-      aria-label="drobtina"
+      aria-label="potek strani"
       class="flex flex-wrap items-center text-sm text-gray-500 md:text-lg"
     >
       <a href="<?= page_url() ?>" class="breadcrumb-item">Domača stran</a>
@@ -32,7 +32,7 @@ require_once __DIR__ . '/includes/header.php';
     >
       <h1 class="relative z-20">Trgovanje in analitika z izboljšano AI</h1>
       <p class="relative z-20">
-        Dostopajte do obsežnih vpogledov v trg in portfelj z<?= e(SITE_NAME) ?>analitika. Grafi v realnem času, integrirani indikatorji in analize, ki jih poganja AI, vam pomagajo pri sprejemanju odločitev na podlagi informacij.      </p>
+        Dostopajte do obsežnih vpogledov v trg in portfelj z <?= e(SITE_NAME) ?> analitika. Grafi v realnem času, integrirani indikatorji in analize, ki jih poganja AI, vam pomagajo pri sprejemanju odločitev na podlagi informacij.      </p>
     </div>
     <div class="relative grid min-h-[355px] content-end">
       <div
@@ -117,10 +117,10 @@ require_once __DIR__ . '/includes/header.php';
       <!-- product seo depth -->
 <div class="py-8 md:py-10">
   <div class="container-base grid gap-6 md:gap-8 max-w-4xl">
-    <p class="text-lg"><?= e(SITE_NAME) ?>zagotavlja integrirano platformo z orodji za trgovanje, obsežnim spremljanjem trga in podprto avtomatizacijo. Spodaj raziščite podrobne funkcije in dnevne ugodnosti.</p>    <p>Naša platforma ponuja dostop do različnih trgov, vključno s kriptovalutami, forexom, delnicami in blagom s posodobitvami cen v živo. Nemoteno upravljajte svoja naročila in nadzor tveganja z ene konsolidirane nadzorne plošče, namesto da žonglirate z več aplikacijami.</p>    <p>Analitična orodja združujejo podatke v realnem času z vpogledi, ki jih poganja AI, da prepoznajo trende in pomembne premike. Ti podpirajo vaše odločanje; nadzirate strategijo, obseg trgovine in omejitve. Vmesnik se osredotoča na preprostost in učinkovito izvedbo.</p>    <p>Varnost in zanesljivost sta temeljni: šifrirane povezave, močna zaščita računa in enostavni postopki financiranja. Primeren tako za začetnike kot strokovnjake, se gladko spreminja od osnovne uporabe do naprednega trgovanja, ne da bi bilo treba zamenjati platformo.</p>    <div class="grid gap-6 md:grid-cols-2">
+    <p class="text-lg"><?= e(SITE_NAME) ?> zagotavlja integrirano platformo z orodji za trgovanje, obsežnim spremljanjem trga in podprto avtomatizacijo. Spodaj raziščite podrobne funkcije in dnevne ugodnosti.</p>    <p>Naša platforma ponuja dostop do različnih trgov, vključno s kriptovalutami, forexom, delnicami in blagom s posodobitvami cen v živo. Nemoteno upravljajte svoja naročila in nadzor tveganja z ene konsolidirane nadzorne plošče, namesto da žonglirate z več aplikacijami.</p>    <p>Analitična orodja združujejo podatke v realnem času z vpogledi, ki jih poganja AI, da prepoznajo trende in pomembne premike. Ti podpirajo vaše odločanje; nadzirate strategijo, obseg trgovine in omejitve. Vmesnik se osredotoča na preprostost in učinkovito izvedbo.</p>    <p>Varnost in zanesljivost sta temeljni: šifrirane povezave, močna zaščita računa in enostavni postopki financiranja. Primeren tako za začetnike kot strokovnjake, se gladko spreminja od osnovne uporabe do naprednega trgovanja, ne da bi bilo treba zamenjati platformo.</p>    <div class="grid gap-6 md:grid-cols-2">
             <div class="border-primary rounded-custom border p-4 md:p-6">
         <h2 class="h3 mb-3">Trgi in trgovalni instrumenti</h2>
-        <p>Spremljajte digitalne valute, forex, delnice in blago z integriranimi orodji, nadzornimi seznami in opozorili.<?= e(SITE_NAME) ?>povezuje analizo z upravljanjem naročil in portfelja.</p>
+        <p>Spremljajte digitalne valute, forex, delnice in blago z integriranimi orodji, nadzornimi seznami in opozorili. <?= e(SITE_NAME) ?> povezuje analizo z upravljanjem naročil in portfelja.</p>
       </div>
                   <div class="border-primary rounded-custom border p-4 md:p-6">
         <h2 class="h3 mb-3">Transparentnost, varnost in nadzor</h2>
@@ -192,7 +192,7 @@ require_once __DIR__ . '/includes/header.php';
         <source type="image/webp" srcset="<?= asset('static/img/responsive/orange/phone-4-1033.webp') ?>" />
         <img
           src="<?= asset('static/img/responsive/orange/phone-4-1033.webp') ?>"
-          alt="<?= e(SITE_NAME) ?>trgovalna platforma na mobilniku"
+          alt="<?= e(SITE_NAME) ?> trgovalna platforma na mobilniku"
           class="w-full h-auto max-w-[340px] mx-auto drop-shadow-xl"
           width="340"
           height="560"

@@ -14,13 +14,13 @@ require_once __DIR__ . '/includes/header.php';
   <section class="page-hero">
     <div class="container">
       <h1>Pogoji uporabe</h1>
-      <p class="lead">Zadnja posodobitev:<?= date('F j, Y') ?></p>
+      <p class="lead">Zadnja posodobitev: <?= date('F j, Y') ?></p>
     </div>
   </section>
 
   <section class="section-sm">
     <div class="container prose">
-      <p>Z dostopom<?= e(SITE_NAME) ?>se strinjate s temi pogoji uporabe. Če se ne strinjate, vas prosimo, da ne uporabljate naših storitev.</p>
+      <p>Z dostopom <?= e(SITE_NAME) ?> se strinjate s temi pogoji uporabe. Če se ne strinjate, vas prosimo, da ne uporabljate naših storitev.</p>
 
       <h2>Upravičenost</h2>
       <p>Biti morate stari najmanj 18 let in imeti morate zakonsko dovoljenje za trgovanje s finančnimi instrumenti v vaši jurisdikciji.</p>
@@ -35,7 +35,7 @@ require_once __DIR__ . '/includes/header.php';
       <p>Prizadevamo si za stalno razpoložljivost, vendar ne zagotavljamo neprekinjenega dostopa. Vzdrževanje, tržni pogoji ali tehnične težave lahko vplivajo na storitev.</p>
 
       <h2>Omejitev odgovornosti</h2>
-      <p><?= e(SITE_NAME) ?>ni odgovoren za izgube ali škodo pri trgovanju, ki izhaja iz uporabe informacij na tem spletnem mestu. Po potrebi poiščite neodvisen finančni nasvet.</p>
+      <p><?= e(SITE_NAME) ?> ni odgovoren za izgube ali škodo pri trgovanju, ki izhaja iz uporabe informacij na tem spletnem mestu. Po potrebi poiščite neodvisen finančni nasvet.</p>
 
       <h2>Kontakt</h2>
       <p><a href="mailto:<?= e(SUPPORT_EMAIL) ?>" style="color: var(--color-accent);"><?= e(SUPPORT_EMAIL) ?></a></p>

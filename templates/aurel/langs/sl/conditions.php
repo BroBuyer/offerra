@@ -30,7 +30,7 @@ require __DIR__ . '/includes/header.php';
     <p>Strinjate se, da boste med registracijo zagotovili točne, aktualne in popolne podatke ter jih posodabljali. Odgovorni ste za ohranjanje zaupnosti svojih poverilnic in za vse dejavnosti v vašem računu.</p>
 
     <h2>4. Storitve</h2>
-    <p><?= e(SITE_NAME) ?>ponuja tehnološka orodja in izobraževalne informacije v zvezi s spletnim vlaganjem. Nismo vaš finančni svetovalec. Nič na tem spletnem mestu ne predstavlja prilagojenega naložbenega nasveta, davčnega svetovanja ali nagovarjanja k nakupu ali prodaji katerega koli finančnega instrumenta.</p>
+    <p><?= e(SITE_NAME) ?> ponuja tehnološka orodja in izobraževalne informacije v zvezi s spletnim vlaganjem. Nismo vaš finančni svetovalec. Nič na tem spletnem mestu ne predstavlja prilagojenega naložbenega nasveta, davčnega svetovanja ali nagovarjanja k nakupu ali prodaji katerega koli finančnega instrumenta.</p>
 
     <h2>5. Pristojbine</h2>
     <p>Veljavni stroški, razmiki in provizije so razkriti na platformi ali v ustreznem razporedu nadomestil. Odgovorni ste za vse davke, ki izhajajo iz vaših dejavnosti.</p>

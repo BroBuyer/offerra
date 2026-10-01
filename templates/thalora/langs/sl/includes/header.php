@@ -6,7 +6,7 @@
           <span class="text-primary inline-block header-logo">
             <img src="<?= asset('static/img/favicon.svg') ?>" class="footer-logo" alt="<?= e(SITE_NAME) ?>">
           </span>
-          <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
         </a>
 <nav class="hiddens grow justify-center lg:flex">
   <ul class="flex flex-row flex-wrap justify-center gap-x-4 gap-y-2 md:gap-x-5 lg:gap-x-7">

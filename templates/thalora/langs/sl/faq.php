@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="pt-5">
         <div class="container-base">
           <nav
-            aria-label="drobtina"
+            aria-label="potek strani"
             class="flex flex-wrap items-center text-sm text-gray-500 md:text-lg"
           >
 <a href="<?= page_url() ?>" class="breadcrumb-item">Domov</a>
@@ -45,7 +45,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div id="content-1" class="max-h-0 overflow-hidden transition-all">
             <div class="px-4 pb-5 md:px-8 md:pb-8">
-              <p>Začeti je enostavno. Preprosto se prijavite z bistvenimi podatki, potrdite svoj e-poštni naslov in napolnite svoj račun z najmanj<?= e(money_min()) ?>. To odklene celoten nabor funkcij platforme, vključno z grafikoni v živo, orodji za trgovanje, analizo trga in namensko podporo. Ne potrebujete nobenega znanja o trgovanju – obsežne vadnice vas bodo vodile na vsakem koraku.</p>
+              <p>Začeti je enostavno. Preprosto se prijavite z bistvenimi podatki, potrdite svoj e-poštni naslov in napolnite svoj račun z najmanj <?= e(money_min()) ?>. To odklene celoten nabor funkcij platforme, vključno z grafikoni v živo, orodji za trgovanje, analizo trga in namensko podporo. Ne potrebujete nobenega znanja o trgovanju – obsežne vadnice vas bodo vodile na vsakem koraku.</p>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div id="content-4" class="max-h-0 overflow-hidden transition-all">
             <div class="px-4 pb-5 md:px-8 md:pb-8">
-              <p>Priporočamo, da začnete z minimalnim depozitom, da se seznanite s funkcijami platforme.<?= e(SITE_NAME) ?>ustreza tako začetnikom kot izkušenim trgovcem, saj ima uporabniku prijazen vmesnik, izbirna orodja, ki jih poganja AI, in podporo strankam 24/7. Ohranite popoln nadzor nad svojimi naročili, limiti in nastavitvami tveganja.</p>
+              <p>Priporočamo, da začnete z minimalnim depozitom, da se seznanite s funkcijami platforme. <?= e(SITE_NAME) ?> ustreza tako začetnikom kot izkušenim trgovcem, saj ima uporabniku prijazen vmesnik, izbirna orodja, ki jih poganja AI, in podporo strankam 24/7. Ohranite popoln nadzor nad svojimi naročili, limiti in nastavitvami tveganja.</p>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div id="content-5" class="max-h-0 overflow-hidden transition-all">
             <div class="px-4 pb-5 md:px-8 md:pb-8">
-              <p>Predhodne izkušnje s trgovanjem niso potrebne. Platforma je zasnovana tako, da je uporabniku prijazna že od samega začetka, saj zagotavlja podporo pri vkrcanju, vadnice in orodja, izboljšana z AI. Učite se lahko s svojim tempom – začenši z osrednjimi trgi in postopoma napredujte do prefinjene analize in avtomatizacije.</p>
+              <p>Predhodne izkušnje s trgovanjem niso potrebne. Platforma je zasnovana tako, da je uporabniku prijazna že od samega začetka, saj zagotavlja podporo pri uvajanju, vadnice in orodja, izboljšana z AI. Učite se lahko s svojim tempom – začenši z osrednjimi trgi in postopoma napredujte do prefinjene analize in avtomatizacije.</p>
             </div>
           </div>
         </div>
@@ -134,7 +134,7 @@ require_once __DIR__ . '/includes/header.php';
             class="group-data-active:text-primary hover:text-primary flex w-full cursor-pointer items-center justify-between gap-4 px-4 py-5 md:px-8 md:py-10"
             onclick="toggleAccordion(7)"
           >
-            <span class="h3 text-left transition-colors">Do katerih trgov lahko dostopam z uporabo<?= e(SITE_NAME) ?>?</span>
+            <span class="h3 text-left transition-colors">Do katerih trgov lahko dostopam z uporabo <?= e(SITE_NAME) ?>?</span>
             <span class="w-[26px] shrink-0 transition-transform group-data-active:rotate-180 md:w-10">
               <svg viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="22.7905" y="32.6563" width="4.62857" height="23.1428" rx="1" transform="rotate(135 22.7905 32.6563)" fill="currentColor" />
@@ -165,7 +165,7 @@ require_once __DIR__ . '/includes/header.php';
           </button>
           <div id="content-8" class="max-h-0 overflow-hidden transition-all">
             <div class="px-4 pb-5 md:px-8 md:pb-8">
-              <p><?= e(SITE_NAME) ?>ponuja orodja AI, ki organizirajo trgovalne signale, označujejo pomembne spremembe cen in vam pomagajo pri spremljanju trga. Ta orodja podpirajo vaše izbire trgovanja, vendar ne nadomeščajo vaše strategije ali zagotavljajo določenih rezultatov. Sami odločate, kdaj boste ukrepali in koliko boste dodelili.</p>
+              <p><?= e(SITE_NAME) ?> ponuja orodja AI, ki organizirajo trgovalne signale, označujejo pomembne spremembe cen in vam pomagajo pri spremljanju trga. Ta orodja podpirajo vaše izbire trgovanja, vendar ne nadomeščajo vaše strategije ali zagotavljajo določenih rezultatov. Sami odločate, kdaj boste ukrepali in koliko boste dodelili.</p>
             </div>
           </div>
         </div>

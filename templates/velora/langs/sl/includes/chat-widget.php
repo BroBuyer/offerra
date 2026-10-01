@@ -21,7 +21,7 @@ $chat_lead_cookie = site_slug() . '_lead';
         </div>
         <div>
           <h4>Lisa</h4>
-          <p>Pomočnik pri vkrcanju</p>
+          <p>Pomočnica pri uvajanju</p>
         </div>
       </div>
       <button type="button" class="lisa-panel__close" id="chat-close-btn" aria-label="Zapri klepet">

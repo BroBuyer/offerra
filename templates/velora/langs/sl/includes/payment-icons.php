@@ -17,7 +17,7 @@ $methods = [
     ['file' => 'banktransfer.svg','alt' => 'Bančno nakazilo in SEPA — sprejeto dne' . SITE_NAME],
 ];
 ?>
-<div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Podprti načini plačila za<?= e($payment_context) ?>">
+<div class="payment-icons <?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Podprti načini plačila za <?= e($payment_context) ?>">
   <?php if (!$payment_compact): ?>
     <p class="payment-icons-label">Sprejem varnih plačil</p>
   <?php endif; ?>
@@ -38,7 +38,7 @@ $methods = [
     <li>
       <img
         src="<?= asset('static/img/payments/ssl-secured.svg') ?>"
-        alt="256-bitno šifriranje SSL — vključen varen prenos podatkov<?= e(SITE_NAME) ?>"
+        alt="256-bitno šifriranje SSL — vključen varen prenos podatkov <?= e(SITE_NAME) ?>"
         title="Zaščiteno s SSL"
         width="32"
         height="32"

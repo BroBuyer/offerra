@@ -4,7 +4,7 @@
     <div class="footer-top">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?>domov">
+          <a href="<?= page_url() ?>" class="logo" aria-label="<?= e(SITE_NAME) ?> domov">
             <div class="logo-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width:60%;height:60%;">
                 <path d="M14 46 L26 32 L38 38 L50 16" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -52,7 +52,7 @@
       <p class="disclaimer">
         <strong>⚠️ Opozorilo o nevarnosti:</strong>
         Trgovanje z digitalnimi sredstvi in ​​globalnimi instrumenti vključuje visoko nestanovitnost trga.
-        Ohranite popoln nadzor nad nastavitvami svoje strategije. Samodejne meritve vklopljene<?= e(SITE_NAME) ?>
+        Ohranite popoln nadzor nad nastavitvami svoje strategije. Samodejne meritve vklopljene <?= e(SITE_NAME) ?>
         delujejo izključno kot analitični pripomočki.
       </p>
       <div class="footer-meta-links">

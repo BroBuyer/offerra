@@ -13,7 +13,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
         'name' => $site,
         'url' => $url,
         'logo' => $url . '/static/img/logo.svg',
-        'description' => 'AI-poweredtrgovalna platforma for crypto, forex, and global markets.',
+        'description' => 'Trgovalna platforma z umetno inteligenco for crypto, forex, and global markets.',
     ];
 
     $website = [
@@ -71,7 +71,7 @@ function render_schema(string $page = 'home', array $extra = []): void {
                 'name' => 'When can I withdraw profits?',
                 'acceptedAnswer' => [
                     '@type' => 'Answer',
-                    'text' => 'Withdrawals can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
+                    'text' => 'Dvigi can be requested anytime from your account dashboard. Processing typically takes 1–3 business days depending on the method. Fees and timelines are shown upfront.',
                 ],
             ],
             [

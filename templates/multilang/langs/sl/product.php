@@ -6,7 +6,7 @@ $page_description = 'Explore ' . SITE_NAME . ' trading tools — real-time analy
 $page_canonical = page_url('product.php');
 $active_page = 'product';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Domov', 'item' => page_url()],
   ['@type' => 'ListItem', 'position' => 2, 'name' => 'Izdelek', 'item' => page_url('product.php')],
 ]];
 
@@ -71,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <div style="text-align: center; margin-top: 3rem;">
-        <a href="sign.php" class="btn btn-primary">Try <?= e(SITE_NAME) ?> free</a>
+        <a href="sign.php" class="btn btn-primary">Preizkusite <?= e(SITE_NAME) ?> brezplačno</a>
       </div>
     </div>
   </section>

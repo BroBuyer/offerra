@@ -1,13 +1,13 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title_lead('Sign Up');
-$page_description = 'Create your ' . SITE_NAME . ' account and start trading with AI-powered tools. For ' . market_audience() . '. Minimum ' . MIN_DEPOSIT . ' ' . CURRENCY . '.';
+$page_title = page_title_lead('Prijava');
+$page_description = 'Ustvarite račun ' . SITE_NAME . ' in začnite trgovati z orodji UI. Za ' . market_audience() . '. Najmanj ' . MIN_DEPOSIT . ' ' . CURRENCY . '.';
 $page_canonical = page_url('sign.php');
 $active_page = 'sign';
 $schema_extra = ['breadcrumb' => [
-  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => page_url()],
-  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sign Up', 'item' => page_url('sign.php')],
+  ['@type' => 'ListItem', 'position' => 1, 'name' => 'Domov', 'item' => page_url()],
+  ['@type' => 'ListItem', 'position' => 2, 'name' => 'Prijava', 'item' => page_url('sign.php')],
 ]];
 
 require_once __DIR__ . '/includes/head.php';
@@ -17,9 +17,9 @@ require_once __DIR__ . '/includes/header.php';
 <main>
   <section class="page-hero">
     <div class="container">
-      <p class="eyebrow">Join <?= e(SITE_NAME) ?></p>
-      <h1>Open your <?= e(SITE_NAME) ?> trading account</h1>
-      <p class="lead">For <?= e(market_audience()) ?>. Minimum deposit <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.</p>
+      <p class="eyebrow">Pridružite se <?= e(SITE_NAME) ?></p>
+      <h1>Odprite trgovalni račun <?= e(SITE_NAME) ?></h1>
+      <p class="lead">Za <?= e(market_audience()) ?>. Najmanjši polog <?= MIN_DEPOSIT ?> <?= CURRENCY ?>.</p>
     </div>
   </section>
 
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card form-card-accent">
         <?php
         $form_id = 'signup-form';
-        $form_heading = 'Enter your details for ' . SITE_NAME;
+        $form_heading = 'Vnesite podatke za ' . SITE_NAME;
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="pt-5">
         <div class="container-base">
           <nav
-            aria-label="drobtina"
+            aria-label="potek strani"
             class="flex flex-wrap items-center text-sm text-gray-500 md:text-lg"
           >
             <a href="<?= page_url() ?>" class="breadcrumb-item">Domača stran</a>

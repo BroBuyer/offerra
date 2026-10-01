@@ -53,7 +53,7 @@ $og_image = page_url($og_image_path ?? og_image_path());
       themeToggleLightAria: 'Preklopite na svetlo temo',
       mockupToday: 'Danes',
       orderPendingAllocation: 'čakajoča dodelitev naročila',
-      chatStep1Bot: "zdravo Sem Lisa, tvoja pomočnica pri vkrcanju. Ste pripravljeni odpreti trgovalni račun v nekaj hitrih korakih?",
+      chatStep1Bot: "Pozdravljeni. Sem Lisa, vaša pomočnica pri uvajanju. Ste pripravljeni odpreti trgovalni račun v nekaj hitrih korakih?",
       chatStep1Yes: "Ja, začnimo",
       chatStep1More: 'Najprej mi povej več',
       chatStep2Bot: 'super Ali ste že trgovali s kripto ali forex?',

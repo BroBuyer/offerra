@@ -36,9 +36,9 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section section-paper" id="how">
     <div class="container">
       <div class="section-intro" data-reveal>
-        <p class="eyebrow">Ustvarjen za začetnike</p>
+        <p class="eyebrow">Ustvarjena za začetnike</p>
         <h2>Trije koraki. Potem trgujete.</h2>
-        <p class="lead">Brez terminalskega žargona - samo jasna pot od prijave do vašega prvega položaja.</p>
+        <p class="lead">Brez terminalskega žargona - samo jasna pot od prijave do vaše prve pozicije.</p>
       </div>
       <ol class="steps-lumen">
         <li data-reveal>
@@ -69,7 +69,7 @@ require_once __DIR__ . '/includes/header.php';
           <?= e(SITE_NAME) ?> spremeni tržni hrup v kratke, berljive pozive — tako porabite manj časa za ugibanje in več časa za odločanje.
         </p>
         <ul class="feature-list">
-          <li>Počisti namige za nakup/držanje/gledanje</li>
+          <li>Jasni namigi za nakup, držanje ali spremljanje</li>
           <li>Opomniki za tveganje pred potrditvijo</li>
           <li>Vmesnik, ki ostane miren pod pritiskom</li>
         </ul>
@@ -93,9 +93,9 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container join-lumen" data-reveal>
       <div>
         <p class="eyebrow eyebrow-light">Začnite</p>
-        <h2>Ustvarite svojo <?= e(SITE_NAME) ?>račun</h2>
+        <h2>Ustvarite svoj <?= e(SITE_NAME) ?> račun</h2>
         <p class="lead lead-light">
-          Pridružite se platformi, ki je zasnovana tako, da se počutite vrhunske in ostanete preprosti – smernice AI vključene od prvega dne.
+          Pridružite se platformi, ki je zasnovana tako, da se ostane pregledna in preprosta – smernice AI vključene od prvega dne.
         </p>
       </div>
       <div class="join-lumen__form">

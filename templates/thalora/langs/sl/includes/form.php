@@ -10,7 +10,7 @@ $allowed_countries = form_allowed_countries();
 $lead_cookie = site_slug() . '_lead';
 $wrap_hidden = !empty($form_hidden);
 ?>
-<div class="apx-lead lead-form-wrap apx-lead-wrap--geo1661<?= $wrap_hidden ? '' : '' ?>" dir="ltr"<?php if ($wrap_hidden): ?> id="cq-form-card" hidden inert style="display:none !important;"<?php endif; ?>>
+<div class="apx-lead lead-form-wrap apx-lead-wrap--geo1661 <?= $wrap_hidden ? '' : '' ?>" dir="ltr"<?php if ($wrap_hidden): ?> id="cq-form-card" hidden inert style="display:none !important;"<?php endif; ?>>
 <form
   name="form"
   method="post"
@@ -25,7 +25,7 @@ $wrap_hidden = !empty($form_hidden);
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
     <p class="form-already-registered__title">Ste že registrirani</p>
     <p class="form-already-registered__text">
-      Vaša zahteva z<?= e(SITE_NAME) ?>je bilo prejeto. Počakajte na klic našega upravitelja.
+      Vaša zahteva za <?= e(SITE_NAME) ?> je bila prejeta. Počakajte na klic našega upravitelja.
     </p>
   </div>
 

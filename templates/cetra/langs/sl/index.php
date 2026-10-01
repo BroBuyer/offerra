@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
-$page_title = page_title('AI and real-time execution | Uradna stran');
+$page_title = page_title('UI in izvedba v realnem času | Uradna stran');
 $page_description = SITE_NAME . '— Tehnologija umetne inteligence, ki analizira trge in izvaja naročila v realnem času, z osebnim analitikom ob strani za ustvarjanje novega toka dohodka.';
 $page_canonical = page_url();
 $active_page = 'home';
@@ -13,7 +13,7 @@ require __DIR__ . '/includes/head.php';
  <a class="brand" href="#top"><img src="<?= asset('static/img/brand/logo.webp') ?>" alt="<?= e(SITE_NAME) ?>" width="30" height="30" decoding="async" loading="eager"><?= e(SITE_NAME) ?></a>
  <nav class="nav-links" id="navLinks" aria-label="Glavni">
  <a href="#platform">Izdelek</a>
- <a href="#how">Kako deluje.</a>
+ <a href="#how">Kako deluje</a>
  <a href="#markets">Trgi v realnem času</a>
  <a href="#faq">FAQ</a>
  </nav>
@@ -41,7 +41,7 @@ require __DIR__ . '/includes/head.php';
  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Hitra izvedba</span>
  </div>
  <div class="hero-cta">
- <a class="btn btn-primary" href="#hero-form">Začni zdaj — <?= e(MIN_DEPOSIT) ?> <?= e(CURRENCY) ?>min.</a>
+ <a class="btn btn-primary" href="#hero-form">Začni zdaj — <?= e(MIN_DEPOSIT) ?> <?= e(CURRENCY) ?> min.</a>
  </div>
  </div>
  <div class="lead" id="hero-form">
@@ -97,7 +97,7 @@ require __DIR__ . '/includes/head.php';
  <div class="grid feat-grid" style="margin-top:36px">
  <div class="card feat">
  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
- <h3>Subsekundna izvedba na vsakem povezanem prizorišču</h3><p><?= e(SITE_NAME) ?> vzdržuje povezave API z nizko zakasnitvijo z vsako podprto izmenjavo. Ko model sproži signal, se naročilo preusmeri, izvede in zabeleži na vaši nadzorni plošči pred naslednjim tikom.</p>
+ <h3>Subsekundna izvedba na vsakem povezanem prizorišču</h3><p><?= e(SITE_NAME) ?> vzdržuje povezave API z nizko zakasnitvijo z vsako podprto borzo. Ko model sproži signal, se naročilo preusmeri, izvede in zabeleži na vaši nadzorni plošči pred naslednjim tikom.</p>
  </div>
  <div class="card feat">
  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
@@ -109,7 +109,7 @@ require __DIR__ . '/includes/head.php';
  </div>
  <div class="card feat">
  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
- <h3>Ločen kapital</h3><p>Vaša sredstva ostanejo na vašem računu. <?= e(SITE_NAME) ?> nikoli ne prevzame skrbništva — motor ima samo dovoljenje za usmerjanje ukazov.</p>
+ <h3>Ločen kapital</h3><p>Vaša sredstva ostanejo na vašem računu. <?= e(SITE_NAME) ?> nikoli ne prevzame skrbništva — sistem ima samo dovoljenje za usmerjanje ukazov.</p>
  </div>
  <div class="card feat">
  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
@@ -155,7 +155,7 @@ require __DIR__ . '/includes/head.php';
  <div class="steps" style="margin-top:36px">
  <div class="step"><div class="n">1</div><h3>Ustvarite svoj račun</h3><p>Prijavite se v nekaj minutah samo z uporabo e-pošte.</p></div>
  <div class="step"><div class="n">2</div><h3>Potrdite svoj e-poštni naslov</h3><p>Preverite svoj naslov, da zaščitite svoj račun.</p></div>
- <div class="step"><div class="n">3</div><h3>Polog na vaš račun</h3><p>Dodajte sredstva iz <?= e(MIN_DEPOSIT) ?> <?= e(CURRENCY) ?>tvoja pot.</p></div>
+ <div class="step"><div class="n">3</div><h3>Polog na vaš račun</h3><p>Dodajte sredstva iz <?= e(MIN_DEPOSIT) ?> <?= e(CURRENCY) ?> tvoja pot.</p></div>
  <div class="step"><div class="n">4</div><h3>Določite svojo strategijo</h3><p>Izberite svoje cilje; vaš analitik prilagodi načrt.</p></div>
  <div class="step"><div class="n">5</div><h3>Začni trgovati</h3><p>Sledite vodenim signalom in rastite s svojim tempom.</p></div>
  </div>
@@ -255,7 +255,7 @@ require __DIR__ . '/includes/head.php';
 </section>
 
 <!-- FINAL CTA — left: headline + lede · right: lead form (same split as the hero) -->
-<!--reviews-block--><section aria-label="Client ratings" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUPANJA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?>Ocene</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.8</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:96.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">389</b>ocene · Na podlagi<b style="color:var(--text,#fff)">2.334</b>ocene</div></div></section><section class="sec" id="signup" aria-labelledby="signup-title">
+<!--reviews-block--><section aria-label="Client ratings" style="padding:3rem 1.25rem;background:var(--bg,#0b0f19)"><div style="max-width:68rem;margin:0 auto;background:var(--surface,#12182a);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:18px;padding:24px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 42px"><div style="text-align:center"><span style="display:inline-block;background:var(--accent,#e8b84b);color:var(--on-accent,#0b0d14);font:700 11px/1 Sora,system-ui,sans-serif;letter-spacing:.14em;padding:7px 12px;border-radius:6px;margin-bottom:10px">ZAUPANJA</span><div style="font:700 1.2rem Sora,system-ui,sans-serif;color:var(--text,#fff)"><?= e(SITE_NAME) ?> Ocene</div></div><div style="font:800 2.7rem Sora,system-ui,sans-serif;color:var(--accent,#e8b84b);line-height:1;font-variant-numeric:tabular-nums">4.8</div><span style="position:relative;display:inline-block;font-size:1.55rem;line-height:1;letter-spacing:.1em" aria-hidden="true"><span style="color:var(--gold,#efb567);opacity:.25">★★★★★</span><span style="position:absolute;inset:0;overflow:hidden;white-space:nowrap;width:96.0%;color:var(--gold,#efb567)">★★★★★</span></span><div style="color:var(--muted,#9aa3b2);font-size:.95rem;font-variant-numeric:tabular-nums"><b style="color:var(--text,#fff)">389</b>ocene · Na podlagi<b style="color:var(--text,#fff)">2.334</b>ocene</div></div></section><section class="sec" id="signup" aria-labelledby="signup-title">
  <div class="shell cta-grid">
  <div>
  <span class="eyebrow">Začni zdaj</span>
@@ -288,7 +288,7 @@ require __DIR__ . '/includes/head.php';
  <p>Hitrost umetne inteligence, človeška odločitev. Tvegani kapital — vlagajte odgovorno.</p>
  </div>
  <div><h4>Izdelek</h4><div class="foot-links">
- <a href="#platform">Spremljajte svoj račun v realnem času</a><a href="#markets">Trgi v realnem času</a><a href="#how">Kako deluje.</a><a href="#faq">FAQ</a>
+ <a href="#platform">Spremljajte svoj račun v realnem času</a><a href="#markets">Trgi v realnem času</a><a href="#how">Kako deluje</a><a href="#faq">FAQ</a>
  </div></div>
  <div><h4>Podjetje</h4><div class="foot-links">
  <a href="<?= page_url('product.php') ?>">O tem</a><a href="<?= page_url('offer.php') ?>">Cene</a><a href="<?= page_url('contacts.php') ?>">Kontakt</a>

@@ -24,7 +24,7 @@ $lead_cookie = site_slug() . '_lead';
     <div class="form-already-registered__icon" aria-hidden="true">✓</div>
     <p class="form-already-registered__title">Ste že registrirani</p>
     <p class="form-already-registered__text">
-      Vaša zahteva z<?= e(SITE_NAME) ?>je bilo prejeto. Počakajte na klic našega upravitelja.
+      Vaša zahteva za <?= e(SITE_NAME) ?> je bila prejeta. Počakajte na klic našega upravitelja.
     </p>
   </div>
 

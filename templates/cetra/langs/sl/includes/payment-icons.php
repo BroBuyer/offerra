@@ -17,7 +17,7 @@ $methods = [
     ['file' => 'banktransfer.svg','alt' => 'Bančno nakazilo e SEPA — aceites em ' . SITE_NAME],
 ];
 ?>
-<div class="payment-icons<?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Sprejemljivi načini plačila para <?= e($payment_context) ?>">
+<div class="payment-icons <?= $payment_compact ? ' payment-icons--compact' : '' ?>" role="group" aria-label="Sprejemljivi načini plačila para <?= e($payment_context) ?>">
   <?php if (!$payment_compact): ?>
     <p class="payment-icons-label">Pagamentos seguros aceites</p>
   <?php endif; ?>

@@ -10,7 +10,7 @@ require __DIR__ . '/includes/head.php';
   <div class="shell nav">
     <a class="brand" href="<?= page_url() ?>">
       <img src="<?= asset('static/img/brand/logo.webp') ?>" alt="<?= e(SITE_NAME) ?>" width="30" height="30" decoding="async" loading="eager">
-      <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
     </a>
     <nav class="nav-links" aria-label="Glavni">
       <a href="<?= page_url() ?>#platform">Platforma</a>

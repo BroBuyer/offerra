@@ -13,7 +13,7 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <span class="qwce6q">Pricing</span>
     <h1>Enostavno in pregledno oblikovanje cen.</h1>
-    <p class="kpnq92g">Začetek uporabe<?= e(SITE_NAME) ?>je brezplačen. Za odprtje računa ni skritih stroškov in vložite le tisto, kar se odločite za naložbo: platforma in njena orodja so vključena.</p>
+    <p class="kpnq92g">Začetek uporabe <?= e(SITE_NAME) ?> je brezplačen. Za odprtje računa ni skritih stroškov in vložite le tisto, kar se odločite za naložbo: platforma in njena orodja so vključena.</p>
   </div>
 </section>
 

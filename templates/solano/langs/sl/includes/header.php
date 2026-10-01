@@ -2,7 +2,7 @@
   <div class="nrzt44 yd4epmn">
     <a class="jfbcnp" href="<?= page_url() ?>">
       <img src="<?= asset('static/img/brand/logo.webp') ?>" alt="<?= e(SITE_NAME) ?>" width="28" height="28" decoding="async" title="<?= e(SITE_NAME) ?>" loading="eager">
-      <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
     </a>
     <nav class="gjm518" aria-label="Glavni">
       <button class="nnzfxkg" type="button" aria-label="Zapri meni">&times;</button>

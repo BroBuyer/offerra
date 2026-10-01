@@ -176,7 +176,7 @@
             <li role="presentation">
               <button
                 type="button"
-                class="lang-switcher__option<?= $code === $current ? ' is-active' : '' ?>"
+                class="lang-switcher__option <?= $code === $current ? ' is-active' : '' ?>"
                 role="option"
                 data-lang="<?= e($code) ?>"
                 aria-label="<?= e(lang_display_name($code)) ?>"
@@ -220,7 +220,7 @@
           <li role="presentation">
             <button
               type="button"
-              class="lang-switcher__mobile-option<?= $code === $current ? ' is-active' : '' ?>"
+              class="lang-switcher__mobile-option <?= $code === $current ? ' is-active' : '' ?>"
               role="option"
               data-lang="<?= e($code) ?>"
               aria-label="<?= e(lang_display_name($code)) ?>"

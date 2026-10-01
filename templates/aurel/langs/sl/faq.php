@@ -36,7 +36,7 @@ require __DIR__ . '/includes/header.php';
       </details>
       <details itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
         <summary><h3 itemprop="name">Ali obstaja minimalni znesek?</h3></summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">Da, in je namerno nizka, od<?= e(money_min()) ?>, tako da lahko začnete z majhnimi in pozneje dodate več. Natančna številka se prikaže, preden kar koli potrdite.</p></div>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><p itemprop="text">Da, in je namerno nizka, od <?= e(money_min()) ?>, tako da lahko začnete z majhnimi in pozneje dodate več. Natančna številka se prikaže, preden kar koli potrdite.</p></div>
       </details>
     </div>
   </div>
@@ -47,7 +47,7 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Pogosta vprašanja</h2>
     <div class="fjl4d">
-      <details open><summary>Kakšen je minimalni depozit za začetek?</summary><p>Svoj račun lahko odprete in financirate iz<?= e(money_min()) ?>najmanj. Prosto lahko dodajate več sredstev, ko vaš naložbeni načrt napreduje.</p></details>
+      <details open><summary>Kakšen je minimalni depozit za začetek?</summary><p>Svoj račun lahko odprete in financirate iz <?= e(money_min()) ?> najmanj. Prosto lahko dodajate več sredstev, ko vaš naložbeni načrt napreduje.</p></details>
       <details><summary>Kako potekajo dvigi?</summary><p>Zahtevajte dvig kadar koli na nadzorni plošči. Sredstva se vrnejo na vaš izbrani način plačila z običajnimi časi obdelave.</p></details>
       <details><summary>Je moj denar varno shranjen?</summary><p>Računi so zaščiteni s profesionalnim varnostnim preverjanjem in preverjanjem identitete. Kot pri vsaki naložbi je vaš kapital ogrožen in vrednosti se lahko znižajo in povečajo.</p></details>
       <details><summary>Koliko časa traja, da začnete investirati?</summary><p>Večina članov opravi registracijo v nekaj minutah. Ko je vaš prvi depozit obdelan, lahko takoj aktivirate načrt.</p></details>
@@ -88,7 +88,7 @@ require __DIR__ . '/includes/header.php';
       </details>
     </div>
     <div class="tw9z4by">
-      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a>
+      <a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a>
       <a class="qou73xg ec2hno" href="<?= page_url('contacts.php') ?>">Pošlji sporočilo</a>
     </div>
   </div>

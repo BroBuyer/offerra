@@ -4,7 +4,7 @@
       <div>
         <a class="jfbcnp" href="<?= page_url() ?>">
           <img src="<?= asset('static/img/brand/logo.webp') ?>" alt="<?= e(SITE_NAME) ?>" width="28" height="28" decoding="async" title="<?= e(SITE_NAME) ?>" loading="eager">
-          <?= e(SITE_NAME) ?>
+ <?= e(SITE_NAME) ?>
         </a>
         <p>Popolna preglednost delovanja vašega kapitala. Tvegani kapital: vlagajte odgovorno.</p>
       </div>

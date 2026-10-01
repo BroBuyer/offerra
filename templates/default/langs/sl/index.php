@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 
-$page_title = page_title('AI-Powered Trgovalna platforma');
-$page_description = 'Trade crypto, forex, and global markets with ' . SITE_NAME . '. Real-time analytics, AI-assisted signals, and a platform built for speed and clarity.';
+$page_title = page_title('Trgovalna platforma z umetno inteligenco');
+$page_description = 'Trgujte s kriptovalutami, forexom in svetovnimi trgi na ' . SITE_NAME . '. Analitika v realnem času, signali z umetno inteligenco in platforma, zasnovana za hitrost in jasnost.';
 $page_canonical = page_url();
 $active_page = 'home';
 
@@ -17,15 +17,15 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container hero-grid">
       <div class="hero-content">
         <p class="eyebrow">AI Trgovalna platforma</p>
-        <h1>Trade smarter.<br><span class="text-accent">Move faster.</span></h1>
+        <h1>Trgujte pametneje.<br><span class="text-accent">Ukrepajte hitreje.</span></h1>
         <p class="lead">
-          A new standard in crypto and multi-market trading. Advanced security, transparent fees,
-          AI-driven insights, and an interface that stays out of your way.
+          Nov standard pri kripto in trgovanju na več trgih. Napredna varnost, pregledne provizije,
+          vpogledi umetne inteligence in vmesnik, ki ne moti.
         </p>
         <div class="hero-badges">
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            SSL Varnod
+            SSL varnost
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -33,7 +33,7 @@ require_once __DIR__ . '/includes/header.php';
           </span>
           <span class="badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            Fast Execution
+            Hitra izvedba
           </span>
         </div>
         <a href="sign.php" class="btn btn-primary">Začni trgovati — <?= MIN_DEPOSIT ?> <?= CURRENCY ?> min.</a>
@@ -42,7 +42,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card form-card-accent">
         <?php
         $form_id = 'hero-form';
-        $form_heading = 'Odpri svojoaccount in 2 minutes';
+        $form_heading = 'Odprite račun v 2 minutah';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>
@@ -66,29 +66,29 @@ require_once __DIR__ . '/includes/header.php';
       </div>
       <div class="stat-item">
         <div class="stat-value">100<span class="unit">+</span></div>
-        <div class="stat-label">Countries supported</div>
+        <div class="stat-label">Podprte države</div>
       </div>
     </div>
   </section>
 
   <!-- Platforma phone (competitor-style: centered between stats & features) -->
-  <section class="platform-section" id="platform" aria-label="Trgovalna platforma preview">
+  <section class="platform-section" id="platform" aria-label="Predogled trgovalne platforme">
     <div class="container platform-layout">
       <?php require __DIR__ . '/includes/platform-image.php'; ?>
 
       <div class="platform-copy">
         <p class="eyebrow">Trgovalna platforma</p>
-        <h2>Professional charts.<br>Mobile-ready.</h2>
+        <h2>Profesionalni grafikoni.<br>Pripravljeni za telefon.</h2>
         <p class="lead">
-          A clean interface built like a modern exchange — live BTC/USDT data, portfolio tracking,
-          and one-tap execution. Designed to build confidence from your first login.
+          Pregleden vmesnik, zasnovan kot sodobna borza — podatki BTC/USDT v živo, spremljanje portfelja
+          in izvedba z enim tapom. Zasnovan tako, da že od prve prijave gradi zaupanje.
         </p>
         <ul class="platform-points">
-          <li>Real-time candlestick charts</li>
-          <li>Portfolio &amp; P/L at a glance</li>
-          <li>Varno account dashboard</li>
+          <li>Svečni grafikoni v realnem času</li>
+          <li>Portfelj in D/I na prvi pogled</li>
+          <li>Varna nadzorna plošča računa</li>
         </ul>
-        <a href="sign.php" class="btn btn-primary">Try the platform</a>
+        <a href="sign.php" class="btn btn-primary">Preizkusite platformo</a>
       </div>
     </div>
   </section>
@@ -98,8 +98,8 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
       <div class="section-header">
         <p class="eyebrow">Why <?= e(SITE_NAME) ?></p>
-        <h2>Everything you need to trade with confidence</h2>
-        <p class="lead">Varnost, speed, and intelligence — combined in one clean platform designed for modern traders.</p>
+        <h2>Vse, kar potrebujete za samozavestno trgovanje</h2>
+        <p class="lead">Varnost, hitrost in inteligenca — združene v eni pregledni platformi za sodobne trgovce.</p>
       </div>
 
       <div class="features-grid">
@@ -149,11 +149,11 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <!-- Live markets -->
+  <!-- Trgi v živo -->
   <section class="section section-sm" style="background: var(--surface); border-block: 1px solid var(--border);">
     <div class="container split">
       <div>
-        <p class="eyebrow">Live markets</p>
+        <p class="eyebrow">Trgi v živo</p>
         <h2>Trade Bitcoin, Ethereum, and more</h2>
         <p class="lead" style="margin: 1rem 0 2rem;">
           Real-time prices, advanced indicators, and a professional-grade view of the markets you care about.
@@ -196,7 +196,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header centered">
-        <p class="eyebrow">Getting started</p>
+        <p class="eyebrow">Kako začeti</p>
         <h2>From signup to your first trade in minutes</h2>
         <p class="lead">A guided path — no complexity, no guesswork.</p>
       </div>
@@ -212,7 +212,7 @@ require_once __DIR__ . '/includes/header.php';
         </article>
         <article class="step-card">
           <h3>Financirajte svoj račun</h3>
-          <p>Položite najmanj<?= MIN_DEPOSIT ?> <?= CURRENCY ?>prek bančnega nakazila, kartice ali e-denarnice.</p>
+          <p>Položite najmanj <?= MIN_DEPOSIT ?> <?= CURRENCY ?> prek bančnega nakazila, kartice ali e-denarnice.</p>
         </article>
         <article class="step-card">
           <h3>Določite svojo strategijo</h3>
@@ -233,7 +233,7 @@ require_once __DIR__ . '/includes/header.php';
   <!-- Payment methods -->
   <section class="section-sm payment-section">
     <div class="container" style="max-width: 720px; margin-inline: auto; text-align: center;">
-      <p class="eyebrow" style="justify-content: center;">Funding</p>
+      <p class="eyebrow" style="justify-content: center;">Financiranje</p>
       <h2 style="margin-bottom: 0.75rem;">Deposit with methods you already trust</h2>
       <p class="lead" style="margin-bottom: 1.75rem;">Cards, e-wallets, and bank transfers — secured with SSL encryption.</p>
       <?php
@@ -248,7 +248,7 @@ require_once __DIR__ . '/includes/header.php';
   <section class="section-sm">
     <div class="container">
       <div class="section-header centered" style="margin-bottom: 2rem;">
-        <p class="eyebrow">Zaupanja vreden infrastructure</p>
+        <p class="eyebrow">Zaupanja vredna infrastruktura</p>
         <h2>Built on industry-standard partners</h2>
       </div>
       <?php require __DIR__ . '/includes/partners.php'; ?>
@@ -394,7 +394,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Advanced market analysis powered by machine learning</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Funding methods</div>
+          <div class="specs-label">Financiranje methods</div>
           <div class="specs-value">Credit cards, bank transfers, PayPal, e-wallets</div>
         </div>
         <div class="specs-row">
@@ -410,7 +410,7 @@ require_once __DIR__ . '/includes/header.php';
           <div class="specs-value">Crypto, forex, stocks, commodities</div>
         </div>
         <div class="specs-row">
-          <div class="specs-label">Onboarding</div>
+          <div class="specs-label">Uvajanje</div>
           <div class="specs-value">Fast account setup with guided verification</div>
         </div>
         <div class="specs-row specs-row-highlight">
@@ -432,7 +432,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="trust-score">4.7</div>
         <div class="trust-stars">★★★★★</div>
         <div class="trust-meta">
-          <strong>342</strong> reviews · Na podlagi<strong>1,842</strong> ratings
+          <strong>342</strong> ocen · Na podlagi<strong>1,842</strong> ratings
         </div>
       </div>
     </div>
@@ -448,7 +448,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="form-card">
         <?php
         $form_id = 'bottom-form';
-        $form_heading = 'Create your free account';
+        $form_heading = 'Ustvarite brezplačen račun';
         require __DIR__ . '/includes/form.php';
         ?>
       </div>

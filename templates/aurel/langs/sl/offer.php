@@ -41,12 +41,12 @@ require __DIR__ . '/includes/header.php';
     <div class="fduhcv"><b>01</b><i></i></div>
     <h2>Kaj dobite, česar nastavitev "naredi sam" ne</h2>
     <ul class="skvsaz4">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Subsekundna izvedba na vsakem povezanem trgu.</b> <?= e(SITE_NAME) ?>ohranja stalne povezave API z nizko zakasnitvijo z vsako podprto izmenjavo. Ko model ustvari signal, se naročilo pošlje, izpolni in zabeleži na nadzorni plošči pred naslednjo kljukico.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Deluje 24/7, skozi vsako tržno sejo.</b> Kripto ne počiva in tudi ne<?= e(SITE_NAME) ?>. Motor še naprej analizira pare ob vikendih in praznikih, tako da priložnosti ne zamudite.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Subsekundna izvedba na vsakem povezanem trgu.</b> <?= e(SITE_NAME) ?> ohranja stalne povezave API z nizko zakasnitvijo z vsako podprto borzo. Ko model ustvari signal, se naročilo pošlje, izpolni in zabeleži na nadzorni plošči pred naslednjo kljukico.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Deluje 24/7, skozi vsako tržno sejo.</b> Kripto ne počiva in tudi ne <?= e(SITE_NAME) ?>. Motor še naprej analizira pare ob vikendih in praznikih, tako da priložnosti ne zamudite.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Večvalutno poročanje.</b> Vsako stanje, vsako trgovanje in vsak dvig je prikazan v vaši lokalni valuti. Na nobeni točki ni skritih korakov pretvorbe.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Ločen kapital.</b> Vaša sredstva ostanejo na vašem računu.<?= e(SITE_NAME) ?>nikoli jih ne zadrži: motor ima samo dovoljenje za pošiljanje naročil.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Ločen kapital.</b> Vaša sredstva ostanejo na vašem računu. <?= e(SITE_NAME) ?> nikoli jih ne zadrži: sistem ima samo dovoljenje za pošiljanje naročil.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Varnost bančnega razreda.</b> Šifriranje TLS na celotni platformi, privzeto preverjanje v dveh korakih in četrtletne revizije infrastrukture tretjih oseb. Trgovinski prejemki, prijavljeni v verigi.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Trije razredi sredstev, ena platforma.</b> Večina maloprodajnih platform vas omejuje na en trg.<?= e(SITE_NAME) ?>trguje s kriptovalutami, delnicami, ki kotirajo na borzi, in glavnimi valutnimi pari z iste nadzorne plošče.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Trije razredi sredstev, ena platforma.</b> Večina maloprodajnih platform vas omejuje na en trg. <?= e(SITE_NAME) ?> trguje s kriptovalutami, delnicami, ki kotirajo na borzi, in glavnimi valutnimi pari z iste nadzorne plošče.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Vnaprej nastavljene omejitve tveganja za vsako pozicijo.</b> Stopnja izgube, največja dovoljena izguba in omejitev dodelitve kapitala so konfigurirane glede na razred sredstev. Mehanizem samodejno zapre vsako trgovanje, ki preseže prag, in dogodek se zabeleži v vaši zgodovini revizije.</span></li>
     </ul>
   </div>
@@ -63,7 +63,7 @@ require __DIR__ . '/includes/header.php';
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Trgujete s profesionalnim obsegom z lastnim izvršilnim skladom.</span></li>
     </ul>
     <p class="jkkyl">Naložba vključuje tveganje, vključno z možno izgubo dela ali celotnega kapitala, ki ga vložite. Vrednost naložb se lahko zniža ali poveča, povrnjeno pa lahko dobite manj, kot ste prvotno vložili. Ne vlagajte denarja, ki si ga ne morete privoščiti izgubiti.</p>
-    <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek —<?= e(money_min()) ?> od</a></div>
+    <div class="tw9z4by"><a class="qou73xg fi3abjs" href="<?= page_url() ?>#nlokf">Začetek — <?= e(money_min()) ?> od</a></div>
   </div>
 </section>
 

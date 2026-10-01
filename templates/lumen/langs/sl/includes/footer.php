@@ -20,7 +20,7 @@
 
     <div class="footer-risk">
       <p>
-        <?= e(SITE_NAME) ?>ni odgovoren za kakršno koli izgubo ali škodo, ki bi nastala zaradi uporabe informacij na tej strani. Trgovanje na finančnih trgih vključuje tveganje. Vlagajte le sredstva, ki si jih lahko privoščite izgubiti. FX, CFD-ji in kriptovalute morda niso primerni za vse vlagatelje. Pred trgovanjem poiščite nasvet kvalificiranega strokovnjaka.
+ <?= e(SITE_NAME) ?> ni odgovoren za kakršno koli izgubo ali škodo, ki bi nastala zaradi uporabe informacij na tej strani. Trgovanje na finančnih trgih vključuje tveganje. Vlagajte le sredstva, ki si jih lahko privoščite izgubiti. FX, CFD-ji in kriptovalute morda niso primerni za vse vlagatelje. Pred trgovanjem poiščite nasvet kvalificiranega strokovnjaka.
       </p>
     </div>
 
