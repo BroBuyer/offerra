@@ -1411,7 +1411,7 @@ export default function OffersCreate({
                             {message}
                         </p>
                     ))}
-                    {errors.generate?.includes('Папка вже існує') && (
+                    {(errors.generate?.includes('Папка вже існує') || errors.generate?.includes('такою папкою вже існує')) && (
                         <p className="field-hint" style={{ marginTop: '0.5rem' }}>
                             Можливо, оффер уже створено. Перевірте{' '}
                             <Link href={route('offers.index')}>каталог офферів</Link>.

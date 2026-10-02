@@ -22,6 +22,7 @@ use App\Services\OfferTeardownService;
 use App\Services\StaleDeadOfferService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -388,7 +389,7 @@ class OfferController extends Controller
         } catch (\Throwable $e) {
             return redirect()
                 ->route('offers.create')
-                ->withErrors(['generate' => $e->getMessage()]);
+                ->withErrors(['generate' => $this->generateErrorMessage($e)]);
         }
 
         $message = ! empty($result['already_existed'])
@@ -463,7 +464,7 @@ class OfferController extends Controller
             } catch (\Throwable $e) {
                 $failed[] = [
                     'domain' => $domain,
-                    'message' => $e->getMessage(),
+                    'message' => $this->generateErrorMessage($e),
                 ];
             }
         }
@@ -962,6 +963,20 @@ class OfferController extends Controller
         return redirect()
             ->route('offers.index')
             ->with('success', $message);
+    }
+
+    private function generateErrorMessage(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+
+        if ($e instanceof UniqueConstraintViolationException
+            || str_contains($message, 'offers_folder_unique')
+            || str_contains($message, 'duplicate key value')
+        ) {
+            return 'Оффер з такою папкою вже існує. Спробуйте створити ще раз — буде підібрано унікальну назву.';
+        }
+
+        return $message;
     }
 
     private function authorizeOfferManagement(Offer $offer): void

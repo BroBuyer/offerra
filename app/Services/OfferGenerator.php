@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Support\InfrastructureOptions;
 use App\Support\MarketOptions;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 use RuntimeException;
@@ -47,14 +48,20 @@ class OfferGenerator
         $affiliateTag = $this->normalizeAffiliateTag($settings->affiliate_tag);
         $input['affiliate_tag'] = $affiliateTag;
 
-        $folder = $this->buildFolderName($input);
+        $resolved = $this->resolveTargetFolder($user, $input);
+        $folder = $resolved['folder'];
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder;
+
+        if ($resolved['offer'] !== null) {
+            return $this->reuseExistingOffer($resolved['offer'], $folder, $targetPath);
+        }
 
         if (File::isDirectory($targetPath)) {
             return $this->resolveExisting($user, $folder, $targetPath);
         }
 
         $keitaro = null;
+        $offer = null;
 
         if (! empty($input['create_keitaro'])) {
             $keitaro = $this->keitaroClient->createCampaign($settings, $input);
@@ -156,8 +163,32 @@ class OfferGenerator
             ]);
 
             $this->verificationFiles->syncToOfferFolder($offer);
-        } catch (\Throwable $e) {
+        } catch (UniqueConstraintViolationException $e) {
             if (File::isDirectory($targetPath)) {
+                File::deleteDirectory($targetPath);
+            }
+
+            $existing = Offer::query()
+                ->where('folder', $folder)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($existing && ! $this->isRetiredStatus($existing->status)) {
+                return $this->reuseExistingOffer(
+                    $existing,
+                    $folder,
+                    rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder,
+                );
+            }
+
+            throw new RuntimeException(
+                'Оффер з такою папкою вже існує. Спробуйте ще раз — буде підібрано унікальну назву.',
+                0,
+                $e,
+            );
+        } catch (\Throwable $e) {
+            // Keep the DB row if create already succeeded; only wipe a half-copied folder.
+            if ($offer === null && File::isDirectory($targetPath)) {
                 File::deleteDirectory($targetPath);
             }
 
@@ -183,6 +214,10 @@ class OfferGenerator
             ->first();
 
         if ($existing) {
+            if ($this->isRetiredStatus($existing->status)) {
+                throw new RuntimeException("Папка вже існує: {$folder}");
+            }
+
             return [
                 'folder' => $folder,
                 'path' => $targetPath,
@@ -244,6 +279,84 @@ class OfferGenerator
             strtolower($input['domain']),
             $date,
         );
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     * @return array{folder: string, offer: ?Offer}
+     */
+    public function resolveTargetFolder(User $user, array $input): array
+    {
+        $base = $this->buildFolderName($input);
+        $basePath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$base;
+        $existing = Offer::query()->where('folder', $base)->first();
+
+        if ($existing
+            && (int) $existing->user_id === (int) $user->id
+            && ! $this->isRetiredStatus($existing->status)
+        ) {
+            return ['folder' => $base, 'offer' => $existing];
+        }
+
+        if (! $existing && File::isDirectory($basePath)) {
+            return ['folder' => $base, 'offer' => null];
+        }
+
+        return ['folder' => $this->uniqueFolderName($base), 'offer' => null];
+    }
+
+    public function uniqueFolderName(string $base): string
+    {
+        $folder = $base;
+        $n = 2;
+
+        while ($this->folderIsTaken($folder)) {
+            $folder = $base.'_'.$n;
+            $n++;
+
+            if ($n > 99) {
+                throw new RuntimeException("Не вдалося підібрати унікальну папку: {$base}");
+            }
+        }
+
+        return $folder;
+    }
+
+    private function folderIsTaken(string $folder): bool
+    {
+        if (Offer::query()->where('folder', $folder)->exists()) {
+            return true;
+        }
+
+        $path = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder;
+
+        return File::isDirectory($path);
+    }
+
+    private function isRetiredStatus(?string $status): bool
+    {
+        return in_array($status, ['archived', 'archiving', 'teardown_failed'], true);
+    }
+
+    /**
+     * @return array{folder: string, path: string, offer: Offer, already_existed: bool}
+     */
+    private function reuseExistingOffer(Offer $offer, string $folder, string $targetPath): array
+    {
+        if (! File::isDirectory($targetPath) || ! $this->folderIsComplete($targetPath, $offer->template)) {
+            try {
+                $targetPath = $this->rebuildLocalFolder($offer);
+            } catch (\Throwable) {
+                // Offer row is the source of truth; deploy can rebuild later.
+            }
+        }
+
+        return [
+            'folder' => $folder,
+            'path' => $targetPath,
+            'offer' => $offer,
+            'already_existed' => true,
+        ];
     }
 
     private function normalizeAffiliateTag(?string $tag): string
