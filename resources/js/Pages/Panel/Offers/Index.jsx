@@ -166,7 +166,7 @@ function indexedTick(offer) {
 }
 
 function IndexTick({ tone, title, onClick, busy = false, label }) {
-    const className = `index-tick index-tick--${tone}${onClick ? ' index-tick--button' : ''}`;
+    const className = `index-tick index-tick--${tone}${onClick ? ' index-tick--button' : ''}${busy ? ' is-busy' : ''}`;
 
     if (typeof onClick === 'function') {
         return (
@@ -551,6 +551,7 @@ export default function OffersIndex({
     const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
     const [checkingAvailabilityId, setCheckingAvailabilityId] = useState(null);
+    const [checkingIndexId, setCheckingIndexId] = useState(null);
     const [archivingId, setArchivingId] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
@@ -1013,6 +1014,22 @@ export default function OffersIndex({
         );
     };
 
+    const inspectIndex = (offer) => {
+        if (checkingIndexId) {
+            return;
+        }
+
+        setCheckingIndexId(offer.id);
+        router.post(
+            route('offers.inspect-index', offer.id),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setCheckingIndexId(null),
+            },
+        );
+    };
+
     const copyDomainUrl = async (offer) => {
         const url = `https://${offer.domain}`;
 
@@ -1143,6 +1160,11 @@ export default function OffersIndex({
             {flash?.error && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{flash.error}</p>
+                </div>
+            )}
+            {flash?.warning && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#fbbf24' }}>
+                    <p className="card-desc" style={{ color: '#fbbf24' }}>{flash.warning}</p>
                 </div>
             )}
             {flash?.success && (
@@ -1786,11 +1808,18 @@ export default function OffersIndex({
                                         <td className="col-index">
                                             {(() => {
                                                 const mark = indexedTick(offer);
+                                                const canInspect = canManageOffer(offer);
                                                 return (
                                                     <IndexTick
                                                         tone={mark.tone}
-                                                        title={mark.title}
+                                                        title={
+                                                            canInspect
+                                                                ? `${mark.title} · Натисни, щоб перевірити зараз`
+                                                                : mark.title
+                                                        }
                                                         label={mark.tone === 'ok' ? 'Indexed' : mark.tone === 'fail' ? 'Not indexed' : 'Indexing pending'}
+                                                        busy={checkingIndexId === offer.id}
+                                                        onClick={canInspect ? () => inspectIndex(offer) : undefined}
                                                     />
                                                 );
                                             })()}
@@ -1920,10 +1949,20 @@ export default function OffersIndex({
                             )}
                             {(() => {
                                 const indexed = indexedTick(offer);
+                                const canInspect = canManageOffer(offer);
                                 return (
                                     <div className="offer-mobile-ticks">
                                         <span className="field-hint">Indexed</span>
-                                        <IndexTick tone={indexed.tone} title={indexed.title} />
+                                        <IndexTick
+                                            tone={indexed.tone}
+                                            title={
+                                                canInspect
+                                                    ? `${indexed.title} · Натисни, щоб перевірити зараз`
+                                                    : indexed.title
+                                            }
+                                            busy={checkingIndexId === offer.id}
+                                            onClick={canInspect ? () => inspectIndex(offer) : undefined}
+                                        />
                                     </div>
                                 );
                             })()}

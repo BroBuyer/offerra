@@ -16,6 +16,7 @@ use App\Services\InfrastructureProvisioner;
 use App\Services\OfferAvailabilityProbe;
 use App\Services\OfferGenerator;
 use App\Services\OfferGscSubmitter;
+use App\Services\OfferGoogleIndexInspector;
 use App\Services\OfferRestoreService;
 use App\Services\OfferTeardownService;
 use App\Services\StaleDeadOfferService;
@@ -776,6 +777,46 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with($status === 'ok' ? 'success' : 'warning', $message);
+    }
+
+    public function inspectIndex(Offer $offer, OfferGoogleIndexInspector $inspector): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        @set_time_limit(120);
+
+        try {
+            $result = $inspector->inspect($offer->fresh() ?? $offer, true);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->with('error', "{$offer->domain}: ".$e->getMessage());
+        }
+
+        $coverage = trim((string) ($result['coverage'] ?? ''));
+        $status = (string) ($result['status'] ?? '');
+        $indexed = (bool) ($result['indexed'] ?? false);
+
+        if ($indexed) {
+            return redirect()
+                ->back()
+                ->with('success', $offer->domain.': Indexed'.($coverage !== '' ? ' · '.$coverage : ''));
+        }
+
+        $message = match ($status) {
+            OfferGoogleIndexInspector::STATUS_UNKNOWN => $offer->domain.': Google ще не знає цей URL',
+            OfferGoogleIndexInspector::STATUS_NOT_INDEXED => $offer->domain.': прокраулено, ще не в індексі',
+            OfferGoogleIndexInspector::STATUS_TIMEOUT => $offer->domain.': не в індексі за 7 днів',
+            default => $offer->domain.': не вдалося перевірити',
+        };
+
+        if ($coverage !== '') {
+            $message .= ' · '.$coverage;
+        }
+
+        return redirect()
+            ->back()
+            ->with($status === OfferGoogleIndexInspector::STATUS_ERROR ? 'error' : 'warning', $message);
     }
 
     public function submitGsc(Offer $offer, OfferGscSubmitter $gsc): RedirectResponse

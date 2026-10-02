@@ -101,7 +101,7 @@ class OfferGoogleIndexInspector
     /**
      * @return array{status: string, indexed: bool, coverage: ?string}
      */
-    public function inspect(Offer $offer): array
+    public function inspect(Offer $offer, bool $force = false): array
     {
         if (in_array($offer->status, ['archived', 'archiving', 'teardown_failed'], true)) {
             return [
@@ -111,7 +111,7 @@ class OfferGoogleIndexInspector
             ];
         }
 
-        if ($offer->google_indexed_at) {
+        if (! $force && $offer->google_indexed_at) {
             return [
                 'status' => self::STATUS_INDEXED,
                 'indexed' => true,
@@ -309,39 +309,59 @@ class OfferGoogleIndexInspector
     }
 
     /**
+     * Owner accounts first (pinned / primary), then every other connected Google
+     * in the panel — offers are often verified in Admin GSC even when the row is EGO.
+     *
      * @return Collection<int, GoogleAccount>
      */
     private function inspectAccounts(Offer $offer): Collection
     {
         $offer->loadMissing(['user.googleAccounts', 'user.settings']);
-        $accounts = $offer->user?->googleAccounts ?? collect();
-        if ($accounts instanceof Collection && $accounts->isNotEmpty()) {
-            $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-            $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
-            $pinnedId = (int) ($gsc['google_account_id'] ?? 0);
-            $pinnedEmail = strtolower(trim((string) ($gsc['email'] ?? '')));
-
-            return $accounts
-                ->filter(fn (GoogleAccount $account) => filled($account->refresh_token))
-                ->sortBy(function (GoogleAccount $account) use ($pinnedId, $pinnedEmail) {
-                    if ($pinnedId > 0 && $account->id === $pinnedId) {
-                        return 0;
-                    }
-                    if ($pinnedEmail !== '' && strtolower((string) $account->email) === $pinnedEmail) {
-                        return 1;
-                    }
-                    if ($account->is_primary) {
-                        return 2;
-                    }
-
-                    return 3;
-                })
-                ->values();
+        $owned = $this->sortOwnerAccounts($offer, $offer->user?->googleAccounts ?? collect());
+        if ($owned->isEmpty()) {
+            $settings = $offer->user?->settings;
+            $primary = $settings instanceof UserSetting ? $settings->primaryGoogleAccount() : null;
+            $owned = $primary ? collect([$primary]) : collect();
         }
 
-        $settings = $offer->user?->settings;
-        $primary = $settings instanceof UserSetting ? $settings->primaryGoogleAccount() : null;
+        $extra = GoogleAccount::query()
+            ->whereNotNull('refresh_token')
+            ->when($owned->isNotEmpty(), fn ($query) => $query->whereNotIn('id', $owned->pluck('id')->all()))
+            ->orderBy('user_id')
+            ->orderBy('id')
+            ->get()
+            ->filter(fn (GoogleAccount $account) => filled($account->refresh_token));
 
-        return $primary ? collect([$primary]) : collect();
+        return $owned->concat($extra)->values();
+    }
+
+    /**
+     * @param  Collection<int, GoogleAccount>|iterable<int, GoogleAccount>  $accounts
+     * @return Collection<int, GoogleAccount>
+     */
+    private function sortOwnerAccounts(Offer $offer, mixed $accounts): Collection
+    {
+        $collection = $accounts instanceof Collection ? $accounts : collect($accounts);
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+        $pinnedId = (int) ($gsc['google_account_id'] ?? 0);
+        $pinnedEmail = strtolower(trim((string) ($gsc['email'] ?? '')));
+
+        return $collection
+            ->filter(fn (GoogleAccount $account) => filled($account->refresh_token))
+            ->sortBy(function (GoogleAccount $account) use ($pinnedId, $pinnedEmail) {
+                if ($pinnedId > 0 && $account->id === $pinnedId) {
+                    return 0;
+                }
+                if ($pinnedEmail !== '' && strtolower((string) $account->email) === $pinnedEmail) {
+                    return 1;
+                }
+                if ($account->is_primary) {
+                    return 2;
+                }
+
+                return 3;
+            })
+            ->values();
     }
 }

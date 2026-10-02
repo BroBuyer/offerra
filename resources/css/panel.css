@@ -1836,6 +1836,10 @@ a:hover { text-decoration: underline; }
   opacity: 0.7;
 }
 
+.index-tick.is-busy {
+  animation: dns-pulse 1s ease-in-out infinite;
+}
+
 .offer-mobile-ticks {
   display: flex;
   align-items: center;

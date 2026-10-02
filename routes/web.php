@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
     Route::patch('/offers/{offer}/indexing', [OfferController::class, 'updateIndexing'])->name('offers.indexing');
     Route::post('/offers/{offer}/check-availability', [OfferController::class, 'checkAvailability'])->name('offers.check-availability');
+    Route::post('/offers/{offer}/inspect-index', [OfferController::class, 'inspectIndex'])->name('offers.inspect-index');
     Route::post('/offers/{offer}/gsc', [OfferController::class, 'submitGsc'])->name('offers.gsc');
     Route::get('/mirrors', [MirrorDomainController::class, 'index'])->name('mirrors.index');
     Route::patch('/mirrors/{mirror}', [MirrorDomainController::class, 'update'])->name('mirrors.update');

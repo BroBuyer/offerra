@@ -35,6 +35,6 @@ class InspectOfferGoogleIndexJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        $inspector->inspect($offer);
+        $inspector->inspect($offer, $this->force);
     }
 }
