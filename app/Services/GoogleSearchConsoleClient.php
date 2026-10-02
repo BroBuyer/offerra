@@ -168,17 +168,17 @@ class GoogleSearchConsoleClient
     }
 
     /**
-     * Site properties this Google account can inspect, cached briefly so a
+     * Site properties this Google account can see, cached briefly so a
      * pending sweep does not list sites once per offer.
      *
-     * @return list<string>
+     * @return list<array{site_url: string, permission: string}>
      */
-    public function listSiteUrls(GoogleAccount $account): array
+    public function listSiteEntries(GoogleAccount $account): array
     {
-        $cacheKey = 'gsc.sites.'.$account->id;
+        $cacheKey = 'gsc.sites.v2.'.$account->id;
 
-        /** @var list<string> $urls */
-        $urls = Cache::remember($cacheKey, 1800, function () use ($account): array {
+        /** @var list<array{site_url: string, permission: string}> $entries */
+        $entries = Cache::remember($cacheKey, 1800, function () use ($account): array {
             $accessToken = $this->oauth->accessTokenForAccount($account);
             $response = Http::timeout(30)
                 ->withToken($accessToken)
@@ -193,25 +193,50 @@ class GoogleSearchConsoleClient
                 );
             }
 
-            $entries = $response->json('siteEntry') ?? [];
+            $raw = $response->json('siteEntry') ?? [];
             $listed = [];
-            foreach (is_array($entries) ? $entries : [] as $entry) {
-                $url = trim((string) (is_array($entry) ? ($entry['siteUrl'] ?? '') : ''));
-                if ($url !== '') {
-                    $listed[] = $url;
+            foreach (is_array($raw) ? $raw : [] as $entry) {
+                if (! is_array($entry)) {
+                    continue;
                 }
+                $url = trim((string) ($entry['siteUrl'] ?? ''));
+                if ($url === '') {
+                    continue;
+                }
+                $listed[] = [
+                    'site_url' => $url,
+                    'permission' => trim((string) ($entry['permissionLevel'] ?? '')),
+                ];
             }
 
-            return array_values(array_unique($listed));
+            return $listed;
         });
 
-        return $urls;
+        return $entries;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function listSiteUrls(GoogleAccount $account): array
+    {
+        return array_values(array_unique(array_map(
+            fn (array $entry) => $entry['site_url'],
+            $this->listSiteEntries($account),
+        )));
+    }
+
+    public static function canInspectPermission(string $permission): bool
+    {
+        return in_array($permission, ['siteOwner', 'siteFullUser'], true);
     }
 
     /**
      * Which property on this account covers the offer domain, if any.
+     *
+     * @return array{site_url: string, permission: string}|null
      */
-    public function resolveSiteUrlForAccount(GoogleAccount $account, string $domain, ?string $preferred = null): ?string
+    public function findSiteOnAccount(GoogleAccount $account, string $domain, ?string $preferred = null): ?array
     {
         $domain = strtolower(trim($domain));
         if ($domain === '') {
@@ -219,7 +244,7 @@ class GoogleSearchConsoleClient
         }
 
         try {
-            $listed = $this->listSiteUrls($account);
+            $listed = $this->listSiteEntries($account);
         } catch (RuntimeException $e) {
             if ($this->isNotOwnerError($e)) {
                 return null;
@@ -228,21 +253,35 @@ class GoogleSearchConsoleClient
             throw $e;
         }
 
-        foreach (self::siteUrlsForDomain($domain, $preferred) as $candidate) {
+        $candidates = self::siteUrlsForDomain($domain, $preferred);
+        foreach ($candidates as $candidate) {
             foreach ($listed as $have) {
-                if (strcasecmp($have, $candidate) === 0) {
+                if (strcasecmp($have['site_url'], $candidate) === 0) {
                     return $have;
                 }
             }
         }
 
         foreach ($listed as $have) {
-            if (self::siteUrlMatchesDomain($have, $domain)) {
+            if (self::siteUrlMatchesDomain($have['site_url'], $domain)) {
                 return $have;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Inspectable property URL on this account, or null.
+     */
+    public function resolveSiteUrlForAccount(GoogleAccount $account, string $domain, ?string $preferred = null): ?string
+    {
+        $found = $this->findSiteOnAccount($account, $domain, $preferred);
+        if (! $found || ! self::canInspectPermission($found['permission'])) {
+            return null;
+        }
+
+        return $found['site_url'];
     }
 
     /**

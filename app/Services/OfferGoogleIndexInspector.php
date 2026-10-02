@@ -133,14 +133,15 @@ class OfferGoogleIndexInspector
         $ownedResult = null;
         $ownedAccount = null;
         $errors = [];
+        $unverified = [];
         $tried = 0;
         $storedSiteUrl = $this->storedSiteUrl($offer);
 
         foreach ($accounts as $account) {
             $tried++;
-            $siteUrl = null;
+            $found = null;
             try {
-                $siteUrl = $this->gsc->resolveSiteUrlForAccount($account, (string) $offer->domain, $storedSiteUrl);
+                $found = $this->gsc->findSiteOnAccount($account, (string) $offer->domain, $storedSiteUrl);
             } catch (RuntimeException $e) {
                 Log::warning('GSC sites.list failed', [
                     'offer' => $offer->id,
@@ -152,10 +153,17 @@ class OfferGoogleIndexInspector
                 continue;
             }
 
-            if ($siteUrl === null) {
+            if (! $found) {
                 $errors[] = $account->email.': немає property';
                 continue;
             }
+
+            if (! GoogleSearchConsoleClient::canInspectPermission($found['permission'])) {
+                $unverified[] = $account->email;
+                continue;
+            }
+
+            $siteUrl = $found['site_url'];
 
             try {
                 $result = $this->gsc->inspectUrl($offer, $account, $siteUrl);
@@ -220,6 +228,18 @@ class OfferGoogleIndexInspector
                 'status' => $status,
                 'indexed' => false,
                 'coverage' => $coverage,
+            ];
+        }
+
+        if ($unverified !== []) {
+            $who = $this->shortEmailList($unverified);
+            $coverage = 'Сайт у GSC не підтверджений ('.$who.'). Підключіть Google, який верифікував.';
+            $this->stamp($offer, self::STATUS_ERROR, null, substr($coverage, 0, 190));
+
+            return [
+                'status' => self::STATUS_ERROR,
+                'indexed' => false,
+                'coverage' => substr($coverage, 0, 190),
             ];
         }
 
@@ -306,6 +326,20 @@ class OfferGoogleIndexInspector
     private function shortAccountError(RuntimeException $e): string
     {
         return substr($e->getMessage(), 0, 80);
+    }
+
+    /**
+     * @param  list<string>  $emails
+     */
+    private function shortEmailList(array $emails): string
+    {
+        $short = array_map(function (string $email): string {
+            $at = strpos($email, '@');
+
+            return $at === false ? $email : substr($email, 0, $at);
+        }, $emails);
+
+        return substr(implode(', ', $short), 0, 80);
     }
 
     /**

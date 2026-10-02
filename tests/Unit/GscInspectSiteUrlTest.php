@@ -48,4 +48,12 @@ class GscInspectSiteUrlTest extends TestCase
             'worthimant-uk.online',
         ));
     }
+
+    public function test_only_owner_and_full_user_can_inspect(): void
+    {
+        $this->assertTrue(GoogleSearchConsoleClient::canInspectPermission('siteOwner'));
+        $this->assertTrue(GoogleSearchConsoleClient::canInspectPermission('siteFullUser'));
+        $this->assertFalse(GoogleSearchConsoleClient::canInspectPermission('siteUnverifiedUser'));
+        $this->assertFalse(GoogleSearchConsoleClient::canInspectPermission('siteRestrictedUser'));
+    }
 }
