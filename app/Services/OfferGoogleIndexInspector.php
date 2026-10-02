@@ -133,10 +133,32 @@ class OfferGoogleIndexInspector
         $ownedResult = null;
         $ownedAccount = null;
         $errors = [];
+        $tried = 0;
+        $storedSiteUrl = $this->storedSiteUrl($offer);
 
         foreach ($accounts as $account) {
+            $tried++;
+            $siteUrl = null;
             try {
-                $result = $this->gsc->inspectUrl($offer, $account);
+                $siteUrl = $this->gsc->resolveSiteUrlForAccount($account, (string) $offer->domain, $storedSiteUrl);
+            } catch (RuntimeException $e) {
+                Log::warning('GSC sites.list failed', [
+                    'offer' => $offer->id,
+                    'domain' => $offer->domain,
+                    'email' => $account->email,
+                    'error' => $e->getMessage(),
+                ]);
+                $errors[] = $account->email.': '.$this->shortAccountError($e);
+                continue;
+            }
+
+            if ($siteUrl === null) {
+                $errors[] = $account->email.': немає property';
+                continue;
+            }
+
+            try {
+                $result = $this->gsc->inspectUrl($offer, $account, $siteUrl);
             } catch (RuntimeException $e) {
                 Log::warning('GSC inspect failed', [
                     'offer' => $offer->id,
@@ -150,13 +172,13 @@ class OfferGoogleIndexInspector
                     continue;
                 }
 
-                $errors[] = $account->email.': '.substr($e->getMessage(), 0, 120);
+                $errors[] = $account->email.': '.$this->shortAccountError($e);
                 continue;
             }
 
             if ($result['indexed']) {
                 $coverage = $this->coverageLabel($result, $account);
-                $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account);
+                $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account, $result['site_url'] ?? $siteUrl);
 
                 return [
                     'status' => self::STATUS_INDEXED,
@@ -172,6 +194,7 @@ class OfferGoogleIndexInspector
         }
 
         if ($ownedResult && $ownedAccount) {
+            $siteUrl = (string) ($ownedResult['site_url'] ?? '');
             if ($this->pastTimeout($offer)) {
                 $this->stamp(
                     $offer,
@@ -179,6 +202,7 @@ class OfferGoogleIndexInspector
                     null,
                     'Не в індексі за '.self::TIMEOUT_DAYS.' днів після подачі',
                     $ownedAccount,
+                    $siteUrl !== '' ? $siteUrl : null,
                 );
 
                 return [
@@ -190,7 +214,7 @@ class OfferGoogleIndexInspector
 
             $status = $this->statusFromResult($ownedResult);
             $coverage = $this->coverageLabel($ownedResult, $ownedAccount);
-            $this->stamp($offer, $status, null, $coverage, $ownedAccount);
+            $this->stamp($offer, $status, null, $coverage, $ownedAccount, $siteUrl !== '' ? $siteUrl : null);
 
             return [
                 'status' => $status,
@@ -199,8 +223,8 @@ class OfferGoogleIndexInspector
             ];
         }
 
-        $coverage = $errors !== []
-            ? substr(implode('; ', $errors), 0, 190)
+        $coverage = $tried > 0
+            ? 'Жоден з '.$tried.' Google не має цей сайт у Search Console'
             : 'Жоден підключений Google не бачить цей домен';
         $this->stamp($offer, self::STATUS_ERROR, null, $coverage);
 
@@ -235,7 +259,7 @@ class OfferGoogleIndexInspector
     }
 
     /**
-     * @param  array{verdict: string, coverage: string, indexing_state: string, last_crawl_at: ?string, indexed: bool}  $result
+     * @param  array{verdict: string, coverage: string, indexing_state: string, last_crawl_at: ?string, indexed: bool, site_url?: string}  $result
      */
     private function coverageLabel(array $result, ?GoogleAccount $account = null): string
     {
@@ -248,13 +272,16 @@ class OfferGoogleIndexInspector
         return substr(implode(' · ', $parts), 0, 190);
     }
 
-    private function stamp(Offer $offer, string $status, mixed $indexedAt, ?string $coverage, ?GoogleAccount $account = null): void
+    private function stamp(Offer $offer, string $status, mixed $indexedAt, ?string $coverage, ?GoogleAccount $account = null, ?string $siteUrl = null): void
     {
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
         if ($account) {
             $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
             $gsc['email'] = $account->email;
             $gsc['google_account_id'] = $account->id;
+            if (is_string($siteUrl) && $siteUrl !== '') {
+                $gsc['site_url'] = $siteUrl;
+            }
             $meta['gsc'] = $gsc;
         }
 
@@ -265,6 +292,20 @@ class OfferGoogleIndexInspector
             'google_index_coverage' => $coverage,
             'infra_meta' => $meta,
         ])->save();
+    }
+
+    private function storedSiteUrl(Offer $offer): ?string
+    {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+        $siteUrl = trim((string) ($gsc['site_url'] ?? ''));
+
+        return $siteUrl !== '' ? $siteUrl : null;
+    }
+
+    private function shortAccountError(RuntimeException $e): string
+    {
+        return substr($e->getMessage(), 0, 80);
     }
 
     /**

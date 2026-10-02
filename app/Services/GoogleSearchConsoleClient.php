@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\GoogleAccount;
 use App\Models\Offer;
 use App\Models\UserSetting;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
@@ -119,33 +120,202 @@ class GoogleSearchConsoleClient
     /**
      * URL Inspection: is this homepage on Google yet.
      *
+     * Tries the stored property first, then URL-prefix / sc-domain variants, so
+     * a later Google account in the pool can still inspect a site it owns.
+     *
      * @return array{
      *     verdict: string,
      *     coverage: string,
      *     indexing_state: string,
      *     last_crawl_at: ?string,
-     *     indexed: bool
+     *     indexed: bool,
+     *     site_url: string
      * }
      */
-    public function inspectUrl(Offer $offer, UserSetting|GoogleAccount $source): array
+    public function inspectUrl(Offer $offer, UserSetting|GoogleAccount $source, ?string $siteUrl = null): array
     {
         $domain = strtolower(trim((string) $offer->domain));
         if ($domain === '') {
             throw new RuntimeException('Offer has no domain.');
         }
 
-        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
-        $siteUrl = trim((string) ($gsc['site_url'] ?? ''));
-        if ($siteUrl === '') {
-            $siteUrl = 'https://'.$domain.'/';
-        }
-
-        $inspectionUrl = 'https://'.$domain.'/';
         $accessToken = $source instanceof GoogleAccount
             ? $this->oauth->accessTokenForAccount($source)
             : $this->oauth->accessTokenFor($source);
 
+        $candidates = $siteUrl !== null && $siteUrl !== ''
+            ? [$siteUrl]
+            : $this->inspectSiteUrlCandidates($offer, $source);
+
+        $inspectionUrl = 'https://'.$domain.'/';
+        $lastError = null;
+
+        foreach ($candidates as $candidate) {
+            try {
+                $result = $this->inspectUrlAt($accessToken, $inspectionUrl, $candidate);
+                $result['site_url'] = $candidate;
+
+                return $result;
+            } catch (RuntimeException $e) {
+                if (! $this->isNotOwnerError($e)) {
+                    throw $e;
+                }
+                $lastError = $e;
+            }
+        }
+
+        throw $lastError ?? new RuntimeException('Search Console URL inspection failed: no site property to inspect.');
+    }
+
+    /**
+     * Site properties this Google account can inspect, cached briefly so a
+     * pending sweep does not list sites once per offer.
+     *
+     * @return list<string>
+     */
+    public function listSiteUrls(GoogleAccount $account): array
+    {
+        $cacheKey = 'gsc.sites.'.$account->id;
+
+        /** @var list<string> $urls */
+        $urls = Cache::remember($cacheKey, 1800, function () use ($account): array {
+            $accessToken = $this->oauth->accessTokenForAccount($account);
+            $response = Http::timeout(30)
+                ->withToken($accessToken)
+                ->acceptJson()
+                ->get('https://www.googleapis.com/webmasters/v3/sites');
+
+            if (! $response->successful()) {
+                $this->throwIfRateLimited($response->status(), (string) $response->body(), 'sites.list');
+
+                throw new RuntimeException(
+                    'Search Console sites.list failed (HTTP '.$response->status().'): '.$this->shortError((string) $response->body()),
+                );
+            }
+
+            $entries = $response->json('siteEntry') ?? [];
+            $listed = [];
+            foreach (is_array($entries) ? $entries : [] as $entry) {
+                $url = trim((string) (is_array($entry) ? ($entry['siteUrl'] ?? '') : ''));
+                if ($url !== '') {
+                    $listed[] = $url;
+                }
+            }
+
+            return array_values(array_unique($listed));
+        });
+
+        return $urls;
+    }
+
+    /**
+     * Which property on this account covers the offer domain, if any.
+     */
+    public function resolveSiteUrlForAccount(GoogleAccount $account, string $domain, ?string $preferred = null): ?string
+    {
+        $domain = strtolower(trim($domain));
+        if ($domain === '') {
+            return null;
+        }
+
+        try {
+            $listed = $this->listSiteUrls($account);
+        } catch (RuntimeException $e) {
+            if ($this->isNotOwnerError($e)) {
+                return null;
+            }
+
+            throw $e;
+        }
+
+        foreach (self::siteUrlsForDomain($domain, $preferred) as $candidate) {
+            foreach ($listed as $have) {
+                if (strcasecmp($have, $candidate) === 0) {
+                    return $have;
+                }
+            }
+        }
+
+        foreach ($listed as $have) {
+            if (self::siteUrlMatchesDomain($have, $domain)) {
+                return $have;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function siteUrlsForDomain(string $domain, ?string $preferred = null): array
+    {
+        $domain = strtolower(trim($domain));
+        $urls = [];
+        $preferred = trim((string) $preferred);
+        if ($preferred !== '') {
+            $urls[] = $preferred;
+        }
+        if ($domain !== '') {
+            $urls[] = 'https://'.$domain.'/';
+            $urls[] = 'sc-domain:'.$domain;
+            $urls[] = 'https://www.'.$domain.'/';
+        }
+
+        return array_values(array_unique($urls));
+    }
+
+    public static function siteUrlMatchesDomain(string $siteUrl, string $domain): bool
+    {
+        $domain = strtolower(trim($domain));
+        $siteUrl = strtolower(trim($siteUrl));
+        if ($domain === '' || $siteUrl === '') {
+            return false;
+        }
+
+        if ($siteUrl === 'sc-domain:'.$domain) {
+            return true;
+        }
+
+        $host = parse_url($siteUrl, PHP_URL_HOST);
+        if (! is_string($host) || $host === '') {
+            return false;
+        }
+
+        $host = preg_replace('/^www\./', '', $host) ?? $host;
+
+        return $host === $domain;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function inspectSiteUrlCandidates(Offer $offer, UserSetting|GoogleAccount $source): array
+    {
+        $domain = strtolower(trim((string) $offer->domain));
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
+        $stored = trim((string) ($gsc['site_url'] ?? ''));
+        $pinnedId = (int) ($gsc['google_account_id'] ?? 0);
+        $pinnedEmail = strtolower(trim((string) ($gsc['email'] ?? '')));
+
+        $preferred = $stored;
+        if ($source instanceof GoogleAccount) {
+            $sameAccount = ($pinnedId > 0 && $source->id === $pinnedId)
+                || ($pinnedEmail !== '' && strtolower((string) $source->email) === $pinnedEmail);
+            if (! $sameAccount) {
+                $preferred = null;
+            }
+        }
+
+        return self::siteUrlsForDomain($domain, $preferred);
+    }
+
+    /**
+     * @return array{verdict: string, coverage: string, indexing_state: string, last_crawl_at: ?string, indexed: bool}
+     */
+    private function inspectUrlAt(string $accessToken, string $inspectionUrl, string $siteUrl): array
+    {
         $response = Http::timeout(30)
             ->withToken($accessToken)
             ->acceptJson()
@@ -167,14 +337,13 @@ class GoogleSearchConsoleClient
         $coverage = trim((string) ($index['coverageState'] ?? ''));
         $indexingState = strtoupper(trim((string) ($index['indexingState'] ?? '')));
         $lastCrawl = trim((string) ($index['lastCrawlTime'] ?? ''));
-        $indexed = in_array($verdict, ['PASS', 'PARTIAL'], true);
 
         return [
             'verdict' => $verdict,
             'coverage' => $coverage,
             'indexing_state' => $indexingState,
             'last_crawl_at' => $lastCrawl !== '' ? $lastCrawl : null,
-            'indexed' => $indexed,
+            'indexed' => in_array($verdict, ['PASS', 'PARTIAL'], true),
         ];
     }
 
