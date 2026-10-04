@@ -14,10 +14,10 @@ require __DIR__ . '/includes/head.php';
       <a href="<?= page_url('product.php') ?>">Cómo funciona</a>
       <a href="#iei3g">Mercados en vivo</a>
       <a href="<?= page_url('offer.php') ?>">Por qué nosotros</a>
-      <a href="<?= page_url('pricing.php') ?>">Pricing</a>
+      <a href="<?= page_url('pricing.php') ?>">Precios</a>
       <a href="<?= page_url('faq.php') ?>">FAQ</a>
       <a href="<?= page_url('blog.php') ?>">Blog</a>
-      <a href="<?= page_url('about.php') ?>">About</a>
+      <a href="<?= page_url('about.php') ?>">Sobre nosotros</a>
       <span class="iiao6"><details><summary>Legal</summary><ul><li><a href="<?= page_url('privacy.php') ?>">Privacidad</a></li><li><a href="<?= page_url('conditions.php') ?>">Términos</a></li><li><a href="<?= page_url('risk-disclosure.php') ?>">Aviso de riesgo</a></li><li><a href="<?= page_url('report-abuse.php') ?>">Denunciar abuso</a></li><li><a href="<?= page_url('privacy.php') ?>">Política de cookies</a></li><li><a href="<?= page_url('conditions.php') ?>">Política de retiradas</a></li><li><a href="<?= page_url('conditions.php') ?>">Depósitos y retiradas</a></li><li><a href="<?= page_url('conditions.php') ?>">KYC y prevención de blanqueo</a></li><li><a href="<?= page_url('conditions.php') ?>">Licencias</a></li></ul></details></span><a class="rs0voj6 ggca24u sstr1ao" href="#jsyo6">Abre tu cuenta</a>
     </nav>
     <div class="hdhwxf" hidden></div>
@@ -124,7 +124,7 @@ require __DIR__ . '/includes/head.php';
         <li><a href="<?= page_url('contacts.php') ?>">Enviar mensaje</a></li><li><a href="<?= page_url('faq.php') ?>">Preguntas frecuentes.</a></li><li><a href="<?= page_url('report-abuse.php') ?>">Denunciar abuso</a></li>
       </ul></div>
       <div data-u="footcol"><h2 class="ublsk0">Empresa</h2><ul class="nxy95">
-        <li><a href="<?= page_url('about.php') ?>">About</a></li><li><a href="<?= page_url('pricing.php') ?>">Pricing</a></li><li><a href="<?= page_url('contacts.php') ?>">Contacto</a></li><li><a href="<?= page_url('sign.php') ?>">Abre tu cuenta</a></li>
+        <li><a href="<?= page_url('about.php') ?>">Sobre nosotros</a></li><li><a href="<?= page_url('pricing.php') ?>">Precios</a></li><li><a href="<?= page_url('contacts.php') ?>">Contacto</a></li><li><a href="<?= page_url('sign.php') ?>">Abre tu cuenta</a></li>
       </ul></div>
       <div data-u="footcol"><h2 class="ublsk0">Producto</h2><ul class="nxy95">
         <li><a href="<?= page_url('product.php') ?>">Cómo funciona.</a></li><li><a href="#iei3g">Mercados en vivo</a></li><li><a href="<?= page_url('offer.php') ?>">Por qué nosotros</a></li><li><a href="<?= page_url('faq.php') ?>">FAQ</a></li>

@@ -1,4 +1,4 @@
-﻿
+
 :root{
   --bg:#080b12; --surface:#0d1119; --surface-2:#111722; --panel:#0d1119;
   --text:#b4bccb; --heading:#f2f5f9; --muted:#77808f; --fog:#98a2b3;
@@ -579,6 +579,8 @@ background:transparent;border:0;padding:.2rem 0 .2rem .6rem}}
 .qyv6pbo>*{flex:1 1 320px;min-width:0}
 .qyv6pbo img,.qyv6pbo picture{width:100%;max-width:100%}
 .qyv6pbo img{border-radius:var(--r);border:1px solid var(--border);aspect-ratio:4/3;object-fit:cover;object-position:center;filter:saturate(.85) brightness(.92);transform:none}
+.qyv6pbo>.snozao,.qyv6pbo>figure.snozao{flex:0 1 340px;max-width:340px}
+.qyv6pbo .snozao picture,.qyv6pbo .snozao img,.snozao img{max-width:340px;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;object-position:center;border:0;border-radius:0;filter:var(--shot-fx,none);transform:var(--shot-tf,none)}
 
 /* harden broken remaps / overlaps */
 .rho9v16{list-style:none;padding-left:0}

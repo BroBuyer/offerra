@@ -26,10 +26,10 @@ require __DIR__ . '/includes/head.php';
       <a href="<?= page_url('product.php') ?>">Cómo funciona</a>
       <a href="#iei3g">Mercados en vivo</a>
       <a href="<?= page_url('offer.php') ?>">Por qué nosotros</a>
-      <a href="<?= page_url('pricing.php') ?>">Pricing</a>
+      <a href="<?= page_url('pricing.php') ?>">Precios</a>
       <a href="<?= page_url('faq.php') ?>">FAQ</a>
       <a href="<?= page_url('blog.php') ?>">Blog</a>
-      <a href="<?= page_url('about.php') ?>">About</a>
+      <a href="<?= page_url('about.php') ?>">Sobre nosotros</a>
       <span class="iiao6"><details><summary>Legal</summary><ul><li><a href="<?= page_url('privacy.php') ?>">Privacidad</a></li><li><a href="<?= page_url('conditions.php') ?>">Términos</a></li><li><a href="<?= page_url('risk-disclosure.php') ?>">Aviso de riesgo</a></li><li><a href="<?= page_url('report-abuse.php') ?>">Denunciar abuso</a></li><li><a href="<?= page_url('privacy.php') ?>">Política de cookies</a></li><li><a href="<?= page_url('conditions.php') ?>">Política de retiradas</a></li><li><a href="<?= page_url('conditions.php') ?>">Depósitos y retiradas</a></li><li><a href="<?= page_url('conditions.php') ?>">KYC y prevención de blanqueo</a></li><li><a href="<?= page_url('conditions.php') ?>">Licencias</a></li></ul></details></span><a class="rs0voj6 ggca24u sstr1ao" href="#jsyo6">Abre tu cuenta</a>
     </nav>
     <div class="hdhwxf" hidden></div>
@@ -96,7 +96,7 @@ require __DIR__ . '/includes/head.php';
       <li><a href="#vkrcx5">Por qué <?= e(SITE_NAME) ?></a></li>
       <li><a href="#xm6kjbi">Lo que dicen nuestros miembros</a></li>
       <li><a href="#qyric">Tu analista</a></li>
-      <li><a href="#ipwn2">Find your starting point</a></li>
+      <li><a href="#ipwn2">Tu punto de partida</a></li>
       <li><a href="#xouiwqu">Preguntas</a></li>
     </ol>
     <a class="rs0voj6 ggca24u" href="#jsyo6">Empezar — <?= e(money_min()) ?> mín.</a>
@@ -262,43 +262,43 @@ require __DIR__ . '/includes/head.php';
 
 <section class="zx4mx9v" id="ipwn2" aria-labelledby="ypzur9o">
       <div class="tewtadh">
-        <span class="odwy4o">Find your starting point</span>
-        <h2 id="ypzur9o">Three questions, then a suggested starting plan</h2>
-        <p class="etpy2">No score, no grade — the answers just tell your specialist where to begin so the first call is not spent on basics.</p>
+        <span class="odwy4o">Tu punto de partida</span>
+        <h2 id="ypzur9o">Tres preguntas y un plan de inicio sugerido</h2>
+        <p class="etpy2">Sin puntuación ni nota: las respuestas solo indican a tu especialista por dónde empezar, para que la primera llamada no se gaste en lo básico.</p>
       </div>
       <form class="mwky634" id="ffuj8s" novalidate>
         <div class="rr65q" hidden aria-hidden="true"><i></i></div>
         <p class="py9af" hidden aria-live="polite" role="status"
-           data-l="Question"
-           data-of="of"></p>
+           data-l="Pregunta"
+           data-of="de"></p>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
-          <legend>01. How much investing have you done before?</legend>
+          <legend>01. ¿Cuánta experiencia tienes invirtiendo?</legend>
           <div class="qs49y">
-            <label><input type="radio" name="q1" value="1"/><span>None at all</span></label>
-            <label><input type="radio" name="q1" value="2"/><span>A little, on my own</span></label>
-            <label><input type="radio" name="q1" value="3"/><span>I invest regularly</span></label>
+            <label><input type="radio" name="q1" value="1"/><span>Ninguna</span></label>
+            <label><input type="radio" name="q1" value="2"/><span>Un poco, por mi cuenta</span></label>
+            <label><input type="radio" name="q1" value="3"/><span>Invierto con regularidad</span></label>
           </div>
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
-          <legend>02. What matters most to you right now?</legend>
+          <legend>02. ¿Qué es lo más importante ahora mismo?</legend>
           <div class="qs49y">
-            <label><input type="radio" name="q2" value="1"/><span>Keeping risk low</span></label>
-            <label><input type="radio" name="q2" value="2"/><span>Steady growth</span></label>
-            <label><input type="radio" name="q2" value="3"/><span>Learning how it works</span></label>
+            <label><input type="radio" name="q2" value="1"/><span>Mantener el riesgo bajo</span></label>
+            <label><input type="radio" name="q2" value="2"/><span>Crecimiento constante</span></label>
+            <label><input type="radio" name="q2" value="3"/><span>Entender cómo funciona</span></label>
           </div>
         </fieldset>
         <fieldset class="fizujuq" data-u="quizq" tabindex="-1">
-          <legend>03. How much time can you give it?</legend>
+          <legend>03. ¿Cuánto tiempo puedes dedicarle?</legend>
           <div class="qs49y">
-            <label><input type="radio" name="q3" value="1"/><span>Almost none</span></label>
-            <label><input type="radio" name="q3" value="2"/><span>A few minutes a day</span></label>
-            <label><input type="radio" name="q3" value="3"/><span>I like following markets</span></label>
+            <label><input type="radio" name="q3" value="1"/><span>Casi nada</span></label>
+            <label><input type="radio" name="q3" value="2"/><span>Unos minutos al día</span></label>
+            <label><input type="radio" name="q3" value="3"/><span>Me gusta seguir los mercados</span></label>
           </div>
         </fieldset>
         <div class="zuh4exq">
-          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Back</button>
-          <p class="vrwbx90" id="lnpv1t" hidden>Your answers are ready — leave your details and a specialist will talk them through.</p>
-          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">See my starting plan</a>
+          <button class="rs0voj6 krccqy8 ws86ccr" type="button" hidden>Atrás</button>
+          <p class="vrwbx90" id="lnpv1t" hidden>Tus respuestas están listas: deja tus datos y un especialista las repasará contigo.</p>
+          <a class="rs0voj6 ggca24u ycxlw" href="#jsyo6">Ver mi plan de inicio</a>
         </div>
       </form>
     </section>
@@ -329,7 +329,7 @@ require __DIR__ . '/includes/head.php';
       </div>
       <div class="ltouuo" role="region" tabindex="0" aria-label="Invierte en Bitcoin, Ethereum y mucho más"><table class="kzp7d0j">
         <caption>Los precios se actualizan automáticamente mientras la página está abierta.</caption>
-        <thead><tr><th scope="col">Asset</th><th scope="col">Price</th><th scope="col">24h</th></tr></thead>
+        <thead><tr><th scope="col">Activo</th><th scope="col">Precio</th><th scope="col">24h</th></tr></thead>
         <tbody>
           <tr data-sym="BTC"><td><span class="no0qnp">Bitcoin<small>BTC/USDT</small></span></td><td class="th0yrt">€64.671</td><td class="mg1jree ixupo">-1,06%</td></tr>
           <tr data-sym="ETH"><td><span class="no0qnp">Ethereum<small>ETH/USDT</small></span></td><td class="th0yrt">€1.881</td><td class="mg1jree ixupo">-2,55%</td></tr>
@@ -514,7 +514,7 @@ require __DIR__ . '/includes/head.php';
         <li><a href="<?= page_url('contacts.php') ?>">Enviar mensaje</a></li><li><a href="<?= page_url('faq.php') ?>">Preguntas frecuentes.</a></li><li><a href="<?= page_url('report-abuse.php') ?>">Denunciar abuso</a></li>
       </ul></div>
       <div data-u="footcol"><h2 class="ublsk0">Empresa</h2><ul class="nxy95">
-        <li><a href="<?= page_url('about.php') ?>">About</a></li><li><a href="<?= page_url('pricing.php') ?>">Pricing</a></li><li><a href="<?= page_url('contacts.php') ?>">Contacto</a></li><li><a href="<?= page_url('sign.php') ?>">Abre tu cuenta</a></li>
+        <li><a href="<?= page_url('about.php') ?>">Sobre nosotros</a></li><li><a href="<?= page_url('pricing.php') ?>">Precios</a></li><li><a href="<?= page_url('contacts.php') ?>">Contacto</a></li><li><a href="<?= page_url('sign.php') ?>">Abre tu cuenta</a></li>
       </ul></div>
       <div data-u="footcol"><h2 class="ublsk0">Producto</h2><ul class="nxy95">
         <li><a href="<?= page_url('product.php') ?>">Cómo funciona.</a></li><li><a href="#iei3g">Mercados en vivo</a></li><li><a href="<?= page_url('offer.php') ?>">Por qué nosotros</a></li><li><a href="<?= page_url('faq.php') ?>">FAQ</a></li>
