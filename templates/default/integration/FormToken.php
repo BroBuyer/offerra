@@ -12,6 +12,10 @@ final class FormToken
 {
     private const TOKEN_DIR_NAME = 'tokens';
     private const RATE_DIR_NAME = 'rate';
+    private const EXPIRED_DIR_NAME = 'expired';
+
+    /** How long a consumed expired-token id stays remembered. */
+    private const EXPIRED_MARK_TTL = 86400;
 
     /**
      * Issue a signed one-time token. Bot UA / issue-rate still get a token,
@@ -81,6 +85,15 @@ final class FormToken
 
         if ($exp < time()) {
             self::deleteTokenFile($id);
+
+            // First sighting stays FORM_TOKEN_EXPIRED so a slow reader is still
+            // visible in spam. A later POST of the same id is a replay.
+            if (! self::claimFirstExpired($id)) {
+                self::debugLog('expired_replay', $id);
+
+                return ['ok' => false, 'error' => 'missing_or_used'];
+            }
+
             self::debugLog('expired', $id);
 
             return ['ok' => false, 'error' => 'expired'];
@@ -412,6 +425,11 @@ final class FormToken
             @mkdir($rateDir, 0755, true);
         }
 
+        $expiredDir = self::expiredDir();
+        if (! is_dir($expiredDir)) {
+            @mkdir($expiredDir, 0755, true);
+        }
+
         $deny = $dir.DIRECTORY_SEPARATOR.'.htaccess';
         if (! is_file($deny)) {
             @file_put_contents($deny, "Require all denied\n");
@@ -424,6 +442,52 @@ final class FormToken
         if (is_file($path)) {
             @unlink($path);
         }
+    }
+
+    private static function expiredDir(): string
+    {
+        return self::storageDir().DIRECTORY_SEPARATOR.self::EXPIRED_DIR_NAME;
+    }
+
+    private static function expiredMarkPath(string $id): string
+    {
+        return self::expiredDir().DIRECTORY_SEPARATOR.$id.'.json';
+    }
+
+    /**
+     * True the first time this expired token id is submitted.
+     * The mark survives token-file GC, so a replay still resolves as already used.
+     */
+    private static function claimFirstExpired(string $id): bool
+    {
+        self::ensureStorage();
+        $path = self::expiredMarkPath($id);
+
+        if (is_file($path)) {
+            return false;
+        }
+
+        $dir = self::expiredDir();
+        if (! is_dir($dir)) {
+            return true;
+        }
+
+        $handle = @fopen($path, 'x');
+        if ($handle === false) {
+            return ! is_file($path);
+        }
+
+        $payload = json_encode([
+            'id' => $id,
+            'ip' => self::clientIp(),
+            'claimed_at' => date('c'),
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if (is_string($payload)) {
+            @fwrite($handle, $payload."\n");
+        }
+        @fclose($handle);
+
+        return true;
     }
 
     private static function gc(): void
@@ -441,6 +505,16 @@ final class FormToken
 
             if ($exp > 0 && $exp < $now) {
                 @unlink($file);
+            }
+        }
+
+        $expiredDir = self::expiredDir();
+        if (is_dir($expiredDir)) {
+            foreach (glob($expiredDir.DIRECTORY_SEPARATOR.'*.json') ?: [] as $file) {
+                $mtime = @filemtime($file);
+                if ($mtime !== false && ($now - $mtime) > self::EXPIRED_MARK_TTL) {
+                    @unlink($file);
+                }
             }
         }
 

@@ -84,7 +84,14 @@ if ($spamReason === null) {
     $spamReason = resolve_form_token_spam_reason($token);
 }
 
-if ($spamReason === null) {
+$hasContactFields = trim((string) ($lead['first_name'] ?? $lead['fname'] ?? '')) !== ''
+    && trim((string) ($lead['last_name'] ?? $lead['lname'] ?? '')) !== ''
+    && trim((string) ($lead['email'] ?? '')) !== ''
+    && LeadProcessor::normalizePhone((string) ($lead['phone'] ?? $lead['fullphone'] ?? '')) !== '';
+
+// Expired tokens share the submit cap: the first three complete ones per IP
+// in the window stay visible, the rest become RATE_LIMIT in preflight.
+if ($spamReason === null || ($spamReason === 'FORM_TOKEN_EXPIRED' && $hasContactFields)) {
     FormToken::hitSubmitRate();
 }
 
