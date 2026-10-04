@@ -75,7 +75,7 @@ require __DIR__ . '/includes/head.php';
   <div class="nrzt44">
     <div class="kor48"><b>01</b><i></i></div>
     <h2>Qué necesitas</h2>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un correo electrónico que realmente revises.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un número de teléfono, para que un especialista pueda contactarte.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un documento de identidad, para la verificación posterior.</span></li>

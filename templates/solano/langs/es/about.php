@@ -45,7 +45,7 @@ require __DIR__ . '/includes/head.php';
     <div class="kor48"><b>04</b><i></i></div>
     <h2>Normativa, riesgo y lo que no prometemos</h2>
     <p>Invertir conlleva riesgo y ninguna plataforma lo elimina. Lo que sí puede hacer una plataforma es ser honesta contigo: publicar sus condiciones, mantener el dinero de los clientes con socios de pago regulados y documentar cómo funcionan las retiradas.</p>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Verificación de identidad antes de que una cuenta pueda mover dinero.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Las retiradas vuelven al mismo método por el que llegó el depósito.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Términos, aviso de riesgo y política de privacidad publicados en su totalidad.</span></li>
@@ -63,7 +63,7 @@ require __DIR__ . '/includes/head.php';
     <div class="kor48"><b>03</b><i></i></div>
     <h2>Las personas detrás de tu cuenta</h2>
     <p>Detrás de la interfaz hay analistas que viven de leer los mercados, ingenieros que mantienen la plataforma en marcha y especialistas de soporte que responden en tu idioma.</p>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Analistas de mercado que revisan las condiciones a diario, no una vez al trimestre.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Ingenieros de guardia para la plataforma, con supervisión permanente.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Especialistas de soporte que gestionan el registro, la verificación y las retiradas.</span></li>

@@ -77,7 +77,7 @@ require __DIR__ . '/includes/head.php';
   <div class="nrzt44">
     <div class="kor48"><b>01</b><i></i></div>
     <h2>Qué incluye</h2>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Apertura de cuenta gratuita, sin comisiones de registro.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Sin cargos ocultos en depósitos, retiradas o mantenimiento.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Solo pueden aplicarse los diferenciales o costes de red habituales.</span></li>

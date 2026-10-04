@@ -64,7 +64,7 @@ require __DIR__ . '/includes/head.php';
     <div class="kor48"><b>03</b><i></i></div>
     <h2>Para quién probablemente no es esto</h2>
     <p>Ser sinceros con esto ahorra tiempo a todos. Si algo de lo siguiente te describe, otra opción te vendrá mejor.</p>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Buscas rentabilidad garantizada. Ninguna plataforma honesta la ofrece, y nosotros tampoco.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Quieres invertir dinero que no puedes permitirte no tener disponible.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Operas con volumen profesional y tu propia infraestructura de ejecución.</span></li>
@@ -78,7 +78,7 @@ require __DIR__ . '/includes/head.php';
   <div class="nrzt44">
     <div class="kor48"><b>01</b><i></i></div>
     <h2>Lo que obtienes y que una configuración por tu cuenta no ofrece</h2>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Ejecución en menos de un segundo en cada plataforma conectada.</b> <?= e(SITE_NAME) ?> mantiene conexiones API permanentes y de baja latencia con cada exchange compatible. Cuando el modelo lanza una señal, la orden se enruta, se ejecuta y queda registrada en tu panel antes de que aparezca el siguiente dato.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Funciona 24/7, en cada sesión de mercado.</b> Las criptomonedas no descansan, y <?= e(SITE_NAME) ?> tampoco. El motor sigue analizando pares durante fines de semana y festivos para que no se te escape ninguna oportunidad.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><b style="color:var(--heading)">Informes en múltiples divisas.</b> Cada saldo, cada operación y cada retirada se muestran en tu moneda local. Sin conversiones ocultas en ningún punto.</span></li>

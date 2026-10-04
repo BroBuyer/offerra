@@ -45,7 +45,7 @@ require __DIR__ . '/includes/head.php';
     <div class="kor48"><b>02</b><i></i></div>
     <h2>Antes de escribirnos</h2>
     <p>La mayoría de las dudas ya tienen respuesta en la web, y comprobarlo suele ser más rápido que esperar una respuesta.</p>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><a href="<?= page_url('faq.php') ?>" style="color:var(--accent)">Preguntas frecuentes.</a> — costes, retiradas, verificación y mínimos.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><a href="<?= page_url('product.php') ?>" style="color:var(--accent)">Cómo funciona.</a> — qué ocurre después de registrarte, paso a paso.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span><a href="<?= page_url('pricing.php') ?>" style="color:var(--accent)">Precios</a> — qué es gratuito y dónde puede aparecer un coste.</span></li>

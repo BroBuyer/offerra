@@ -59,7 +59,7 @@ require __DIR__ . '/includes/head.php';
     <div class="kor48"><b>03</b><i></i></div>
     <h2>Qué ocurre después de registrarte</h2>
     <p>El registro es la parte pequeña. Esto es todo lo demás, en el orden en que ocurre realmente.</p>
-    <ul class="yrffsy1">
+    <ul class="skvsaz4">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Un especialista te contacta para confirmar tus datos y responder tus dudas.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Verificas tu identidad, un paso estándar antes de mover cualquier dinero.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Eliges un importe inicial. Nadie lo decide por ti.</span></li>
