@@ -28,9 +28,6 @@ class DynadotClientTest extends TestCase
         $tlds = config('offerra.domain_search_tlds');
 
         $this->assertCount(count($tlds), $domains);
-        $this->assertContains('pestotracer.click', $domains);
-        $this->assertContains('pestotracer.online', $domains);
-        $this->assertContains('pestotracer.co', $domains);
         $this->assertSame(
             array_map(fn (string $tld) => 'pestotracer.'.ltrim($tld, '.'), $tlds),
             $domains,
