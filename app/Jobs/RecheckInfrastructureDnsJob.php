@@ -13,16 +13,17 @@ class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 120;
+    public int $timeout = 180;
 
     public int $tries = 1;
 
     /**
      * One queued recheck per offer at a time — a perpetually-pending domain must
      * never accumulate duplicate jobs (this is what flooded the queue to 8k+).
-     * The lock self-releases after this window even if a worker dies mid-run.
+     * Keep this just above $timeout: a killed worker holds the unique lock until
+     * uniqueFor, and 15 minutes of silence looks like DNS is stuck.
      */
-    public int $uniqueFor = 900;
+    public int $uniqueFor = 200;
 
     public function __construct(public int $offerId) {}
 

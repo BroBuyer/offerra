@@ -269,15 +269,21 @@ class InfrastructureProvisioner
 
         $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
         $nameservers = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+        $zoneAlready = $zoneId !== '' && ($meta['cloudflare'] ?? '') === 'done';
+        $dnsAlready = ($meta['cloudflare_dns'] ?? '') === 'done';
+        $edgeAlready = ($meta['cloudflare_edge'] ?? '') === 'done'
+            || (($meta['ssl'] ?? '') === 'done' && ($meta['ssl_force'] ?? '') === 'done');
 
         if (InfrastructureOptions::needsCloudflareZone($options)) {
             if ($options['cloudflare_zone'] ?? false) {
-                $zone = $this->cloudflare->ensureZone($settings, $domain);
-                $zoneId = $zone['zone_id'];
-                $nameservers = $zone['nameservers'];
-                $meta['cloudflare'] = 'done';
-                $meta['cloudflare_zone_id'] = $zoneId;
-                $meta['nameservers'] = $nameservers;
+                if (! $zoneAlready) {
+                    $zone = $this->cloudflare->ensureZone($settings, $domain);
+                    $zoneId = $zone['zone_id'];
+                    $nameservers = $zone['nameservers'];
+                    $meta['cloudflare'] = 'done';
+                    $meta['cloudflare_zone_id'] = $zoneId;
+                    $meta['nameservers'] = $nameservers;
+                }
             } elseif ($zoneId === '') {
                 $zone = $this->cloudflare->findZone($settings, $domain);
 
@@ -294,14 +300,16 @@ class InfrastructureProvisioner
             ? $this->origin->originIpForOffer($offer, $settings)
             : $this->originIpFromMetaOrSettings($settings, $meta);
 
-        if (($options['cloudflare_dns'] ?? false) && $zoneId !== '') {
+        // Recheck runs every minute while registrar NS is pending. Rewriting the
+        // zone (purge + A + edge) each time times out the default workers.
+        if (($options['cloudflare_dns'] ?? false) && $zoneId !== '' && ! $dnsAlready) {
             $this->cloudflare->ensureRootARecord($settings, $zoneId, $domain, $serverIp);
             $meta['cloudflare_dns'] = 'done';
             $meta['cloudflare_www_dns'] = 'done';
             $meta['deploy_host'] = $serverIp;
         }
 
-        if (InfrastructureOptions::needsCloudflareEdge($options) && $zoneId !== '') {
+        if (InfrastructureOptions::needsCloudflareEdge($options) && $zoneId !== '' && ! $edgeAlready) {
             $this->applyCloudflareEdge($settings, $domain, $zoneId, $options, $meta);
         }
 

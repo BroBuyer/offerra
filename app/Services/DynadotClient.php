@@ -260,7 +260,9 @@ class DynadotClient
         $lock = Cache::lock('dynadot-account-'.md5($apiKey), 90);
 
         try {
-            $lock->block(120);
+            // Must stay below RecheckInfrastructureDnsJob timeout, otherwise the
+            // waiting worker is killed and the unique lock sits for uniqueFor.
+            $lock->block(25);
         } catch (LockTimeoutException) {
             throw new RuntimeException('Dynadot зайнятий — спробуйте ще раз');
         }
@@ -396,17 +398,27 @@ class DynadotClient
 
     private function shouldRetrySetNs(string $message, int $attempt): bool
     {
+        // Fresh regs become settable within a minute or two — the DNS recheck
+        // loop covers that. Five long sleeps here block the whole default queue.
+        if (self::isNsNotReadyError($message)) {
+            return $attempt < 2;
+        }
+
         if ($attempt >= 5) {
             return false;
         }
 
-        return $this->isBusyApiError($message) || self::isNsNotReadyError($message);
+        return $this->isBusyApiError($message);
     }
 
     private function waitBeforeSetNsRetry(string $message, int $attempt): void
     {
+        if (app()->environment('testing')) {
+            return;
+        }
+
         if (self::isNsNotReadyError($message)) {
-            sleep(min(20, 4 * $attempt));
+            sleep(3);
 
             return;
         }

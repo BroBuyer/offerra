@@ -337,6 +337,36 @@ class DynadotPurchaseTest extends TestCase
         );
     }
 
+    public function test_set_ns_stops_quickly_while_domain_is_still_initializing(): void
+    {
+        $attempts = 0;
+
+        Http::fake(function () use (&$attempts) {
+            $attempts++;
+
+            return Http::response([
+                'SetNsResponse' => [
+                    'ResponseCode' => '-1',
+                    'Status' => 'error',
+                    'Error' => 'Cannot set nameservers to these domains ( example.com : Domain initialization is still in progress. Please try again later.)',
+                ],
+            ]);
+        });
+
+        try {
+            app(DynadotClient::class)->setNameservers(
+                $this->makeSettings(),
+                'example.com',
+                ['linda.ns.cloudflare.com', 'weston.ns.cloudflare.com'],
+            );
+            $this->fail('Expected RuntimeException');
+        } catch (\RuntimeException $e) {
+            $this->assertTrue(DynadotClient::isNsNotReadyError($e->getMessage()));
+        }
+
+        $this->assertSame(2, $attempts);
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      */

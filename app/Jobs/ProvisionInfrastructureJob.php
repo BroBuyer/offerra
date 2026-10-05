@@ -41,7 +41,7 @@ class ProvisionInfrastructureJob implements ShouldQueue
             if ($offer->dnsStatus() === 'pending') {
                 $nsPending = ($offer->infra_meta['dynadot_ns'] ?? '') === 'pending';
                 RecheckInfrastructureDnsJob::dispatch($offer->id)
-                    ->delay($nsPending ? now()->addMinutes(2) : now());
+                    ->delay($nsPending ? now()->addMinutes(5) : now());
             }
         } catch (\Throwable $e) {
             Log::error('Infrastructure provisioning failed', [

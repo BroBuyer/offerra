@@ -164,6 +164,11 @@ async function main() {
     timeoutMs: 180000,
     allowFail: true,
   });
+  // DNS recheck / Dynadot set_ns run on the default queue.
+  await exec(conn, `supervisorctl restart offerra-worker:*`, {
+    timeoutMs: 180000,
+    allowFail: true,
+  });
   await exec(conn, `supervisorctl status`, { timeoutMs: 60000, allowFail: true });
 
   step("smoke check");
