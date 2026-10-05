@@ -1,0 +1,89 @@
+.leadform .newRegForm input::placeholder,
+.leadform .newRegForm .iti__country-list,
+.leadform .newRegForm .iti__selected-dial-code {
+  color: #111;
+}
+
+.leadform .newRegForm input:not([type="submit"]) {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  color: #111;
+  padding: 14px 16px;
+  font: inherit;
+}
+
+.leadform form > div,
+.leadform .newRegForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.leadform .newRegForm > div {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.leadform input[type="submit"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #ee6129;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  appearance: none;
+}
+
+.leadform input[type="submit"]:hover {
+  background: #d65931;
+}
+
+.iti {
+  width: 100%;
+  display: block;
+}
+
+.iti__tel-input {
+  width: 100% !important;
+}
+
+.hero.hero-v_2 .iti__country-list {
+  color: #111;
+}
+
+@media only screen and (min-width: 767px) {
+  .leadform .newRegForm {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .leadform .newRegForm > div:has(input[name="first_name"]),
+  .leadform .newRegForm > div:has(input[name="last_name"]),
+  .leadform .newRegForm > div:has(input[name="full_name"]) {
+    flex: 0 0 calc(50% - 4px);
+    max-width: calc(50% - 4px);
+  }
+
+  .leadform .newRegForm > div:has(input[type="submit"]) {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}

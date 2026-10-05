@@ -1,0 +1,9 @@
+/**
+ * Base layer entry point.
+ *
+ * The pages preload main-mob/main-desk directly and swap them to stylesheets on
+ * load; this file is the no-JS fallback that pulls both in one request, with the
+ * desktop sheet kept behind the same breakpoint.
+ */
+@import url("main-mob.min.css");
+@import url("main-desk.min.css") screen and (min-width: 769px);

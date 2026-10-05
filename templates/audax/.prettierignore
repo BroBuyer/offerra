@@ -1,0 +1,8 @@
+node_modules
+img
+css/*.min.css
+css/intlTelInput.css
+js/*.min.js
+js/intlTelInput.min.js
+module/calculator/i18n
+module/calculator/api

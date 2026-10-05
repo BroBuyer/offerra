@@ -1,0 +1,130 @@
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 10001;
+  transform: translateY(-150%);
+  background: #fff;
+  color: #111;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+address {
+  font-style: normal;
+}
+
+/* One page scrollbar. overflow-x:hidden on main was forcing a second vertical scroll. */
+html,
+body {
+  overflow-x: clip;
+}
+
+main {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+.tv-ticker-wrapper {
+  padding-top: 0;
+  overflow: hidden !important;
+  max-width: 100%;
+}
+
+.tv-ticker-host {
+  width: 100% !important;
+  margin-left: 0 !important;
+  overflow: hidden !important;
+}
+
+.tv-ticker-wrapper,
+.tv-ticker-host,
+.tv-ticker-host tv-ticker-tape {
+  scrollbar-width: none;
+}
+
+.tv-ticker-wrapper::-webkit-scrollbar,
+.tv-ticker-host::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+main > section:first-of-type {
+  margin-top: 8px !important;
+}
+
+main > section:first-of-type .content-wrap {
+  padding-top: 12px !important;
+}
+
+@media only screen and (max-width: 766px) {
+  .hero.hero-v_2 .content-wrap {
+    padding-top: 6px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .hero.hero-v_2 .half.left {
+    margin-bottom: 8px !important;
+  }
+
+  .hero.hero-v_2 h1 {
+    font-size: 26px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .hero.hero-v_2 .half.left > p {
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .hero.hero-v_2 .half.left .rating {
+    display: none !important;
+  }
+
+  .hero.hero-v_2 .calc-wrap {
+    margin-top: 0 !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .hero.hero-v_2 .calc-wrap h2 {
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .hero.hero-v_2 .leadform .newRegForm {
+    gap: 6px;
+  }
+
+  .hero.hero-v_2 .leadform .newRegForm input:not([type="submit"]) {
+    padding: 8px 12px;
+  }
+
+  .hero.hero-v_2 .leadform input[type="submit"] {
+    padding: 10px 12px;
+    margin-top: 0;
+  }
+
+  .hero.hero-v_2 .form_text_bottom {
+    gap: 6px;
+  }
+
+  .hero.hero-v_2 .form_text_bottom p {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .hero.hero-v_2 .form_text_bottom img {
+    width: auto;
+    max-height: 22px;
+  }
+}
