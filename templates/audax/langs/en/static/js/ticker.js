@@ -109,10 +109,14 @@
 
     host.replaceChildren(ticker);
 
+    // Before the quotes arrive the tape paints a skeleton whose cell dividers
+    // read as stray vertical lines, and the closed shadow root gives us nothing
+    // to wait on. Hold the neutral placeholder long enough that the strip
+    // usually reveals with real prices instead.
     const revealTicker = () => {
       window.setTimeout(() => {
         root.classList.add("is-ready");
-      }, 180);
+      }, 1600);
     };
 
     if (window.customElements?.get("tv-ticker-tape")) {

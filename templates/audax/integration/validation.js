@@ -223,17 +223,15 @@ function setupFormValidation(form) {
 
   const iti = window.intlTelInput(phone, {
     utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js',
-    separateDialCode: true,
+    // The build bundled with audax knows showSelectedDialCode, not the older
+    // separateDialCode. It prints the +44 and moves the flag to the left edge;
+    // without it the country sits on the right with no dial code at all.
+    showSelectedDialCode: true,
     initialCountry: singleCountry ? onlyCountries[0] : phoneCountry,
     onlyCountries: onlyCountries.length ? onlyCountries : undefined,
     allowDropdown: !singleCountry,
     autoPlaceholder: 'aggressive',
-    customPlaceholder: () => '11 91234-5678',
   });
-
-  if (!phone.getAttribute('placeholder')) {
-    phone.setAttribute('placeholder', '11 91234-5678');
-  }
 
   if (singleCountry) {
     const wrap = phone.closest('.iti');

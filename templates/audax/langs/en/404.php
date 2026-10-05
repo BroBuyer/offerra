@@ -8,6 +8,7 @@ $active_page = '404';
 $page_css = ['legal-mob.min.css', 'legal-desk.min.css'];
 $page_js = [];
 $page_has_form = false;
+$page_noindex = true;
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>

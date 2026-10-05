@@ -1,11 +1,21 @@
+/* The tape draws a 1px separator between cells across its whole height, so any
+   slack around the prices reads as stray vertical lines. Keep the strip tight
+   to the content — 64px left ~20px of empty run below the row. */
 .tv-ticker-wrapper {
     padding-top: 0;
     position: relative;
     overflow: hidden;
     width: 100%;
     max-width: 100%;
-    height: 64px;
+    height: 38px;
     z-index: 1;
+}
+
+/* The tape also keeps a fixed gap above the row; pull it up so the separators
+   are not left running through empty space there either. */
+.tv-ticker-wrapper .tv-ticker-host {
+    margin-top: -10px;
+    height: calc(100% + 10px);
 }
 
 /* large item strip is taller — fixed 70px clipped the TradingView tape */
@@ -137,15 +147,23 @@
     }
 }
 
+/* TradingView stamps its logo into the top-right corner of the tape. The tape
+   is a custom element with a closed shadow root, so it cannot be styled from
+   here — the corner is painted over with the strip colour instead. */
 .tv-ticker-wrapper::after {
     content: "";
     position: absolute;
+    top: 0;
     right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 27px;
-    background: transparent;
+    width: 56px;
+    height: 26px;
+    background: #fff;
     z-index: 10;
+    pointer-events: none;
+}
+
+.tv-ticker-wrapper[data-tv-theme="dark"][data-tv-transparent="false"]::after {
+    background: #131722;
 }
 
 .tv-ticker-blocker {

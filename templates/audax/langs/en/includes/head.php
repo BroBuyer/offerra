@@ -10,6 +10,8 @@ $page_description = $page_description ?? '';
 $page_canonical = $page_canonical ?? page_url();
 $page_css = $page_css ?? [];
 $page_has_form = $page_has_form ?? false;
+// Legal pages stay indexable; only the thank-you and 404 opt out.
+$page_noindex = $page_noindex ?? false;
 
 $og_image = canonical_url(og_image_path());
 
@@ -35,7 +37,7 @@ $stylesheet = static function (string $file, bool $fallback = true): void {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?= e($page_title) ?></title>
     <meta name="description" content="<?= e($page_description) ?>" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="<?= $page_noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' ?>" />
     <meta name="author" content="<?= e(SITE_NAME) ?>" />
     <meta name="geo.region" content="<?= e(strtoupper(geo_country_code())) ?>" />
     <meta name="geo.placename" content="<?= e(geo_country_name()) ?>" />

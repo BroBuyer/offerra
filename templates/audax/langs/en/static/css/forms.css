@@ -55,6 +55,15 @@
   background: #d65931;
 }
 
+/* The pack sheets size `last_name`/`full_name` inputs to 50% because the
+   original markup had the inputs as bare siblings. Here every field sits in its
+   own wrapper and the wrapper does the splitting, so the input must fill it —
+   otherwise last name ends up at a quarter of the row. */
+section.register .leadform .newRegForm input[name="last_name"],
+section.register .leadform .newRegForm input[name="full_name"] {
+  width: 100%;
+}
+
 .iti {
   width: 100%;
   display: block;

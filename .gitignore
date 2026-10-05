@@ -49,3 +49,8 @@ scripts/_*.php
 # GitHub push protection rejects the whole push when they slip in.
 scripts/map-ego-*
 scripts/send-lead-*
+
+# Form tokens are runtime state; templates only ship the tokens/ guard file.
+templates/**/integration/tokens/*.json
+templates/**/integration/tokens/rate/
+templates/**/integration/tokens/expired/
