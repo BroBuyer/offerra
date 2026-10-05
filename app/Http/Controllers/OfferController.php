@@ -662,7 +662,7 @@ class OfferController extends Controller
             abort(403);
         }
 
-        $wasDnsRecheck = $offer->dnsStatus() === 'pending' && in_array($offer->infra_status, ['ready', 'dns_propagating'], true);
+        $wasDnsRecheck = $offer->dnsStatus() === 'pending' && $offer->infra_status === 'ready';
 
         $offer->update([
             'provision_infrastructure' => true,

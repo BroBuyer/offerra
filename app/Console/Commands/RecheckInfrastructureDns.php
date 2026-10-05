@@ -17,7 +17,7 @@ class RecheckInfrastructureDns extends Command
     {
         $offers = Offer::query()
             ->where('provision_infrastructure', true)
-            ->whereIn('infra_status', ['ready', 'dns_propagating'])
+            ->where('infra_status', 'ready')
             ->orderBy('id')
             ->get(['id', 'domain', 'provision_infrastructure', 'infra_status', 'infra_meta']);
 

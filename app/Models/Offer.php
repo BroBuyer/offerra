@@ -162,11 +162,7 @@ class Offer extends Model
             return 'skipped';
         }
 
-        if ($dns === 'pending' || $this->infra_status === 'dns_propagating') {
-            return 'pending';
-        }
-
-        if (in_array($this->infra_status, ['ready', 'dns_propagating'], true)) {
+        if ($dns === 'pending' || $this->infra_status === 'ready') {
             return 'pending';
         }
 
@@ -220,7 +216,7 @@ class Offer extends Model
             'google_index_coverage' => $this->google_index_coverage,
             'date' => $this->created_at?->format('Y-m-d'),
             'provision_infrastructure' => (bool) $this->provision_infrastructure,
-            'infra_status' => $this->infra_status === 'dns_propagating' ? 'ready' : $this->infra_status,
+            'infra_status' => $this->infra_status,
             'infra_error' => $this->infra_status === 'failed' ? $this->infra_error : null,
             'dns_status' => $this->dnsStatus(),
             'dns_error' => is_array($this->infra_meta) ? ($this->infra_meta['dns_error'] ?? null) : null,
