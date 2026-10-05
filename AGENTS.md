@@ -39,8 +39,11 @@ Restoring a server from `origin/main` alone is not enough. These live only on th
 panel and need their own backups:
 
 - `.env` — app key, DB credentials, provider keys
-- the MySQL database — offers, users, settings, stats
-- `offers/` — generated lander files (re-deployable from the DB, but slow)
+- the PostgreSQL database — offers, users, settings, stats
+
+`offers/` on the panel is empty: `OFFERRA_PURGE_LOCAL_AFTER_DEPLOY=true` deletes
+each lander once it reaches its origin. The live files sit on the origin servers
+and are re-deployable from the DB, but slowly.
 
 ## Origin servers
 

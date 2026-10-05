@@ -7,7 +7,7 @@ Cloudflare, прописує нейм-сервери в Dynadot, заливає 
 дочікується поширення DNS і подає сайт у Google Search Console.
 
 **Стек:** PHP 8.3 · Laravel 13 · Inertia 2 · React 18 · Vite · Tailwind ·
-SQLite (локально) / MySQL (панель)
+SQLite (локально) / PostgreSQL (панель)
 
 ## Швидкий старт
 
@@ -185,8 +185,10 @@ node scripts/deploy.cjs                  # потрібні PANEL_HOST і PANEL_
 Сенс у відновлюваності: git — єдине джерело правди, тож мертвий сервер
 замінюється з `origin/main`. Подробиці й правила — в [AGENTS.md](AGENTS.md).
 
-Поза git лишаються тільки три речі, і їм потрібні власні бекапи: `.env`,
-база MySQL і `offers/` (ленди можна перегенерувати з БД, але повільно).
+Поза git лишаються тільки дві речі, і їм потрібні власні бекапи: `.env` і база
+PostgreSQL. Папка `offers/` на панелі порожня — при `OFFERRA_PURGE_LOCAL_AFTER_DEPLOY=true`
+ленд видаляється одразу після заливки, а оригінали живуть на origin-серверах і
+перегенеровуються з БД.
 
 ## Структура
 
@@ -210,7 +212,7 @@ node scripts/deploy.cjs                  # потрібні PANEL_HOST і PANEL_
 у `.env.example`, решта налаштувань (Keitaro, CRM, Telegram, Cloudflare,
 Dynadot) зберігається в БД зашифрованою, через `/settings`.
 
-У `php.ini` потрібні `zip`, `fileinfo`, `pdo_mysql` (або `pdo_sqlite`),
+У `php.ini` потрібні `zip`, `fileinfo`, `pdo_pgsql` (або `pdo_sqlite` локально),
 `mbstring`, `openssl`, `curl`.
 
 ## Тести
