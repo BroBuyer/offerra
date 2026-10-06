@@ -54,8 +54,11 @@ main {
   height: 0;
 }
 
+/* The pack sheets give the first section a 50px top margin, which leaves a
+   strip of page background between the sticky header's ticker and the hero.
+   The override has to keep !important to beat `section.hero` in home-mob. */
 main > section:first-of-type {
-  margin-top: 8px !important;
+  margin-top: 0 !important;
 }
 
 main > section:first-of-type .content-wrap {
