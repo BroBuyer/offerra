@@ -90,9 +90,9 @@ export default {
   'Crypto asset investors in <?= e(geo_country_name()) ?> gain access to the largest exchanges in the':
     'Les investisseurs en cryptoactifs <?= e(geo_in()) ?> accèdent aux plus grandes places d’échange du',
   'sector and can trade leading currencies such as Bitcoin and Ethereum, as well as':
-    'secteur et peuvent négocier des actifs de référence comme Bitcoin et Ethereum, ainsi qu’',
+    'secteur et peuvent négocier des actifs de référence comme Bitcoin et Ethereum, ainsi qu’un',
   'a wide range of altcoins and stablecoins.':
-    'un large éventail d’altcoins et de stablecoins.',
+    'large éventail d’altcoins et de stablecoins.',
   'Our trusted partners': 'Nos partenaires de confiance',
   'Why choose <?= e(SITE_NAME) ?> in <?= e(geo_country_name()) ?>?':
     'Pourquoi choisir <?= e(SITE_NAME) ?> <?= e(geo_in()) ?> ?',
@@ -213,8 +213,8 @@ export default {
   'Our artificial intelligence and machine learning systems generate real-time market':
     'Nos systèmes d’intelligence artificielle et d’apprentissage automatique produisent une analyse de marché',
   'analysis and offer practical trading insights to optimize your results.':
-    'en temps réel et des insights de trading concrets pour optimiser vos résultats.',
-  'Copy Trading': 'Copy trading',
+    'en temps réel et des recommandations de trading concrètes pour optimiser vos résultats.',
+  'Copy Trading': 'Trading en copie',
   'The best traders are the best for a reason. With <?= e(SITE_NAME) ?> you can follow':
     'Les meilleurs traders le sont pour une raison. Avec <?= e(SITE_NAME) ?>, vous pouvez suivre',
   'and copy their trades to benefit from their experience and strategy.':
@@ -277,7 +277,7 @@ export default {
     'Optimisez votre gestion financière grâce à une vue d’ensemble claire.',
   'Capital markets': 'Marchés de capitaux',
   'Always stay ahead of the market with real-time data and insights.':
-    'Gardez une longueur d’avance grâce aux données et insights en temps réel.',
+    'Gardez une longueur d’avance grâce aux données et analyses en temps réel.',
   'Mobile access': 'Accès mobile',
   'Our fully optimized mobile site lets you track your portfolio anytime, anywhere.':
     'Notre site mobile entièrement optimisé vous permet de suivre votre portefeuille à tout moment, où que vous soyez.',
@@ -350,7 +350,7 @@ export default {
   'such as balance, profits, and price fluctuations. With these powerful tools you':
     '— solde, profits et variations de prix. Avec ces outils, vous',
   'maximize your returns and make informed, strategic investment decisions. The future':
-    'maximisez vos rendements et prenez des décisions d’investissement éclairées. L’avenir',
+    'maximisez vos rendements et prenez des décisions d’investissement éclairées. L’avenir,',
   'is now: start today!': 'c’est maintenant : commencez dès aujourd’hui !',
 
   'Frequently asked questions | ': 'Foire aux questions | ',
@@ -475,6 +475,25 @@ export default {
   'Deposit icon': 'Icône dépôt',
   'Account creation icon': 'Icône création de compte',
   'CEO photo': 'Photo du CEO',
+  'Partner photo': 'Photo de l’associé',
+  'CFO photo': 'Photo du CFO',
+  'Managing Partner photo': 'Photo de l’associé gérant',
+  'CTO photo': 'Photo du CTO',
+  'Product Director photo': 'Photo de la directrice produit',
+  'Rating 1': 'Note 1',
+  'Rating 2': 'Note 2',
+  'Rating 3': 'Note 3',
+  'Rating 4': 'Note 4',
+  'Crypto.com Logo': 'Logo Crypto.com',
+  'Binance Logo': 'Logo Binance',
+  'Coindesk Logo': 'Logo CoinDesk',
+  'TradingView Logo': 'Logo TradingView',
+  'Deloitte Logo': 'Logo Deloitte',
+  'Ledger Logo': 'Logo Ledger',
+  'Decrypt Logo': 'Logo Decrypt',
+  'Nansen Logo': 'Logo Nansen',
+  'X Logo': 'Logo X',
+  'Youtube Logo': 'Logo YouTube',
   'Card icon 1': 'Icône 1',
   'Card icon 2': 'Icône 2',
   'Advantage icon 1': 'Icône avantage 1',

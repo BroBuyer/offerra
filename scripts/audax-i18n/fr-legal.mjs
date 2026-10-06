@@ -14,7 +14,7 @@ export default {
   'adequately investigate the incident.': 'enquêter correctement sur les faits.',
   'By submitting a report you also agree to our privacy policy.':
     'En envoyant un signalement, vous acceptez également notre politique de confidentialité.',
-  '2. Authorization to report': '2. Qualité pour signaler',
+  '2. Authorization to report': '2. Qui peut signaler',
   '2.1. If you have become a victim of abuse or have noticed inappropriate behavior, you':
     '2.1. Si vous êtes victime d’un abus ou si vous constatez un comportement inapproprié, vous',
   'have the right to report it.': 'avez le droit de le signaler.',
@@ -78,7 +78,7 @@ export default {
     '6.5. Les problèmes techniques liés au système de signalement ne relèvent pas de notre responsabilité.',
   '7. Information about the reporting procedure':
     '7. Informations sur la procédure de signalement',
-  '7.1. By using the reporting system you agree that we may contact you for more':
+  '7.1. By using the reporting system you agree that we may contact you for more\n              information.':
     '7.1. En utilisant le système de signalement, vous acceptez que nous puissions vous contacter pour obtenir plus d’informations.',
   '7.2. Reports are treated confidentially.': '7.2. Les signalements sont traités de manière confidentielle.',
   '7.3. Users are advised to keep a copy of their reports.':
@@ -314,7 +314,7 @@ export default {
     'Nous ne collectons ni n’essayons de collecter d’informations sur les personnes de moins de 18 ans.',
   'age. We also do not allow persons under 18 years of age to use our platform for any':
     'Nous n’autorisons pas non plus les mineurs de moins de 18 ans à utiliser notre plateforme, à quelque',
-  'purpose. If we discover that a user is under 18 years of age, we will delete that data':
+  'purpose. If we discover that a user is under 18 years of age, we will delete that data\n              immediately.':
     'fin que ce soit. Si nous constatons qu’un utilisateur a moins de 18 ans, nous supprimerons ces données immédiatement.',
   '2. What personal data do we collect?': '2. Quelles données personnelles collectons-nous ?',
   'Upon registration we collect personal data required to use our services. If necessary,':
@@ -326,7 +326,7 @@ export default {
   'services, we collect and analyze information about your use of our platform and':
     'services, nous collectons et analysons des informations sur votre usage de la plateforme et',
   'related third-party services.': 'des services tiers associés.',
-  '3. Under no circumstances are you obliged to provide your personal data to the':
+  '3. Under no circumstances are you obliged to provide your personal data to the\n              company.':
     '3. Vous n’êtes en aucun cas tenu de nous communiquer vos données personnelles.',
   'Although you are not obliged to provide us with your data, the decision not to do so':
     'Même si vous n’êtes pas tenu de nous transmettre vos données, le choix de ne pas le faire',
@@ -343,7 +343,7 @@ export default {
     'l’activité de votre compte, les adresses IP et les dates et heures d’accès. Pour la maintenance,',
   'security, and support we store system error reports, browser information, and the type':
     'la sécurité et l’assistance, nous conservons les rapports d’erreur, les informations de navigateur et le type',
-  'of device you use to access your account. We also record the language set on your':
+  'of device you use to access your account. We also record the language set on your\n              account.':
     'd’appareil utilisé pour accéder à votre compte. Nous enregistrons aussi la langue définie sur votre compte.',
   'Regarding collection of personal data, we collect and store exclusively information':
     'S’agissant des données personnelles, nous collectons et conservons uniquement les informations',
@@ -405,7 +405,7 @@ export default {
     'Pour la poursuite des intérêts légitimes de l’entreprise ou d’un tiers identifié,',
   'processing of personal data is necessary.':
     'le traitement des données personnelles est nécessaire.',
-  '3. To fulfill our legal and administrative obligations, processing of personal data is':
+  '3. To fulfill our legal and administrative obligations, processing of personal data is\n              necessary.':
     '3. Pour satisfaire à nos obligations légales et administratives, le traitement des données personnelles est nécessaire.',
   'To fulfill our legal obligations, we must process certain personal data.':
     'Pour respecter nos obligations légales, nous devons traiter certaines données personnelles.',
@@ -463,7 +463,7 @@ export default {
     'politique de confidentialité de cette entreprise. Cela peut inclure diverses plateformes de trading digital.',
   'With the aim of improving our customer service and optimizing our services in general,':
     'Dans le but d’améliorer notre service client et d’optimiser nos services en général,',
-  'the company may share personal data with its affiliated companies and business':
+  'the company may share personal data with its affiliated companies and business\n              partners.':
     'l’entreprise peut partager des données personnelles avec ses sociétés affiliées et ses partenaires commerciaux.',
   'When legally required or to protect the rights and property of the company and related':
     'Lorsque la loi l’exige ou pour protéger les droits et les biens de l’entreprise et des',
@@ -536,16 +536,16 @@ export default {
     'Pour améliorer nos services, nous collectons des données statistiques via des cookies. Ces cookies',
   'provide us with information about website performance and its use.':
     'nous renseignent sur les performances du site et sur son usage.',
-  'All information stored via cookies is anonymous and does not enable identification of':
+  'All information stored via cookies is anonymous and does not enable identification of\n              individuals.':
     'Toutes les informations stockées via les cookies sont anonymes et ne permettent pas d’identifier des personnes.',
   'Session cookies are deleted when you close the browser, while persistent cookies':
     'Les cookies de session sont supprimés à la fermeture du navigateur, tandis que les cookies persistants',
-  'remain active until the expiration date or indefinitely, unless you delete them':
+  'remain active until the expiration date or indefinitely, unless you delete them\n              manually.':
     'restent actifs jusqu’à leur expiration ou indéfiniment, sauf si vous les supprimez manuellement.',
   'Cookies are blocked or deleted': 'Cookies bloqués ou supprimés',
   'If you wish to remove or block cookies, you must do so in your browser':
     'Si vous souhaitez supprimer ou bloquer les cookies, vous devez le faire dans les',
-  'settings. See the following links for detailed instructions for the most popular':
+  'settings. See the following links for detailed instructions for the most popular\n              browsers.':
     'paramètres de votre navigateur. Consultez les liens suivants pour les instructions détaillées des navigateurs les plus courants.',
   'Blocking cookies may stop some website features from working as intended.':
     'Le blocage des cookies peut empêcher certaines fonctions du site de fonctionner correctement.',
@@ -576,7 +576,7 @@ export default {
   'highest standards to protect your information and ensure your access to legal remedies':
     'plus haut niveau afin de protéger vos informations et de garantir votre accès aux recours',
   'and statutory rights at all times.': 'et aux droits prévus par la loi, à tout moment.',
-  'In the European Economic Area (EEA), all residents enjoy data protection and':
+  'In the European Economic Area (EEA), all residents enjoy data protection and\n              guarantees.':
     'Dans l’Espace économique européen (EEE), tous les résidents bénéficient d’une protection des données et de garanties.',
   'Data transfers always take place under EU jurisdiction and authority, in accordance':
     'Les transferts de données s’effectuent toujours sous juridiction et autorité européennes, conformément',
@@ -753,7 +753,7 @@ export default {
     'juridique impérieux de poursuivre le traitement, que ce soit pour se défendre ou pour exercer',
   'legal claims. In such cases we may continue processing your personal data.':
     'des droits en justice. Dans ces cas, nous pouvons poursuivre le traitement de vos données.',
-  'At any time you can object to processing of your personal data for direct marketing':
+  'At any time you can object to processing of your personal data for direct marketing\n              purposes.':
     'Vous pouvez à tout moment vous opposer au traitement de vos données personnelles à des fins de prospection commerciale.',
   'Right to withdraw consent': 'Droit de retirer son consentement',
   'You can withdraw your consent for our processing of your personal data at any time,':
@@ -769,7 +769,7 @@ export default {
     'Si vous estimez que vos droits et libertés concernant le traitement de vos données personnelles',
   'have been violated, member states of the European Union have supervisory and control':
     'ont été violés, les États membres de l’Union européenne disposent d’autorités de contrôle',
-  'bodies for that purpose. You may file a complaint with those bodies if you deem it':
+  'bodies for that purpose. You may file a complaint with those bodies if you deem it\n              appropriate.':
     'à cette fin. Vous pouvez saisir ces autorités si vous le jugez opportun.',
   'Section 13 describes situations in which your rights regarding personal data may be':
     'La section 13 décrit les situations dans lesquelles vos droits relatifs aux données personnelles peuvent être',
@@ -789,7 +789,7 @@ export default {
     'Nous vous enverrons les informations demandées par voie électronique et gratuitement, sauf si',
   'this is contrary to the law or provisions in Section 13. We reserve the right to':
     'cela est contraire à la loi ou aux dispositions de la section 13. Nous nous réservons le droit de',
-  'charge a reasonable fee or refuse a request if it is deemed unfounded, excessive, or':
+  'charge a reasonable fee or refuse a request if it is deemed unfounded, excessive, or\n              repetitive.':
     'facturer des frais raisonnables ou de refuser une demande si elle est jugée infondée, excessive ou répétitive.',
   'We reserve the right to request additional identity verification if there is':
     'Nous nous réservons le droit de demander une vérification d’identité complémentaire s’il existe un',

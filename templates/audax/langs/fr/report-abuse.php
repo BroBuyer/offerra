@@ -31,7 +31,7 @@ require __DIR__ . '/includes/header.php';
               enquêter correctement sur les faits.
             </p>
             <p>En envoyant un signalement, vous acceptez également notre politique de confidentialité.</p>
-            <p class="bold-title">2. Qualité pour signaler</p>
+            <p class="bold-title">2. Qui peut signaler</p>
             <p>
               2.1. Si vous êtes victime d’un abus ou si vous constatez un comportement inapproprié, vous
               avez le droit de le signaler.
@@ -70,10 +70,9 @@ require __DIR__ . '/includes/header.php';
             <p>
               6.5. Les problèmes techniques liés au système de signalement ne relèvent pas de notre responsabilité.
             </p>
-            <p class="bold-title">7. Informationss sur la procédure de signalement</p>
+            <p class="bold-title">7. Informations sur la procédure de signalement</p>
             <p>
               7.1. En utilisant le système de signalement, vous acceptez que nous puissions vous contacter pour obtenir plus d’informations.
-              information.
             </p>
             <p>7.2. Les signalements sont traités de manière confidentielle.</p>
             <p>7.3. Il est conseillé aux utilisateurs de conserver une copie de leurs signalements.</p>

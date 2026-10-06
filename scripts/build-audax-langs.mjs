@@ -85,6 +85,17 @@ function replaceSafe(text, from, to) {
     });
     return { text: next, count };
   }
+  // Phrase replacements still must not match inside a longer word
+  // ("7. Information" must not eat "7. Informations").
+  if (/[\p{L}\p{N}]$/u.test(from)) {
+    const re = new RegExp(`${escapeRegExp(from)}(?![\\p{L}\\p{N}_])`, 'gu');
+    let count = 0;
+    const next = text.replace(re, () => {
+      count += 1;
+      return to;
+    });
+    return { text: next, count };
+  }
   const parts = text.split(from);
   return { text: parts.join(to), count: Math.max(0, parts.length - 1) };
 }

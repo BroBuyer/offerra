@@ -77,7 +77,7 @@ require __DIR__ . '/includes/header.php';
                   />
                 </div>
                 <h3>Marchés de capitaux</h3>
-                <p>Gardez une longueur d’avance grâce aux données et insights en temps réel.</p>
+                <p>Gardez une longueur d’avance grâce aux données et analyses en temps réel.</p>
               </div>
             </div>
             <div class="p-slide">

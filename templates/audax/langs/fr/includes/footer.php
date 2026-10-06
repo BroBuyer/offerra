@@ -23,13 +23,13 @@
           <p class="copyright">&copy; 2026 <?= e(SITE_NAME) ?>. Tous droits réservés.</p>
           <div class="soc-links">
             <a href="<?= page_url('index.php') ?>#form" class="scroll"
-              ><img src="<?= asset('static/images/1-logo.svg') ?>" width="22" height="12" alt="TradingView Logo"
+              ><img src="<?= asset('static/images/1-logo.svg') ?>" width="22" height="12" alt="Logo TradingView"
             /></a>
             <a href="<?= page_url('index.php') ?>#form" class="scroll"
-              ><img src="<?= asset('static/images/x-logo.svg') ?>" width="22" height="12" alt="X Logo"
+              ><img src="<?= asset('static/images/x-logo.svg') ?>" width="22" height="12" alt="Logo X"
             /></a>
             <a href="<?= page_url('index.php') ?>#form" class="scroll"
-              ><img src="<?= asset('static/images/yt-logo.svg') ?>" width="22" height="12" alt="Youtube Logo"
+              ><img src="<?= asset('static/images/yt-logo.svg') ?>" width="22" height="12" alt="Logo YouTube"
             /></a>
           </div>
         </div>

@@ -226,8 +226,8 @@ require __DIR__ . '/includes/header.php';
                 <div class="text">
                   <p>
                     Les investisseurs en cryptoactifs <?= e(geo_in()) ?> accèdent aux plus grandes places d’échange du
-                    secteur et peuvent négocier des actifs de référence comme Bitcoin et Ethereum, ainsi qu’
-                    un large éventail d’altcoins et de stablecoins.
+                    secteur et peuvent négocier des actifs de référence comme Bitcoin et Ethereum, ainsi qu’un
+                    large éventail d’altcoins et de stablecoins.
                   </p>
                 </div>
               </div>
@@ -240,28 +240,28 @@ require __DIR__ . '/includes/header.php';
         <h2>Nos partenaires de confiance</h2>
         <div class="partners-slider">
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/cryptocom-logo.svg') ?>" alt="Crypto.com Logo" />
+            <img loading="lazy" src="<?= asset('static/images/cryptocom-logo.svg') ?>" alt="Logo Crypto.com" />
           </div>
           <div class="p-slide s-bg">
-            <img loading="lazy" src="<?= asset('static/images/binance-logo.svg') ?>" alt="Binance Logo" />
+            <img loading="lazy" src="<?= asset('static/images/binance-logo.svg') ?>" alt="Logo Binance" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/coindesk-logo.svg') ?>" alt="Coindesk Logo" />
+            <img loading="lazy" src="<?= asset('static/images/coindesk-logo.svg') ?>" alt="Logo CoinDesk" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/trading-view.svg') ?>" alt="TradingView Logo" />
+            <img loading="lazy" src="<?= asset('static/images/trading-view.svg') ?>" alt="Logo TradingView" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/deloitte-logo.svg') ?>" alt="Deloitte Logo" />
+            <img loading="lazy" src="<?= asset('static/images/deloitte-logo.svg') ?>" alt="Logo Deloitte" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/ledger-logo.svg') ?>" alt="Ledger Logo" />
+            <img loading="lazy" src="<?= asset('static/images/ledger-logo.svg') ?>" alt="Logo Ledger" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/decrypt-logo.svg') ?>" alt="Decrypt Logo" />
+            <img loading="lazy" src="<?= asset('static/images/decrypt-logo.svg') ?>" alt="Logo Decrypt" />
           </div>
           <div class="p-slide s-bg">
-            <img loading="lazy" src="<?= asset('static/images/nansen-logo.svg') ?>" alt="Nansen Logo" />
+            <img loading="lazy" src="<?= asset('static/images/nansen-logo.svg') ?>" alt="Logo Nansen" />
           </div>
         </div>
       </section>
@@ -392,7 +392,7 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/rev-stars.svg') ?>"
                   width="120"
                   height="20"
-                  alt="Rating 1"
+                  alt="Note 1"
                 />
               </div>
               <p class="review-text">
@@ -407,7 +407,7 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/rev-stars.svg') ?>"
                   width="120"
                   height="20"
-                  alt="Rating 2"
+                  alt="Note 2"
                 />
               </div>
               <p class="review-text">Plateforme simple : tout est transparent et concret.</p>
@@ -420,7 +420,7 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/rev-stars.svg') ?>"
                   width="120"
                   height="20"
-                  alt="Rating 3"
+                  alt="Note 3"
                 />
               </div>
               <p class="review-text">La meilleure solution pour un revenu passif.</p>
@@ -433,7 +433,7 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/rev-stars.svg') ?>"
                   width="120"
                   height="20"
-                  alt="Rating 4"
+                  alt="Note 4"
                 />
               </div>
               <p class="review-text">Des gains stables, même quand je suis en vacances.</p>
@@ -594,13 +594,13 @@ require __DIR__ . '/includes/header.php';
             <div class="top">
               <h2>
                 Nos systèmes d’intelligence artificielle et d’apprentissage automatique produisent une analyse de marché
-                en temps réel et des insights de trading concrets pour optimiser vos résultats.
+                en temps réel et des recommandations de trading concrètes pour optimiser vos résultats.
               </h2>
             </div>
             <div class="bottom cards-row slider4">
               <div class="card-img">
                 <div class="text">
-                  <h3>Copy trading</h3>
+                  <h3>Trading en copie</h3>
                   <p>
                     Les meilleurs traders le sont pour une raison. Avec <?= e(SITE_NAME) ?>, vous pouvez suivre
                     et copier leurs positions pour profiter de leur expérience et de leur stratégie.

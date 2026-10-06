@@ -80,7 +80,7 @@ require __DIR__ . '/includes/header.php';
                 Ne manquez aucun détail grâce à l’analyse approfondie de <?= e(SITE_NAME) ?> sur les
                 schémas de trading et des données sans cesse actualisées. Suivez toutes vos statistiques clés
                 — solde, profits et variations de prix. Avec ces outils, vous
-                maximisez vos rendements et prenez des décisions d’investissement éclairées. L’avenir
+                maximisez vos rendements et prenez des décisions d’investissement éclairées. L’avenir,
                 c’est maintenant : commencez dès aujourd’hui !
               </p>
               <a class="orange-btn scroll" href="<?= page_url('index.php') ?>#form">Commencer</a>

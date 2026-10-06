@@ -97,7 +97,6 @@ require __DIR__ . '/includes/header.php';
               Nous ne collectons ni n’essayons de collecter d’informations sur les personnes de moins de 18 ans.
               Nous n’autorisons pas non plus les mineurs de moins de 18 ans à utiliser notre plateforme, à quelque
               fin que ce soit. Si nous constatons qu’un utilisateur a moins de 18 ans, nous supprimerons ces données immédiatement.
-              immediately.
             </p>
             <p class="bold-title">2. Quelles données personnelles collectons-nous ?</p>
             <p>
@@ -109,7 +108,6 @@ require __DIR__ . '/includes/header.php';
             </p>
             <p class="bold-title">
               3. Vous n’êtes en aucun cas tenu de nous communiquer vos données personnelles.
-              company.
             </p>
             <p>
               Même si vous n’êtes pas tenu de nous transmettre vos données, le choix de ne pas le faire
@@ -125,7 +123,6 @@ require __DIR__ . '/includes/header.php';
               l’activité de votre compte, les adresses IP et les dates et heures d’accès. Pour la maintenance,
               la sécurité et l’assistance, nous conservons les rapports d’erreur, les informations de navigateur et le type
               d’appareil utilisé pour accéder à votre compte. Nous enregistrons aussi la langue définie sur votre compte.
-              account.
             </p>
             <p>
               S’agissant des données personnelles, nous collectons et conservons uniquement les informations
@@ -187,7 +184,6 @@ require __DIR__ . '/includes/header.php';
             </p>
             <p>
               3. Pour satisfaire à nos obligations légales et administratives, le traitement des données personnelles est nécessaire.
-              necessary.
             </p>
             <p>Pour respecter nos obligations légales, nous devons traiter certaines données personnelles.</p>
             <p>
@@ -245,7 +241,6 @@ require __DIR__ . '/includes/header.php';
             <p>
               Dans le but d’améliorer notre service client et d’optimiser nos services en général,
               l’entreprise peut partager des données personnelles avec ses sociétés affiliées et ses partenaires commerciaux.
-              partners.
             </p>
             <p>
               Lorsque la loi l’exige ou pour protéger les droits et les biens de l’entreprise et des
@@ -318,18 +313,15 @@ require __DIR__ . '/includes/header.php';
             <p class="green">Informations complémentaires</p>
             <p>
               Toutes les informations stockées via les cookies sont anonymes et ne permettent pas d’identifier des personnes.
-              individuals.
             </p>
             <p>
               Les cookies de session sont supprimés à la fermeture du navigateur, tandis que les cookies persistants
               restent actifs jusqu’à leur expiration ou indéfiniment, sauf si vous les supprimez manuellement.
-              manually.
             </p>
             <p>Cookies bloqués ou supprimés</p>
             <p>
               Si vous souhaitez supprimer ou bloquer les cookies, vous devez le faire dans les
               paramètres de votre navigateur. Consultez les liens suivants pour les instructions détaillées des navigateurs les plus courants.
-              browsers.
             </p>
             <p class="circle">Firefox</p>
             <p class="circle">Microsoft Edge</p>
@@ -365,7 +357,6 @@ require __DIR__ . '/includes/header.php';
             </p>
             <p>
               Dans l’Espace économique européen (EEE), tous les résidents bénéficient d’une protection des données et de garanties.
-              guarantees.
             </p>
             <p class="circle">
               Les transferts de données s’effectuent toujours sous juridiction et autorité européennes, conformément
@@ -517,7 +508,6 @@ require __DIR__ . '/includes/header.php';
             </p>
             <p>
               Vous pouvez à tout moment vous opposer au traitement de vos données personnelles à des fins de prospection commerciale.
-              purposes.
             </p>
             <p>
               Droit de retirer son consentement
@@ -535,7 +525,6 @@ require __DIR__ . '/includes/header.php';
               Si vous estimez que vos droits et libertés concernant le traitement de vos données personnelles
               ont été violés, les États membres de l’Union européenne disposent d’autorités de contrôle
               à cette fin. Vous pouvez saisir ces autorités si vous le jugez opportun.
-              appropriate.
             </p>
             <p>
               La section 13 décrit les situations dans lesquelles vos droits relatifs aux données personnelles peuvent être
@@ -552,7 +541,6 @@ require __DIR__ . '/includes/header.php';
               Nous vous enverrons les informations demandées par voie électronique et gratuitement, sauf si
               cela est contraire à la loi ou aux dispositions de la section 13. Nous nous réservons le droit de
               facturer des frais raisonnables ou de refuser une demande si elle est jugée infondée, excessive ou répétitive.
-              repetitive.
             </p>
             <p>
               Nous nous réservons le droit de demander une vérification d’identité complémentaire s’il existe un

@@ -24,35 +24,35 @@ require __DIR__ . '/includes/header.php';
                 </div>
               </div>
               <div class="employee">
-                <img src="<?= asset('static/images/partner-ph.jpg') ?>" alt="Partner photo" />
+                <img src="<?= asset('static/images/partner-ph.jpg') ?>" alt="Photo de l’associé" />
                 <div class="text-wrap">
                   <h2>Luka Mari&#263;</h2>
                   <p>Associé et vice-président du développement commercial</p>
                 </div>
               </div>
               <div class="employee">
-                <img src="<?= asset('static/images/cfo-ph.jpg') ?>" alt="CFO photo" />
+                <img src="<?= asset('static/images/cfo-ph.jpg') ?>" alt="Photo du CFO" />
                 <div class="text-wrap">
                   <h2>Ivan Kova&#269;</h2>
                   <p>Associé et directeur financier (CFO)</p>
                 </div>
               </div>
               <div class="employee">
-                <img src="<?= asset('static/images/dir-ph.jpg') ?>" alt="Associé gérant photo" />
+                <img src="<?= asset('static/images/dir-ph.jpg') ?>" alt="Photo de l’associé gérant" />
                 <div class="text-wrap">
                   <h2>Stjepan Babi&#263;</h2>
                   <p>Associé gérant</p>
                 </div>
               </div>
               <div class="employee">
-                <img src="<?= asset('static/images/cto-ph.jpg') ?>" alt="CTO photo" />
+                <img src="<?= asset('static/images/cto-ph.jpg') ?>" alt="Photo du CTO" />
                 <div class="text-wrap">
                   <h2>Mateo Vidovi&#263;</h2>
                   <p>Directeur technique (CTO)</p>
                 </div>
               </div>
               <div class="employee">
-                <img src="<?= asset('static/images/dirp-ph.jpg') ?>" alt="Directrice produit photo" />
+                <img src="<?= asset('static/images/dirp-ph.jpg') ?>" alt="Photo de la directrice produit" />
                 <div class="text-wrap">
                   <h2>Ana Brki&#263;</h2>
                   <p>Directrice produit</p>
@@ -92,28 +92,28 @@ require __DIR__ . '/includes/header.php';
         <h2>Ils nous font confiance</h2>
         <div class="partners-slider">
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/cryptocom-logo.svg') ?>" alt="Crypto.com Logo" />
+            <img loading="lazy" src="<?= asset('static/images/cryptocom-logo.svg') ?>" alt="Logo Crypto.com" />
           </div>
           <div class="p-slide s-bg">
-            <img loading="lazy" src="<?= asset('static/images/binance-logo.svg') ?>" alt="Binance Logo" />
+            <img loading="lazy" src="<?= asset('static/images/binance-logo.svg') ?>" alt="Logo Binance" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/coindesk-logo.svg') ?>" alt="Coindesk Logo" />
+            <img loading="lazy" src="<?= asset('static/images/coindesk-logo.svg') ?>" alt="Logo CoinDesk" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/trading-view.svg') ?>" alt="TradingView Logo" />
+            <img loading="lazy" src="<?= asset('static/images/trading-view.svg') ?>" alt="Logo TradingView" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/deloitte-logo.svg') ?>" alt="Deloitte Logo" />
+            <img loading="lazy" src="<?= asset('static/images/deloitte-logo.svg') ?>" alt="Logo Deloitte" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/ledger-logo.svg') ?>" alt="Ledger Logo" />
+            <img loading="lazy" src="<?= asset('static/images/ledger-logo.svg') ?>" alt="Logo Ledger" />
           </div>
           <div class="p-slide">
-            <img loading="lazy" src="<?= asset('static/images/decrypt-logo.svg') ?>" alt="Decrypt Logo" />
+            <img loading="lazy" src="<?= asset('static/images/decrypt-logo.svg') ?>" alt="Logo Decrypt" />
           </div>
           <div class="p-slide s-bg">
-            <img loading="lazy" src="<?= asset('static/images/nansen-logo.svg') ?>" alt="Nansen Logo" />
+            <img loading="lazy" src="<?= asset('static/images/nansen-logo.svg') ?>" alt="Logo Nansen" />
           </div>
         </div>
       </section>
