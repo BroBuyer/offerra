@@ -2858,6 +2858,28 @@ td.col-num {
   text-align: right;
 }
 
+.stats-templates {
+  margin-bottom: 1.25rem;
+}
+
+.stats-templates h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.stats-templates p {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+}
+
+.stats-templates .table-wrap {
+  max-width: 640px;
+}
+
+.stats-templates tr.is-selected {
+  background: var(--surface-2);
+}
+
 .stats-page .pagination-actions {
   display: inline-flex;
   align-items: center;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\StaleDeadOfferService;
+use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,6 +21,7 @@ class OfferStatsController extends Controller
         'domain',
         'geo',
         'lang',
+        'template',
         'clicks_geo_count',
         'last_click_geo_at',
         'leads_count',
@@ -31,7 +33,7 @@ class OfferStatsController extends Controller
         'deployed_at',
     ];
 
-    public function index(Request $request, StaleDeadOfferService $staleDead): Response
+    public function index(Request $request, StaleDeadOfferService $staleDead, TemplateCatalog $catalog): Response
     {
         $user = $request->user();
         $filters = $this->filters($request, $user);
@@ -56,14 +58,20 @@ class OfferStatsController extends Controller
             ->with(['stats', 'user:id,name,email'])
             ->paginate($filters['per_page'], ['offers.*'], 'page', $filters['page'])
             ->withQueryString()
-            ->through(fn (Offer $offer) => $this->toRow($offer, $user->canSeeAllOffers()));
+            ->through(fn (Offer $offer) => $this->toRow($offer, $user->canSeeAllOffers(), $catalog));
 
         return Inertia::render('Panel/Offers/Stats', [
             'rows' => $rows,
             'filters' => $filters,
+            'templateTotals' => $this->templateTotals($baseQuery, $filters, $catalog),
             'filterOptions' => [
                 'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
                 'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
+                'templates' => (clone $baseQuery)->reorder()
+                    ->whereNotNull('template')->where('template', '!=', '')
+                    ->distinct()->orderBy('template')->pluck('template')
+                    ->map(fn (string $id) => ['id' => $id, 'name' => $catalog->label($id)])
+                    ->values()->all(),
             ],
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'showUserColumn' => $user->canSeeAllOffers(),
@@ -99,6 +107,7 @@ class OfferStatsController extends Controller
             'domain' => strtolower(trim($request->string('domain')->toString())),
             'geo' => strtoupper(trim($request->string('geo')->toString())),
             'lang' => strtolower(trim($request->string('lang')->toString())),
+            'template' => trim($request->string('template')->toString()),
             'user' => $user->canSeeAllOffers() ? $request->integer('user', 0) : 0,
             'sort' => $sort,
             'dir' => $dir,
@@ -136,15 +145,62 @@ class OfferStatsController extends Controller
         if ($filters['lang'] !== '') {
             $query->where('lang', $filters['lang']);
         }
+        if ($filters['template'] !== '') {
+            $query->where('template', $filters['template']);
+        }
         if (! empty($filters['user'])) {
             $query->where('user_id', (int) $filters['user']);
         }
     }
 
     /**
+     * Totals per template under the current filters. The template filter itself
+     * is ignored here, so picking one template still leaves the others visible
+     * to compare against.
+     *
+     * @param  array<string, mixed>  $filters
+     * @return list<array<string, mixed>>
+     */
+    private function templateTotals(Builder $baseQuery, array $filters, TemplateCatalog $catalog): array
+    {
+        $filters['template'] = '';
+
+        $query = (clone $baseQuery)->reorder();
+        $this->applyFilters($query, $filters);
+
+        $rows = $query
+            ->leftJoin('offer_stats', 'offer_stats.offer_id', '=', 'offers.id')
+            ->whereNotNull('offers.template')
+            ->where('offers.template', '!=', '')
+            ->groupBy('offers.template')
+            ->selectRaw(implode(', ', [
+                'offers.template as template',
+                'COUNT(*) as offers_count',
+                'COALESCE(SUM(offer_stats.clicks_geo_count), 0) as clicks',
+                'COALESCE(SUM(offer_stats.leads_count), 0) as leads',
+                'COALESCE(SUM(offer_stats.deposits_count), 0) as deposits',
+            ]))
+            ->toBase()
+            ->get();
+
+        return $rows
+            ->map(fn ($row) => [
+                'template' => (string) $row->template,
+                'label' => $catalog->label((string) $row->template),
+                'offers_count' => (int) $row->offers_count,
+                'clicks' => (int) $row->clicks,
+                'leads' => (int) $row->leads,
+                'deposits' => (int) $row->deposits,
+            ])
+            ->sortByDesc('leads')
+            ->values()
+            ->all();
+    }
+
+    /**
      * @return array<string, mixed>
      */
-    private function toRow(Offer $offer, bool $showUser): array
+    private function toRow(Offer $offer, bool $showUser, TemplateCatalog $catalog): array
     {
         $stats = $offer->stats;
 
@@ -154,6 +210,8 @@ class OfferStatsController extends Controller
             'domain' => $offer->domain,
             'geo' => $offer->geo,
             'lang' => $offer->lang,
+            'template' => (string) $offer->template,
+            'template_label' => $offer->template ? $catalog->label((string) $offer->template) : '',
             'status' => $offer->status,
             'indexed_at' => $offer->indexed_at?->format('Y-m-d H:i:s'),
             'google_index_status' => (string) ($offer->google_index_status ?? ''),

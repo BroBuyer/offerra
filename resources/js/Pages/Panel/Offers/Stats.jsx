@@ -19,6 +19,13 @@ function formatDt(value) {
     return `${day}.${month}.${year}${shortTime ? ` ${shortTime}` : ''}`;
 }
 
+function ratio(part, whole) {
+    if (!whole) {
+        return '—';
+    }
+    return `${((part / whole) * 100).toFixed(1)}%`;
+}
+
 function buildQueryParams(filters, overrides = {}) {
     const merged = { ...filters, ...overrides };
     const params = {};
@@ -54,6 +61,7 @@ export default function OfferStats({
     rows,
     filters,
     filterOptions = {},
+    templateTotals = [],
     perPageOptions = [50],
     showUserColumn = false,
     users = [],
@@ -65,6 +73,7 @@ export default function OfferStats({
         domain: filters.domain || '',
         geo: filters.geo || '',
         lang: filters.lang || '',
+        template: filters.template || '',
         user: filters.user || '',
         per_page: filters.per_page || 50,
     });
@@ -90,6 +99,7 @@ export default function OfferStats({
             domain: draft.domain,
             geo: draft.geo,
             lang: draft.lang,
+            template: draft.template,
             user: draft.user || 0,
             per_page: draft.per_page,
             page: 1,
@@ -98,6 +108,11 @@ export default function OfferStats({
             preserveState: true,
             replace: true,
         });
+    };
+
+    const selectTemplate = (template) => {
+        setDraft((d) => ({ ...d, template }));
+        applyFilters({ template, page: 1 });
     };
 
     const onSort = (column) => {
@@ -169,6 +184,15 @@ export default function OfferStats({
                             <option key={l} value={l}>{l}</option>
                         ))}
                     </select>
+                    <select
+                        value={draft.template}
+                        onChange={(e) => setDraft((d) => ({ ...d, template: e.target.value }))}
+                    >
+                        <option value="">Шаблон</option>
+                        {(filterOptions.templates || []).map((t) => (
+                            <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                    </select>
                     {showUserColumn && (
                         <select
                             value={draft.user}
@@ -193,7 +217,7 @@ export default function OfferStats({
                         type="button"
                         className="btn"
                         onClick={() => {
-                            setDraft({ brand: '', domain: '', geo: '', lang: '', user: '', per_page: 50 });
+                            setDraft({ brand: '', domain: '', geo: '', lang: '', template: '', user: '', per_page: 50 });
                             router.get('/offers/stats', { sort: 'leads_count', dir: 'desc', per_page: 50 }, {
                                 preserveState: true,
                                 replace: true,
@@ -204,6 +228,50 @@ export default function OfferStats({
                     </button>
                 </form>
 
+                {templateTotals.length > 0 && (
+                    <section className="stats-templates">
+                        <h2>Підсумок по шаблонах</h2>
+                        <p className="muted">
+                            Сума по всіх оферах під поточними фільтрами. CR — ліди від кліків.
+                            Натисни на шаблон, щоб залишити в таблиці нижче лише його.
+                        </p>
+                        <div className="table-wrap">
+                            <table className="offers-table-desktop">
+                                <thead>
+                                    <tr>
+                                        <th>Шаблон</th>
+                                        <th className="text-right">Офери</th>
+                                        <th className="text-right">Кліки</th>
+                                        <th className="text-right">Ліди</th>
+                                        <th className="text-right">Депи</th>
+                                        <th className="text-right">CR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {templateTotals.map((t) => (
+                                        <tr key={t.template} className={filters.template === t.template ? 'is-selected' : undefined}>
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className={`stats-sort-btn${filters.template === t.template ? ' is-active' : ''}`}
+                                                    onClick={() => selectTemplate(filters.template === t.template ? '' : t.template)}
+                                                >
+                                                    {t.label}
+                                                </button>
+                                            </td>
+                                            <td className="text-right muted">{t.offers_count}</td>
+                                            <td className="text-right">{t.clicks}</td>
+                                            <td className="text-right">{t.leads}</td>
+                                            <td className="text-right">{t.deposits}</td>
+                                            <td className="text-right muted">{ratio(t.leads, t.clicks)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                )}
+
                 <div className="table-wrap">
                     <table className="offers-table-desktop">
                         <thead>
@@ -213,6 +281,7 @@ export default function OfferStats({
                                 <SortTh label="Domain" column="domain" filters={filters} onSort={onSort} />
                                 <SortTh label="GEO" column="geo" filters={filters} onSort={onSort} />
                                 <SortTh label="Lang" column="lang" filters={filters} onSort={onSort} />
+                                <SortTh label="Шаблон" column="template" filters={filters} onSort={onSort} />
                                 <SortTh label="Кліки" column="clicks_geo_count" filters={filters} onSort={onSort} align="right" />
                                 <SortTh label="Ост. клік" column="last_click_geo_at" filters={filters} onSort={onSort} />
                                 <SortTh label="Ліди" column="leads_count" filters={filters} onSort={onSort} align="right" />
@@ -226,7 +295,7 @@ export default function OfferStats({
                         <tbody>
                             {(rows?.data || []).length === 0 && (
                                 <tr>
-                                    <td colSpan={showUserColumn ? 13 : 12} className="muted">
+                                    <td colSpan={showUserColumn ? 14 : 13} className="muted">
                                         Немає оферів за фільтром.
                                     </td>
                                 </tr>
@@ -247,6 +316,7 @@ export default function OfferStats({
                                     </td>
                                     <td>{row.geo || '—'}</td>
                                     <td>{row.lang || '—'}</td>
+                                    <td>{row.template_label || '—'}</td>
                                     <td className="text-right">{row.clicks_geo_count}</td>
                                     <td className="muted">{formatDt(row.last_click_geo_at)}</td>
                                     <td className="text-right">{row.leads_count}</td>
