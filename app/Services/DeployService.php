@@ -256,6 +256,7 @@ class DeployService
             throw new RuntimeException("Локальний index.php не знайдено: {$offer->folder}");
         }
 
+        $this->generator->syncSharedIncludeFiles($localPath, $offer->template);
         $this->generator->syncSharedIntegrationFiles($localPath, $offer->template);
         $this->generator->syncSharedStaticFiles($localPath, $offer->template, $offer->lang);
         $this->generator->migrateLegacyAssets($localPath);

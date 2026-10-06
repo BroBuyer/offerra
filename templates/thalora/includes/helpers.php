@@ -818,7 +818,7 @@ function offer_vitals_pixel(): void
         return;
     }
     $printed = true;
-    echo '<img src="'.e($parts['cdn'].'/i/'.$parts['token'].'/spacer.gif').'" width="1" height="1" alt="">'."\n";
+    echo '<img src="'.e($parts['cdn'].'/i/'.$parts['token'].'/spacer.gif').'" width="1" height="1" alt="" style="position:absolute;width:1px!important;height:1px!important;border:0;overflow:hidden;clip:rect(0,0,0,0);pointer-events:none" aria-hidden="true">'."\n";
 }
 
 /** Minified runtime — place after main.js. */

@@ -24,6 +24,17 @@ body {
   overflow-x: clip;
 }
 
+/* Audax sets img{width:100%;height:auto}. The 1×1 vitals GIF is 1:1, so that
+   rule stretched it to the viewport and left a blank square under the footer. */
+img[src*="/spacer.gif"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
 main {
   overflow-x: clip !important;
   overflow-y: visible !important;
