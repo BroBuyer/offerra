@@ -93,18 +93,61 @@ class OfferController extends Controller
 
     /**
      * Active (non-archived) offers: lowercase brand → template_id → usage count.
+     * Same visibility as the offers list / brand lookup (admins see every owner).
      *
      * @return array<string, array<string, int>>
      */
     private function brandTemplateUsage(User $user): array
     {
-        $rows = Offer::query()
-            ->where('user_id', $user->id)
+        $query = Offer::query()
             ->whereNotIn('status', ['archived', 'teardown_failed'])
             ->whereNotNull('template')
-            ->where('template', '!=', '')
-            ->get(['brand', 'template']);
+            ->where('template', '!=', '');
 
+        $this->applyOfferVisibility($query, $user);
+
+        return $this->templateCountsByBrand($query->get(['brand', 'template']));
+    }
+
+    /**
+     * Restrict to the user's own offers unless they can see everyone's.
+     */
+    private function applyOfferVisibility(Builder $query, User $user): void
+    {
+        if (! $user->canSeeAllOffers()) {
+            $query->where('user_id', $user->id);
+        } elseif (request()->filled('user')) {
+            $query->where('user_id', request()->integer('user'));
+        }
+    }
+
+    /**
+     * @param  iterable<Offer>  $rows
+     * @return array<string, int>
+     */
+    private function templateCountsFromOffers(iterable $rows): array
+    {
+        $counts = [];
+
+        foreach ($rows as $row) {
+            $template = trim((string) $row->template);
+
+            if ($template === '') {
+                continue;
+            }
+
+            $counts[$template] = ($counts[$template] ?? 0) + 1;
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @param  iterable<Offer>  $rows
+     * @return array<string, array<string, int>>
+     */
+    private function templateCountsByBrand(iterable $rows): array
+    {
         $map = [];
 
         foreach ($rows as $row) {
@@ -176,11 +219,7 @@ class OfferController extends Controller
             $query->whereNotIn('status', ['archived', 'teardown_failed']);
         }
 
-        if (! $user->canSeeAllOffers()) {
-            $query->where('user_id', $user->id);
-        } elseif (request()->filled('user')) {
-            $query->where('user_id', request()->integer('user'));
-        }
+        $this->applyOfferVisibility($query, $user);
 
         return $query;
     }
@@ -345,18 +384,25 @@ class OfferController extends Controller
         $user = $request->user();
         $needle = mb_strtolower($brand);
 
-        $active = $this->offerScopeQuery($user, archived: false)
+        $activeQuery = Offer::query()
+            ->whereNotIn('status', ['archived', 'teardown_failed']);
+        $this->applyOfferVisibility($activeQuery, $user);
+
+        $activeRows = $activeQuery
             ->whereRaw('LOWER(TRIM(brand)) = ?', [$needle])
-            ->count();
+            ->get(['template']);
 
         $archived = $this->offerScopeQuery($user, archived: true)
             ->whereRaw('LOWER(TRIM(brand)) = ?', [$needle])
             ->count();
 
+        $templates = $this->templateCountsFromOffers($activeRows);
+
         return response()->json([
             'brand' => $brand,
-            'active' => $active,
+            'active' => $activeRows->count(),
             'archived' => $archived,
+            'templates' => (object) $templates,
         ]);
     }
 

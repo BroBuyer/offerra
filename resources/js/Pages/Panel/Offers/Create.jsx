@@ -1,6 +1,6 @@
 import PanelLayout from '@/Layouts/PanelLayout';
 import PhoneGeoSelect, { normalizePhoneCountries, uniquePhonePresets, phoneOptionCode } from '@/Components/PhoneGeoSelect';
-import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
+import TemplatePicker, { usedTemplateCountsForBrand, usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { clearWizardState, draftHasProgress, loadWizardState, peekWizardDraft, saveWizardState, stripFreshQueryParam } from '@/lib/offerWizardStorage';
 import { geoDepositMissingFromCatalog, lookupGeoDeposit } from '@/lib/geoDepositPrefs';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
@@ -84,6 +84,15 @@ function resolveMarket(geo, geoPresets, availableLanguages) {
 
 function templateLabel(templates, templateId) {
     return templates.find((item) => item.id === templateId)?.name ?? templateId;
+}
+
+function formatUsedTemplatesHint(templates, usedTemplateIds, counts = {}) {
+    return usedTemplateIds.map((id) => {
+        const n = Number(counts[id]) || 0;
+        const name = templateLabel(templates, id);
+
+        return n > 1 ? `${name} ×${n}` : name;
+    }).join(', ');
 }
 
 function formatDomainPrice(price) {
@@ -265,9 +274,37 @@ export default function OffersCreate({
         [templates, data.template],
     );
 
+    const brandUsageMap = useMemo(() => {
+        const brandKey = String(data.brand || '').trim().toLowerCase();
+        const lookupKey = String(brandLookup?.brand || '').trim().toLowerCase();
+        const lookupTemplates = brandLookup?.templates;
+
+        if (
+            brandKey
+            && lookupKey === brandKey
+            && lookupTemplates
+            && typeof lookupTemplates === 'object'
+            && !Array.isArray(lookupTemplates)
+        ) {
+            return { [brandKey]: lookupTemplates };
+        }
+
+        return brandTemplateUsage;
+    }, [brandLookup, brandTemplateUsage, data.brand]);
+
     const usedTemplateIds = useMemo(
-        () => usedTemplatesForBrand(brandTemplateUsage, data.brand),
-        [brandTemplateUsage, data.brand],
+        () => usedTemplatesForBrand(brandUsageMap, data.brand),
+        [brandUsageMap, data.brand],
+    );
+
+    const usedTemplateCounts = useMemo(
+        () => usedTemplateCountsForBrand(brandUsageMap, data.brand),
+        [brandUsageMap, data.brand],
+    );
+
+    const usedTemplatesHint = useMemo(
+        () => formatUsedTemplatesHint(templates, usedTemplateIds, usedTemplateCounts),
+        [templates, usedTemplateIds, usedTemplateCounts],
     );
 
     const bulkMultilangFlags = useMemo(
@@ -416,6 +453,9 @@ export default function OffersCreate({
                 setBulkSubmitting(false);
                 skipPersist.current = false;
                 stripFreshQueryParam();
+                if (restored.data?.brand) {
+                    void lookupBrand(restored.data.brand);
+                }
                 return;
             }
         }
@@ -709,8 +749,8 @@ export default function OffersCreate({
         }
     };
 
-    const lookupBrand = async () => {
-        const brand = data.brand.trim();
+    const lookupBrand = async (brandOverride) => {
+        const brand = String(brandOverride ?? data.brand).trim();
         if (!brand) {
             setBrandLookup(null);
             setBrandLookupLoading(false);
@@ -730,6 +770,11 @@ export default function OffersCreate({
                 brand: result.brand ?? brand,
                 active: Number(result.active) || 0,
                 archived: Number(result.archived) || 0,
+                templates: (
+                    result.templates
+                    && typeof result.templates === 'object'
+                    && !Array.isArray(result.templates)
+                ) ? result.templates : {},
             });
         } catch {
             if (seq !== brandLookupSeq.current) {
@@ -969,7 +1014,7 @@ export default function OffersCreate({
             }
 
             const packUsed = [
-                ...usedTemplatesForBrand(brandTemplateUsage, data.brand),
+                ...usedTemplatesForBrand(brandUsageMap, data.brand),
             ];
             const assigned = assignTemplatesRoundRobin(
                 prev.map((item) => item.domain),
@@ -1193,6 +1238,28 @@ export default function OffersCreate({
             loadDynadotBalance();
         }
     }, [hasDynadotApiKey, step]);
+
+    useEffect(() => {
+        if (data.brand.trim()) {
+            void lookupBrand();
+        }
+        // Restored draft: one lookup so «вже є» is ready before the template step.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (step !== 1 || !data.brand.trim()) {
+            return;
+        }
+
+        const lookupKey = String(brandLookup?.brand || '').trim().toLowerCase();
+        if (lookupKey === data.brand.trim().toLowerCase()) {
+            return;
+        }
+
+        void lookupBrand();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [step]);
 
     const folderPreview = useMemo(() => {
         if (!data.brand || !data.domain || !data.geo) return '…';
@@ -1948,13 +2015,15 @@ export default function OffersCreate({
 
                     <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Шаблони</h3>
-                        <p className="card-desc" style={{ marginBottom: '1rem' }}>
-                            Папки з <code>templates/</code>.
-                            {data.brand.trim() ? (
-                                <> Для воронки «{data.brand.trim()}» позначено вже використані шаблони.</>
-                            ) : null}
-                            {' '}Без обраної мови шаблон недоступний.
+                        <p className="card-desc" style={{ marginBottom: '0.75rem' }}>
+                            Папки з <code>templates/</code>. Без обраної мови шаблон недоступний.
                         </p>
+                        {data.brand.trim() && usedTemplateIds.length > 0 && (
+                            <p className="field-hint" style={{ marginBottom: '0.85rem' }}>
+                                На воронці «{data.brand.trim()}» уже є:{' '}
+                                <strong>{usedTemplatesHint}</strong>
+                            </p>
+                        )}
                         {bulkItems.length > 0 ? (
                             <div className="offer-bulk-map">
                                 <div className="offer-bulk-map__head">
@@ -1970,11 +2039,6 @@ export default function OffersCreate({
                                         Застосувати цей шаблон до всіх
                                     </button>
                                 </div>
-                                {usedTemplateIds.length > 0 && data.brand.trim() && (
-                                    <p className="field-hint">
-                                        Уже на цій воронці: {usedTemplateIds.map((id) => templateLabel(templates, id)).join(', ')}
-                                    </p>
-                                )}
                                 <ul className="offer-bulk-map__list">
                                     {bulkItems.map((item) => (
                                         <li key={item.domain} className="offer-bulk-map__row">
@@ -2275,8 +2339,11 @@ export default function OffersCreate({
                             || (step === 1 && !canProceedStep1)
                         }
                         onClick={() => {
-                            if (step === 0 && data.lang) {
-                                ensureBulkTemplatesForLang(data.lang);
+                            if (step === 0) {
+                                void lookupBrand();
+                                if (data.lang) {
+                                    ensureBulkTemplatesForLang(data.lang);
+                                }
                             }
                             goToStep(step + 1);
                         }}

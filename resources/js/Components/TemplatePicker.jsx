@@ -85,23 +85,22 @@ export default function TemplatePicker({
     );
 }
 
-/**
- * @param {Record<string, Record<string, number>>|undefined} usage
- * @param {string} brand
- * @param {{ excludeTemplate?: string, excludeIfCountIsOne?: boolean }} [opts]
- * @returns {string[]}
- */
-export function usedTemplatesForBrand(usage, brand, opts = {}) {
+export function usedTemplateCountsForBrand(usage, brand) {
     const key = String(brand || '').trim().toLowerCase();
-    if (!key || !usage || typeof usage !== 'object') {
-        return [];
+    if (!key || !usage || typeof usage !== 'object' || Array.isArray(usage)) {
+        return {};
     }
 
     const counts = usage[key];
-    if (!counts || typeof counts !== 'object') {
-        return [];
+    if (!counts || typeof counts !== 'object' || Array.isArray(counts)) {
+        return {};
     }
 
+    return counts;
+}
+
+export function usedTemplatesForBrand(usage, brand, opts = {}) {
+    const counts = usedTemplateCountsForBrand(usage, brand);
     const excludeTemplate = opts.excludeTemplate || null;
     const excludeIfCountIsOne = Boolean(opts.excludeIfCountIsOne);
 
