@@ -7,6 +7,8 @@ $active_page = 'home';
 $page_css = ['home-mob.min.css', 'home-desk.min.css', 'calculator.css', 'tinyslider.min.css'];
 $page_js = ['tinyslider.min.js', 'index.min.js', 'calculator.js'];
 $page_has_form = true;
+// Keep the slider's span proportional to the offer's minimum instead of a fixed $10,000.
+$calc_deposit_max = max(10000, (int) MIN_DEPOSIT * 40);
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -86,7 +88,7 @@ require __DIR__ . '/includes/header.php';
           dir="ltr"
           id="calculator"
           data-calc-root
-          data-currency="$"
+          data-currency="<?= e(currency_symbol()) ?>"
           style="
             --calc-accent: #c2410c;
             --calc-cta-bg: #ee6129;
@@ -112,20 +114,20 @@ require __DIR__ . '/includes/header.php';
             <div class="calc-widget__controls">
               <div class="calc-widget__control">
                 <label class="calc-widget__label" for="calc-deposit">You deposit:</label>
-                <div class="calc-widget__value"><span data-calc="deposit_value">$250</span></div>
+                <div class="calc-widget__value"><span data-calc="deposit_value"><?= e(money_min()) ?></span></div>
                 <input
                   id="calc-deposit"
                   class="calc-widget__range"
                   type="range"
                   data-calc="deposit"
-                  min="250"
-                  max="10000"
+                  min="<?= (int) MIN_DEPOSIT ?>"
+                  max="<?= (int) $calc_deposit_max ?>"
                   step="1"
-                  value="250"
+                  value="<?= (int) MIN_DEPOSIT ?>"
                 />
                 <div class="calc-widget__minmax">
-                  <span data-calc="deposit_min">$250</span>
-                  <span data-calc="deposit_max">$10000</span>
+                  <span data-calc="deposit_min"><?= e(money_min()) ?></span>
+                  <span data-calc="deposit_max"><?= e(currency_symbol() . number_format($calc_deposit_max)) ?></span>
                 </div>
               </div>
               <div class="calc-widget__control">
@@ -152,7 +154,7 @@ require __DIR__ . '/includes/header.php';
             <div class="calc-widget__result">
               <div class="calc-widget__result-head">
                 <span class="calc-widget__result-title">You can earn</span>
-                <div class="calc-widget__total"><span data-calc="total">$250</span></div>
+                <div class="calc-widget__total"><span data-calc="total"><?= e(money_min()) ?></span></div>
               </div>
               <div class="calc-widget__stats">
                 <div class="calc-widget__stat">
@@ -161,7 +163,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
                 <div class="calc-widget__stat">
                   <div class="calc-widget__stat-label">Revenue</div>
-                  <div class="calc-widget__stat-value"><span data-calc="revenue">$0</span></div>
+                  <div class="calc-widget__stat-value"><span data-calc="revenue"><?= e(currency_symbol()) ?>0</span></div>
                 </div>
               </div>
             </div>
@@ -183,7 +185,8 @@ require __DIR__ . '/includes/header.php';
               Leave your contact details and one of our specialists will get in touch with you as
               soon as possible.
             </h3>
-            <?php
+            <div class="leadform">
+              <?php
   $form_id = 'calc-lead-form';
   $form_wrap_class = 'newRegForm';
   $form_field_classes = ['', '', '', '', ''];
@@ -191,6 +194,7 @@ require __DIR__ . '/includes/header.php';
   $form_phone_id = 'calc-phone';
   include __DIR__ . '/includes/form.php';
 ?>
+            </div>
           </div>
         </div>
       </section>
