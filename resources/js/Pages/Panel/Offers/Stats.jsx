@@ -229,8 +229,13 @@ export default function OfferStats({
                 </form>
 
                 {templateTotals.length > 0 && (
-                    <section className="stats-templates">
-                        <h2>Підсумок по шаблонах</h2>
+                    <details className="stats-templates">
+                        <summary>
+                            Підсумок по шаблонах
+                            <span className="muted">
+                                {' '}— найбільше лідів: {templateTotals[0].label} ({templateTotals[0].leads})
+                            </span>
+                        </summary>
                         <p className="muted">
                             Сума по всіх оферах під поточними фільтрами. CR — ліди від кліків.
                             Натисни на шаблон, щоб залишити в таблиці нижче лише його.
@@ -269,7 +274,7 @@ export default function OfferStats({
                                 </tbody>
                             </table>
                         </div>
-                    </section>
+                    </details>
                 )}
 
                 <div className="table-wrap">
