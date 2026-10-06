@@ -3,6 +3,7 @@ import it from './it.mjs';
 import es from './es.mjs';
 import pt from './pt.mjs';
 import de from './de.mjs';
+import nl from './nl.mjs';
 
 export const LOCALES = {
   fr: {
@@ -40,6 +41,13 @@ export const LOCALES = {
     currency: 'EUR',
     tickerLang: 'de',
   },
+  nl: {
+    siteLang: 'nl',
+    crmCountry: 'NL',
+    phoneCountry: 'nl',
+    currency: 'EUR',
+    tickerLang: 'nl',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de };
+export const PACKS = { fr, it, es, pt, de, nl };

@@ -272,6 +272,7 @@ function geo_in(): string
         'es' => geo_es_place($code, $name, 'in'),
         'pt' => geo_pt_place($code, $name, 'in'),
         'de' => geo_de_place($code, $name, 'in'),
+        'nl' => geo_nl_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -287,6 +288,7 @@ function geo_from(): string
         'es' => geo_es_place($code, $name, 'from'),
         'pt' => geo_pt_place($code, $name, 'from'),
         'de' => geo_de_place($code, $name, 'from'),
+        'nl' => geo_nl_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -505,6 +507,39 @@ function geo_de_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('in ' . $name);
 }
 
+/**
+ * "in the Netherlands" / "in Nederland" / "in het Verenigd Koninkrijk" — grammar lives here, not in copy.
+ */
+function geo_nl_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'in het Verenigd Koninkrijk',
+        'uk' => 'in het Verenigd Koninkrijk',
+        'us' => 'in de Verenigde Staten',
+        'ae' => 'in de Verenigde Arabische Emiraten',
+        'ph' => 'in de Filipijnen',
+        'cz' => 'in Tsjechië',
+        'nl' => 'in Nederland',
+        'be' => 'in België',
+    ];
+    $from = [
+        'gb' => 'uit het Verenigd Koninkrijk',
+        'uk' => 'uit het Verenigd Koninkrijk',
+        'us' => 'uit de Verenigde Staten',
+        'ae' => 'uit de Verenigde Arabische Emiraten',
+        'ph' => 'uit de Filipijnen',
+        'cz' => 'uit Tsjechië',
+        'nl' => 'uit Nederland',
+        'be' => 'uit België',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('uit ' . $name);
+    }
+
+    return $in[$code] ?? ('in ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -528,6 +563,7 @@ function platform_image_alt(): string
         'es' => SITE_NAME . ' — plataforma de trading móvil: gráfico BTC/USDT en directo, libro de órdenes e interfaz de compra/venta',
         'pt' => SITE_NAME . ' — plataforma de trading móvel: gráfico BTC/USDT em direto, livro de ordens e interface de compra/venda',
         'de' => SITE_NAME . ' — mobile Trading-Plattform: Live-Chart BTC/USDT, Orderbuch und Kauf-/Verkaufsoberfläche',
+        'nl' => SITE_NAME . ' — mobiel tradingplatform: live BTC/USDT-grafiek, orderboek en koop-/verkoopinterface',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -540,6 +576,7 @@ function platform_image_caption(): string
         'es' => SITE_NAME . ' — trading móvil con gráficos cripto en tiempo real',
         'pt' => SITE_NAME . ' — trading móvel com gráficos cripto em tempo real',
         'de' => SITE_NAME . ' — mobiles Trading mit Krypto-Charts in Echtzeit',
+        'nl' => SITE_NAME . ' — mobiel trading met crypto-grafieken in realtime',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
