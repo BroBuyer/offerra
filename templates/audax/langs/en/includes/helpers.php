@@ -271,6 +271,7 @@ function geo_in(): string
         'it' => geo_it_place($code, $name, 'in'),
         'es' => geo_es_place($code, $name, 'in'),
         'pt' => geo_pt_place($code, $name, 'in'),
+        'de' => geo_de_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -285,6 +286,7 @@ function geo_from(): string
         'it' => geo_it_place($code, $name, 'from'),
         'es' => geo_es_place($code, $name, 'from'),
         'pt' => geo_pt_place($code, $name, 'from'),
+        'de' => geo_de_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -462,6 +464,47 @@ function geo_pt_place(string $code, string $name, string $kind): string
     return 'em ' . $name;
 }
 
+/**
+ * "in Germany" / "in Deutschland" / "im Vereinigten Königreich" — grammar lives here, not in copy.
+ */
+function geo_de_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'im Vereinigten Königreich',
+        'uk' => 'im Vereinigten Königreich',
+        'us' => 'in den Vereinigten Staaten',
+        'nl' => 'in den Niederlanden',
+        'ae' => 'in den Vereinigten Arabischen Emiraten',
+        'ph' => 'auf den Philippinen',
+        'cz' => 'in Tschechien',
+        'ch' => 'in der Schweiz',
+        'tr' => 'in der Türkei',
+        'ua' => 'in der Ukraine',
+        'sk' => 'in der Slowakei',
+        'at' => 'in Österreich',
+    ];
+    $from = [
+        'gb' => 'aus dem Vereinigten Königreich',
+        'uk' => 'aus dem Vereinigten Königreich',
+        'us' => 'aus den Vereinigten Staaten',
+        'nl' => 'aus den Niederlanden',
+        'ae' => 'aus den Vereinigten Arabischen Emiraten',
+        'ph' => 'von den Philippinen',
+        'cz' => 'aus Tschechien',
+        'ch' => 'aus der Schweiz',
+        'tr' => 'aus der Türkei',
+        'ua' => 'aus der Ukraine',
+        'sk' => 'aus der Slowakei',
+        'at' => 'aus Österreich',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('aus ' . $name);
+    }
+
+    return $in[$code] ?? ('in ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -484,6 +527,7 @@ function platform_image_alt(): string
         'it' => SITE_NAME . ' — piattaforma di trading mobile: grafico BTC/USDT in diretta, libro ordini e interfaccia di acquisto/vendita',
         'es' => SITE_NAME . ' — plataforma de trading móvil: gráfico BTC/USDT en directo, libro de órdenes e interfaz de compra/venta',
         'pt' => SITE_NAME . ' — plataforma de trading móvel: gráfico BTC/USDT em direto, livro de ordens e interface de compra/venda',
+        'de' => SITE_NAME . ' — mobile Trading-Plattform: Live-Chart BTC/USDT, Orderbuch und Kauf-/Verkaufsoberfläche',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -495,6 +539,7 @@ function platform_image_caption(): string
         'it' => SITE_NAME . ' — trading mobile con grafici crypto in tempo reale',
         'es' => SITE_NAME . ' — trading móvil con gráficos cripto en tiempo real',
         'pt' => SITE_NAME . ' — trading móvel com gráficos cripto em tempo real',
+        'de' => SITE_NAME . ' — mobiles Trading mit Krypto-Charts in Echtzeit',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
