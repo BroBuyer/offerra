@@ -207,15 +207,33 @@ function geo_country_code(): string
 /**
  * Country name woven into the copy where the source markup had {country}.
  */
+function geo_display_lang(): string
+{
+    return defined('SITE_LANG') ? strtolower((string) SITE_LANG) : 'en';
+}
+
 function geo_country_name(): string
 {
     $code = geo_country_code();
     $iso = strtoupper($code);
+    $lang = geo_display_lang();
 
     if (class_exists(\Locale::class)) {
-        $name = \Locale::getDisplayRegion('en_' . $iso, 'en');
+        $name = \Locale::getDisplayRegion('_' . $iso, $lang);
         if (is_string($name) && $name !== '' && strcasecmp($name, $iso) !== 0) {
-            return ($code === 'gb') ? 'the UK' : $name;
+            if ($lang === 'en') {
+                return match ($code) {
+                    'gb' => 'the UK',
+                    'us' => 'the United States',
+                    'ae' => 'the UAE',
+                    'nl' => 'the Netherlands',
+                    'cz' => 'the Czech Republic',
+                    'ph' => 'the Philippines',
+                    default => $name,
+                };
+            }
+
+            return $name;
         }
     }
 
@@ -238,6 +256,61 @@ function geo_country_name(): string
     ];
 
     return $names[$code] ?? $iso;
+}
+
+/**
+ * "in France" / "en France" / "au Royaume-Uni" — grammar lives here, not in copy.
+ */
+function geo_in(): string
+{
+    $code = geo_country_code();
+    $name = geo_country_name();
+
+    return match (geo_display_lang()) {
+        'fr' => geo_fr_place($code, $name, 'in'),
+        default => 'in ' . $name,
+    };
+}
+
+function geo_from(): string
+{
+    $code = geo_country_code();
+    $name = geo_country_name();
+
+    return match (geo_display_lang()) {
+        'fr' => geo_fr_place($code, $name, 'from'),
+        default => 'from ' . $name,
+    };
+}
+
+function geo_fr_place(string $code, string $name, string $kind): string
+{
+    $name = preg_replace('/^(les|le|la|l’|l\')\s+/iu', '', $name) ?? $name;
+    $aux = ['ae', 'us', 'nl', 'ph'];
+    $au = ['gb', 'uk', 'pt', 'lu', 'jp', 'br', 'mx', 'pe', 'cl', 'dk', 'ca', 'ma'];
+
+    if ($kind === 'from') {
+        if (in_array($code, $aux, true)) {
+            return 'depuis les ' . $name;
+        }
+        if (in_array($code, $au, true)) {
+            return 'depuis le ' . $name;
+        }
+        if (preg_match('/^[AEIOUÉÈÊÀÂÎÏÔÙÛaeiouéèêàâîïôùû]/u', $name)) {
+            return 'depuis l’' . $name;
+        }
+
+        return 'depuis la ' . $name;
+    }
+
+    if (in_array($code, $aux, true)) {
+        return 'aux ' . $name;
+    }
+    if (in_array($code, $au, true)) {
+        return 'au ' . $name;
+    }
+
+    return 'en ' . $name;
 }
 
 function page_title(string $suffix): string
@@ -293,12 +366,17 @@ function page_url(string $path = ''): string
 
     if (offer_is_preview() && ($previewBase = offer_preview_base())) {
         $base = rtrim($previewBase, '/');
-
-        if ($path === '') {
-            return $base.'/';
+        $langDir = str_replace('\\', '/', dirname(__DIR__));
+        $langPrefix = '';
+        if (preg_match('#/langs/([a-z]{2})$#', $langDir, $matches)) {
+            $langPrefix = '/langs/'.$matches[1];
         }
 
-        return $base.'/'.$path;
+        if ($path === '') {
+            return $base.$langPrefix.'/';
+        }
+
+        return $base.$langPrefix.'/'.$path;
     }
 
     return canonical_url($path === '' ? '/' : $path);

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
-$page_title = SITE_NAME . ' - Smart AI investing in ' . geo_country_name();
-$page_description = 'Automated trading in ' . geo_country_name() . '. Start with ' . money_min() . ' using our AI technology. Secure, transparent, and simple.';
+$page_title = SITE_NAME . ' — L’investissement IA intelligent ' . geo_in();
+$page_description = 'Trading automatisé ' . geo_in() . '. Commencez avec ' . money_min() . ' grâce à notre technologie d’IA. Sécurisé, transparent et simple.';
 $page_canonical = page_url();
 $active_page = 'home';
 $page_css = ['home-mob.min.css', 'home-desk.min.css', 'calculator.css', 'tinyslider.min.css'];
@@ -17,61 +17,61 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
           <div class="content-wrap">
             <div class="half left">
-              <h1><?= e(SITE_NAME) ?> Platform</h1>
+              <h1>Plateforme <?= e(SITE_NAME) ?></h1>
               <p>
-                What makes <?= e(SITE_NAME) ?> unique? This is your opportunity to invest smarter in
-                <?= e(geo_country_name()) ?>. Our reliable AI-powered trading platform helps you make informed decisions
-                and manage risk with confidence. Discover the possibilities of <?= e(SITE_NAME) ?> AI.
+                Qu’est-ce qui distingue <?= e(SITE_NAME) ?> ? C’est l’occasion d’investir plus intelligemment
+                <?= e(geo_in()) ?>. Notre plateforme de trading fiable, assistée par l’IA, vous aide à décider en connaissance de cause
+                et à maîtriser le risque. Découvrez ce que l’IA <?= e(SITE_NAME) ?> peut vous apporter.
               </p>
 
               <div class="rating">
                 <img class="rating-img" src="<?= asset('static/images/rating-pp.webp') ?>" alt="" />
                 <div>
-                  <p>Rated 4.7 stars by more than 2,804 satisfied users</p>
+                  <p>Noté 4,7 étoiles par plus de 2 804 utilisateurs satisfaits</p>
                   <img
                     class="stars"
                     src="<?= asset('static/images/stars.svg') ?>"
                     width="120"
                     height="20"
-                    alt="Rated 4.7 out of 5"
+                    alt="Note de 4,7 sur 5"
                   />
                 </div>
               </div>
             </div>
             <div class="half right">
               <div class="calc-wrap">
-                <h2>Join <?= e(SITE_NAME) ?></h2>
+                <h2>Rejoindre <?= e(SITE_NAME) ?></h2>
                 <div id="registration-form" class="leadform bg-elem">
                   <?php
   $form_id = 'aUwMAyO';
   $form_wrap_class = 'BGBYl newRegForm';
   $form_field_classes = ['cLZbqT AynAsYgTO', 'cLZbqT AynAsYgTO', 'cLZbqT zAOgjWA', 'cLZbqT RAVeMxYu', 'cLZbqT eqlXFEk'];
-  $form_submit = 'Join Now';
+  $form_submit = 'Rejoindre';
   $form_phone_id = 'NNmFIx';
   include __DIR__ . '/includes/form.php';
 ?>
                 </div>
                 <div class="form_text_bottom">
                   <p>
-                    By entering your personal information and clicking the "Join Now" button, you
-                    confirm that you agree to the
-                    <a href="<?= page_url('privacy.php') ?>" target="_blank">Privacy Policy</a> and the
-                    <a href="<?= page_url('conditions.php') ?>" target="_blank">Terms of Use</a>.
+                    En renseignant vos informations personnelles et en cliquant sur le bouton « Rejoindre », vous
+                    confirmez accepter la
+                    <a href="<?= page_url('privacy.php') ?>" target="_blank">Politique de confidentialité</a> et les
+                    <a href="<?= page_url('conditions.php') ?>" target="_blank">Conditions d’utilisation</a>.
                   </p>
-                  <img src="<?= asset('static/images/payment-logos.svg') ?>" alt="Payment methods" />
+                  <img src="<?= asset('static/images/payment-logos.svg') ?>" alt="Moyens de paiement" />
                 </div>
               </div>
 
               <div class="rating mob">
                 <img class="rating-img" src="<?= asset('static/images/rating-pp.webp') ?>" alt="" />
                 <div>
-                  <p>Rated 4.7 stars by more than 2,804 satisfied users</p>
+                  <p>Noté 4,7 étoiles par plus de 2 804 utilisateurs satisfaits</p>
                   <img
                     class="stars"
                     src="<?= asset('static/images/stars.svg') ?>"
                     width="120"
                     height="20"
-                    alt="Rated 4.7 out of 5"
+                    alt="Note de 4,7 sur 5"
                   />
                 </div>
               </div>
@@ -82,7 +82,7 @@ require __DIR__ . '/includes/header.php';
 
       <link rel="stylesheet" href="<?= asset('static/css/tinyslider.min.css') ?>" />
 
-      <section class="home-calc" aria-label="Profit calculator">
+      <section class="home-calc" aria-label="Calculateur de gains">
         <div
           class="calc-widget is-ltr"
           dir="ltr"
@@ -107,14 +107,14 @@ require __DIR__ . '/includes/header.php';
             --calc-result-label-color: #e9e4e3;
           "
         >
-          <h2 class="calc-widget__title">Calculate possible profits</h2>
+          <h2 class="calc-widget__title">Calculez vos gains potentiels</h2>
           <p class="calc-widget__subtitle">
-            Choose how much and for how long you want to invest to find out your potential profits
+            Choisissez le montant et la durée de votre investissement pour estimer vos gains potentiels
           </p>
           <div class="calc-widget__wrapper">
             <div class="calc-widget__controls">
               <div class="calc-widget__control">
-                <label class="calc-widget__label" for="calc-deposit">You deposit:</label>
+                <label class="calc-widget__label" for="calc-deposit">Votre dépôt :</label>
                 <div class="calc-widget__value"><span data-calc="deposit_value"><?= e(money_min()) ?></span></div>
                 <input
                   id="calc-deposit"
@@ -132,9 +132,9 @@ require __DIR__ . '/includes/header.php';
                 </div>
               </div>
               <div class="calc-widget__control">
-                <label class="calc-widget__label" for="calc-days">Period of investment:</label>
+                <label class="calc-widget__label" for="calc-days">Durée de l’investissement :</label>
                 <div class="calc-widget__value">
-                  <span data-calc="days_value">45</span> <span>days</span>
+                  <span data-calc="days_value">45</span> <span>jours</span>
                 </div>
                 <input
                   id="calc-days"
@@ -147,30 +147,30 @@ require __DIR__ . '/includes/header.php';
                   value="45"
                 />
                 <div class="calc-widget__minmax">
-                  <span>From 1 day</span>
-                  <span>To 3 months</span>
+                  <span>À partir d’1 jour</span>
+                  <span>Jusqu’à 3 mois</span>
                 </div>
               </div>
             </div>
             <div class="calc-widget__result">
               <div class="calc-widget__result-head">
-                <span class="calc-widget__result-title">You can earn</span>
+                <span class="calc-widget__result-title">Vous pouvez gagner</span>
                 <div class="calc-widget__total"><span data-calc="total"><?= e(money_min()) ?></span></div>
               </div>
               <div class="calc-widget__stats">
                 <div class="calc-widget__stat">
-                  <div class="calc-widget__stat-label">Profitability</div>
+                  <div class="calc-widget__stat-label">Rentabilité</div>
                   <div class="calc-widget__stat-value"><span data-calc="profitability">30</span>%</div>
                 </div>
                 <div class="calc-widget__stat">
-                  <div class="calc-widget__stat-label">Revenue</div>
+                  <div class="calc-widget__stat-label">Gains</div>
                   <div class="calc-widget__stat-value"><span data-calc="revenue"><?= e(currency_symbol()) ?>0</span></div>
                 </div>
               </div>
             </div>
           </div>
           <button type="button" class="calc-widget__cta" data-calc-open-modal>
-            Request a Personalized Calculation
+            Demander un calcul personnalisé
           </button>
         </div>
         <div class="calc-modal" id="calculator-modal" data-calc-modal aria-hidden="true">
@@ -179,19 +179,19 @@ require __DIR__ . '/includes/header.php';
             class="calc-modal__content"
             style="background: #eeeeee; --calc-modal-text: #1a1a1a; --calc-modal-close-color: #1a1a1a"
           >
-            <button type="button" class="calc-modal__close" data-calc-modal-close aria-label="Close">
+            <button type="button" class="calc-modal__close" data-calc-modal-close aria-label="Fermer">
               &times;
             </button>
             <h3 class="calc-modal__title">
-              Leave your contact details and one of our specialists will get in touch with you as
-              soon as possible.
+              Laissez vos coordonnées : l’un de nos spécialistes vous recontactera dès
+              que possible.
             </h3>
             <div class="leadform">
               <?php
   $form_id = 'calc-lead-form';
   $form_wrap_class = 'newRegForm';
   $form_field_classes = ['', '', '', '', ''];
-  $form_submit = 'Join Now';
+  $form_submit = 'Rejoindre';
   $form_phone_id = 'calc-phone';
   include __DIR__ . '/includes/form.php';
 ?>
@@ -204,30 +204,30 @@ require __DIR__ . '/includes/header.php';
           <div class="content-wrap">
             <div class="top">
               <h2>
-                Your access from <?= e(geo_country_name()) ?> to the world&rsquo;s leading crypto trading platforms.
+                Votre accès <?= e(geo_from()) ?> aux principales plateformes de trading crypto.
               </h2>
             </div>
             <div class="bottom cards-row">
               <div class="card-img">
                 <div class="wrap-img orange-bg">
-                  <img loading="lazy" src="<?= asset('static/images/puerta1.svg') ?>" alt="Card icon 1" />
+                  <img loading="lazy" src="<?= asset('static/images/puerta1.svg') ?>" alt="Icône 1" />
                 </div>
                 <div class="text">
                   <p>
-                    <?= e(SITE_NAME) ?> uses advanced artificial intelligence and machine learning to
-                    identify new opportunities in financial markets.
+                    <?= e(SITE_NAME) ?> s’appuie sur l’intelligence artificielle et l’apprentissage automatique pour
+                    repérer de nouvelles opportunités sur les marchés financiers.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="wrap-img orange-bg">
-                  <img loading="lazy" src="<?= asset('static/images/puerta2.svg') ?>" alt="Card icon 2" />
+                  <img loading="lazy" src="<?= asset('static/images/puerta2.svg') ?>" alt="Icône 2" />
                 </div>
                 <div class="text">
                   <p>
-                    Crypto asset investors in <?= e(geo_country_name()) ?> gain access to the largest exchanges in the
-                    sector and can trade leading currencies such as Bitcoin and Ethereum, as well as
-                    a wide range of altcoins and stablecoins.
+                    Les investisseurs en cryptoactifs <?= e(geo_in()) ?> accèdent aux plus grandes places d’échange du
+                    secteur et peuvent négocier des actifs de référence comme Bitcoin et Ethereum, ainsi qu’
+                    un large éventail d’altcoins et de stablecoins.
                   </p>
                 </div>
               </div>
@@ -237,7 +237,7 @@ require __DIR__ . '/includes/header.php';
       </section>
 
       <section class="partners">
-        <h2>Our trusted partners</h2>
+        <h2>Nos partenaires de confiance</h2>
         <div class="partners-slider">
           <div class="p-slide">
             <img loading="lazy" src="<?= asset('static/images/cryptocom-logo.svg') ?>" alt="Crypto.com Logo" />
@@ -268,57 +268,57 @@ require __DIR__ . '/includes/header.php';
 
       <section class="advantages cards-img">
         <div class="container">
-          <h2>Why choose <?= e(SITE_NAME) ?> in <?= e(geo_country_name()) ?>?</h2>
+          <h2>Pourquoi choisir <?= e(SITE_NAME) ?> <?= e(geo_in()) ?> ?</h2>
           <div class="cards-row">
             <div class="card-img">
               <div class="wrap-img orange-bg">
-                <img loading="lazy" src="<?= asset('static/images/adv-1.svg') ?>" alt="Advantage icon 1" />
+                <img loading="lazy" src="<?= asset('static/images/adv-1.svg') ?>" alt="Icône avantage 1" />
               </div>
               <div class="text">
-                <h3>Security in <?= e(geo_country_name()) ?></h3>
+                <h3>Sécurité <?= e(geo_in()) ?></h3>
                 <p>
-                  As a reputable platform, we place the highest value on security. We use SSL,
-                  bank-level encryption, and 2FA to ensure <?= e(SITE_NAME) ?> is reliable and your data
-                  is protected.
+                  En tant que plateforme reconnue, nous plaçons la sécurité au premier plan. Nous utilisons le SSL,
+                  un chiffrement de niveau bancaire et la 2FA pour garantir la fiabilité de <?= e(SITE_NAME) ?> et la protection
+                  de vos données.
                 </p>
               </div>
             </div>
             <div class="card-img">
               <div class="wrap-img orange-bg">
-                <img loading="lazy" src="<?= asset('static/images/adv-2.svg') ?>" alt="Advantage icon 2" />
+                <img loading="lazy" src="<?= asset('static/images/adv-2.svg') ?>" alt="Icône avantage 2" />
               </div>
               <div class="text">
-                <h3>Powerful AI algorithms</h3>
+                <h3>Algorithmes d’IA puissants</h3>
                 <p>
-                  Our adaptable bots use advanced AI strategies and execute them autonomously. You
-                  set the approach and retain full control over risk level, markets, and goals, so
-                  you can focus on the bigger picture.
+                  Nos robots s’adaptent, appliquent des stratégies d’IA avancées et les exécutent en autonomie. Vous
+                  fixez l’approche et gardez le contrôle du risque, des marchés et des objectifs, afin de
+                  vous concentrer sur l’essentiel.
                 </p>
               </div>
             </div>
             <div class="card-img">
               <div class="wrap-img orange-bg">
-                <img loading="lazy" src="<?= asset('static/images/adv-3.svg') ?>" alt="Advantage icon 3" />
+                <img loading="lazy" src="<?= asset('static/images/adv-3.svg') ?>" alt="Icône avantage 3" />
               </div>
               <div class="text">
-                <h3>Transparent fees. No hidden costs.</h3>
+                <h3>Frais transparents. Aucun coût caché.</h3>
                 <p>
-                  All our fees are transparent and we never charge investors in <?= e(geo_country_name()) ?> for using
-                  <?= e(SITE_NAME) ?>. The money you deposit for trading is entirely yours and you can use
-                  it as you wish. We retain nothing. Start with just <?= e(money_min()) ?> and keep full control
-                  over your investments.
+                  Tous nos frais sont transparents et nous ne facturons jamais les investisseurs <?= e(geo_in()) ?> pour l’usage de
+                  <?= e(SITE_NAME) ?>. L’argent que vous déposez pour trader vous appartient entièrement : vous l’utilisez
+                  comme vous l’entendez. Nous n’en retenons rien. Commencez dès <?= e(money_min()) ?> et gardez le contrôle
+                  de vos investissements.
                 </p>
               </div>
             </div>
             <div class="card-img">
               <div class="wrap-img orange-bg">
-                <img loading="lazy" src="<?= asset('static/images/adv-4.svg') ?>" alt="Advantage icon 4" />
+                <img loading="lazy" src="<?= asset('static/images/adv-4.svg') ?>" alt="Icône avantage 4" />
               </div>
               <div class="text">
-                <h3>Intuitive user interface</h3>
+                <h3>Interface intuitive</h3>
                 <p>
-                  Our intuitive and simple dashboard combines functionality, sophistication, and
-                  ease of use for beginners and experienced traders.
+                  Notre tableau de bord simple et intuitif allie fonctionnalités, exigence et
+                  facilité d’usage, pour les débutants comme pour les traders expérimentés.
                 </p>
               </div>
             </div>
@@ -328,26 +328,26 @@ require __DIR__ . '/includes/header.php';
 
       <section class="list bg">
         <div class="container">
-          <h2>How does <?= e(SITE_NAME) ?> work?</h2>
+          <h2>Comment fonctionne <?= e(SITE_NAME) ?> ?</h2>
           <ul class="list-wrap">
             <li>
-              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="List icon 1" />
+              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="Icône liste 1" />
               <p>
-                Our proprietary software simultaneously monitors multiple trading platforms and
-                identifies price differences that can be exploited.
+                Notre logiciel propriétaire surveille en parallèle plusieurs plateformes de trading et
+                identifie les écarts de prix exploitables.
               </p>
             </li>
             <li>
-              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="List icon 2" />
+              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="Icône liste 2" />
               <p>
-                <?= e(SITE_NAME) ?> buys low on one market and sells at a higher price on another,
-                exploiting arbitrage opportunities. This approach can generate profit by
-                accumulating returns from small price changes.
+                <?= e(SITE_NAME) ?> achète au plus bas sur un marché et revend plus cher sur un autre,
+                en exploitant les opportunités d’arbitrage. Cette approche peut générer un profit en
+                cumulant les rendements issus de petits mouvements de prix.
               </p>
             </li>
             <li>
-              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="List icon 3" />
-              <p>Discover how <?= e(SITE_NAME) ?> can improve your trading experience.</p>
+              <img loading="lazy" src="<?= asset('static/images/list-icon.svg') ?>" alt="Icône liste 3" />
+              <p>Découvrez comment <?= e(SITE_NAME) ?> peut améliorer votre expérience de trading.</p>
             </li>
           </ul>
         </div>
@@ -358,13 +358,13 @@ require __DIR__ . '/includes/header.php';
           <div class="content-wrap">
             <div class="heading">
               <h2>
-                Join <?= e(SITE_NAME) ?> and let&rsquo;s shape the future of finance in <?= e(geo_country_name()) ?> together!
+                Rejoignez <?= e(SITE_NAME) ?> et construisons ensemble l’avenir de la finance <?= e(geo_in()) ?> !
               </h2>
               <p>
-                <?= e(SITE_NAME) ?> offers a wide range of tools for trading crypto assets in <?= e(geo_country_name()) ?>. It
-                integrates major global exchange platforms and provides access to numerous
-                cryptocurrencies, from leaders like Bitcoin to others like XRP. In addition, it
-                lets you profit from price fluctuations.
+                <?= e(SITE_NAME) ?> propose une large gamme d’outils pour trader des cryptoactifs <?= e(geo_in()) ?>. La plateforme
+                intègre les grandes places d’échange mondiales et donne accès à de nombreuses
+                cryptomonnaies, des leaders comme Bitcoin jusqu’à d’autres comme XRP. Elle vous permet
+                aussi de tirer parti des variations de prix.
               </p>
             </div>
             <div id="lead-form-2" class="leadform bg-elem">
@@ -372,7 +372,7 @@ require __DIR__ . '/includes/header.php';
   $form_id = 'BMLttSHjfS';
   $form_wrap_class = 'xvbcrLTI newRegForm';
   $form_field_classes = ['yilnwbgoXC QpnvIC', 'yilnwbgoXC QpnvIC', 'yilnwbgoXC aCLoztcyot', 'yilnwbgoXC BQXLrCnK', 'yilnwbgoXC bzozYCakaa'];
-  $form_submit = 'Join Now';
+  $form_submit = 'Rejoindre';
   $form_phone_id = 'UhZgSohZrA';
   include __DIR__ . '/includes/form.php';
 ?>
@@ -385,7 +385,7 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
           <div class="reviews-wrap">
             <div class="review">
-              <h3>Marko, 37, Zagreb</h3>
+              <h3>Marc, 37 ans, Lyon</h3>
               <div class="rating">
                 <img
                   loading="lazy"
@@ -396,11 +396,11 @@ require __DIR__ . '/includes/header.php';
                 />
               </div>
               <p class="review-text">
-                I started with <?= e(money_min()) ?>, and now I withdraw <?= e(currency_symbol() . '2,000') ?> monthly!
+                J’ai commencé avec <?= e(money_min()) ?>, et je retire désormais <?= e(currency_symbol() . '2,000') ?> par mois !
               </p>
             </div>
             <div class="review">
-              <h3>Ivana, 42, Split</h3>
+              <h3>Claire, 42 ans, Marseille</h3>
               <div class="rating">
                 <img
                   loading="lazy"
@@ -410,10 +410,10 @@ require __DIR__ . '/includes/header.php';
                   alt="Rating 2"
                 />
               </div>
-              <p class="review-text">Simple platform, everything is transparent and practical.</p>
+              <p class="review-text">Plateforme simple : tout est transparent et concret.</p>
             </div>
             <div class="review">
-              <h3>Ana, 45, Rijeka</h3>
+              <h3>Sophie, 45 ans, Bordeaux</h3>
               <div class="rating">
                 <img
                   loading="lazy"
@@ -423,10 +423,10 @@ require __DIR__ . '/includes/header.php';
                   alt="Rating 3"
                 />
               </div>
-              <p class="review-text">The best solution for passive income.</p>
+              <p class="review-text">La meilleure solution pour un revenu passif.</p>
             </div>
             <div class="review">
-              <h3>Luka, 34, Zadar</h3>
+              <h3>Julien, 34 ans, Nantes</h3>
               <div class="rating">
                 <img
                   loading="lazy"
@@ -436,7 +436,7 @@ require __DIR__ . '/includes/header.php';
                   alt="Rating 4"
                 />
               </div>
-              <p class="review-text">Stable profits, even when I&rsquo;m on vacation.</p>
+              <p class="review-text">Des gains stables, même quand je suis en vacances.</p>
             </div>
           </div>
         </div>
@@ -444,7 +444,7 @@ require __DIR__ . '/includes/header.php';
 
       <section class="benefits bg">
         <div class="container">
-          <h2>Cryptocurrency offering on <?= e(SITE_NAME) ?></h2>
+          <h2>L’offre crypto de <?= e(SITE_NAME) ?></h2>
           <div class="benefits-slider">
             <div class="p-slide">
               <div class="content">
@@ -453,13 +453,13 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/ben1.svg') ?>"
                   width="100"
                   height="100"
-                  alt="Benefit 1"
+                  alt="Avantage 1"
                 />
-                <h3>The key to crypto trading</h3>
+                <h3>La clé du trading crypto</h3>
                 <p>
-                  Our state-of-the-art software forms the foundation of our trading system. It is
-                  designed to exploit small price differences between major cryptocurrency
-                  exchanges.
+                  Notre logiciel de dernière génération constitue le cœur du système de trading. Il est
+                  conçu pour exploiter les petits écarts de prix entre les principales places
+                  d’échange de cryptomonnaies.
                 </p>
               </div>
             </div>
@@ -470,13 +470,13 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/ben2.svg') ?>"
                   width="100"
                   height="100"
-                  alt="Benefit 2"
+                  alt="Avantage 2"
                 />
-                <h3>Global asset trading</h3>
+                <h3>Trading d’actifs à l’échelle mondiale</h3>
                 <p>
-                  Stock prices and other assets constantly fluctuate; <?= e(SITE_NAME) ?> provides the
-                  tools needed to react quickly to exchange movements and improve chances of solid
-                  returns.
+                  Les cours des actions et des autres actifs évoluent en permanence ; <?= e(SITE_NAME) ?> fournit les
+                  outils pour réagir vite aux mouvements de marché et améliorer vos chances de rendements
+                  solides.
                 </p>
               </div>
             </div>
@@ -487,12 +487,12 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/ben3.svg') ?>"
                   width="100"
                   height="100"
-                  alt="Benefit 3"
+                  alt="Avantage 3"
                 />
-                <h3>Forex trading</h3>
+                <h3>Trading Forex</h3>
                 <p>
-                  Exchange rates constantly change and create trading opportunities. <?= e(SITE_NAME) ?>
-                  helps you profit even from the smallest movements in the currency market.
+                  Les taux de change évoluent sans cesse et créent des opportunités. <?= e(SITE_NAME) ?>
+                  vous aide à tirer parti même des plus petits mouvements du marché des devises.
                 </p>
               </div>
             </div>
@@ -503,13 +503,13 @@ require __DIR__ . '/includes/header.php';
                   src="<?= asset('static/images/ben4.svg') ?>"
                   width="100"
                   height="100"
-                  alt="Benefit 4"
+                  alt="Avantage 4"
                 />
-                <h3><?= e(SITE_NAME) ?> and Bitcoin</h3>
+                <h3><?= e(SITE_NAME) ?> et Bitcoin</h3>
                 <p>
-                  Bitcoin remains the market leader and the most visible and financially stable
-                  cryptocurrency. By systematically recognizing and responding to market volatility,
-                  <?= e(SITE_NAME) ?> makes it easier to achieve consistent returns.
+                  Bitcoin reste le leader du marché, la cryptomonnaie la plus visible et la plus stable
+                  financièrement. En identifiant et en exploitant méthodiquement la volatilité,
+                  <?= e(SITE_NAME) ?> facilite des rendements plus réguliers.
                 </p>
               </div>
             </div>
@@ -521,46 +521,46 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
           <div class="content-wrap">
             <div class="top">
-              <h2>Platform information</h2>
+              <h2>Informations sur la plateforme</h2>
             </div>
             <div class="bottom cards-row">
               <div class="card-img">
                 <div class="text">
-                  <h3>Privacy</h3>
-                  <p><?= e(SITE_NAME) ?> complies with applicable privacy regulations in <?= e(geo_country_name()) ?>.</p>
+                  <h3>Confidentialité</h3>
+                  <p><?= e(SITE_NAME) ?> respecte la réglementation applicable en matière de confidentialité <?= e(geo_in()) ?>.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Assets</h3>
-                  <p>Bitcoin, Ethereum, XRP, Litecoin, Dash, and other major cryptocurrencies.</p>
+                  <h3>Actifs</h3>
+                  <p>Bitcoin, Ethereum, XRP, Litecoin, Dash et d’autres cryptomonnaies majeures.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Platform type</h3>
+                  <h3>Type de plateforme</h3>
                   <p>
-                    <?= e(SITE_NAME) ?> offers investors in <?= e(geo_country_name()) ?> the opportunity to profit from price
-                    fluctuations of major cryptocurrencies, including altcoins such as XRP.
+                    <?= e(SITE_NAME) ?> offre aux investisseurs <?= e(geo_in()) ?> la possibilité de tirer parti des variations de prix
+                    des grandes cryptomonnaies, y compris des altcoins comme XRP.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Countries</h3>
-                  <p>Our platform is available globally, including in <?= e(geo_country_name()) ?>.</p>
+                  <h3>Pays</h3>
+                  <p>Notre plateforme est disponible dans le monde entier, y compris <?= e(geo_in()) ?>.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Deposit options</h3>
-                  <p>Credit cards, PayPal, and bank transfer.</p>
+                  <h3>Options de dépôt</h3>
+                  <p>Cartes bancaires, PayPal et virement.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Costs</h3>
-                  <p>Access to <?= e(SITE_NAME) ?> is free from <?= e(geo_country_name()) ?>.</p>
+                  <h3>Coûts</h3>
+                  <p>L’accès à <?= e(SITE_NAME) ?> est gratuit <?= e(geo_from()) ?>.</p>
                 </div>
               </div>
             </div>
@@ -572,17 +572,17 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
           <div class="content-wrap">
             <div class="half left bg-elem">
-              <h2>Is <?= e(SITE_NAME) ?> reliable?</h2>
+              <h2><?= e(SITE_NAME) ?> est-elle fiable ?</h2>
               <p>
-                <?= e(SITE_NAME) ?> works with first-class brokers who are exceptionally reliable and
-                highly experienced. We implement bank-level security measures, such as TLS/SSL
-                encryption and two-factor authentication (2FA), to protect your assets and data. Our
-                pricing structure is fully transparent, with no hidden costs. We comply with
-                applicable regulations.
+                <?= e(SITE_NAME) ?> travaille avec des courtiers de premier plan, particulièrement fiables et
+                expérimentés. Nous appliquons des mesures de sécurité de niveau bancaire, comme le chiffrement TLS/SSL
+                et l’authentification à deux facteurs (2FA), pour protéger vos actifs et vos données. Notre
+                grille tarifaire est entièrement transparente, sans frais cachés. Nous respectons la
+                réglementation applicable.
               </p>
             </div>
             <div class="half right">
-              <img loading="lazy" src="<?= asset('static/images/cta2.webp') ?>" alt="Reliability chart" />
+              <img loading="lazy" src="<?= asset('static/images/cta2.webp') ?>" alt="Graphique de fiabilité" />
             </div>
           </div>
         </div>
@@ -593,75 +593,75 @@ require __DIR__ . '/includes/header.php';
           <div class="content-wrap">
             <div class="top">
               <h2>
-                Our artificial intelligence and machine learning systems generate real-time market
-                analysis and offer practical trading insights to optimize your results.
+                Nos systèmes d’intelligence artificielle et d’apprentissage automatique produisent une analyse de marché
+                en temps réel et des insights de trading concrets pour optimiser vos résultats.
               </h2>
             </div>
             <div class="bottom cards-row slider4">
               <div class="card-img">
                 <div class="text">
-                  <h3>Copy Trading</h3>
+                  <h3>Copy trading</h3>
                   <p>
-                    The best traders are the best for a reason. With <?= e(SITE_NAME) ?> you can follow
-                    and copy their trades to benefit from their experience and strategy.
+                    Les meilleurs traders le sont pour une raison. Avec <?= e(SITE_NAME) ?>, vous pouvez suivre
+                    et copier leurs positions pour profiter de leur expérience et de leur stratégie.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Fractional shares</h3>
+                  <h3>Actions fractionnées</h3>
                   <p>
-                    By expanding your portfolio you can gain access to high-quality assets even with
-                    limited capital.
+                    En diversifiant votre portefeuille, vous accédez à des actifs de qualité même avec un
+                    capital limité.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Educational resources</h3>
+                  <h3>Ressources pédagogiques</h3>
                   <p>
-                    To improve your trading skills, we offer educational resources: tutorials,
-                    webinars, and guides.
+                    Pour progresser, nous proposons des ressources pédagogiques : tutoriels,
+                    webinaires et guides.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Mobile app</h3>
-                  <p>Trade anytime, anywhere.</p>
+                  <h3>Application mobile</h3>
+                  <p>Tradez à tout moment, où que vous soyez.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>24/7 support</h3>
-                  <p>Our customer service is available 24 hours a day, 7 days a week.</p>
+                  <h3>Assistance 24 h/24</h3>
+                  <p>Notre service client est disponible 24 heures sur 24, 7 jours sur 7.</p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>AI-powered trading</h3>
+                  <h3>Trading assisté par l’IA</h3>
                   <p>
-                    Thanks to our advanced artificial intelligence and machine learning algorithms,
-                    <?= e(SITE_NAME) ?> continuously analyzes the latest market data. This allows market
-                    opportunities with the greatest return potential to be identified quickly.
+                    Grâce à nos algorithmes avancés d’intelligence artificielle et d’apprentissage automatique,
+                    <?= e(SITE_NAME) ?> analyse en continu les dernières données de marché. Les opportunités
+                    au plus fort potentiel de rendement sont ainsi identifiées rapidement.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Customizable strategies</h3>
+                  <h3>Stratégies personnalisables</h3>
                   <p>
-                    Once you define your risk profile and investment goals, you can use them to
-                    improve your trading strategy on our multi-asset platform.
+                    Une fois votre profil de risque et vos objectifs définis, vous pouvez vous en servir pour
+                    affiner votre stratégie de trading sur notre plateforme multi-actifs.
                   </p>
                 </div>
               </div>
               <div class="card-img">
                 <div class="text">
-                  <h3>Access to diverse assets</h3>
+                  <h3>Accès à des actifs variés</h3>
                   <p>
-                    Although we specialize in cryptocurrencies, we also offer support for trading
-                    currencies, stocks, other securities, and commodities.
+                    Bien que spécialisés dans les cryptomonnaies, nous prenons aussi en charge le trading
+                    de devises, d’actions, d’autres titres et de matières premières.
                   </p>
                 </div>
               </div>
@@ -674,21 +674,21 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
           <div class="content-wrap bg">
             <div class="half left">
-              <h2>You can trade from home, analyze markets, and track your positions.</h2>
+              <h2>Vous pouvez trader depuis chez vous, analyser les marchés et suivre vos positions.</h2>
               <div id="lead-form-3" class="leadform bg-elem">
                 <?php
   $form_id = 'EmjYXUd';
   $form_wrap_class = 'WQGQRZg newRegForm';
   $form_field_classes = ['yxWFn tOKkGARA', 'yxWFn tOKkGARA', 'yxWFn HNyYjm', 'yxWFn bDYVXEsrkL', 'yxWFn bVfzmL'];
-  $form_submit = 'Join Now';
+  $form_submit = 'Rejoindre';
   $form_phone_id = 'CyVRnwVoOX';
   include __DIR__ . '/includes/form.php';
 ?>
               </div>
             </div>
             <div class="half right desk">
-              <h2>You can trade from home, analyze markets, and track your positions.</h2>
-              <img src="<?= asset('static/images/explore.webp') ?>" alt="Register now" />
+              <h2>Vous pouvez trader depuis chez vous, analyser les marchés et suivre vos positions.</h2>
+              <img src="<?= asset('static/images/explore.webp') ?>" alt="S’inscrire" />
             </div>
           </div>
         </div>

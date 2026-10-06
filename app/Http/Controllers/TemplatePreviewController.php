@@ -54,7 +54,7 @@ class TemplatePreviewController extends Controller
         // Allow explicit /preview/{id}/langs/{code}/… while keeping asset URLs on /preview/{id}/
         if (preg_match('#^langs/([a-z]{2})(?:/(.*))?$#', $path, $matches)) {
             try {
-                $basePath = $this->catalog->previewRootPath($template, $matches[1]);
+                $basePath = $this->catalog->resolveSourcePath($template, $matches[1]);
             } catch (\InvalidArgumentException) {
                 abort(404);
             }

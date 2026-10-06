@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var coefficient = 30;
   var currency = root.getAttribute("data-currency") || "";
+  var locale = root.getAttribute("data-locale") || "en-US";
   var depositInput = root.querySelector('[data-calc="deposit"]');
   var daysInput = root.querySelector('[data-calc="days"]');
   var modal = document.getElementById("calculator-modal");
@@ -13,7 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var track = "#d9deef";
 
   function formatMoney(value) {
-    return currency + Math.round(value).toLocaleString("en-US");
+    try {
+      return currency + Math.round(value).toLocaleString(locale);
+    } catch (_) {
+      return currency + Math.round(value).toLocaleString("en-US");
+    }
   }
 
   function fillRange(input) {

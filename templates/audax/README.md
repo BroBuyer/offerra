@@ -5,12 +5,22 @@
 
 ## Мови
 
-`langs/en/` — англійська. Розмітка написана англійською, попри німецькі імена
-вихідних файлів, тож мовний пакет один.
+`langs/en/` — джерело (англійська). Інші мови збираються з паків у
+`scripts/audax-i18n/`, без переписування розмітки.
+
+```
+node scripts/build-audax-langs.mjs       # усі мови
+node scripts/build-audax-langs.mjs fr    # одна мова
+```
+
+Нова мова: скопіюй `scripts/audax-i18n/fr.mjs` (або `fr-ui.mjs` + `fr-legal.mjs`),
+переклади значення, додай код у `scripts/audax-i18n/index.mjs`, знову запусти білд.
+Не правити згенерований `langs/{code}/` вручну — наступний білд його перезапише.
 
 ## Прев’ю
 
 `/preview/audax/langs/en/`
+`/preview/audax/langs/fr/`
 
 ## Структура
 
