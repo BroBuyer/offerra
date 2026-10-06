@@ -268,6 +268,7 @@ function geo_in(): string
 
     return match (geo_display_lang()) {
         'fr' => geo_fr_place($code, $name, 'in'),
+        'it' => geo_it_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -279,6 +280,7 @@ function geo_from(): string
 
     return match (geo_display_lang()) {
         'fr' => geo_fr_place($code, $name, 'from'),
+        'it' => geo_it_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -313,6 +315,61 @@ function geo_fr_place(string $code, string $name, string $kind): string
     return 'en ' . $name;
 }
 
+/**
+ * "in Italy" / "in Italia" / "nel Regno Unito" — grammar lives here, not in copy.
+ */
+function geo_it_place(string $code, string $name, string $kind): string
+{
+    $name = preg_replace('/^(gli|i|il|lo|la|le|l’|l\')\s+/iu', '', $name) ?? $name;
+    $negli = ['ae', 'us'];
+    $nei = ['nl'];
+    $nelle = ['ph'];
+    $nella = ['cz'];
+    $nel = ['gb', 'uk'];
+    $dal = ['gb', 'uk', 'pt', 'lu', 'jp', 'br', 'mx', 'pe', 'cl', 'ca', 'be'];
+
+    if ($kind === 'from') {
+        if (in_array($code, $negli, true)) {
+            return 'dagli ' . $name;
+        }
+        if (in_array($code, $nei, true)) {
+            return 'dai ' . $name;
+        }
+        if (in_array($code, $nelle, true)) {
+            return 'dalle ' . $name;
+        }
+        if (in_array($code, $nella, true)) {
+            return 'dalla ' . $name;
+        }
+        if (in_array($code, $dal, true)) {
+            return 'dal ' . $name;
+        }
+        if (preg_match('/^[AEIOUÁÀÉÈÍÌÓÒÚÙaeiouáàéèíìóòúù]/u', $name)) {
+            return 'dall’' . $name;
+        }
+
+        return 'dalla ' . $name;
+    }
+
+    if (in_array($code, $negli, true)) {
+        return 'negli ' . $name;
+    }
+    if (in_array($code, $nei, true)) {
+        return 'nei ' . $name;
+    }
+    if (in_array($code, $nelle, true)) {
+        return 'nelle ' . $name;
+    }
+    if (in_array($code, $nella, true)) {
+        return 'nella ' . $name;
+    }
+    if (in_array($code, $nel, true)) {
+        return 'nel ' . $name;
+    }
+
+    return 'in ' . $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -332,6 +389,7 @@ function platform_image_alt(): string
 {
     return match (geo_display_lang()) {
         'fr' => SITE_NAME . ' — plateforme de trading mobile : graphique BTC/USDT en direct, carnet d’ordres et interface d’achat/vente',
+        'it' => SITE_NAME . ' — piattaforma di trading mobile: grafico BTC/USDT in diretta, libro ordini e interfaccia di acquisto/vendita',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -340,6 +398,7 @@ function platform_image_caption(): string
 {
     return match (geo_display_lang()) {
         'fr' => SITE_NAME . ' — trading mobile avec graphiques crypto en temps réel',
+        'it' => SITE_NAME . ' — trading mobile con grafici crypto in tempo reale',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
