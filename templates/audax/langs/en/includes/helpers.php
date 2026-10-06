@@ -269,6 +269,7 @@ function geo_in(): string
     return match (geo_display_lang()) {
         'fr' => geo_fr_place($code, $name, 'in'),
         'it' => geo_it_place($code, $name, 'in'),
+        'es' => geo_es_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -281,6 +282,7 @@ function geo_from(): string
     return match (geo_display_lang()) {
         'fr' => geo_fr_place($code, $name, 'from'),
         'it' => geo_it_place($code, $name, 'from'),
+        'es' => geo_es_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -370,6 +372,50 @@ function geo_it_place(string $code, string $name, string $kind): string
     return 'in ' . $name;
 }
 
+/**
+ * "in Spain" / "en España" / "en el Reino Unido" — grammar lives here, not in copy.
+ */
+function geo_es_place(string $code, string $name, string $kind): string
+{
+    $name = preg_replace('/^(los|las|el|la)\s+/iu', '', $name) ?? $name;
+    $los = ['ae', 'us', 'nl'];
+    $las = ['ph'];
+    $la = ['cz'];
+    $el = ['gb', 'uk'];
+
+    if ($kind === 'from') {
+        if (in_array($code, $los, true)) {
+            return 'de los ' . $name;
+        }
+        if (in_array($code, $las, true)) {
+            return 'de las ' . $name;
+        }
+        if (in_array($code, $la, true)) {
+            return 'de la ' . $name;
+        }
+        if (in_array($code, $el, true)) {
+            return 'del ' . $name;
+        }
+
+        return 'de ' . $name;
+    }
+
+    if (in_array($code, $los, true)) {
+        return 'en los ' . $name;
+    }
+    if (in_array($code, $las, true)) {
+        return 'en las ' . $name;
+    }
+    if (in_array($code, $la, true)) {
+        return 'en la ' . $name;
+    }
+    if (in_array($code, $el, true)) {
+        return 'en el ' . $name;
+    }
+
+    return 'en ' . $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -390,6 +436,7 @@ function platform_image_alt(): string
     return match (geo_display_lang()) {
         'fr' => SITE_NAME . ' — plateforme de trading mobile : graphique BTC/USDT en direct, carnet d’ordres et interface d’achat/vente',
         'it' => SITE_NAME . ' — piattaforma di trading mobile: grafico BTC/USDT in diretta, libro ordini e interfaccia di acquisto/vendita',
+        'es' => SITE_NAME . ' — plataforma de trading móvil: gráfico BTC/USDT en directo, libro de órdenes e interfaz de compra/venta',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -399,6 +446,7 @@ function platform_image_caption(): string
     return match (geo_display_lang()) {
         'fr' => SITE_NAME . ' — trading mobile avec graphiques crypto en temps réel',
         'it' => SITE_NAME . ' — trading mobile con grafici crypto in tempo reale',
+        'es' => SITE_NAME . ' — trading móvil con gráficos cripto en tiempo real',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }

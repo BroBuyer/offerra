@@ -29,4 +29,14 @@ class OfferGscRetryableErrorTest extends TestCase
             'Search Console sites.add failed (HTTP 403): You do not own this site',
         ));
     }
+
+    public function test_google_oauth_internal_failure_is_retryable(): void
+    {
+        $message = 'Google OAuth refresh failed: {
+  "error": "internal_failure",
+  "error_description": "Internal Error"
+}';
+
+        $this->assertTrue(OfferGscSubmitter::isRetryableError($message));
+    }
 }

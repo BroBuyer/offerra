@@ -188,7 +188,8 @@ class OfferGscSubmitter
             || str_contains($m, 'quota exceeded')
             || str_contains($m, 'rate-limited')
             || str_contains($m, 'rate limit')
-            || str_contains($m, 'low rate user requests')) {
+            || str_contains($m, 'low rate user requests')
+            || str_contains($m, 'internal_failure')) {
             return true;
         }
 
