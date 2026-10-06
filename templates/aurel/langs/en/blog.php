@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> review 2026: what the new crypto rules mean for retail investors</a></h2>
         <p itemprop="description">The regulator is tightening how crypto services are offered to retail clients. Here is the plain-English version, and the dates that matter.</p>
         <a class="hwtx8q" href="/blog-1">Read the note →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">How to assess an investment platform before you deposit</a></h2>
         <p itemprop="description">Five checks that take ten minutes and tell you more than any review site.</p>
         <a class="hwtx8q" href="/blog-2">Read the note →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Why your first deposit with <?= e(SITE_NAME) ?> in your market should be smaller than you think</a></h2>
         <p itemprop="description">The cheapest way to learn how a platform behaves is to give it very little to work with.</p>
         <a class="hwtx8q" href="/blog-3">Read the note →</a>

@@ -44,16 +44,22 @@ require __DIR__ . '/includes/head.php';
   <div class="nrzt44">
     <ul class="dvypqh" itemscope itemtype="https://schema.org/Blog">
       <li class="px5ly" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="<?= page_url('blog.php') ?>-1" itemprop="url">What the new crypto rules mean for ordinary investors</a></h2>
         <p itemprop="description">The regulator is tightening how crypto services are offered to retail clients. Here is the plain-language version and the dates that matter.</p>
         <a class="sjfsy" href="<?= page_url('blog.php') ?>-1">Leer la nota →</a>
       </li>
       <li class="px5ly" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="<?= page_url('blog.php') ?>-2" itemprop="url">How to read an investment platform before you deposit</a></h2>
         <p itemprop="description">Five checks that take ten minutes and tell you more than any review site.</p>
         <a class="sjfsy" href="<?= page_url('blog.php') ?>-2">Leer la nota →</a>
       </li>
       <li class="px5ly" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="<?= page_url('blog.php') ?>-3" itemprop="url">Why your first deposit should be smaller than you think</a></h2>
         <p itemprop="description">The cheapest way to learn how a platform behaves is to give it very little to work with.</p>
         <a class="sjfsy" href="<?= page_url('blog.php') ?>-3">Leer la nota →</a>

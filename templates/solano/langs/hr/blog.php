@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> review 2026: što novi zahtjevi o kriptu govore privatnim ulagačima</a></h2>
         <p itemprop="description">Regulator pooštrava način na koji se kripto usluge nude maloprodajnim klijentima. Ovdje je verzija jednostavnim jezikom i datumi koji su važni.</p>
         <a class="hwtx8q" href="/blog-1">Pročitaj bilješku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Kako analizirati investicijsku platformu prije depozita</a></h2>
         <p itemprop="description">Pet provjera koje traju deset minuta i govore više od bilo koje stranice s recenzijama.</p>
         <a class="hwtx8q" href="/blog-2">Pročitaj bilješku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Zašto vaša prva uplata kod <?= e(SITE_NAME) ?> + Hrvatska bi trebala biti manja nego što mislite</a></h2>
         <p itemprop="description">Najjeftiniji način da saznate kako se platforma ponaša jest dati joj vrlo malo s čime može raditi.</p>
         <a class="hwtx8q" href="/blog-3">Pročitaj bilješku →</a>

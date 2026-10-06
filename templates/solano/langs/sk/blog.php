@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> recenzia 2026: čo nové krypto pravidlá znamenajú pre retailových investorov</a></h2>
         <p itemprop="description">Regulátor sprísňuje, ako sa krypto služby ponúkajú retailovým klientom. Tu je zrozumiteľná verzia a dátumy, na ktorých záleží.</p>
         <a class="hwtx8q" href="/blog-1">Prečítať poznámku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Ako posúdiť investičnú platformu pred vkladom</a></h2>
         <p itemprop="description">Päť kontrol, ktoré trvajú desať minút a povedia viac ako recenzné weby.</p>
         <a class="hwtx8q" href="/blog-2">Prečítať poznámku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Prečo by prvý vklad u <?= e(SITE_NAME) ?> na vašom trhu mal byť menší, ako si myslíte</a></h2>
         <p itemprop="description">Najlacnejší spôsob, ako spoznať správanie platformy, je dať jej málo na prácu.</p>
         <a class="hwtx8q" href="/blog-3">Prečítať poznámku →</a>

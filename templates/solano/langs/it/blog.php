@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?>: bilancio 2026 — cosa cambiano le nuove regole crypto per gli investitori privati</a></h2>
         <p itemprop="description">Il regolatore sta irrigidendo il modo in cui i servizi crypto vengono offerti ai clienti al dettaglio. Ecco la versione in linguaggio chiaro e le date che contano.</p>
         <a class="hwtx8q" href="/blog-1">Leggi la nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Come valutare una piattaforma di investimento prima di depositare</a></h2>
         <p itemprop="description">Cinque controlli che richiedono dieci minuti e ti dicono più di qualsiasi sito di recensioni.</p>
         <a class="hwtx8q" href="/blog-2">Leggi la nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Perché il tuo primo deposito con <?= e(SITE_NAME) ?> sul tuo mercato dovrebbe essere più piccolo di quanto pensi</a></h2>
         <p itemprop="description">Il modo meno costoso per vedere come si comporta una piattaforma è darle molto poco con cui lavorare.</p>
         <a class="hwtx8q" href="/blog-3">Leggi la nota →</a>

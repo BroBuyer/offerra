@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> katsaus 2026: mitä uudet kryptosäännöt merkitsevät vähittäissijoittajille</a></h2>
         <p itemprop="description">Valvoja tiukentaa, miten kryptopalveluja tarjotaan vähittäisasiakkaille. Tässä selkokielinen versio ja päivämäärät, joilla on väliä.</p>
         <a class="hwtx8q" href="/blog-1">Lue muistiinpano →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Miten arvioida sijoitusalusta ennen talletusta</a></h2>
         <p itemprop="description">Viisi tarkistusta, jotka vievät kymmenen minuuttia ja kertovat enemmän kuin mikään arvostelusivusto.</p>
         <a class="hwtx8q" href="/blog-2">Lue muistiinpano →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Miksi ensimmäisen talletuksenne palvelussa <?= e(SITE_NAME) ?> markkinoillanne tulisi olla pienempi kuin luulette</a></h2>
         <p itemprop="description">Halvin tapa oppia, miten alusta käyttäytyy, on antaa sille hyvin vähän työstettävää.</p>
         <a class="hwtx8q" href="/blog-3">Lue muistiinpano →</a>

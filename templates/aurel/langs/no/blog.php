@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> review 2026: hvad nye kryptokrav betyder for private investorer</a></h2>
         <p itemprop="description">Tilsynsmyndigheten strammer op på, hvordan kryptotjenester tilbydes privatkunder. Her er versionen i enkelt sprog og de datoer, der betyder noget.</p>
         <a class="hwtx8q" href="/blog-1">Les artikkelen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Slik vurderer du en investeringsplattform, før du setter inn</a></h2>
         <p itemprop="description">Fem sjekk der tar ti minutter og forteller mere end enhver meldingsside.</p>
         <a class="hwtx8q" href="/blog-2">Les artikkelen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Hvorfor ditt første innskudd hos <?= e(SITE_NAME) ?> + Norge burde være mindre enn du tror</a></h2>
         <p itemprop="description">Den billigste måde at lære, hvordan en plattform opfører sig, er at give den meget lidt at arbejde med.</p>
         <a class="hwtx8q" href="/blog-3">Les artikkelen →</a>

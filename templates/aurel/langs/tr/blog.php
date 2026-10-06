@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> 2026 incelemesi: yeni kripto kuralları bireysel yatırımcılar için ne anlama geliyor</a></h2>
         <p itemprop="description">Düzenleyici, kripto hizmetlerinin bireysel müşterilere nasıl sunulduğunu sıkılaştırıyor. İşte sade hali ve önemli tarihler.</p>
         <a class="hwtx8q" href="/blog-1">Notu okuyun →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Yatırım yapmadan önce bir yatırım platformunu nasıl değerlendirirsiniz</a></h2>
         <p itemprop="description">On dakika süren ve herhangi bir inceleme sitesinden daha fazlasını söyleyen beş kontrol.</p>
         <a class="hwtx8q" href="/blog-2">Notu okuyun →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Piyasanızda <?= e(SITE_NAME) ?> ile ilk yatırımınızın düşündüğünüzden küçük olması neden gerekir</a></h2>
         <p itemprop="description">Bir platformun nasıl davrandığını öğrenmenin en ucuz yolu, ona çalışacak çok az şey vermektir.</p>
         <a class="hwtx8q" href="/blog-3">Notu okuyun →</a>

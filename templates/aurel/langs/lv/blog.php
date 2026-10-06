@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> pārskats 2026: ko jaunie kriptovalūtu noteikumi nozīmē mazumtirdzniecības ieguldītājiem</a></h2>
         <p itemprop="description">Regulators stingrāk regulē, kā kriptovalūtu pakalpojumi tiek piedāvāti mazumtirdzniecības klientiem. Šeit ir saprotama versija un datumi, kas ir svarīgi.</p>
         <a class="hwtx8q" href="/blog-1">Lasīt piezīmi →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Kā novērtēt ieguldījumu platformu pirms iemaksas</a></h2>
         <p itemprop="description">Piecas pārbaudes, kas aizņem desmit minūtes un pasaka vairāk nekā jebkura atsauksmju vietne.</p>
         <a class="hwtx8q" href="/blog-2">Lasīt piezīmi →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Kāpēc pirmā iemaksa pie <?= e(SITE_NAME) ?> jūsu tirgū vajadzētu būt mazāka, nekā domājat</a></h2>
         <p itemprop="description">Lētākais veids, kā saprast platformas uzvedību, ir dot tai maz, ar ko strādāt.</p>
         <a class="hwtx8q" href="/blog-3">Lasīt piezīmi →</a>

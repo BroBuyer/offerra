@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> review 2026: wat nieuwe crypto-eisen betekenen voor particuliere beleggers</a></h2>
         <p itemprop="description">De toezichthouder verscherpt hoe cryptodiensten aan retailklanten worden aangeboden. Hier is de versie in eenvoudige taal en de data die ertoe doen.</p>
         <a class="hwtx8q" href="/blog-1">Lees het artikel →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Hoe u een beleggingsplatform beoordeelt voordat u stort</a></h2>
         <p itemprop="description">Vijf checks die tien minuten duren en u meer vertellen dan elke review-site.</p>
         <a class="hwtx8q" href="/blog-2">Lees het artikel →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Waarom uw eerste storting bij <?= e(SITE_NAME) ?> + Nederland zou kleiner moeten zijn dan u denkt</a></h2>
         <p itemprop="description">De goedkoopste manier om te leren hoe een platform zich gedraagt, is het heel weinig te geven om mee te werken.</p>
         <a class="hwtx8q" href="/blog-3">Lees het artikel →</a>

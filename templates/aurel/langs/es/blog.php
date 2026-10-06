@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> review 2026: qué dicen los nuevos requisitos sobre cripto a los inversores particulares</a></h2>
         <p itemprop="description">El regulador está endureciendo cómo se ofrecen los servicios de cripto a clientes minoristas. Aquí tienes la versión en lenguaje sencillo y las fechas que importan.</p>
         <a class="hwtx8q" href="/blog-1">Leer la nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Cómo analizar una plataforma de inversión antes de depositar</a></h2>
         <p itemprop="description">Cinco comprobaciones que llevan diez minutos y te dicen más que cualquier web de reseñas.</p>
         <a class="hwtx8q" href="/blog-2">Leer la nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Por qué tu primer ingreso en <?= e(SITE_NAME) ?> + España debería ser más pequeño de lo que crees</a></h2>
         <p itemprop="description">La forma más barata de aprender cómo se comporta una plataforma es darle muy poco con lo que trabajar.</p>
         <a class="hwtx8q" href="/blog-3">Leer la nota →</a>

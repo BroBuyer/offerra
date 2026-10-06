@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> recenze 2026: co nová krypto pravidla znamenají pro retailové investory</a></h2>
         <p itemprop="description">Regulátor zpřísňuje, jak se krypto služby nabízejí retailovým klientům. Tady je srozumitelná verze a data, na kterých záleží.</p>
         <a class="hwtx8q" href="/blog-1">Přečíst poznámku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Jak posoudit investiční platformu před vkladem</a></h2>
         <p itemprop="description">Pět kontrol, které trvají deset minut a řeknou víc než recenzní weby.</p>
         <a class="hwtx8q" href="/blog-2">Přečíst poznámku →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Proč by první vklad u <?= e(SITE_NAME) ?> na vašem trhu měl být menší, než si myslíte</a></h2>
         <p itemprop="description">Nejlevnější způsob, jak poznat chování platformy, je dát jí málo k práci.</p>
         <a class="hwtx8q" href="/blog-3">Přečíst poznámku →</a>

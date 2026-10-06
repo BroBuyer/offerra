@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> : bilan 2026 — ce que les nouvelles règles crypto changent pour les investisseurs particuliers</a></h2>
         <p itemprop="description">Le régulateur resserre la façon dont les services crypto sont proposés aux clients particuliers. Voici la version en langage clair, et les dates qui comptent.</p>
         <a class="hwtx8q" href="/blog-1">Lire la note →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Comment évaluer une plateforme d’investissement avant de déposer</a></h2>
         <p itemprop="description">Cinq vérifications qui prennent dix minutes et vous en disent plus que n’importe quel site d’avis.</p>
         <a class="hwtx8q" href="/blog-2">Lire la note →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Pourquoi votre premier dépôt avec <?= e(SITE_NAME) ?> sur votre marché devrait être plus petit que vous ne le pensez</a></h2>
         <p itemprop="description">Le moyen le moins coûteux de voir comment une plateforme se comporte, c’est de lui donner très peu à travailler.</p>
         <a class="hwtx8q" href="/blog-3">Lire la note →</a>

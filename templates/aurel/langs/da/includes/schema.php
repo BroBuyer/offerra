@@ -35,6 +35,7 @@ $schema = [
       'inLanguage' => 'da',
       'isPartOf' => ['@id' => rtrim(SITE_URL, '/') . '/#website'],
       'about' => ['@id' => rtrim(SITE_URL, '/') . '/#org'],
+      'author' => ['@id' => rtrim(SITE_URL, '/') . '/#org'],
     ],
   ],
 ];

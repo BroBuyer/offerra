@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> Review 2026: was die neuen Krypto-Regeln für Privatanleger bedeuten</a></h2>
         <p itemprop="description">Die Aufsicht verschärft, wie Krypto-Dienste Privatkunden angeboten werden. Hier die verständliche Fassung und die Daten, die zählen.</p>
         <a class="hwtx8q" href="/blog-1">Notiz lesen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Wie Sie eine Investmentplattform vor der Einzahlung prüfen</a></h2>
         <p itemprop="description">Fünf Prüfungen in zehn Minuten, die mehr sagen als jede Bewertungsseite.</p>
         <a class="hwtx8q" href="/blog-2">Notiz lesen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Warum Ihre erste Einzahlung bei <?= e(SITE_NAME) ?> in Ihrem Markt kleiner sein sollte, als Sie denken</a></h2>
         <p itemprop="description">Der günstigste Weg, das Verhalten einer Plattform zu lernen, ist, ihr sehr wenig zum Arbeiten zu geben.</p>
         <a class="hwtx8q" href="/blog-3">Notiz lesen →</a>

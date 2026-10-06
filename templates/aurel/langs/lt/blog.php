@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?>2026 m. apžvalga: ką naujosios kriptovaliutų taisyklės reiškia mažmeniniams investuotojams</a></h2>
         <p itemprop="description">Reguliuotojas griežtina kriptovaliutų paslaugų teikimą mažmeniniams klientams. Čia yra paprasta angliška versija ir svarbios datos.</p>
         <a class="hwtx8q" href="/blog-1">Perskaitykite pastabą →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Kaip įvertinti investavimo platformą prieš dedant indėlį</a></h2>
         <p itemprop="description">Penki patikrinimai, kurie užtrunka dešimt minučių ir pasako daugiau nei bet kuri apžvalgų svetainė.</p>
         <a class="hwtx8q" href="/blog-2">Perskaitykite pastabą →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Kodėl jūsų pirmasis indėlis <?= e(SITE_NAME) ?> jūsų rinkoje turėtų būti mažesnis, nei manote</a></h2>
         <p itemprop="description">Pigiausias būdas sužinoti, kaip veikia platforma, yra mažai dirbti su ja.</p>
         <a class="hwtx8q" href="/blog-3">Perskaitykite pastabą →</a>

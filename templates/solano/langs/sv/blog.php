@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> översikt 2026: vad de nya kryptoreglerna betyder för privatinvesterare</a></h2>
         <p itemprop="description">Tillsynsmyndigheten skärper hur kryptotjänster erbjuds till privatkunder. Här är versionen på klarspråk, och datumen som spelar roll.</p>
         <a class="hwtx8q" href="/blog-1">Läs anteckningen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Hur du bedömer en investeringsplattform innan du sätter in</a></h2>
         <p itemprop="description">Fem kontroller som tar tio minuter och säger mer än vilken recensionssajt som helst.</p>
         <a class="hwtx8q" href="/blog-2">Läs anteckningen →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Varför din första insättning hos <?= e(SITE_NAME) ?> på din marknad bör vara mindre än du tror</a></h2>
         <p itemprop="description">Det billigaste sättet att lära sig hur en plattform beter sig är att ge den väldigt lite att arbeta med.</p>
         <a class="hwtx8q" href="/blog-3">Läs anteckningen →</a>

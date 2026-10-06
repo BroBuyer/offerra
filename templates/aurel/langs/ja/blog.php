@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> レビュー2026：新しい暗号資産規則が個人投資家に意味すること</a></h2>
         <p itemprop="description">規制当局は、個人顧客への暗号資産サービスの提供方法を厳しくしています。わかりやすい説明と、重要な日付をご案内します。</p>
         <a class="hwtx8q" href="/blog-1">ノートを読む →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">入金前に投資プラットフォームを評価する方法</a></h2>
         <p itemprop="description">10分でできる5つの確認で、レビューサイト以上のことが分かります。</p>
         <a class="hwtx8q" href="/blog-2">ノートを読む →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url"><?= e(SITE_NAME) ?> での初回入金を、思っているより少額にすべき理由</a></h2>
         <p itemprop="description">プラットフォームの動きを知る最も安い方法は、扱う資金をごく少額にすることです。</p>
         <a class="hwtx8q" href="/blog-3">ノートを読む →</a>

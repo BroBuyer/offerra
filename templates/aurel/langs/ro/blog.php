@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> recenzie 2026: ce înseamnă noile reguli crypto pentru investitorii de retail</a></h2>
         <p itemprop="description">Autoritatea de reglementare înăsprește modul în care serviciile crypto sunt oferite clienților de retail. Iată versiunea pe înțeles și datele care contează.</p>
         <a class="hwtx8q" href="/blog-1">Citiți nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Cum să evaluați o platformă de investiții înainte de a depune</a></h2>
         <p itemprop="description">Cinci verificări care durează zece minute și vă spun mai mult decât orice site de recenzii.</p>
         <a class="hwtx8q" href="/blog-2">Citiți nota →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">De ce prima depunere la <?= e(SITE_NAME) ?> pe piața dumneavoastră ar trebui să fie mai mică decât credeți</a></h2>
         <p itemprop="description">Cel mai ieftin mod de a afla cum se comportă o platformă este să-i dați foarte puțin cu care să lucreze.</p>
         <a class="hwtx8q" href="/blog-3">Citiți nota →</a>

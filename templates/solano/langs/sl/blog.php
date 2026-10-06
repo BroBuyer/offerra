@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> pregled 2026: kaj pomenijo nova kripto pravila za male vlagatelje</a></h2>
         <p itemprop="description">Regulator zaostruje, kako se kripto storitve ponujajo malim strankam. Tukaj je navadna angleška različica in datumi, ki so pomembni.</p>
         <a class="hwtx8q" href="/blog-1">Preberi opombo →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Kako oceniti naložbeno platformo, preden položite denar</a></h2>
         <p itemprop="description">Pet pregledov, ki vzamejo deset minut in vam povedo več kot katera koli spletna stran z ocenami.</p>
         <a class="hwtx8q" href="/blog-2">Preberi opombo →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Zakaj bi moral biti vaš prvi depozit z <?= e(SITE_NAME) ?> na vašem trgu manjši, kot si mislite</a></h2>
         <p itemprop="description">Najcenejši način, da se naučite, kako se platforma obnaša, je, da ji daste zelo malo časa za delo.</p>
         <a class="hwtx8q" href="/blog-3">Preberi opombo →</a>

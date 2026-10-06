@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> επισκόπηση 2026: τι σημαίνουν οι νέοι κανόνες κρυπτονομισμάτων για τους ιδιώτες επενδυτές</a></h2>
         <p itemprop="description">Η εποπτική αρχή αυστηροποιεί τον τρόπο προσφοράς υπηρεσιών κρυπτονομισμάτων σε ιδιώτες πελάτες. Ακολουθεί η απλή εκδοχή και οι ημερομηνίες που έχουν σημασία.</p>
         <a class="hwtx8q" href="/blog-1">Διαβάστε τη σημείωση →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Πώς να αξιολογήσετε μια επενδυτική πλατφόρμα πριν καταθέσετε</a></h2>
         <p itemprop="description">Πέντε έλεγχοι που διαρκούν δέκα λεπτά και σας λένε περισσότερα από οποιονδήποτε ιστότοπο κριτικών.</p>
         <a class="hwtx8q" href="/blog-2">Διαβάστε τη σημείωση →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Γιατί η πρώτη σας κατάθεση στο <?= e(SITE_NAME) ?> στην αγορά σας πρέπει να είναι μικρότερη απ’ ό,τι νομίζετε</a></h2>
         <p itemprop="description">Ο φθηνότερος τρόπος να μάθετε πώς συμπεριφέρεται μια πλατφόρμα είναι να της δώσετε πολύ λίγα να διαχειριστεί.</p>
         <a class="hwtx8q" href="/blog-3">Διαβάστε τη σημείωση →</a>

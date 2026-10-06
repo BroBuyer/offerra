@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> przegląd 2026: co nowe przepisy krypto oznaczają dla inwestorów detalicznych</a></h2>
         <p itemprop="description">Regulator zaostrza zasady oferowania usług krypto klientom detalicznym. Oto zrozumiała wersja i daty, które mają znaczenie.</p>
         <a class="hwtx8q" href="/blog-1">Przeczytaj notatkę →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Jak ocenić platformę inwestycyjną przed wpłatą</a></h2>
         <p itemprop="description">Pięć kontroli, które zajmują dziesięć minut i mówią więcej niż serwisy recenzji.</p>
         <a class="hwtx8q" href="/blog-2">Przeczytaj notatkę →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Dlaczego pierwsza wpłata w <?= e(SITE_NAME) ?> na Państwa rynku powinna być mniejsza, niż się wydaje</a></h2>
         <p itemprop="description">Najtańszy sposób, by poznać zachowanie platformy, to dać jej niewiele do pracy.</p>
         <a class="hwtx8q" href="/blog-3">Przeczytaj notatkę →</a>

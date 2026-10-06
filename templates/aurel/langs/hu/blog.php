@@ -21,16 +21,22 @@ require __DIR__ . '/includes/header.php';
   <div class="ggh3sm">
     <ul class="cngnn7" itemscope itemtype="https://schema.org/Blog">
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-1" itemprop="url"><?= e(SITE_NAME) ?> áttekintés 2026: mit jelentenek az új kriptoszabályok a lakossági befektetőknek</a></h2>
         <p itemprop="description">A felügyelet szigorítja, hogyan kínálhatók kriptoszolgáltatások lakossági ügyfeleknek. Itt a közérthető változat, és a dátumok, amelyek számítanak.</p>
         <a class="hwtx8q" href="/blog-1">A jegyzet elolvasása →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-2" itemprop="url">Hogyan értékeljen egy befektetési platformot befizetés előtt</a></h2>
         <p itemprop="description">Öt ellenőrzés, tíz perc, és többet mond, mint bármely értékelő oldal.</p>
         <a class="hwtx8q" href="/blog-2">A jegyzet elolvasása →</a>
       </li>
       <li class="blxco" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <span itemprop="author" itemscope itemtype="https://schema.org/Organization" hidden><meta itemprop="name" content="<?= e(SITE_NAME) ?>"/></span>
+        <meta itemprop="datePublished" content="2026-01-15"/>
         <h2 itemprop="headline"><a href="/blog-3" itemprop="url">Miért legyen az első <?= e(SITE_NAME) ?> befizetése az Ön piacán kisebb, mint gondolná</a></h2>
         <p itemprop="description">A legolcsóbb módja, hogy megtudja, hogyan viselkedik egy platform, ha keveset ad neki.</p>
         <a class="hwtx8q" href="/blog-3">A jegyzet elolvasása →</a>
