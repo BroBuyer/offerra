@@ -7,7 +7,7 @@ define('SITE_NAME', 'Audax');
 define('SITE_URL', 'https://audax.local');
 define('SITE_LANG', 'en');
 define('MIN_DEPOSIT', '250');
-define('CURRENCY', 'EUR');
+define('CURRENCY', 'USD');
 
 define('CRM_API_URL', 'https://yourleads.org/api/affiliates/v2/leads');
 define('CRM_API_KEY', '');

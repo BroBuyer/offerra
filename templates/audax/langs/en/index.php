@@ -395,7 +395,7 @@ require __DIR__ . '/includes/header.php';
                 />
               </div>
               <p class="review-text">
-                I started with <?= e(money_min()) ?>, and now I withdraw &euro;2,000 monthly!
+                I started with <?= e(money_min()) ?>, and now I withdraw <?= e(currency_symbol() . '2,000') ?> monthly!
               </p>
             </div>
             <div class="review">
