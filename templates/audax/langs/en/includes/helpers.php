@@ -280,6 +280,7 @@ function geo_in(): string
         'pl' => geo_pl_place($code, $name, 'in'),
         'cs' => geo_cs_place($code, $name, 'in'),
         'sk' => geo_sk_place($code, $name, 'in'),
+        'hu' => geo_hu_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -302,6 +303,7 @@ function geo_from(): string
         'pl' => geo_pl_place($code, $name, 'from'),
         'cs' => geo_cs_place($code, $name, 'from'),
         'sk' => geo_sk_place($code, $name, 'from'),
+        'hu' => geo_hu_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -783,6 +785,43 @@ function geo_sk_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('v ' . $name);
 }
 
+/**
+ * "in Hungary" / "Magyarországon" / "Magyarországról" — grammar lives here, not in copy.
+ */
+function geo_hu_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'az Egyesült Királyságban',
+        'uk' => 'az Egyesült Királyságban',
+        'us' => 'az Egyesült Államokban',
+        'nl' => 'Hollandiában',
+        'ae' => 'az Egyesült Arab Emírségekben',
+        'ph' => 'a Fülöp-szigeteken',
+        'cz' => 'Csehországban',
+        'hu' => 'Magyarországon',
+        'de' => 'Németországban',
+        'at' => 'Ausztriában',
+    ];
+    $from = [
+        'gb' => 'az Egyesült Királyságból',
+        'uk' => 'az Egyesült Királyságból',
+        'us' => 'az Egyesült Államokból',
+        'nl' => 'Hollandiából',
+        'ae' => 'az Egyesült Arab Emírségekből',
+        'ph' => 'a Fülöp-szigetekről',
+        'cz' => 'Csehországból',
+        'hu' => 'Magyarországról',
+        'de' => 'Németországból',
+        'at' => 'Ausztriából',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ($name . 'ból');
+    }
+
+    return $in[$code] ?? ($name . 'ban');
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -813,6 +852,7 @@ function platform_image_alt(): string
         'pl' => SITE_NAME . ' — mobilna platforma tradingowa: wykres BTC/USDT na żywo, księga zleceń i interfejs kupna/sprzedaży',
         'cs' => SITE_NAME . ' — mobilní obchodní platforma: živý graf BTC/USDT, kniha příkazů a rozhraní nákup/prodej',
         'sk' => SITE_NAME . ' — mobilná obchodná platforma: živý graf BTC/USDT, kniha príkazov a rozhranie nákup/predaj',
+        'hu' => SITE_NAME . ' — mobil kereskedési platform: élő BTC/USDT-grafikon, megbízáskönyv és vétel/eladás felület',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -832,6 +872,7 @@ function platform_image_caption(): string
         'pl' => SITE_NAME . ' — trading mobilny z wykresami krypto w czasie rzeczywistym',
         'cs' => SITE_NAME . ' — mobilní obchodování s krypto grafy v reálném čase',
         'sk' => SITE_NAME . ' — mobilné obchodovanie s krypto grafmi v reálnom čase',
+        'hu' => SITE_NAME . ' — mobil kereskedés valós idejű kriptografikonokkal',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
