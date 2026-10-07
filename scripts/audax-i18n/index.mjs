@@ -5,6 +5,7 @@ import pt from './pt.mjs';
 import de from './de.mjs';
 import nl from './nl.mjs';
 import ja from './ja.mjs';
+import no from './no.mjs';
 
 export const LOCALES = {
   fr: {
@@ -56,6 +57,13 @@ export const LOCALES = {
     currency: 'JPY',
     tickerLang: 'ja',
   },
+  no: {
+    siteLang: 'no',
+    crmCountry: 'NO',
+    phoneCountry: 'no',
+    currency: 'EUR',
+    tickerLang: 'en',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de, nl, ja };
+export const PACKS = { fr, it, es, pt, de, nl, ja, no };

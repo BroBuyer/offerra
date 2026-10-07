@@ -274,6 +274,7 @@ function geo_in(): string
         'de' => geo_de_place($code, $name, 'in'),
         'nl' => geo_nl_place($code, $name, 'in'),
         'ja' => geo_ja_place($code, $name, 'in'),
+        'no' => geo_no_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -291,6 +292,7 @@ function geo_from(): string
         'de' => geo_de_place($code, $name, 'from'),
         'nl' => geo_nl_place($code, $name, 'from'),
         'ja' => geo_ja_place($code, $name, 'from'),
+        'no' => geo_no_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -581,6 +583,45 @@ function geo_ja_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ($name . 'で');
 }
 
+/**
+ * "in Norway" / "i Norge" / "fra Norge" — grammar lives here, not in copy.
+ */
+function geo_no_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'i Storbritannia',
+        'uk' => 'i Storbritannia',
+        'us' => 'i USA',
+        'ae' => 'i De forente arabiske emirater',
+        'ph' => 'på Filippinene',
+        'cz' => 'i Tsjekkia',
+        'nl' => 'i Nederland',
+        'no' => 'i Norge',
+        'se' => 'i Sverige',
+        'dk' => 'i Danmark',
+        'fi' => 'i Finland',
+    ];
+    $from = [
+        'gb' => 'fra Storbritannia',
+        'uk' => 'fra Storbritannia',
+        'us' => 'fra USA',
+        'ae' => 'fra De forente arabiske emirater',
+        'ph' => 'fra Filippinene',
+        'cz' => 'fra Tsjekkia',
+        'nl' => 'fra Nederland',
+        'no' => 'fra Norge',
+        'se' => 'fra Sverige',
+        'dk' => 'fra Danmark',
+        'fi' => 'fra Finland',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('fra ' . $name);
+    }
+
+    return $in[$code] ?? ('i ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -606,6 +647,7 @@ function platform_image_alt(): string
         'de' => SITE_NAME . ' — mobile Trading-Plattform: Live-Chart BTC/USDT, Orderbuch und Kauf-/Verkaufsoberfläche',
         'nl' => SITE_NAME . ' — mobiel tradingplatform: live BTC/USDT-grafiek, orderboek en koop-/verkoopinterface',
         'ja' => SITE_NAME . ' — モバイル取引プラットフォーム：BTC/USDTのライブチャート、オーダーブック、売買インターフェース',
+        'no' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, ordrebok og kjøp/salg-grensesnitt',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -620,6 +662,7 @@ function platform_image_caption(): string
         'de' => SITE_NAME . ' — mobiles Trading mit Krypto-Charts in Echtzeit',
         'nl' => SITE_NAME . ' — mobiel trading met crypto-grafieken in realtime',
         'ja' => SITE_NAME . ' — リアルタイムの暗号資産チャートでモバイル取引',
+        'no' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i sanntid',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
