@@ -25,6 +25,7 @@ function site_locale(): string
         'ms' => 'ms-MY',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
+        'lt' => 'lt-LT',
         'sl' => 'sl-SI',
     ];
     $lang = strtolower(SITE_LANG);
@@ -275,6 +276,7 @@ function geo_in(): string
         'nl' => geo_nl_place($code, $name, 'in'),
         'ja' => geo_ja_place($code, $name, 'in'),
         'no' => geo_no_place($code, $name, 'in'),
+        'lt' => geo_lt_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -293,6 +295,7 @@ function geo_from(): string
         'nl' => geo_nl_place($code, $name, 'from'),
         'ja' => geo_ja_place($code, $name, 'from'),
         'no' => geo_no_place($code, $name, 'from'),
+        'lt' => geo_lt_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -622,6 +625,47 @@ function geo_no_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('i ' . $name);
 }
 
+/**
+ * "in Lithuania" / "Lietuvoje" / "iš Lietuvos" — grammar lives here, not in copy.
+ */
+function geo_lt_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'Jungtinėje Karalystėje',
+        'uk' => 'Jungtinėje Karalystėje',
+        'us' => 'JAV',
+        'ae' => 'Jungtiniuose Arabų Emyratuose',
+        'ph' => 'Filipinuose',
+        'cz' => 'Čekijoje',
+        'nl' => 'Nyderlanduose',
+        'lt' => 'Lietuvoje',
+        'lv' => 'Latvijoje',
+        'ee' => 'Estijoje',
+        'pl' => 'Lenkijoje',
+        'de' => 'Vokietijoje',
+    ];
+    $from = [
+        'gb' => 'iš Jungtinės Karalystės',
+        'uk' => 'iš Jungtinės Karalystės',
+        'us' => 'iš JAV',
+        'ae' => 'iš Jungtinių Arabų Emyratų',
+        'ph' => 'iš Filipinų',
+        'cz' => 'iš Čekijos',
+        'nl' => 'iš Nyderlandų',
+        'lt' => 'iš Lietuvos',
+        'lv' => 'iš Latvijos',
+        'ee' => 'iš Estijos',
+        'pl' => 'iš Lenkijos',
+        'de' => 'iš Vokietijos',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('iš ' . $name);
+    }
+
+    return $in[$code] ?? $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -648,6 +692,7 @@ function platform_image_alt(): string
         'nl' => SITE_NAME . ' — mobiel tradingplatform: live BTC/USDT-grafiek, orderboek en koop-/verkoopinterface',
         'ja' => SITE_NAME . ' — モバイル取引プラットフォーム：BTC/USDTのライブチャート、オーダーブック、売買インターフェース',
         'no' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, ordrebok og kjøp/salg-grensesnitt',
+        'lt' => SITE_NAME . ' — mobili prekybos platforma: gyvas BTC/USDT grafikas, pavedimų knyga ir pirkimo/pardavimo sąsaja',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -663,6 +708,7 @@ function platform_image_caption(): string
         'nl' => SITE_NAME . ' — mobiel trading met crypto-grafieken in realtime',
         'ja' => SITE_NAME . ' — リアルタイムの暗号資産チャートでモバイル取引',
         'no' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i sanntid',
+        'lt' => SITE_NAME . ' — mobili prekyba su kriptovaliutų grafikais realiuoju laiku',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
