@@ -9,6 +9,7 @@ import no from './no.mjs';
 import lt from './lt.mjs';
 import pl from './pl.mjs';
 import cs from './cs.mjs';
+import sk from './sk.mjs';
 
 export const LOCALES = {
   fr: {
@@ -88,6 +89,13 @@ export const LOCALES = {
     currency: 'EUR',
     tickerLang: 'en',
   },
+  sk: {
+    siteLang: 'sk',
+    crmCountry: 'SK',
+    phoneCountry: 'sk',
+    currency: 'EUR',
+    tickerLang: 'en',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs };
+export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk };
