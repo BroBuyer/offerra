@@ -278,6 +278,7 @@ function geo_in(): string
         'no' => geo_no_place($code, $name, 'in'),
         'lt' => geo_lt_place($code, $name, 'in'),
         'pl' => geo_pl_place($code, $name, 'in'),
+        'cs' => geo_cs_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -298,6 +299,7 @@ function geo_from(): string
         'no' => geo_no_place($code, $name, 'from'),
         'lt' => geo_lt_place($code, $name, 'from'),
         'pl' => geo_pl_place($code, $name, 'from'),
+        'cs' => geo_cs_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -705,6 +707,43 @@ function geo_pl_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('w ' . $name);
 }
 
+/**
+ * "in Czechia" / "v Česku" / "z Česka" — grammar lives here, not in copy.
+ */
+function geo_cs_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 've Spojeném království',
+        'uk' => 've Spojeném království',
+        'us' => 've Spojených státech',
+        'nl' => 'v Nizozemsku',
+        'ae' => 've Spojených arabských emirátech',
+        'ph' => 'na Filipínách',
+        'cz' => 'v Česku',
+        'sk' => 'na Slovensku',
+        'de' => 'v Německu',
+        'at' => 'v Rakousku',
+    ];
+    $from = [
+        'gb' => 'ze Spojeného království',
+        'uk' => 'ze Spojeného království',
+        'us' => 'ze Spojených států',
+        'nl' => 'z Nizozemska',
+        'ae' => 'ze Spojených arabských emirátů',
+        'ph' => 'z Filipín',
+        'cz' => 'z Česka',
+        'sk' => 'ze Slovenska',
+        'de' => 'z Německa',
+        'at' => 'z Rakouska',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('z ' . $name);
+    }
+
+    return $in[$code] ?? ('v ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -733,6 +772,7 @@ function platform_image_alt(): string
         'no' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, ordrebok og kjøp/salg-grensesnitt',
         'lt' => SITE_NAME . ' — mobili prekybos platforma: gyvas BTC/USDT grafikas, pavedimų knyga ir pirkimo/pardavimo sąsaja',
         'pl' => SITE_NAME . ' — mobilna platforma tradingowa: wykres BTC/USDT na żywo, księga zleceń i interfejs kupna/sprzedaży',
+        'cs' => SITE_NAME . ' — mobilní obchodní platforma: živý graf BTC/USDT, kniha příkazů a rozhraní nákup/prodej',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -750,6 +790,7 @@ function platform_image_caption(): string
         'no' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i sanntid',
         'lt' => SITE_NAME . ' — mobili prekyba su kriptovaliutų grafikais realiuoju laiku',
         'pl' => SITE_NAME . ' — trading mobilny z wykresami krypto w czasie rzeczywistym',
+        'cs' => SITE_NAME . ' — mobilní obchodování s krypto grafy v reálném čase',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
