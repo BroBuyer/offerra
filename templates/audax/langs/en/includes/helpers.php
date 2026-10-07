@@ -273,6 +273,7 @@ function geo_in(): string
         'pt' => geo_pt_place($code, $name, 'in'),
         'de' => geo_de_place($code, $name, 'in'),
         'nl' => geo_nl_place($code, $name, 'in'),
+        'ja' => geo_ja_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -289,6 +290,7 @@ function geo_from(): string
         'pt' => geo_pt_place($code, $name, 'from'),
         'de' => geo_de_place($code, $name, 'from'),
         'nl' => geo_nl_place($code, $name, 'from'),
+        'ja' => geo_ja_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -540,6 +542,45 @@ function geo_nl_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('in ' . $name);
 }
 
+/**
+ * "in Japan" / "日本で" / "日本から" — grammar lives here, not in copy.
+ */
+function geo_ja_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'イギリスで',
+        'uk' => 'イギリスで',
+        'us' => 'アメリカで',
+        'ae' => 'アラブ首長国連邦で',
+        'ph' => 'フィリピンで',
+        'cz' => 'チェコで',
+        'nl' => 'オランダで',
+        'jp' => '日本で',
+        'de' => 'ドイツで',
+        'fr' => 'フランスで',
+        'it' => 'イタリアで',
+    ];
+    $from = [
+        'gb' => 'イギリスから',
+        'uk' => 'イギリスから',
+        'us' => 'アメリカから',
+        'ae' => 'アラブ首長国連邦から',
+        'ph' => 'フィリピンから',
+        'cz' => 'チェコから',
+        'nl' => 'オランダから',
+        'jp' => '日本から',
+        'de' => 'ドイツから',
+        'fr' => 'フランスから',
+        'it' => 'イタリアから',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ($name . 'から');
+    }
+
+    return $in[$code] ?? ($name . 'で');
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -564,6 +605,7 @@ function platform_image_alt(): string
         'pt' => SITE_NAME . ' — plataforma de trading móvel: gráfico BTC/USDT em direto, livro de ordens e interface de compra/venda',
         'de' => SITE_NAME . ' — mobile Trading-Plattform: Live-Chart BTC/USDT, Orderbuch und Kauf-/Verkaufsoberfläche',
         'nl' => SITE_NAME . ' — mobiel tradingplatform: live BTC/USDT-grafiek, orderboek en koop-/verkoopinterface',
+        'ja' => SITE_NAME . ' — モバイル取引プラットフォーム：BTC/USDTのライブチャート、オーダーブック、売買インターフェース',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -577,6 +619,7 @@ function platform_image_caption(): string
         'pt' => SITE_NAME . ' — trading móvel com gráficos cripto em tempo real',
         'de' => SITE_NAME . ' — mobiles Trading mit Krypto-Charts in Echtzeit',
         'nl' => SITE_NAME . ' — mobiel trading met crypto-grafieken in realtime',
+        'ja' => SITE_NAME . ' — リアルタイムの暗号資産チャートでモバイル取引',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
