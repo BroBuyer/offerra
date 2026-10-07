@@ -1793,7 +1793,7 @@ a:hover { text-decoration: underline; }
 }
 
 .col-index {
-  min-width: 4.5rem;
+  min-width: 8.5rem;
   text-align: center;
 }
 
@@ -2289,6 +2289,26 @@ tr:last-child td { border-bottom: none; }
   align-items: center;
   gap: 0.35rem;
   flex-wrap: wrap;
+}
+
+.gsc-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.gsc-error__text {
+  color: #f87171;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.gsc-error__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .verification-file {

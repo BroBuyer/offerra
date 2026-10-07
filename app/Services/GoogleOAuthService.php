@@ -81,20 +81,58 @@ class GoogleOAuthService
 
         $refresh = trim((string) ($settings->google_oauth_refresh_token ?? ''));
         if ($refresh === '') {
-            throw new RuntimeException('Google account is not connected.');
+            throw new RuntimeException(self::deadTokenMessage($settings->google_oauth_email));
         }
 
-        return $this->refreshAccessToken($refresh);
+        try {
+            return $this->refreshAccessToken($refresh);
+        } catch (RuntimeException $e) {
+            if (self::isDeadTokenError($e->getMessage())) {
+                throw new RuntimeException(self::deadTokenMessage($settings->google_oauth_email));
+            }
+
+            throw $e;
+        }
     }
 
     public function accessTokenForAccount(GoogleAccount $account): string
     {
         $refresh = trim((string) ($account->refresh_token ?? ''));
         if ($refresh === '') {
-            throw new RuntimeException('Google account is not connected.');
+            throw new RuntimeException(self::deadTokenMessage($account->email));
         }
 
-        return $this->refreshAccessToken($refresh);
+        try {
+            return $this->refreshAccessToken($refresh);
+        } catch (RuntimeException $e) {
+            if (self::isDeadTokenError($e->getMessage())) {
+                throw new RuntimeException(self::deadTokenMessage($account->email));
+            }
+
+            throw $e;
+        }
+    }
+
+    public static function isDeadTokenError(string $message): bool
+    {
+        $m = strtolower($message);
+
+        return str_contains($m, 'invalid_grant')
+            || str_contains($m, 'expired or revoked')
+            || str_contains($m, 'токен протух')
+            || str_contains($m, 'account is not connected')
+            || str_contains($m, 'empty access token');
+    }
+
+    public static function deadTokenMessage(?string $email = null): string
+    {
+        $email = trim((string) $email);
+
+        if ($email !== '') {
+            return "Google токен протух для {$email}. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».";
+        }
+
+        return 'Google токен протух. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».';
     }
 
     private function refreshAccessToken(string $refresh): string

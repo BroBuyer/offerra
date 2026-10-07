@@ -225,7 +225,32 @@ function formatOfferError(message) {
         return 'Google Search Console тимчасово обмежив запити. Панель повторить подачу сама.';
     }
 
+    if (isGscTokenError(redacted)) {
+        return formatGscTokenError(redacted);
+    }
+
     return redacted;
+}
+
+function isGscTokenError(message) {
+    return /invalid_grant|expired or revoked|токен протух/i.test(String(message ?? ''));
+}
+
+function formatGscTokenError(message) {
+    const text = String(message ?? '');
+    const email = text.match(/для\s+(\S+@\S+)/)?.[1]?.replace(/[.,;]+$/, '');
+
+    if (email) {
+        return `Google токен протух для ${email}. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».`;
+    }
+
+    return 'Google токен протух. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».';
+}
+
+function gscSettingsHref(offer) {
+    return offer.user_id
+        ? route('settings.index', { user_id: offer.user_id })
+        : route('settings.index');
 }
 
 function dnsBadge(offer) {
@@ -550,6 +575,7 @@ export default function OffersIndex({
     const [deployingId, setDeployingId] = useState(null);
     const [provisioningId, setProvisioningId] = useState(null);
     const [indexingId, setIndexingId] = useState(null);
+    const [gscSubmitId, setGscSubmitId] = useState(null);
     const [checkingAvailabilityId, setCheckingAvailabilityId] = useState(null);
     const [checkingIndexId, setCheckingIndexId] = useState(null);
     const [archivingId, setArchivingId] = useState(null);
@@ -1011,6 +1037,53 @@ export default function OffersIndex({
                 preserveScroll: true,
                 onFinish: () => setCheckingAvailabilityId(null),
             },
+        );
+    };
+
+    const submitGsc = (offer) => {
+        if (gscSubmitId) {
+            return;
+        }
+
+        setGscSubmitId(offer.id);
+        router.post(
+            route('offers.gsc', offer.id),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setGscSubmitId(null),
+            },
+        );
+    };
+
+    const renderGscError = (offer) => {
+        if (!offer.gsc_error) {
+            return null;
+        }
+
+        return (
+            <div className="gsc-error">
+                <div className="gsc-error__text" title={offer.gsc_error}>
+                    {formatOfferError(offer.gsc_error)}
+                </div>
+                {canManageOffer(offer) && (
+                    <div className="gsc-error__actions">
+                        {isGscTokenError(offer.gsc_error) && (
+                            <Link href={gscSettingsHref(offer)} className="btn btn-ghost btn-sm">
+                                Перепідключити
+                            </Link>
+                        )}
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            disabled={gscSubmitId === offer.id}
+                            onClick={() => submitGsc(offer)}
+                        >
+                            {gscSubmitId === offer.id ? '…' : 'Подати в GSC'}
+                        </button>
+                    </div>
+                )}
+            </div>
         );
     };
 
@@ -1796,11 +1869,7 @@ export default function OffersIndex({
                                                         {offer.submitted_for_indexing ? 'yes' : '—'}
                                                     </span>
                                                 )}
-                                                {offer.gsc_error && (
-                                                    <div className="field-hint" title={offer.gsc_error} style={{ color: '#f87171' }}>
-                                                        {formatOfferError(offer.gsc_error)}
-                                                    </div>
-                                                )}
+                                                {renderGscError(offer)}
                                             </div>
                                         </td>
                                     )}
@@ -1966,11 +2035,7 @@ export default function OffersIndex({
                                     </div>
                                 );
                             })()}
-                            {offer.gsc_error && (
-                                <p className="field-hint" style={{ color: '#f87171', margin: '0.35rem 0 0' }}>
-                                    {formatOfferError(offer.gsc_error)}
-                                </p>
-                            )}
+                            {renderGscError(offer)}
                             {renderOfferActions(offer)}
                         </div>
                     </article>

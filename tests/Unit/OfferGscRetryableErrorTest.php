@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Services\GoogleOAuthService;
 use App\Services\OfferGscSubmitter;
 use Tests\TestCase;
 
@@ -38,5 +39,34 @@ class OfferGscRetryableErrorTest extends TestCase
 }';
 
         $this->assertTrue(OfferGscSubmitter::isRetryableError($message));
+    }
+
+    public function test_dead_token_message_names_the_account(): void
+    {
+        $this->assertTrue(GoogleOAuthService::isDeadTokenError('invalid_grant'));
+        $this->assertSame(
+            'Google токен протух для fuegodorn@gmail.com. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».',
+            GoogleOAuthService::deadTokenMessage('fuegodorn@gmail.com'),
+        );
+    }
+
+    public function test_expired_token_is_not_retryable_and_names_the_account(): void
+    {
+        $message = 'Google OAuth refresh failed: {
+  "error": "invalid_grant",
+  "error_description": "Token has been expired or revoked."
+}';
+
+        $this->assertFalse(OfferGscSubmitter::isRetryableError($message));
+        $this->assertSame(
+            'Google токен протух. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».',
+            OfferGscSubmitter::publicErrorLabel($message),
+        );
+        $this->assertSame(
+            'Google токен протух для fuegodorn@gmail.com. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».',
+            OfferGscSubmitter::publicErrorLabel(
+                'Google токен протух для fuegodorn@gmail.com. Перепідключіть цей акаунт у Settings і натисніть «Подати в GSC».',
+            ),
+        );
     }
 }

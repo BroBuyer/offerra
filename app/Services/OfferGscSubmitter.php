@@ -167,7 +167,7 @@ class OfferGscSubmitter
             $meta = is_array($fresh->infra_meta) ? $fresh->infra_meta : [];
             $meta['gsc_error'] = $retryable
                 ? self::retryableErrorLabel($message)
-                : substr($message, 0, 400);
+                : self::publicErrorLabel($message);
             $meta['gsc'] = [
                 'status' => $retryable ? 'waiting' : 'failed',
                 'updated_at' => now()->toIso8601String(),
@@ -201,6 +201,19 @@ class OfferGscSubmitter
             || str_contains($message, 'Timeout')
             || str_contains($message, 'DNS resolve')
             || (str_contains($message, 'sitemaps.submit failed') && str_contains($message, '403'));
+    }
+
+    public static function publicErrorLabel(string $message): string
+    {
+        if (GoogleOAuthService::isDeadTokenError($message)) {
+            if (preg_match('/для\s+(\S+@\S+)/u', $message, $match) === 1) {
+                return GoogleOAuthService::deadTokenMessage(rtrim($match[1], '.,;'));
+            }
+
+            return GoogleOAuthService::deadTokenMessage();
+        }
+
+        return substr($message, 0, 400);
     }
 
     public static function retryableErrorLabel(string $message): string
