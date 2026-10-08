@@ -284,6 +284,7 @@ function geo_in(): string
         'hr' => geo_hr_place($code, $name, 'in'),
         'ro' => geo_ro_place($code, $name, 'in'),
         'sl' => geo_sl_place($code, $name, 'in'),
+        'lv' => geo_lv_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -310,6 +311,7 @@ function geo_from(): string
         'hr' => geo_hr_place($code, $name, 'from'),
         'ro' => geo_ro_place($code, $name, 'from'),
         'sl' => geo_sl_place($code, $name, 'from'),
+        'lv' => geo_lv_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -941,6 +943,43 @@ function geo_sl_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('v ' . $name);
 }
 
+/**
+ * "in Latvia" / "Latvijā" / "no Latvijas" — locative, no preposition for in.
+ */
+function geo_lv_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'Apvienotajā Karalistē',
+        'uk' => 'Apvienotajā Karalistē',
+        'us' => 'Amerikas Savienotajās Valstīs',
+        'nl' => 'Nīderlandē',
+        'ae' => 'Apvienotajos Arābu Emirātos',
+        'ph' => 'Filipīnās',
+        'cz' => 'Čehijā',
+        'lv' => 'Latvijā',
+        'de' => 'Vācijā',
+        'at' => 'Austrijā',
+    ];
+    $from = [
+        'gb' => 'no Apvienotās Karalistes',
+        'uk' => 'no Apvienotās Karalistes',
+        'us' => 'no Amerikas Savienotajām Valstīm',
+        'nl' => 'no Nīderlandes',
+        'ae' => 'no Apvienotajiem Arābu Emirātiem',
+        'ph' => 'no Filipīnām',
+        'cz' => 'no Čehijas',
+        'lv' => 'no Latvijas',
+        'de' => 'no Vācijas',
+        'at' => 'no Austrijas',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('no ' . $name);
+    }
+
+    return $in[$code] ?? $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -975,6 +1014,7 @@ function platform_image_alt(): string
         'hr' => SITE_NAME . ' — mobilna trgovačka platforma: grafikon BTC/USDT uživo, knjiga naloga i sučelje kupnje/prodaje',
         'ro' => SITE_NAME . ' — platformă de tranzacționare mobilă: grafic BTC/USDT live, carnet de ordine și interfață cumpărare/vânzare',
         'sl' => SITE_NAME . ' — mobilna trgovalna platforma: grafikon BTC/USDT v živo, knjiga naročil in vmesnik za nakup/prodajo',
+        'lv' => SITE_NAME . ' — mobilā tirdzniecības platforma: BTC/USDT tiešraides diagramma, orderu grāmata un pirkšanas/pārdošanas saskarne',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -998,6 +1038,7 @@ function platform_image_caption(): string
         'hr' => SITE_NAME . ' — mobilno trgovanje s kripto grafikonima u stvarnom vremenu',
         'ro' => SITE_NAME . ' — tranzacționare mobilă cu grafice crypto în timp real',
         'sl' => SITE_NAME . ' — mobilno trgovanje s kripto grafikoni v realnem času',
+        'lv' => SITE_NAME . ' — mobilā tirdzniecība ar kriptovalūtu diagrammām reāllaikā',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
