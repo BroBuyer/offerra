@@ -15,6 +15,7 @@ import hr from './hr.mjs';
 import ro from './ro.mjs';
 import sl from './sl.mjs';
 import lv from './lv.mjs';
+import da from './da.mjs';
 
 export const LOCALES = {
   fr: {
@@ -136,6 +137,13 @@ export const LOCALES = {
     currency: 'EUR',
     tickerLang: 'en',
   },
+  da: {
+    siteLang: 'da',
+    crmCountry: 'DK',
+    phoneCountry: 'dk',
+    currency: 'EUR',
+    tickerLang: 'en',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro, sl, lv };
+export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro, sl, lv, da };

@@ -285,6 +285,7 @@ function geo_in(): string
         'ro' => geo_ro_place($code, $name, 'in'),
         'sl' => geo_sl_place($code, $name, 'in'),
         'lv' => geo_lv_place($code, $name, 'in'),
+        'da' => geo_da_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -312,6 +313,7 @@ function geo_from(): string
         'ro' => geo_ro_place($code, $name, 'from'),
         'sl' => geo_sl_place($code, $name, 'from'),
         'lv' => geo_lv_place($code, $name, 'from'),
+        'da' => geo_da_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -980,6 +982,49 @@ function geo_lv_place(string $code, string $name, string $kind): string
     return $in[$code] ?? $name;
 }
 
+/**
+ * "in Denmark" / "i Danmark" / "fra Danmark" — i/på + fra.
+ */
+function geo_da_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'i Storbritannien',
+        'uk' => 'i Storbritannien',
+        'us' => 'i USA',
+        'nl' => 'i Nederlandene',
+        'ae' => 'i De Forenede Arabiske Emirater',
+        'ph' => 'på Filippinerne',
+        'cz' => 'i Tjekkiet',
+        'dk' => 'i Danmark',
+        'da' => 'i Danmark',
+        'de' => 'i Tyskland',
+        'at' => 'i Østrig',
+        'no' => 'i Norge',
+        'se' => 'i Sverige',
+    ];
+    $from = [
+        'gb' => 'fra Storbritannien',
+        'uk' => 'fra Storbritannien',
+        'us' => 'fra USA',
+        'nl' => 'fra Nederlandene',
+        'ae' => 'fra De Forenede Arabiske Emirater',
+        'ph' => 'fra Filippinerne',
+        'cz' => 'fra Tjekkiet',
+        'dk' => 'fra Danmark',
+        'da' => 'fra Danmark',
+        'de' => 'fra Tyskland',
+        'at' => 'fra Østrig',
+        'no' => 'fra Norge',
+        'se' => 'fra Sverige',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('fra ' . $name);
+    }
+
+    return $in[$code] ?? ('i ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1015,6 +1060,7 @@ function platform_image_alt(): string
         'ro' => SITE_NAME . ' — platformă de tranzacționare mobilă: grafic BTC/USDT live, carnet de ordine și interfață cumpărare/vânzare',
         'sl' => SITE_NAME . ' — mobilna trgovalna platforma: grafikon BTC/USDT v živo, knjiga naročil in vmesnik za nakup/prodajo',
         'lv' => SITE_NAME . ' — mobilā tirdzniecības platforma: BTC/USDT tiešraides diagramma, orderu grāmata un pirkšanas/pārdošanas saskarne',
+        'da' => SITE_NAME . ' — mobil handelsplatform: live BTC/USDT-diagram, ordrebog og køb/salg-grænseflade',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1039,6 +1085,7 @@ function platform_image_caption(): string
         'ro' => SITE_NAME . ' — tranzacționare mobilă cu grafice crypto în timp real',
         'sl' => SITE_NAME . ' — mobilno trgovanje s kripto grafikoni v realnem času',
         'lv' => SITE_NAME . ' — mobilā tirdzniecība ar kriptovalūtu diagrammām reāllaikā',
+        'da' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i realtid',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
