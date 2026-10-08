@@ -13,6 +13,7 @@ import sk from './sk.mjs';
 import hu from './hu.mjs';
 import hr from './hr.mjs';
 import ro from './ro.mjs';
+import sl from './sl.mjs';
 
 export const LOCALES = {
   fr: {
@@ -120,6 +121,13 @@ export const LOCALES = {
     currency: 'EUR',
     tickerLang: 'en',
   },
+  sl: {
+    siteLang: 'sl',
+    crmCountry: 'SI',
+    phoneCountry: 'si',
+    currency: 'EUR',
+    tickerLang: 'en',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro };
+export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro, sl };

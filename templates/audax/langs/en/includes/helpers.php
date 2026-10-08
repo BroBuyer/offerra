@@ -283,6 +283,7 @@ function geo_in(): string
         'hu' => geo_hu_place($code, $name, 'in'),
         'hr' => geo_hr_place($code, $name, 'in'),
         'ro' => geo_ro_place($code, $name, 'in'),
+        'sl' => geo_sl_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -308,6 +309,7 @@ function geo_from(): string
         'hu' => geo_hu_place($code, $name, 'from'),
         'hr' => geo_hr_place($code, $name, 'from'),
         'ro' => geo_ro_place($code, $name, 'from'),
+        'sl' => geo_sl_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -900,6 +902,45 @@ function geo_ro_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('în ' . $name);
 }
 
+/**
+ * "in Slovenia" / "v Sloveniji" / "iz Slovenije" — grammar lives here, not in copy.
+ */
+function geo_sl_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'v Združenem kraljestvu',
+        'uk' => 'v Združenem kraljestvu',
+        'us' => 'v Združenih državah Amerike',
+        'nl' => 'na Nizozemskem',
+        'ae' => 'v Združenih arabskih emiratih',
+        'ph' => 'na Filipinih',
+        'cz' => 'na Češkem',
+        'si' => 'v Sloveniji',
+        'sl' => 'v Sloveniji',
+        'de' => 'v Nemčiji',
+        'at' => 'v Avstriji',
+    ];
+    $from = [
+        'gb' => 'iz Združenega kraljestva',
+        'uk' => 'iz Združenega kraljestva',
+        'us' => 'iz Združenih držav Amerike',
+        'nl' => 'z Nizozemske',
+        'ae' => 'iz Združenih arabskih emiratov',
+        'ph' => 's Filipinov',
+        'cz' => 's Češke',
+        'si' => 'iz Slovenije',
+        'sl' => 'iz Slovenije',
+        'de' => 'iz Nemčije',
+        'at' => 'iz Avstrije',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('iz ' . $name);
+    }
+
+    return $in[$code] ?? ('v ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -933,6 +974,7 @@ function platform_image_alt(): string
         'hu' => SITE_NAME . ' — mobil kereskedési platform: élő BTC/USDT-grafikon, megbízáskönyv és vétel/eladás felület',
         'hr' => SITE_NAME . ' — mobilna trgovačka platforma: grafikon BTC/USDT uživo, knjiga naloga i sučelje kupnje/prodaje',
         'ro' => SITE_NAME . ' — platformă de tranzacționare mobilă: grafic BTC/USDT live, carnet de ordine și interfață cumpărare/vânzare',
+        'sl' => SITE_NAME . ' — mobilna trgovalna platforma: grafikon BTC/USDT v živo, knjiga naročil in vmesnik za nakup/prodajo',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -955,6 +997,7 @@ function platform_image_caption(): string
         'hu' => SITE_NAME . ' — mobil kereskedés valós idejű kriptografikonokkal',
         'hr' => SITE_NAME . ' — mobilno trgovanje s kripto grafikonima u stvarnom vremenu',
         'ro' => SITE_NAME . ' — tranzacționare mobilă cu grafice crypto în timp real',
+        'sl' => SITE_NAME . ' — mobilno trgovanje s kripto grafikoni v realnem času',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
