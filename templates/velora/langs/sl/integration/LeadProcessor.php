@@ -238,40 +238,23 @@ final class LeadProcessor
             ];
         }
 
-        $crmRaw = false;
-        $httpCode = 0;
-        $curlError = '';
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . $apiKey,
+                'Content-Type: application/json',
+            ],
+            CURLOPT_POSTFIELDS => json_encode($crmData, JSON_UNESCAPED_UNICODE),
+            CURLOPT_TIMEOUT => 40,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
 
-        for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_HTTPHEADER => [
-                    'Authorization: ' . $apiKey,
-                    'Content-Type: application/json',
-                ],
-                CURLOPT_POSTFIELDS => json_encode($crmData, JSON_UNESCAPED_UNICODE),
-                CURLOPT_TIMEOUT => 40,
-                CURLOPT_CONNECTTIMEOUT => 5,
-            ]);
-
-            $crmRaw = curl_exec($ch);
-            if ($crmRaw === false) {
-                $curlError = (string) curl_error($ch);
-            }
-
-            $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($crmRaw !== false && $httpCode >= 200 && $httpCode < 300) {
-                break;
-            }
-
-            if ($attempt < 2) {
-                usleep(350000);
-            }
-        }
+        $crmRaw = curl_exec($ch);
+        $curlError = $crmRaw === false ? (string) curl_error($ch) : '';
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
         $crmResponse = json_decode((string) $crmRaw, true);
         if (!is_array($crmResponse)) {
