@@ -282,6 +282,7 @@ function geo_in(): string
         'sk' => geo_sk_place($code, $name, 'in'),
         'hu' => geo_hu_place($code, $name, 'in'),
         'hr' => geo_hr_place($code, $name, 'in'),
+        'ro' => geo_ro_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -306,6 +307,7 @@ function geo_from(): string
         'sk' => geo_sk_place($code, $name, 'from'),
         'hu' => geo_hu_place($code, $name, 'from'),
         'hr' => geo_hr_place($code, $name, 'from'),
+        'ro' => geo_ro_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -861,6 +863,43 @@ function geo_hr_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('u ' . $name);
 }
 
+/**
+ * "in Romania" / "în România" / "din România" — grammar lives here, not in copy.
+ */
+function geo_ro_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'în Regatul Unit',
+        'uk' => 'în Regatul Unit',
+        'us' => 'în Statele Unite',
+        'nl' => 'în Țările de Jos',
+        'ae' => 'în Emiratele Arabe Unite',
+        'ph' => 'în Filipine',
+        'cz' => 'în Cehia',
+        'ro' => 'în România',
+        'de' => 'în Germania',
+        'at' => 'în Austria',
+    ];
+    $from = [
+        'gb' => 'din Regatul Unit',
+        'uk' => 'din Regatul Unit',
+        'us' => 'din Statele Unite',
+        'nl' => 'din Țările de Jos',
+        'ae' => 'din Emiratele Arabe Unite',
+        'ph' => 'din Filipine',
+        'cz' => 'din Cehia',
+        'ro' => 'din România',
+        'de' => 'din Germania',
+        'at' => 'din Austria',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('din ' . $name);
+    }
+
+    return $in[$code] ?? ('în ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -893,6 +932,7 @@ function platform_image_alt(): string
         'sk' => SITE_NAME . ' — mobilná obchodná platforma: živý graf BTC/USDT, kniha príkazov a rozhranie nákup/predaj',
         'hu' => SITE_NAME . ' — mobil kereskedési platform: élő BTC/USDT-grafikon, megbízáskönyv és vétel/eladás felület',
         'hr' => SITE_NAME . ' — mobilna trgovačka platforma: grafikon BTC/USDT uživo, knjiga naloga i sučelje kupnje/prodaje',
+        'ro' => SITE_NAME . ' — platformă de tranzacționare mobilă: grafic BTC/USDT live, carnet de ordine și interfață cumpărare/vânzare',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -914,6 +954,7 @@ function platform_image_caption(): string
         'sk' => SITE_NAME . ' — mobilné obchodovanie s krypto grafmi v reálnom čase',
         'hu' => SITE_NAME . ' — mobil kereskedés valós idejű kriptografikonokkal',
         'hr' => SITE_NAME . ' — mobilno trgovanje s kripto grafikonima u stvarnom vremenu',
+        'ro' => SITE_NAME . ' — tranzacționare mobilă cu grafice crypto în timp real',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
