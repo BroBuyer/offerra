@@ -287,6 +287,7 @@ function geo_in(): string
         'lv' => geo_lv_place($code, $name, 'in'),
         'da' => geo_da_place($code, $name, 'in'),
         'sv' => geo_sv_place($code, $name, 'in'),
+        'fi' => geo_fi_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -316,6 +317,7 @@ function geo_from(): string
         'lv' => geo_lv_place($code, $name, 'from'),
         'da' => geo_da_place($code, $name, 'from'),
         'sv' => geo_sv_place($code, $name, 'from'),
+        'fi' => geo_fi_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1078,6 +1080,57 @@ function geo_sv_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('i ' . $name);
 }
 
+/**
+ * "in Finland" / "Suomessa" / "Suomesta" — inessive/elative, no preposition.
+ */
+function geo_fi_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'Isossa-Britanniassa',
+        'uk' => 'Isossa-Britanniassa',
+        'us' => 'Yhdysvalloissa',
+        'nl' => 'Alankomaissa',
+        'ae' => 'Yhdistyneissä arabiemiirikunnissa',
+        'ph' => 'Filippiineillä',
+        'cz' => 'Tšekissä',
+        'fi' => 'Suomessa',
+        'se' => 'Ruotsissa',
+        'dk' => 'Tanskassa',
+        'no' => 'Norjassa',
+        'de' => 'Saksassa',
+        'at' => 'Itävallassa',
+        'ee' => 'Virossa',
+        'is' => 'Islannissa',
+        'mt' => 'Maltalla',
+        'cy' => 'Kyproksella',
+    ];
+    $from = [
+        'gb' => 'Isosta-Britanniasta',
+        'uk' => 'Isosta-Britanniasta',
+        'us' => 'Yhdysvalloista',
+        'nl' => 'Alankomaista',
+        'ae' => 'Yhdistyneistä arabiemiirikunnista',
+        'ph' => 'Filippiineiltä',
+        'cz' => 'Tšekistä',
+        'fi' => 'Suomesta',
+        'se' => 'Ruotsista',
+        'dk' => 'Tanskasta',
+        'no' => 'Norjasta',
+        'de' => 'Saksasta',
+        'at' => 'Itävallasta',
+        'ee' => 'Virosta',
+        'is' => 'Islannista',
+        'mt' => 'Maltalta',
+        'cy' => 'Kyprokselta',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? $name;
+    }
+
+    return $in[$code] ?? $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1115,6 +1168,7 @@ function platform_image_alt(): string
         'lv' => SITE_NAME . ' — mobilā tirdzniecības platforma: BTC/USDT tiešraides diagramma, orderu grāmata un pirkšanas/pārdošanas saskarne',
         'da' => SITE_NAME . ' — mobil handelsplatform: live BTC/USDT-diagram, ordrebog og køb/salg-grænseflade',
         'sv' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, orderbok och köp/sälj-gränssnitt',
+        'fi' => SITE_NAME . ' — mobiili kaupankäyntialusta: live BTC/USDT-kaavio, toimeksiantokirja ja osto/myynti-käyttöliittymä',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1141,6 +1195,7 @@ function platform_image_caption(): string
         'lv' => SITE_NAME . ' — mobilā tirdzniecība ar kriptovalūtu diagrammām reāllaikā',
         'da' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i realtid',
         'sv' => SITE_NAME . ' — mobilhandel med kryptodiagram i realtid',
+        'fi' => SITE_NAME . ' — mobiilikauppa kryptokaavioilla reaaliajassa',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
