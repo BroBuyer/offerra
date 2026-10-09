@@ -286,6 +286,7 @@ function geo_in(): string
         'sl' => geo_sl_place($code, $name, 'in'),
         'lv' => geo_lv_place($code, $name, 'in'),
         'da' => geo_da_place($code, $name, 'in'),
+        'sv' => geo_sv_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -314,6 +315,7 @@ function geo_from(): string
         'sl' => geo_sl_place($code, $name, 'from'),
         'lv' => geo_lv_place($code, $name, 'from'),
         'da' => geo_da_place($code, $name, 'from'),
+        'sv' => geo_sv_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1025,6 +1027,57 @@ function geo_da_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('i ' . $name);
 }
 
+/**
+ * "in Sweden" / "i Sverige" / "från Sverige" — i/på + från.
+ */
+function geo_sv_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'i Storbritannien',
+        'uk' => 'i Storbritannien',
+        'us' => 'i USA',
+        'nl' => 'i Nederländerna',
+        'ae' => 'i Förenade Arabemiraten',
+        'ph' => 'på Filippinerna',
+        'cz' => 'i Tjeckien',
+        'se' => 'i Sverige',
+        'sv' => 'i Sverige',
+        'dk' => 'i Danmark',
+        'de' => 'i Tyskland',
+        'at' => 'i Österrike',
+        'no' => 'i Norge',
+        'fi' => 'i Finland',
+        'is' => 'på Island',
+        'mt' => 'på Malta',
+        'cy' => 'på Cypern',
+    ];
+    $from = [
+        'gb' => 'från Storbritannien',
+        'uk' => 'från Storbritannien',
+        'us' => 'från USA',
+        'nl' => 'från Nederländerna',
+        'ae' => 'från Förenade Arabemiraten',
+        'ph' => 'från Filippinerna',
+        'cz' => 'från Tjeckien',
+        'se' => 'från Sverige',
+        'sv' => 'från Sverige',
+        'dk' => 'från Danmark',
+        'de' => 'från Tyskland',
+        'at' => 'från Österrike',
+        'no' => 'från Norge',
+        'fi' => 'från Finland',
+        'is' => 'från Island',
+        'mt' => 'från Malta',
+        'cy' => 'från Cypern',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('från ' . $name);
+    }
+
+    return $in[$code] ?? ('i ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1061,6 +1114,7 @@ function platform_image_alt(): string
         'sl' => SITE_NAME . ' — mobilna trgovalna platforma: grafikon BTC/USDT v živo, knjiga naročil in vmesnik za nakup/prodajo',
         'lv' => SITE_NAME . ' — mobilā tirdzniecības platforma: BTC/USDT tiešraides diagramma, orderu grāmata un pirkšanas/pārdošanas saskarne',
         'da' => SITE_NAME . ' — mobil handelsplatform: live BTC/USDT-diagram, ordrebog og køb/salg-grænseflade',
+        'sv' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, orderbok och köp/sälj-gränssnitt',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1086,6 +1140,7 @@ function platform_image_caption(): string
         'sl' => SITE_NAME . ' — mobilno trgovanje s kripto grafikoni v realnem času',
         'lv' => SITE_NAME . ' — mobilā tirdzniecība ar kriptovalūtu diagrammām reāllaikā',
         'da' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i realtid',
+        'sv' => SITE_NAME . ' — mobilhandel med kryptodiagram i realtid',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
