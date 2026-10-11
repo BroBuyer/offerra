@@ -22,7 +22,6 @@ class CheckOriginHealth extends Command
 
         $counts = $sync->offerCountsByHost();
         $servers = OriginServer::query()
-            ->with('owner:id,name')
             ->orderBy('host')
             ->get();
 
