@@ -21,8 +21,6 @@ class OriginHealthMonitor
 
     public const DEGRADED_ALERT_AFTER_MINUTES = 3;
 
-    public const ALERT_COOLDOWN_MINUTES = 30;
-
     public function __construct(
         private readonly OriginHealthProbe $probe,
         private readonly TelegramNotifier $telegram,
@@ -208,11 +206,7 @@ class OriginHealthMonitor
         ?Carbon $degradedSince = null,
     ): ?string {
         $now ??= now();
-        $lastAlertAt = isset($previous['last_alert_at'])
-            ? Carbon::parse($previous['last_alert_at'])
-            : null;
         $lastAlertKind = (string) ($previous['last_alert_kind'] ?? '');
-        $cooledDown = $lastAlertAt === null || $lastAlertAt->lte($now->copy()->subMinutes(self::ALERT_COOLDOWN_MINUTES));
 
         if ($status === 'ok' && in_array($prevStatus, ['down', 'degraded'], true)) {
             if (in_array($lastAlertKind, ['down', 'degraded'], true)) {
@@ -222,7 +216,16 @@ class OriginHealthMonitor
             return null;
         }
 
-        if ($status === 'down' && $cooledDown) {
+        // One Telegram per incident. Repeats stay silent until recovery, then a new outage.
+        if ($status === 'down' && $lastAlertKind === 'down') {
+            return null;
+        }
+
+        if ($status === 'degraded' && in_array($lastAlertKind, ['degraded', 'down'], true)) {
+            return null;
+        }
+
+        if ($status === 'down') {
             $since = $downSince ?? (! empty($previous['down_since']) ? Carbon::parse((string) $previous['down_since']) : null);
             if ($since !== null && $since->lte($now->copy()->subMinutes(self::DOWN_ALERT_AFTER_MINUTES))) {
                 return 'down';
@@ -234,7 +237,7 @@ class OriginHealthMonitor
             }
         }
 
-        if ($status === 'degraded' && $cooledDown) {
+        if ($status === 'degraded') {
             $since = $degradedSince ?? (! empty($previous['degraded_since']) ? Carbon::parse((string) $previous['degraded_since']) : null);
             if ($since !== null && $since->lte($now->copy()->subMinutes(self::DEGRADED_ALERT_AFTER_MINUTES))) {
                 return 'degraded';

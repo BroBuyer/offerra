@@ -115,24 +115,44 @@ class OriginHealthTest extends TestCase
             $now->copy()->subMinutes(3),
         ));
 
-        // Cooldown suppresses repeats.
+        // Same outage — one Telegram, even hours later.
         $this->assertNull($monitor->decideAlert(
             'down',
             'down',
             4,
             0,
-            ['last_alert_at' => $now->copy()->subMinutes(10)->toIso8601String()],
+            [
+                'last_alert_at' => $now->copy()->subMinutes(10)->toIso8601String(),
+                'last_alert_kind' => 'down',
+            ],
             $now,
             $now->copy()->subMinutes(10),
         ));
-        $this->assertSame('down', $monitor->decideAlert(
+        $this->assertNull($monitor->decideAlert(
             'down',
             'down',
             8,
             0,
-            ['last_alert_at' => $now->copy()->subMinutes(31)->toIso8601String()],
+            [
+                'last_alert_at' => $now->copy()->subHours(6)->toIso8601String(),
+                'last_alert_kind' => 'down',
+            ],
             $now,
-            $now->copy()->subMinutes(10),
+            $now->copy()->subHours(6),
+        ));
+
+        // After recovery, a new outage may alert once.
+        $this->assertSame('down', $monitor->decideAlert(
+            'ok',
+            'down',
+            3,
+            0,
+            [
+                'last_alert_at' => $now->copy()->subHours(1)->toIso8601String(),
+                'last_alert_kind' => 'recovery',
+            ],
+            $now,
+            $now->copy()->subMinutes(3),
         ));
 
         // Legacy callers without down_since still use fail_streak.
