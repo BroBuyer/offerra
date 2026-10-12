@@ -289,6 +289,7 @@ function geo_in(): string
         'sv' => geo_sv_place($code, $name, 'in'),
         'fi' => geo_fi_place($code, $name, 'in'),
         'el' => geo_el_place($code, $name, 'in'),
+        'tr' => geo_tr_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -320,6 +321,7 @@ function geo_from(): string
         'sv' => geo_sv_place($code, $name, 'from'),
         'fi' => geo_fi_place($code, $name, 'from'),
         'el' => geo_el_place($code, $name, 'from'),
+        'tr' => geo_tr_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1188,6 +1190,61 @@ function geo_el_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('στην ' . $name);
 }
 
+/**
+ * "in Turkey" / "Türkiye'de" / "Türkiye'den" — locative/ablative.
+ */
+function geo_tr_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'İngiltere\'de',
+        'uk' => 'İngiltere\'de',
+        'us' => 'ABD\'de',
+        'nl' => 'Hollanda\'da',
+        'ae' => 'BAE\'de',
+        'ph' => 'Filipinler\'de',
+        'cz' => 'Çekya\'da',
+        'fi' => 'Finlandiya\'da',
+        'se' => 'İsveç\'te',
+        'dk' => 'Danimarka\'da',
+        'no' => 'Norveç\'te',
+        'de' => 'Almanya\'da',
+        'at' => 'Avusturya\'da',
+        'ee' => 'Estonya\'da',
+        'is' => 'İzlanda\'da',
+        'mt' => 'Malta\'da',
+        'cy' => 'Kıbrıs\'ta',
+        'gr' => 'Yunanistan\'da',
+        'tr' => 'Türkiye\'de',
+    ];
+    $from = [
+        'gb' => 'İngiltere\'den',
+        'uk' => 'İngiltere\'den',
+        'us' => 'ABD\'den',
+        'nl' => 'Hollanda\'dan',
+        'ae' => 'BAE\'den',
+        'ph' => 'Filipinler\'den',
+        'cz' => 'Çekya\'dan',
+        'fi' => 'Finlandiya\'dan',
+        'se' => 'İsveç\'ten',
+        'dk' => 'Danimarka\'dan',
+        'no' => 'Norveç\'ten',
+        'de' => 'Almanya\'dan',
+        'at' => 'Avusturya\'dan',
+        'ee' => 'Estonya\'dan',
+        'is' => 'İzlanda\'dan',
+        'mt' => 'Malta\'dan',
+        'cy' => 'Kıbrıs\'tan',
+        'gr' => 'Yunanistan\'dan',
+        'tr' => 'Türkiye\'den',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? $name;
+    }
+
+    return $in[$code] ?? $name;
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1227,6 +1284,7 @@ function platform_image_alt(): string
         'sv' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, orderbok och köp/sälj-gränssnitt',
         'fi' => SITE_NAME . ' — mobiili kaupankäyntialusta: live BTC/USDT-kaavio, toimeksiantokirja ja osto/myynti-käyttöliittymä',
         'el' => SITE_NAME . ' — κινητή πλατφόρμα συναλλαγών: ζωντανό διάγραμμα BTC/USDT, βιβλίο εντολών και διεπαφή αγοράς/πώλησης',
+        'tr' => SITE_NAME . ' — mobil ticaret platformu: canlı BTC/USDT grafiği, emir defteri ve al/sat arayüzü',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1255,6 +1313,7 @@ function platform_image_caption(): string
         'sv' => SITE_NAME . ' — mobilhandel med kryptodiagram i realtid',
         'fi' => SITE_NAME . ' — mobiilikauppa kryptokaavioilla reaaliajassa',
         'el' => SITE_NAME . ' — κινητές συναλλαγές με γραφήματα κρυπτονομισμάτων σε πραγματικό χρόνο',
+        'tr' => SITE_NAME . ' — gerçek zamanlı kripto grafiklerle mobil ticaret',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
