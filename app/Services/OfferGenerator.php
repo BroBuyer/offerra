@@ -197,6 +197,9 @@ class OfferGenerator
         }
 
         $this->ensureWorkerWritable($targetPath);
+        if ($offer) {
+            $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
+        }
 
         return [
             'folder' => $folder,
@@ -531,6 +534,7 @@ class OfferGenerator
 
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->ensureWorkerWritable($targetPath);
+        $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
 
         return $targetPath;
     }
