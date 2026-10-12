@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Offer;
 use App\Models\User;
-use App\Services\StaleDeadOfferService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -33,7 +32,7 @@ class OfferStatsController extends Controller
         'deployed_at',
     ];
 
-    public function index(Request $request, StaleDeadOfferService $staleDead, TemplateCatalog $catalog): Response
+    public function index(Request $request, TemplateCatalog $catalog): Response
     {
         $user = $request->user();
         $filters = $this->filters($request, $user);
@@ -78,7 +77,6 @@ class OfferStatsController extends Controller
             'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
-            'staleDeadHint' => $staleDead->hintFor($user),
         ]);
     }
 

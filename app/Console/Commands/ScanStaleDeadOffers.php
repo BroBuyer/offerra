@@ -8,16 +8,16 @@ use Illuminate\Console\Command;
 class ScanStaleDeadOffers extends Command
 {
     protected $signature = 'offers:scan-stale-dead
-        {--months=1 : Indexed older than N months}';
+        {--days=30 : GSC submit older than N days}';
 
-    protected $description = 'Scan live offers indexed >N months with 0 clicks/leads/deps; stamp cache for panel banner (no archive)';
+    protected $description = 'Scan live offers submitted to GSC >N days with 0 leads/deps; stamp cache for Archive banner (no archive)';
 
     public function handle(StaleDeadOfferService $service): int
     {
-        $months = max(1, (int) $this->option('months'));
-        $result = $service->scan($months);
+        $days = max(1, (int) $this->option('days'));
+        $result = $service->scan($days);
 
-        $this->info("stale_dead total={$result['total']} users=".count($result['by_user']));
+        $this->info("stale_dead total={$result['total']} users=".count($result['by_user']).' days='.$days);
         foreach ($result['by_user'] as $userId => $cnt) {
             $this->line("  user_id={$userId} count={$cnt}");
         }

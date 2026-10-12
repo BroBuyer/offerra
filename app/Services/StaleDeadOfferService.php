@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Offer;
 use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -12,20 +13,26 @@ class StaleDeadOfferService
 {
     public const CACHE_LAST_SCAN_AT = 'stale_dead.last_scan_at';
 
+    public const DEAD_AFTER_DAYS = 30;
+
     public function __construct(
         private readonly OfferTeardownService $teardown,
     ) {}
 
-    /**
-     * Live offers indexed >1 month ago with 0 geo-clicks / leads / deposits.
-     * Scope: own offers, or all if admin (management rule — not canSeeAllOffers).
-     */
-    public function candidatesQuery(User $user, int $months = 1): Builder
+    public function cutoff(int $days = self::DEAD_AFTER_DAYS): CarbonInterface
     {
-        // 1 calendar month minus a few days so near-threshold offers surface before the exact anniversary.
-        $cutoff = now()->subMonths(max(1, $months))->addDays(3);
+        return now()->subDays(max(1, $days));
+    }
 
-        $query = Offer::query()
+    /**
+     * Live offers submitted to GSC more than N days ago with 0 leads and 0 deposits.
+     * Clicks are ignored — traffic without a lead/dep is still a dead offer.
+     */
+    public function baseCandidatesQuery(int $days = self::DEAD_AFTER_DAYS): Builder
+    {
+        $cutoff = $this->cutoff($days);
+
+        return Offer::query()
             ->whereNotIn('offers.status', ['archived', 'archiving', 'teardown_failed'])
             ->whereNotNull('offers.indexed_at')
             ->where('offers.indexed_at', '<', $cutoff)
@@ -38,13 +45,16 @@ class StaleDeadOfferService
                 $q->whereNull('offer_stats.deposits_count')
                     ->orWhere('offer_stats.deposits_count', '<=', 0);
             })
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.clicks_geo_count')
-                    ->orWhere('offer_stats.clicks_geo_count', '<=', 0);
-            })
             ->select('offers.*');
+    }
 
-        // Archive is owner-or-admin; banner count must match what 1-click will enqueue.
+    /**
+     * Scope: own offers, or all if admin (management rule — not canSeeAllOffers).
+     */
+    public function candidatesQuery(User $user, int $days = self::DEAD_AFTER_DAYS): Builder
+    {
+        $query = $this->baseCandidatesQuery($days);
+
         if (! $user->isAdmin()) {
             $query->where('offers.user_id', $user->id);
         }
@@ -55,12 +65,12 @@ class StaleDeadOfferService
     /**
      * @return array{count: int, last_scan_at: string|null}
      */
-    public function hintFor(User $user, int $months = 1): array
+    public function hintFor(User $user, int $days = self::DEAD_AFTER_DAYS): array
     {
         $lastScan = Cache::get(self::CACHE_LAST_SCAN_AT);
 
         return [
-            'count' => (int) $this->candidatesQuery($user, $months)->count('offers.id'),
+            'count' => (int) $this->candidatesQuery($user, $days)->count('offers.id'),
             'last_scan_at' => is_string($lastScan) && $lastScan !== '' ? $lastScan : null,
         ];
     }
@@ -70,27 +80,9 @@ class StaleDeadOfferService
      *
      * @return array{total: int, by_user: array<int, int>}
      */
-    public function scan(int $months = 1): array
+    public function scan(int $days = self::DEAD_AFTER_DAYS): array
     {
-        $cutoff = now()->subMonths(max(1, $months))->addDays(3);
-
-        $rows = Offer::query()
-            ->whereNotIn('offers.status', ['archived', 'archiving', 'teardown_failed'])
-            ->whereNotNull('offers.indexed_at')
-            ->where('offers.indexed_at', '<', $cutoff)
-            ->leftJoin('offer_stats', 'offer_stats.offer_id', '=', 'offers.id')
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.leads_count')
-                    ->orWhere('offer_stats.leads_count', '<=', 0);
-            })
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.deposits_count')
-                    ->orWhere('offer_stats.deposits_count', '<=', 0);
-            })
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.clicks_geo_count')
-                    ->orWhere('offer_stats.clicks_geo_count', '<=', 0);
-            })
+        $rows = $this->baseCandidatesQuery($days)
             ->groupBy('offers.user_id')
             ->selectRaw('offers.user_id, count(*) as cnt')
             ->pluck('cnt', 'user_id')
@@ -110,7 +102,7 @@ class StaleDeadOfferService
             'total' => $total,
             'by_user' => $byUser,
             'scanned_at' => $scannedAt,
-            'months' => $months,
+            'days' => $days,
         ]);
 
         return [
@@ -119,9 +111,9 @@ class StaleDeadOfferService
         ];
     }
 
-    public function archiveAllFor(User $user, int $months = 1): int
+    public function archiveAllFor(User $user, int $days = self::DEAD_AFTER_DAYS): int
     {
-        $ids = $this->candidatesQuery($user, $months)
+        $ids = $this->candidatesQuery($user, $days)
             ->orderBy('offers.id')
             ->pluck('offers.id')
             ->all();

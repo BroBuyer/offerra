@@ -1,5 +1,4 @@
 import PanelLayout from '@/Layouts/PanelLayout';
-import StaleDeadBanner from '@/Components/StaleDeadBanner';
 import { router, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 
@@ -65,7 +64,6 @@ export default function OfferStats({
     perPageOptions = [50],
     showUserColumn = false,
     users = [],
-    staleDeadHint = null,
 }) {
     const { flash } = usePage().props;
     const [draft, setDraft] = useState({
@@ -144,8 +142,6 @@ export default function OfferStats({
                         </p>
                     </div>
                 </div>
-
-                <StaleDeadBanner hint={staleDeadHint} />
 
                 <form
                     className="filters-bar"
