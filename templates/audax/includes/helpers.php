@@ -290,6 +290,7 @@ function geo_in(): string
         'fi' => geo_fi_place($code, $name, 'in'),
         'el' => geo_el_place($code, $name, 'in'),
         'tr' => geo_tr_place($code, $name, 'in'),
+        'ms' => geo_ms_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -322,6 +323,7 @@ function geo_from(): string
         'fi' => geo_fi_place($code, $name, 'from'),
         'el' => geo_el_place($code, $name, 'from'),
         'tr' => geo_tr_place($code, $name, 'from'),
+        'ms' => geo_ms_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1245,6 +1247,65 @@ function geo_tr_place(string $code, string $name, string $kind): string
     return $in[$code] ?? $name;
 }
 
+/**
+ * "in Malaysia" / "di Malaysia" / "dari Malaysia".
+ */
+function geo_ms_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'di United Kingdom',
+        'uk' => 'di United Kingdom',
+        'us' => 'di Amerika Syarikat',
+        'nl' => 'di Belanda',
+        'ae' => 'di UAE',
+        'ph' => 'di Filipina',
+        'cz' => 'di Republik Czech',
+        'fi' => 'di Finland',
+        'se' => 'di Sweden',
+        'dk' => 'di Denmark',
+        'no' => 'di Norway',
+        'de' => 'di Jerman',
+        'at' => 'di Austria',
+        'ee' => 'di Estonia',
+        'is' => 'di Iceland',
+        'mt' => 'di Malta',
+        'cy' => 'di Cyprus',
+        'gr' => 'di Greece',
+        'tr' => 'di Turki',
+        'my' => 'di Malaysia',
+        'id' => 'di Indonesia',
+    ];
+    $from = [
+        'gb' => 'dari United Kingdom',
+        'uk' => 'dari United Kingdom',
+        'us' => 'dari Amerika Syarikat',
+        'nl' => 'dari Belanda',
+        'ae' => 'dari UAE',
+        'ph' => 'dari Filipina',
+        'cz' => 'dari Republik Czech',
+        'fi' => 'dari Finland',
+        'se' => 'dari Sweden',
+        'dk' => 'dari Denmark',
+        'no' => 'dari Norway',
+        'de' => 'dari Jerman',
+        'at' => 'dari Austria',
+        'ee' => 'dari Estonia',
+        'is' => 'dari Iceland',
+        'mt' => 'dari Malta',
+        'cy' => 'dari Cyprus',
+        'gr' => 'dari Greece',
+        'tr' => 'dari Turki',
+        'my' => 'dari Malaysia',
+        'id' => 'dari Indonesia',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('dari ' . $name);
+    }
+
+    return $in[$code] ?? ('di ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1285,6 +1346,7 @@ function platform_image_alt(): string
         'fi' => SITE_NAME . ' — mobiili kaupankäyntialusta: live BTC/USDT-kaavio, toimeksiantokirja ja osto/myynti-käyttöliittymä',
         'el' => SITE_NAME . ' — κινητή πλατφόρμα συναλλαγών: ζωντανό διάγραμμα BTC/USDT, βιβλίο εντολών και διεπαφή αγοράς/πώλησης',
         'tr' => SITE_NAME . ' — mobil ticaret platformu: canlı BTC/USDT grafiği, emir defteri ve al/sat arayüzü',
+        'ms' => SITE_NAME . ' — platform dagangan mudah alih: carta BTC/USDT langsung, buku pesanan dan antara muka beli/jual',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1314,6 +1376,7 @@ function platform_image_caption(): string
         'fi' => SITE_NAME . ' — mobiilikauppa kryptokaavioilla reaaliajassa',
         'el' => SITE_NAME . ' — κινητές συναλλαγές με γραφήματα κρυπτονομισμάτων σε πραγματικό χρόνο',
         'tr' => SITE_NAME . ' — gerçek zamanlı kripto grafiklerle mobil ticaret',
+        'ms' => SITE_NAME . ' — dagangan mudah alih dengan carta kripto masa nyata',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
