@@ -288,6 +288,7 @@ function geo_in(): string
         'da' => geo_da_place($code, $name, 'in'),
         'sv' => geo_sv_place($code, $name, 'in'),
         'fi' => geo_fi_place($code, $name, 'in'),
+        'el' => geo_el_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -318,6 +319,7 @@ function geo_from(): string
         'da' => geo_da_place($code, $name, 'from'),
         'sv' => geo_sv_place($code, $name, 'from'),
         'fi' => geo_fi_place($code, $name, 'from'),
+        'el' => geo_el_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1131,6 +1133,61 @@ function geo_fi_place(string $code, string $name, string $kind): string
     return $in[$code] ?? $name;
 }
 
+/**
+ * "in Greece" / "στην Ελλάδα" / "από την Ελλάδα"
+ */
+function geo_el_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'στο Ηνωμένο Βασίλειο',
+        'uk' => 'στο Ηνωμένο Βασίλειο',
+        'us' => 'στις ΗΠΑ',
+        'nl' => 'στις Κάτω Χώρες',
+        'ae' => 'στα ΗΑΕ',
+        'ph' => 'στις Φιλιππίνες',
+        'cz' => 'στην Τσεχία',
+        'fi' => 'στη Φινλανδία',
+        'se' => 'στη Σουηδία',
+        'dk' => 'στη Δανία',
+        'no' => 'στη Νορβηγία',
+        'de' => 'στη Γερμανία',
+        'at' => 'στην Αυστρία',
+        'ee' => 'στην Εσθονία',
+        'is' => 'στην Ισλανδία',
+        'mt' => 'στη Μάλτα',
+        'cy' => 'στην Κύπρο',
+        'gr' => 'στην Ελλάδα',
+        'el' => 'στην Ελλάδα',
+    ];
+    $from = [
+        'gb' => 'από το Ηνωμένο Βασίλειο',
+        'uk' => 'από το Ηνωμένο Βασίλειο',
+        'us' => 'από τις ΗΠΑ',
+        'nl' => 'από τις Κάτω Χώρες',
+        'ae' => 'από τα ΗΑΕ',
+        'ph' => 'από τις Φιλιππίνες',
+        'cz' => 'από την Τσεχία',
+        'fi' => 'από τη Φινλανδία',
+        'se' => 'από τη Σουηδία',
+        'dk' => 'από τη Δανία',
+        'no' => 'από τη Νορβηγία',
+        'de' => 'από τη Γερμανία',
+        'at' => 'από την Αυστρία',
+        'ee' => 'από την Εσθονία',
+        'is' => 'από την Ισλανδία',
+        'mt' => 'από τη Μάλτα',
+        'cy' => 'από την Κύπρο',
+        'gr' => 'από την Ελλάδα',
+        'el' => 'από την Ελλάδα',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('από την ' . $name);
+    }
+
+    return $in[$code] ?? ('στην ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1169,6 +1226,7 @@ function platform_image_alt(): string
         'da' => SITE_NAME . ' — mobil handelsplatform: live BTC/USDT-diagram, ordrebog og køb/salg-grænseflade',
         'sv' => SITE_NAME . ' — mobil handelsplattform: live BTC/USDT-diagram, orderbok och köp/sälj-gränssnitt',
         'fi' => SITE_NAME . ' — mobiili kaupankäyntialusta: live BTC/USDT-kaavio, toimeksiantokirja ja osto/myynti-käyttöliittymä',
+        'el' => SITE_NAME . ' — κινητή πλατφόρμα συναλλαγών: ζωντανό διάγραμμα BTC/USDT, βιβλίο εντολών και διεπαφή αγοράς/πώλησης',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1196,6 +1254,7 @@ function platform_image_caption(): string
         'da' => SITE_NAME . ' — mobilhandel med kryptodiagrammer i realtid',
         'sv' => SITE_NAME . ' — mobilhandel med kryptodiagram i realtid',
         'fi' => SITE_NAME . ' — mobiilikauppa kryptokaavioilla reaaliajassa',
+        'el' => SITE_NAME . ' — κινητές συναλλαγές με γραφήματα κρυπτονομισμάτων σε πραγματικό χρόνο',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
