@@ -248,25 +248,25 @@ class DeployService
         $offer->loadMissing('user.settings');
         $settings ??= $this->resolveDeploySettings($user, $offer);
 
-        $this->generator->refreshConfig($offer);
-
-        $localPath = $this->generator->ensureLocalFolder($offer);
-
-        if (! File::isFile($localPath.'/index.php')) {
-            throw new RuntimeException("Локальний index.php не знайдено: {$offer->folder}");
-        }
-
-        $this->generator->syncSharedIncludeFiles($localPath, $offer->template);
-        $this->generator->syncSharedIntegrationFiles($localPath, $offer->template);
-        $this->generator->syncSharedStaticFiles($localPath, $offer->template, $offer->lang);
-        $this->generator->migrateLegacyAssets($localPath);
-
         $offer->update([
             'status' => 'deploying',
             'deploy_error' => null,
         ]);
 
         try {
+            $this->generator->refreshConfig($offer);
+
+            $localPath = $this->generator->ensureLocalFolder($offer);
+
+            if (! File::isFile($localPath.'/index.php')) {
+                throw new RuntimeException("Локальний index.php не знайдено: {$offer->folder}");
+            }
+
+            $this->generator->syncSharedIncludeFiles($localPath, $offer->template);
+            $this->generator->syncSharedIntegrationFiles($localPath, $offer->template);
+            $this->generator->syncSharedStaticFiles($localPath, $offer->template, $offer->lang);
+            $this->generator->migrateLegacyAssets($localPath);
+
             $remotePath = $this->origin->deployArchive(
                 $settings,
                 $offer->domain,

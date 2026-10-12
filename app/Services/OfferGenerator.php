@@ -9,6 +9,7 @@ use App\Support\InfrastructureOptions;
 use App\Support\MarketOptions;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -194,6 +195,8 @@ class OfferGenerator
 
             throw $e;
         }
+
+        $this->ensureWorkerWritable($targetPath);
 
         return [
             'folder' => $folder,
@@ -527,6 +530,7 @@ class OfferGenerator
         $this->migrateLegacyAssets($targetPath);
 
         $this->verificationFiles->syncToOfferFolder($offer);
+        $this->ensureWorkerWritable($targetPath);
 
         return $targetPath;
     }
@@ -1012,5 +1016,68 @@ class OfferGenerator
             'phone' => $normalized['phone'],
             'phone_countries' => $csv,
         ];
+    }
+
+    /**
+     * Queue workers run as the web user. Artisan/CLI as root must not leave
+     * offer folders owned by root — refreshConfig then fails with EACCES.
+     */
+    private function ensureWorkerWritable(string $path): void
+    {
+        if ($path === '' || ! is_dir($path)) {
+            return;
+        }
+
+        $owner = $this->panelWebOwner();
+        if ($owner === null) {
+            return;
+        }
+
+        if (function_exists('posix_geteuid') && posix_geteuid() === $owner['uid']) {
+            return;
+        }
+
+        if (! function_exists('posix_geteuid') || posix_geteuid() !== 0) {
+            return;
+        }
+
+        $user = escapeshellarg($owner['name']);
+        $quoted = escapeshellarg($path);
+        exec('chown -R '.$user.':'.$user.' '.$quoted.' && chmod -R ug+rwX '.$quoted, $out, $code);
+
+        if ($code !== 0) {
+            Log::warning('Could not chown offer folder for queue workers', [
+                'path' => $path,
+                'owner' => $owner['name'],
+                'code' => $code,
+            ]);
+        }
+    }
+
+    /**
+     * @return array{uid: int, name: string}|null
+     */
+    private function panelWebOwner(): ?array
+    {
+        foreach ([storage_path('logs'), storage_path('app'), storage_path('framework')] as $probe) {
+            if (! is_dir($probe)) {
+                continue;
+            }
+
+            $uid = @fileowner($probe);
+            if (! is_int($uid) || $uid === 0) {
+                continue;
+            }
+
+            $info = function_exists('posix_getpwuid') ? posix_getpwuid($uid) : null;
+            $name = is_array($info) ? (string) ($info['name'] ?? '') : '';
+
+            return [
+                'uid' => $uid,
+                'name' => $name !== '' ? $name : 'www-data',
+            ];
+        }
+
+        return ['uid' => 33, 'name' => 'www-data'];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Offer;
+use App\Services\DeployService;
 use App\Services\InfrastructureProvisioner;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +33,7 @@ class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
         return (string) $this->offerId;
     }
 
-    public function handle(InfrastructureProvisioner $provisioner): void
+    public function handle(InfrastructureProvisioner $provisioner, DeployService $deploy): void
     {
         $offer = Offer::query()->with('user.settings')->find($this->offerId);
 
@@ -42,6 +43,12 @@ class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
 
         try {
             $provisioner->recheckDns($offer);
+            if ($deploy->enqueueDeployAfterInfra($offer->fresh())) {
+                Log::info('Auto-deploy queued after DNS recheck', [
+                    'offer' => $this->offerId,
+                    'domain' => $offer->domain,
+                ]);
+            }
         } catch (\Throwable $e) {
             Log::error('Infrastructure DNS recheck failed', [
                 'offer' => $this->offerId,
