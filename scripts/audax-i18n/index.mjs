@@ -22,6 +22,7 @@ import el from './el.mjs';
 import tr from './tr.mjs';
 import ms from './ms.mjs';
 import id from './id.mjs';
+import ka from './ka.mjs';
 
 export const LOCALES = {
   fr: {
@@ -192,6 +193,13 @@ export const LOCALES = {
     currency: 'IDR',
     tickerLang: 'en',
   },
+  ka: {
+    siteLang: 'ka',
+    crmCountry: 'GE',
+    phoneCountry: 'ge',
+    currency: 'GEL',
+    tickerLang: 'en',
+  },
 };
 
-export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro, sl, lv, da, sv, fi, el, tr, ms, id };
+export const PACKS = { fr, it, es, pt, de, nl, ja, no, lt, pl, cs, sk, hu, hr, ro, sl, lv, da, sv, fi, el, tr, ms, id, ka };

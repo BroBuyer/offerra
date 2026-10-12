@@ -22,7 +22,7 @@ function site_locale(): string
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
-        'ms' => 'ms-MY', 'id' => 'id-ID',
+        'ms' => 'ms-MY', 'id' => 'id-ID', 'ka' => 'ka-GE',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
         'lt' => 'lt-LT',
@@ -292,6 +292,7 @@ function geo_in(): string
         'tr' => geo_tr_place($code, $name, 'in'),
         'ms' => geo_ms_place($code, $name, 'in'),
         'id' => geo_id_place($code, $name, 'in'),
+        'ka' => geo_ka_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -326,6 +327,7 @@ function geo_from(): string
         'tr' => geo_tr_place($code, $name, 'from'),
         'ms' => geo_ms_place($code, $name, 'from'),
         'id' => geo_id_place($code, $name, 'from'),
+        'ka' => geo_ka_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1367,6 +1369,67 @@ function geo_id_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('di ' . $name);
 }
 
+/**
+ * "in Georgia" / "საქართველოში" / "საქართველოდან".
+ */
+function geo_ka_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'გაერთიანებულ სამეფოში',
+        'uk' => 'გაერთიანებულ სამეფოში',
+        'us' => 'აშშ-ში',
+        'nl' => 'ნიდერლანდებში',
+        'ae' => 'არაბეთის გაერთიანებულ საემიროებში',
+        'ph' => 'ფილიპინებში',
+        'cz' => 'ჩეხეთში',
+        'fi' => 'ფინეთში',
+        'se' => 'შვედეთში',
+        'dk' => 'დანიაში',
+        'no' => 'ნორვეგიაში',
+        'de' => 'გერმანიაში',
+        'at' => 'ავსტრიაში',
+        'ee' => 'ესტონეთში',
+        'is' => 'ისლანდიაში',
+        'mt' => 'მალტაზე',
+        'cy' => 'კვიპროსზე',
+        'gr' => 'საბერძნეთში',
+        'tr' => 'თურქეთში',
+        'my' => 'მალაიზიაში',
+        'id' => 'ინდონეზიაში',
+        'ge' => 'საქართველოში',
+    ];
+    $from = [
+        'gb' => 'გაერთიანებული სამეფოდან',
+        'uk' => 'გაერთიანებული სამეფოდან',
+        'us' => 'აშშ-დან',
+        'nl' => 'ნიდერლანდებიდან',
+        'ae' => 'არაბეთის გაერთიანებული საემიროებიდან',
+        'ph' => 'ფილიპინებიდან',
+        'cz' => 'ჩეხეთიდან',
+        'fi' => 'ფინეთიდან',
+        'se' => 'შვედეთიდან',
+        'dk' => 'დანიიდან',
+        'no' => 'ნორვეგიიდან',
+        'de' => 'გერმანიიდან',
+        'at' => 'ავსტრიიდან',
+        'ee' => 'ესტონეთიდან',
+        'is' => 'ისლანდიიდან',
+        'mt' => 'მალტიდან',
+        'cy' => 'კვიპროსიდან',
+        'gr' => 'საბერძნეთიდან',
+        'tr' => 'თურქეთიდან',
+        'my' => 'მალაიზიიდან',
+        'id' => 'ინდონეზიიდან',
+        'ge' => 'საქართველოდან',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ($name . '-დან');
+    }
+
+    return $in[$code] ?? ($name . '-ში');
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1409,6 +1472,7 @@ function platform_image_alt(): string
         'tr' => SITE_NAME . ' — mobil ticaret platformu: canlı BTC/USDT grafiği, emir defteri ve al/sat arayüzü',
         'ms' => SITE_NAME . ' — platform dagangan mudah alih: carta BTC/USDT langsung, buku pesanan dan antara muka beli/jual',
         'id' => SITE_NAME . ' — platform trading seluler: grafik BTC/USDT langsung, buku pesanan dan antarmuka beli/jual',
+        'ka' => SITE_NAME . ' — მობილური სავაჭრო პლატფორმა: BTC/USDT-ის ცოცხალი გრაფიკი, ორდერების წიგნი და ყიდვა/გაყიდვის ინტერფეისი',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1440,6 +1504,7 @@ function platform_image_caption(): string
         'tr' => SITE_NAME . ' — gerçek zamanlı kripto grafiklerle mobil ticaret',
         'ms' => SITE_NAME . ' — dagangan mudah alih dengan carta kripto masa nyata',
         'id' => SITE_NAME . ' — trading seluler dengan grafik kripto waktu nyata',
+        'ka' => SITE_NAME . ' — მობილური ტრეიდინგი კრიპტოვალუტის გრაფიკებით რეალურ დროში',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
