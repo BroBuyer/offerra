@@ -22,7 +22,7 @@ function site_locale(): string
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
-        'ms' => 'ms-MY',
+        'ms' => 'ms-MY', 'id' => 'id-ID',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
         'lt' => 'lt-LT',
@@ -291,6 +291,7 @@ function geo_in(): string
         'el' => geo_el_place($code, $name, 'in'),
         'tr' => geo_tr_place($code, $name, 'in'),
         'ms' => geo_ms_place($code, $name, 'in'),
+        'id' => geo_id_place($code, $name, 'in'),
         default => 'in ' . $name,
     };
 }
@@ -324,6 +325,7 @@ function geo_from(): string
         'el' => geo_el_place($code, $name, 'from'),
         'tr' => geo_tr_place($code, $name, 'from'),
         'ms' => geo_ms_place($code, $name, 'from'),
+        'id' => geo_id_place($code, $name, 'from'),
         default => 'from ' . $name,
     };
 }
@@ -1306,6 +1308,65 @@ function geo_ms_place(string $code, string $name, string $kind): string
     return $in[$code] ?? ('di ' . $name);
 }
 
+/**
+ * "in Indonesia" / "di Indonesia" / "dari Indonesia".
+ */
+function geo_id_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'di Inggris',
+        'uk' => 'di Inggris',
+        'us' => 'di Amerika Serikat',
+        'nl' => 'di Belanda',
+        'ae' => 'di UEA',
+        'ph' => 'di Filipina',
+        'cz' => 'di Ceko',
+        'fi' => 'di Finlandia',
+        'se' => 'di Swedia',
+        'dk' => 'di Denmark',
+        'no' => 'di Norwegia',
+        'de' => 'di Jerman',
+        'at' => 'di Austria',
+        'ee' => 'di Estonia',
+        'is' => 'di Islandia',
+        'mt' => 'di Malta',
+        'cy' => 'di Siprus',
+        'gr' => 'di Yunani',
+        'tr' => 'di Turki',
+        'my' => 'di Malaysia',
+        'id' => 'di Indonesia',
+    ];
+    $from = [
+        'gb' => 'dari Inggris',
+        'uk' => 'dari Inggris',
+        'us' => 'dari Amerika Serikat',
+        'nl' => 'dari Belanda',
+        'ae' => 'dari UEA',
+        'ph' => 'dari Filipina',
+        'cz' => 'dari Ceko',
+        'fi' => 'dari Finlandia',
+        'se' => 'dari Swedia',
+        'dk' => 'dari Denmark',
+        'no' => 'dari Norwegia',
+        'de' => 'dari Jerman',
+        'at' => 'dari Austria',
+        'ee' => 'dari Estonia',
+        'is' => 'dari Islandia',
+        'mt' => 'dari Malta',
+        'cy' => 'dari Siprus',
+        'gr' => 'dari Yunani',
+        'tr' => 'dari Turki',
+        'my' => 'dari Malaysia',
+        'id' => 'dari Indonesia',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('dari ' . $name);
+    }
+
+    return $in[$code] ?? ('di ' . $name);
+}
+
 function page_title(string $suffix): string
 {
     return SITE_NAME . ' | ' . $suffix;
@@ -1347,6 +1408,7 @@ function platform_image_alt(): string
         'el' => SITE_NAME . ' — κινητή πλατφόρμα συναλλαγών: ζωντανό διάγραμμα BTC/USDT, βιβλίο εντολών και διεπαφή αγοράς/πώλησης',
         'tr' => SITE_NAME . ' — mobil ticaret platformu: canlı BTC/USDT grafiği, emir defteri ve al/sat arayüzü',
         'ms' => SITE_NAME . ' — platform dagangan mudah alih: carta BTC/USDT langsung, buku pesanan dan antara muka beli/jual',
+        'id' => SITE_NAME . ' — platform trading seluler: grafik BTC/USDT langsung, buku pesanan dan antarmuka beli/jual',
         default => SITE_NAME . ' trading platform on mobile — live BTC/USDT chart, order book, and buy/sell interface',
     };
 }
@@ -1377,6 +1439,7 @@ function platform_image_caption(): string
         'el' => SITE_NAME . ' — κινητές συναλλαγές με γραφήματα κρυπτονομισμάτων σε πραγματικό χρόνο',
         'tr' => SITE_NAME . ' — gerçek zamanlı kripto grafiklerle mobil ticaret',
         'ms' => SITE_NAME . ' — dagangan mudah alih dengan carta kripto masa nyata',
+        'id' => SITE_NAME . ' — trading seluler dengan grafik kripto waktu nyata',
         default => SITE_NAME . ' — mobile trading with real-time cryptocurrency charts',
     };
 }
