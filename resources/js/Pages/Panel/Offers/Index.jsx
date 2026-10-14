@@ -819,7 +819,7 @@ export default function OffersIndex({
     const archiveOffer = (offer) => {
         const ok = window.confirm(
             `Архівувати ${offer.domain}?\n\n`
-            + 'Сайт буде знято з origin-сервера і Cloudflare. Домен лишиться в Dynadot для перепродажу.',
+            + 'Сайт буде знято з origin-сервера і Cloudflare. Домен лишиться в Dynadot, NS скинемо на parking.',
         );
         if (!ok) {
             return;
@@ -1200,7 +1200,7 @@ export default function OffersIndex({
                         className="btn btn-ghost btn-sm btn-archive"
                         disabled={archivingId === offer.id || offer.status === 'deploying'}
                         onClick={() => archiveOffer(offer)}
-                        title="Архівувати: зняти з origin/Cloudflare (домен лишиться в Dynadot)"
+                        title="Архівувати: зняти з origin/Cloudflare, NS → parking Dynadot"
                         aria-label={`Архівувати ${offer.domain}`}
                     >
                         {archivingId === offer.id ? (

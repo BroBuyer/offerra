@@ -262,7 +262,7 @@ export default function Archive({
                     <h2>Архів доменів</h2>
                     <p>
                         Оффери зняті з origin-сервера і Cloudflare. Дані в БД збережені — можна поновити оффер.
-                        Домен лишається в Dynadot.
+                        Домен лишається в Dynadot, NS скидаються на parking (ns1/ns2.dynadot.com).
                     </p>
                     <p className="field-hint" style={{ marginTop: '0.5rem' }}>
                         <Link href={route('offers.index')}>← До активних офферів</Link>

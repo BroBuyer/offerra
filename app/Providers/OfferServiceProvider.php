@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Services\DeployConnection;
 use App\Services\DeployService;
 use App\Services\CloudflareClient;
+use App\Services\DynadotClient;
 use App\Services\GoogleSearchConsoleClient;
 use App\Services\KeitaroClient;
 use App\Services\OfferConfigBuilder;
@@ -78,6 +79,7 @@ class OfferServiceProvider extends ServiceProvider
                 $app->make(OriginHostService::class),
                 $app->make(DeployService::class),
                 $app->make(OriginPool::class),
+                $app->make(DynadotClient::class),
                 config('offerra.offers_path'),
             );
         });

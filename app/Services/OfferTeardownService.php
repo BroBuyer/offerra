@@ -20,6 +20,7 @@ class OfferTeardownService
         private readonly OriginHostService $origin,
         private readonly DeployService $deploy,
         private readonly OriginPool $pool,
+        private readonly DynadotClient $dynadot,
         private readonly string $offersPath,
     ) {}
 
@@ -133,9 +134,25 @@ class OfferTeardownService
             $errors[] = 'Local: '.$e->getMessage();
         }
 
+        try {
+            $parked = $this->parkDynadotNameservers($offer);
+            $steps['dynadot'] = $parked['status'];
+            if ($parked['detail'] !== '') {
+                $meta['dynadot_ns'] = $parked['detail'];
+            }
+        } catch (\Throwable $e) {
+            $steps['dynadot'] = 'error: '.$e->getMessage();
+            $errors[] = 'Dynadot NS: '.$e->getMessage();
+            Log::warning('Offer teardown Dynadot park NS failed', [
+                'offer_id' => $offer->id,
+                'domain' => $domain,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         $meta['steps'] = $steps;
         $meta['finished_at'] = now()->toIso8601String();
-        $meta['dynadot'] = 'kept';
+        $meta['dynadot'] = $steps['dynadot'] ?? 'kept';
 
         if ($errors !== []) {
             $meta['errors'] = $errors;
@@ -356,6 +373,41 @@ class OfferTeardownService
             ->first();
 
         return $admin?->settings;
+    }
+
+    /**
+     * @return array{status: string, detail: string}
+     */
+    private function parkDynadotNameservers(Offer $offer): array
+    {
+        $settings = $this->dynadotSettingsFor($offer);
+        if (! $settings) {
+            return ['status' => 'kept_no_key', 'detail' => ''];
+        }
+
+        $this->dynadot->parkNameservers($settings, $offer->domain);
+
+        return [
+            'status' => 'parked',
+            'detail' => implode(',', DynadotClient::PARKING_NAMESERVERS),
+        ];
+    }
+
+    private function dynadotSettingsFor(Offer $offer): ?UserSetting
+    {
+        $owner = $offer->user?->settings;
+        if ($owner) {
+            if (filled($offer->dynadot_api_key)) {
+                $owner->dynadot_api_key = $offer->dynadot_api_key;
+            }
+            if (filled($owner->dynadot_api_key)) {
+                return $owner;
+            }
+        }
+
+        $admin = $this->adminSettings();
+
+        return ($admin && filled($admin->dynadot_api_key)) ? $admin : null;
     }
 
     /**

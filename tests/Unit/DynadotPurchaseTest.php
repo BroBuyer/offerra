@@ -367,6 +367,30 @@ class DynadotPurchaseTest extends TestCase
         $this->assertSame(2, $attempts);
     }
 
+    public function test_park_nameservers_sets_dynadot_parking_ns(): void
+    {
+        Http::fake([
+            'https://api.dynadot.com/api3.json*' => Http::response([
+                'SetNsResponse' => [
+                    'ResponseCode' => '0',
+                    'Status' => 'success',
+                ],
+            ]),
+        ]);
+
+        app(DynadotClient::class)->parkNameservers($this->makeSettings(), 'yieldario-ai.org');
+
+        Http::assertSent(function ($request) {
+            $query = [];
+            parse_str((string) parse_url($request->url(), PHP_URL_QUERY), $query);
+
+            return ($query['command'] ?? null) === 'set_ns'
+                && ($query['domain'] ?? null) === 'yieldario-ai.org'
+                && ($query['ns0'] ?? null) === 'ns1.dynadot.com'
+                && ($query['ns1'] ?? null) === 'ns2.dynadot.com';
+        });
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      */

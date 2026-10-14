@@ -24,7 +24,7 @@ export default function StaleDeadBanner({ hint }) {
 
     const onArchiveAll = () => {
         const ok = window.confirm(
-            `Заархівувати всі ${count} оферів без лідів/депів (GSC >30 днів)?\nЗнімемо з Search Console, origin і Cloudflare. Домен лишиться в Dynadot.`,
+            `Заархівувати всі ${count} оферів без лідів/депів (GSC >30 днів)?\nЗнімемо з Search Console, origin і Cloudflare. Домен лишиться в Dynadot, NS скинемо на parking.`,
         );
         if (!ok) {
             return;

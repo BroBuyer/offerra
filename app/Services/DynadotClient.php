@@ -23,6 +23,12 @@ class DynadotClient
     /** Warn in UI when spendable credit is below this (same units as payment currency). */
     private const LOW_BALANCE_THRESHOLD = 15.0;
 
+    /** Dynadot parking / default NS — used when an offer is archived. */
+    public const PARKING_NAMESERVERS = [
+        'ns1.dynadot.com',
+        'ns2.dynadot.com',
+    ];
+
     /**
      * @return list<array{domain: string, available: bool, price: ?string, status: string, message: ?string}>
      */
@@ -272,6 +278,14 @@ class DynadotClient
         } finally {
             $lock->release();
         }
+    }
+
+    /**
+     * Point the domain at Dynadot parking so leftover Cloudflare NS stop answering.
+     */
+    public function parkNameservers(UserSetting $settings, string $domain): void
+    {
+        $this->setNameservers($settings, $domain, self::PARKING_NAMESERVERS);
     }
 
     /**
