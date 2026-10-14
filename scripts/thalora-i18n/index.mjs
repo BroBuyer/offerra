@@ -6,6 +6,7 @@ import es from './es.mjs';
 import fi from './fi.mjs';
 import fr from './fr.mjs';
 import hr from './hr.mjs';
+import sr from './sr.mjs';
 import hu from './hu.mjs';
 import it from './it.mjs';
 import ja from './ja.mjs';
@@ -82,6 +83,12 @@ export const LOCALES = {
     crmCountry: 'HR',
     phoneCountry: 'hr',
     currency: 'EUR',
+  },
+  sr: {
+    siteLang: 'sr',
+    crmCountry: 'RS',
+    phoneCountry: 'rs',
+    currency: 'RSD',
   },
   hu: {
     siteLang: 'hu',
@@ -163,4 +170,4 @@ export const LOCALES = {
   },
 };
 
-export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, hu, sk, tr, cs, fi, ro, sv, el, ms, id, ja, lv, sl };
+export const PACKS = { fr, it, es, no, nl, pt, da, pl, de, hr, sr, hu, sk, tr, cs, fi, ro, sv, el, ms, id, ja, lv, sl };

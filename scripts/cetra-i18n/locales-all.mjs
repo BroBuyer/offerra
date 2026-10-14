@@ -223,4 +223,15 @@ export const LOCALES = {
     moneyPrefix: '',
     moneySuffix: ' €',
   },
+  sr: {
+    siteLang: 'sr',
+    crmCountry: 'RS',
+    phoneCountry: 'rs',
+    currency: 'RSD',
+    ogLocale: 'sr_RS',
+    phonePlaceholder: '60 123 4567',
+    moneyLocale: 'sr-RS',
+    moneyPrefix: '',
+    moneySuffix: ' RSD',
+  },
 };

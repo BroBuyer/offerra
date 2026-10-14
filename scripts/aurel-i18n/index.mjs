@@ -9,6 +9,7 @@ import pl from './pl.mjs';
 import ro from './ro.mjs';
 import sk from './sk.mjs';
 import sl from './sl.mjs';
+import sr from './sr.mjs';
 import sv from './sv.mjs';
 import tr from './tr.mjs';
 
@@ -130,6 +131,15 @@ export const LOCALES = {
     bcp47: 'sl-SI',
     areaServed: 'Slovenia',
   },
+  sr: {
+    siteLang: 'sr',
+    crmCountry: 'RS',
+    phoneCountry: 'rs',
+    currency: 'RSD',
+    ogLocale: 'sr_RS',
+    bcp47: 'sr-RS',
+    areaServed: 'Serbia',
+  },
 };
 
-export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja, lv, sl };
+export const PACKS = { cs, de, el, fi, hu, pl, ro, sk, sv, tr, ja, lv, sl, sr };

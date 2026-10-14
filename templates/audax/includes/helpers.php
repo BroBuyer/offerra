@@ -19,7 +19,7 @@ function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
-        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
+        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'sr' => 'sr-RS', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
         'ms' => 'ms-MY', 'id' => 'id-ID', 'ka' => 'ka-GE',
@@ -243,7 +243,7 @@ function geo_country_name(): string
         'nl' => 'the Netherlands', 'cz' => 'the Czech Republic',
         'de' => 'Germany', 'fr' => 'France', 'es' => 'Spain', 'it' => 'Italy',
         'pl' => 'Poland', 'pt' => 'Portugal', 'sk' => 'Slovakia', 'hu' => 'Hungary',
-        'ro' => 'Romania', 'hr' => 'Croatia', 'no' => 'Norway', 'se' => 'Sweden',
+        'ro' => 'Romania', 'hr' => 'Croatia', 'rs' => 'Serbia', 'no' => 'Norway', 'se' => 'Sweden',
         'dk' => 'Denmark', 'fi' => 'Finland', 'gr' => 'Greece', 'tr' => 'Turkey',
         'at' => 'Austria', 'ch' => 'Switzerland', 'be' => 'Belgium', 'ie' => 'Ireland',
         'au' => 'Australia', 'ca' => 'Canada', 'nz' => 'New Zealand', 'bg' => 'Bulgaria',
@@ -282,6 +282,7 @@ function geo_in(): string
         'sk' => geo_sk_place($code, $name, 'in'),
         'hu' => geo_hu_place($code, $name, 'in'),
         'hr' => geo_hr_place($code, $name, 'in'),
+        'sr' => geo_sr_place($code, $name, 'in'),
         'ro' => geo_ro_place($code, $name, 'in'),
         'sl' => geo_sl_place($code, $name, 'in'),
         'lv' => geo_lv_place($code, $name, 'in'),
@@ -317,6 +318,7 @@ function geo_from(): string
         'sk' => geo_sk_place($code, $name, 'from'),
         'hu' => geo_hu_place($code, $name, 'from'),
         'hr' => geo_hr_place($code, $name, 'from'),
+        'sr' => geo_sr_place($code, $name, 'from'),
         'ro' => geo_ro_place($code, $name, 'from'),
         'sl' => geo_sl_place($code, $name, 'from'),
         'lv' => geo_lv_place($code, $name, 'from'),
@@ -874,6 +876,49 @@ function geo_hr_place(string $code, string $name, string $kind): string
         'hr' => 'iz Hrvatske',
         'de' => 'iz Njemačke',
         'at' => 'iz Austrije',
+    ];
+
+    if ($kind === 'from') {
+        return $from[$code] ?? ('iz ' . $name);
+    }
+
+    return $in[$code] ?? ('u ' . $name);
+}
+
+/**
+ * "in Serbia" / "u Srbiji" / "iz Srbije" — grammar lives here, not in copy.
+ */
+function geo_sr_place(string $code, string $name, string $kind): string
+{
+    $in = [
+        'gb' => 'u Ujedinjenom Kraljevstvu',
+        'uk' => 'u Ujedinjenom Kraljevstvu',
+        'us' => 'u Sjedinjenim Američkim Državama',
+        'nl' => 'u Holandiji',
+        'ae' => 'u Ujedinjenim Arapskim Emiratima',
+        'ph' => 'na Filipinima',
+        'cz' => 'u Češkoj',
+        'hr' => 'u Hrvatskoj',
+        'rs' => 'u Srbiji',
+        'de' => 'u Nemačkoj',
+        'at' => 'u Austriji',
+        'ch' => 'u Švajcarskoj',
+        'jp' => 'u Japanu',
+    ];
+    $from = [
+        'gb' => 'iz Ujedinjenog Kraljevstva',
+        'uk' => 'iz Ujedinjenog Kraljevstva',
+        'us' => 'iz Sjedinjenih Američkih Država',
+        'nl' => 'iz Holandije',
+        'ae' => 'iz Ujedinjenih Arapskih Emirata',
+        'ph' => 'sa Filipina',
+        'cz' => 'iz Češke',
+        'hr' => 'iz Hrvatske',
+        'rs' => 'iz Srbije',
+        'de' => 'iz Nemačke',
+        'at' => 'iz Austrije',
+        'ch' => 'iz Švajcarske',
+        'jp' => 'iz Japana',
     ];
 
     if ($kind === 'from') {
@@ -1462,6 +1507,7 @@ function platform_image_alt(): string
         'sk' => SITE_NAME . ' — mobilná obchodná platforma: živý graf BTC/USDT, kniha príkazov a rozhranie nákup/predaj',
         'hu' => SITE_NAME . ' — mobil kereskedési platform: élő BTC/USDT-grafikon, megbízáskönyv és vétel/eladás felület',
         'hr' => SITE_NAME . ' — mobilna trgovačka platforma: grafikon BTC/USDT uživo, knjiga naloga i sučelje kupnje/prodaje',
+        'sr' => SITE_NAME . ' — mobilna trgovačka platforma: grafikon BTC/USDT uživo, knjiga naloga i interfejs kupovine/prodaje',
         'ro' => SITE_NAME . ' — platformă de tranzacționare mobilă: grafic BTC/USDT live, carnet de ordine și interfață cumpărare/vânzare',
         'sl' => SITE_NAME . ' — mobilna trgovalna platforma: grafikon BTC/USDT v živo, knjiga naročil in vmesnik za nakup/prodajo',
         'lv' => SITE_NAME . ' — mobilā tirdzniecības platforma: BTC/USDT tiešraides diagramma, orderu grāmata un pirkšanas/pārdošanas saskarne',
@@ -1494,6 +1540,7 @@ function platform_image_caption(): string
         'sk' => SITE_NAME . ' — mobilné obchodovanie s krypto grafmi v reálnom čase',
         'hu' => SITE_NAME . ' — mobil kereskedés valós idejű kriptografikonokkal',
         'hr' => SITE_NAME . ' — mobilno trgovanje s kripto grafikonima u stvarnom vremenu',
+        'sr' => SITE_NAME . ' — mobilno trgovanje sa kripto grafikonima u realnom vremenu',
         'ro' => SITE_NAME . ' — tranzacționare mobilă cu grafice crypto în timp real',
         'sl' => SITE_NAME . ' — mobilno trgovanje s kripto grafikoni v realnem času',
         'lv' => SITE_NAME . ' — mobilā tirdzniecība ar kriptovalūtu diagrammām reāllaikā',
@@ -1631,6 +1678,7 @@ function currency_symbol(): string
         'GBP' => '£',
         'MYR' => 'RM',
         'JPY' => '¥',
+        'RSD' => 'RSD',
         default => CURRENCY,
     };
 }

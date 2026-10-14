@@ -15,6 +15,7 @@ export const META = {
   fi: { siteLang: 'fi', crmCountry: 'FI', phoneCountry: 'fi', currency: 'EUR', ogLocale: 'fi_FI', phonePlaceholder: '040 1234567' },
   el: { siteLang: 'el', crmCountry: 'GR', phoneCountry: 'gr', currency: 'EUR', ogLocale: 'el_GR', phonePlaceholder: '691 234 5678' },
   hr: { siteLang: 'hr', crmCountry: 'HR', phoneCountry: 'hr', currency: 'EUR', ogLocale: 'hr_HR', phonePlaceholder: '091 234 5678' },
+  sr: { siteLang: 'sr', crmCountry: 'RS', phoneCountry: 'rs', currency: 'RSD', ogLocale: 'sr_RS', phonePlaceholder: '60 123 4567' },
   tr: { siteLang: 'tr', crmCountry: 'TR', phoneCountry: 'tr', currency: 'TRY', ogLocale: 'tr_TR', phonePlaceholder: '532 123 4567' },
   fr: { siteLang: 'fr', crmCountry: 'FR', phoneCountry: 'fr', currency: 'EUR', ogLocale: 'fr_FR', phonePlaceholder: '06 12 34 56 78' },
   it: { siteLang: 'it', crmCountry: 'IT', phoneCountry: 'it', currency: 'EUR', ogLocale: 'it_IT', phonePlaceholder: '312 345 6789' },

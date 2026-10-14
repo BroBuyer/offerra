@@ -41,6 +41,7 @@ function lang_flag_code(string $lang): string
         'pt' => 'pt',
         'nl' => 'nl',
         'hr' => 'hr',
+        'sr' => 'rs',
         'tr' => 'tr',
         'no' => 'no',
         'da' => 'dk',
@@ -91,6 +92,7 @@ function lang_display_name(string $lang): string
         'es' => 'Español',
         'fr' => 'Français',
         'hr' => 'Hrvatski',
+        'sr' => 'Srpski',
         'it' => 'Italiano',
         'nl' => 'Nederlands',
         'no' => 'Norsk',
@@ -166,7 +168,7 @@ function site_locale(): string
 {
     $map = [
         'en' => 'en-US', 'pl' => 'pl-PL', 'de' => 'de-DE', 'fr' => 'fr-FR',
-        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
+        'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'sr' => 'sr-RS', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU', 'ro' => 'ro-RO',
         'sv' => 'sv-SE', 'fi' => 'fi-FI', 'el' => 'el-GR', 'tr' => 'tr-TR',
         'ms' => 'ms-MY',
@@ -363,6 +365,7 @@ function ip_country_allowed_langs(string $ipCountry): array
         'MD' => ['ro'],
         'PL' => ['pl'],
         'HR' => ['hr'],
+        'RS' => ['sr'],
         'TR' => ['tr'],
         'GR' => ['el'],
         'CY' => ['el', 'tr', 'en'],

@@ -1,7 +1,7 @@
 /** SERP title/description + chrome for default-pro lang packs. */
 export const LANGS = [
   'cs', 'da', 'de', 'el', 'es', 'fi', 'fr', 'hr', 'hu',
-  'id', 'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv', 'tr',
+  'id', 'it', 'ja', 'lv', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl', 'sr', 'sv', 'tr',
 ];
 
 /**
@@ -89,6 +89,15 @@ export const SEO = {
     create: 'Otvori <?= e(SITE_NAME) ?> račun',
     h1Lead: 'AI platforma za trgovanje ',
     h1Accent: 'automatizirana analiza i pametnije trgovanje',
+  },
+  sr: {
+    title: 'Inteligentna platforma za trgovanje',
+    descBefore: ' je globalna platforma za trgovanje razvijena za ',
+    descAfter: ' koji žele dosledne rezultate, brzu izvršbu i potpunu kontrolu okruženja.',
+    open: 'Otvori <?= e(SITE_NAME) ?>',
+    create: 'Otvori <?= e(SITE_NAME) ?> nalog',
+    h1Lead: 'AI platforma za trgovanje ',
+    h1Accent: 'automatizovana analiza i pametnije trgovanje',
   },
   hu: {
     title: 'Intelligens kereskedési platform',
