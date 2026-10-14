@@ -63,10 +63,17 @@ export default function SendLead() {
                 ...fields,
             });
             setResult(data);
+            if (data?.ok === false && data?.message && !data?.crm) {
+                setError(data.message);
+            }
         } catch (err) {
             const data = err.response?.data;
-            if (data?.crm || data?.http) {
-                setResult(data);
+            if (data && typeof data === 'object' && (data.crm || data.http || data.message)) {
+                if (data.crm || data.http) {
+                    setResult(data);
+                    return;
+                }
+                setError(data.message);
                 return;
             }
             setError(data?.message ?? err.message ?? 'Не вдалося відправити лід');
@@ -146,6 +153,7 @@ export default function SendLead() {
                                     HTTP {result.http}
                                     {result.offer?.domain ? ` · ${result.offer.domain}` : ''}
                                     {result.crm?.lead_uuid ? ` · ${result.crm.lead_uuid}` : ''}
+                                    {result.crm?.message ? ` · ${result.crm.message}` : ''}
                                 </p>
                                 {result.crm?.auto_login_url && (
                                     <p className="field-hint">

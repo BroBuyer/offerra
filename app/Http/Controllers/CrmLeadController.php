@@ -27,6 +27,6 @@ class CrmLeadController extends Controller
             ], 422);
         }
 
-        return response()->json($result, $result['ok'] ? 200 : 502);
+        return response()->json($result);
     }
 }

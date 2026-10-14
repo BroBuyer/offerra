@@ -102,4 +102,43 @@ TXT,
             'domain' => 'vinci-ai.org',
         ])->assertStatus(422)->assertJsonPath('ok', false);
     }
+
+    public function test_crm_rejection_returns_json_ok_false_not_502(): void
+    {
+        Http::fake([
+            'https://yourleads.org/api/affiliates/v2/leads' => Http::response([
+                'name' => 'MoleculerError',
+                'message' => 'IP is not authorized to proceed',
+                'code' => 401,
+                'type' => 'ERROR_AUTHORIZATION',
+            ], 401),
+        ]);
+
+        $user = User::factory()->create();
+        $user->settings()->create([
+            'affiliate_tag' => 'EGO',
+            'crm_api_key' => 'test-crm-key',
+        ]);
+        Offer::query()->create([
+            'user_id' => $user->id,
+            'folder' => 'vinci-ai-crm.org',
+            'brand' => 'Vinci AI',
+            'domain' => 'vinci-ai.org',
+            'geo' => 'IT',
+            'lang' => 'it',
+            'template' => 'default',
+            'status' => 'deployed',
+        ]);
+
+        $this->actingAs($user)->postJson('/leads', [
+            'first_name' => 'Lucia',
+            'last_name' => 'Braschi',
+            'email' => 'lucia.braschi@icloud.com',
+            'phone' => '+393922333949',
+            'domain' => 'vinci-ai.org',
+        ])->assertOk()
+            ->assertJsonPath('ok', false)
+            ->assertJsonPath('http', 401)
+            ->assertJsonPath('crm.message', 'IP is not authorized to proceed');
+    }
 }
