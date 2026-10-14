@@ -7,6 +7,7 @@ const navItems = [
     { href: '/dashboard', icon: '📊', label: 'Дашборд' },
     { href: '/offers', icon: '📋', label: 'Оффери' },
     { href: '/offers/stats', icon: '📈', label: 'Статистика' },
+    { href: '/leads', icon: '📨', label: 'Ліди' },
     { href: '/mirrors', icon: '🪞', label: 'Дзеркала' },
     { href: '/offers/archive', icon: '📦', label: 'Архів доменів' },
     { href: '/offers/create?fresh=1', icon: '➕', label: 'Створити оффер' },
@@ -41,6 +42,9 @@ export default function PanelLayout({ title, children, wide = false, fullWidth =
         }
         if (href === '/mirrors') {
             return path === '/mirrors' || path.startsWith('/mirrors/');
+        }
+        if (href === '/leads') {
+            return path === '/leads' || path.startsWith('/leads');
         }
 
         return path === href || path.startsWith(`${href}/`);

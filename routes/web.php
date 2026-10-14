@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CrmLeadController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DomainBalanceController;
 use App\Http\Controllers\DomainPurchaseController;
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/{offer}/check-availability', [OfferController::class, 'checkAvailability'])->name('offers.check-availability');
     Route::post('/offers/{offer}/inspect-index', [OfferController::class, 'inspectIndex'])->name('offers.inspect-index');
     Route::post('/offers/{offer}/gsc', [OfferController::class, 'submitGsc'])->name('offers.gsc');
+    Route::get('/leads', [CrmLeadController::class, 'index'])->name('leads.index');
+    Route::post('/leads', [CrmLeadController::class, 'store'])->name('leads.send');
+
     Route::get('/mirrors', [MirrorDomainController::class, 'index'])->name('mirrors.index');
     Route::patch('/mirrors/{mirror}', [MirrorDomainController::class, 'update'])->name('mirrors.update');
     Route::delete('/mirrors/{mirror}', [MirrorDomainController::class, 'destroy'])->name('mirrors.destroy');

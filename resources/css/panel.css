@@ -3785,3 +3785,67 @@ td.col-num {
   color: var(--accent);
   font-weight: 600;
 }
+
+.leads-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.leads-side {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.leads-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.7rem;
+}
+
+.leads-field--wide {
+  grid-column: 1 / -1;
+}
+
+.leads-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.leads-page .field textarea {
+  min-height: 22rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.leads-json {
+  margin: 0.6rem 0 0;
+  padding: 0.7rem 0.8rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  overflow: auto;
+  max-height: 18rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.leads-result--ok h3 {
+  color: var(--ok, #3dba7a);
+}
+
+.leads-result--error h3 {
+  color: var(--danger, #e05b5b);
+}
+
+@media (max-width: 860px) {
+  .leads-grid,
+  .leads-fields {
+    grid-template-columns: 1fr;
+  }
+}
