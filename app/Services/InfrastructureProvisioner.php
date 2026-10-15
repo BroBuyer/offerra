@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Jobs\ProvisionInfrastructureJob;
 use App\Models\Offer;
 use App\Models\UserSetting;
+use App\Support\InfrastructureDnsReadiness;
 use App\Support\InfrastructureOptions;
+use App\Support\PublicDnsLookup;
 use Illuminate\Support\Facades\Http;
 
 class InfrastructureProvisioner
@@ -15,6 +17,7 @@ class InfrastructureProvisioner
         private readonly DynadotClient $dynadot,
         private readonly OriginHostService $origin,
         private readonly OriginPool $pool,
+        private readonly PublicDnsLookup $publicDns,
     ) {}
 
     /**
@@ -247,6 +250,10 @@ class InfrastructureProvisioner
             return 'records';
         }
 
+        if ($this->httpsLooksLive($domain)) {
+            return 'https';
+        }
+
         return null;
     }
 
@@ -397,21 +404,8 @@ class InfrastructureProvisioner
         ))));
 
         if ($expectedNameservers !== []) {
-            $liveNs = $this->resolveNameservers($domain);
-            if ($liveNs === []) {
-                return false;
-            }
-
-            $liveSet = array_fill_keys($liveNs, true);
-            $matched = 0;
-            foreach ($expectedNameservers as $ns) {
-                if (isset($liveSet[$ns])) {
-                    $matched++;
-                }
-            }
-
-            // Need the Cloudflare NS set to be visible publicly (usually 2).
-            if ($matched < min(2, count($expectedNameservers))) {
+            $liveNs = $this->publicDns->nameservers($domain);
+            if (! InfrastructureDnsReadiness::nameserversAcceptable($liveNs, $expectedNameservers)) {
                 return false;
             }
         }
@@ -419,36 +413,14 @@ class InfrastructureProvisioner
         return $this->aRecordPointsToTarget($domain, $serverIp);
     }
 
-    /**
-     * @return list<string>
-     */
-    private function resolveNameservers(string $domain): array
-    {
-        $records = @dns_get_record($domain, DNS_NS);
-        if (! is_array($records) || $records === []) {
-            return [];
-        }
-
-        $out = [];
-        foreach ($records as $record) {
-            $ns = strtolower(rtrim(trim((string) ($record['target'] ?? '')), '.'));
-            if ($ns !== '') {
-                $out[] = $ns;
-            }
-        }
-
-        return array_values(array_unique($out));
-    }
-
     private function aRecordPointsToTarget(string $domain, string $serverIp): bool
     {
-        $records = @dns_get_record($domain, DNS_A);
-        if (! is_array($records) || $records === []) {
+        $ips = $this->publicDns->aRecords($domain);
+        if ($ips === []) {
             return false;
         }
 
-        foreach ($records as $record) {
-            $ip = (string) ($record['ip'] ?? '');
+        foreach ($ips as $ip) {
             if ($ip === '' || $this->isLikelyParkingIp($ip)) {
                 continue;
             }
