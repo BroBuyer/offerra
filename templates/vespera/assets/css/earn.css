@@ -363,8 +363,42 @@ html[data-theme-mode="dark"] .cta-timer-slots strong { color: #fca5a5; }
   max-width: 380px; margin-left: auto; margin-right: auto;
 }
 
+@media (max-width: 900px) {
+  .earn-section { padding: 3.25rem 0 3.75rem; }
+  .earn-header { margin-bottom: 2rem; }
+  .earn-kpi-strip { padding: 1.15rem .65rem; margin-bottom: 2rem; }
+  .earn-kpi { min-width: calc(50% - .5rem); padding: .75rem .5rem; }
+  .earn-main-grid, .earn-winrate-section { gap: 1.75rem; margin-bottom: 2rem; }
+  .earn-winrate-section { padding: 1.75rem 0; }
+  .earn-bottom-cta-inner { padding: 1.5rem 1.1rem; }
+  .earn-chip--tl { top: .65rem; left: .5rem; }
+  .earn-chip--br { bottom: .65rem; right: .5rem; }
+}
+
+@media (max-width: 640px) {
+  .sys-status {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 1rem !important;
+    justify-content: flex-start;
+    gap: .45rem .7rem;
+    padding: .7rem .85rem;
+  }
+  .sys-divider { display: none; }
+  .sys-status #live-clock {
+    flex: 1 0 100%;
+    font-size: .72rem;
+    color: var(--muted);
+  }
+  .u21-market-grid { grid-template-columns: 1fr; }
+  .cta-timer-blocks { flex-wrap: wrap; justify-content: center; gap: .45rem; }
+  .cta-tb-sep { display: none; }
+  .cta-tb { min-width: 4.4rem; padding: .65rem .55rem; }
+  .cta-tb-val { font-size: 1.45rem; }
+  .cta-timer-btn { width: 100%; padding-inline: 1rem; }
+}
+
 @media (max-width: 480px) {
-  .cta-tb { min-width: 56px; padding: .65rem .75rem; }
-  .cta-tb-val { font-size: 1.6rem; }
-  .cta-timer-blocks { gap: .4rem; }
+  .cta-tb { min-width: 4.15rem; padding: .55rem .4rem; }
+  .cta-tb-val { font-size: 1.35rem; }
 }

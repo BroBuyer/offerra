@@ -65,6 +65,8 @@ return [
         'abuse' => 'Abuse',
         'cta' => 'Start free',
         'language' => 'Language',
+        'menu' => 'Menu',
+        'close' => 'Close',
         'theme_light' => 'Switch to light colour mode',
         'theme_dark' => 'Switch to dark colour mode',
         'home_aria' => 'Home {brand}',
@@ -527,6 +529,7 @@ return [
         ],
     ],
     'legal' => [
+        'eyebrow' => 'Legal',
         'privacy' => [
             'title' => 'Privacy notice',
             'updated' => 'Last updated: 1 May 2025',

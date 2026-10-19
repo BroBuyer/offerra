@@ -65,6 +65,8 @@ return [
         'abuse' => 'Missbrauch',
         'cta' => 'Kostenlos starten',
         'language' => 'Sprache',
+        'menu' => 'Menü',
+        'close' => 'Schließen',
         'theme_light' => 'Zum hellen Farbmodus wechseln',
         'theme_dark' => 'Zum dunklen Farbmodus wechseln',
         'home_aria' => 'Startseite {brand}',
@@ -527,6 +529,7 @@ return [
         ],
     ],
     'legal' => [
+        'eyebrow' => 'Rechtliches',
         'privacy' => [
             'title' => 'Datenschutzhinweis',
             'updated' => 'Letzte Aktualisierung: 1. Mai 2025',

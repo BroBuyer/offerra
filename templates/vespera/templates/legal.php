@@ -11,7 +11,7 @@ function legal_inline(string $text): string
 ?>
 <section class="page-hero">
   <div class="container page-hero-inner">
-    <div class="section-eyebrow"><?= e($lang === 'de' ? 'Rechtliches' : 'Legal') ?></div>
+    <div class="section-eyebrow"><?= e($langData['legal']['eyebrow'] ?? 'Legal') ?></div>
     <h1 class="page-hero-h1"><?= e($doc['title']) ?></h1>
     <p class="page-hero-desc"><?= e($doc['updated']) ?></p>
   </div>

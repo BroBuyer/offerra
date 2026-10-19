@@ -224,6 +224,31 @@
     draw();
   }
 
+  function navDrawer() {
+    var btn = document.getElementById('nav-burger');
+    var drawer = document.getElementById('nav-drawer');
+    if (!btn || !drawer) return;
+
+    function setOpen(open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      drawer.hidden = !open;
+      document.body.classList.toggle('nav-open', open);
+    }
+
+    btn.addEventListener('click', function () {
+      setOpen(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    drawer.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') setOpen(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.matchMedia('(min-width: 720px)').matches) setOpen(false);
+    });
+  }
+
   function langSwitch() {
     var sel = document.getElementById('lang-switch');
     if (!sel) return;
@@ -250,5 +275,6 @@
     quiz();
     neuralCanvas();
     langSwitch();
+    navDrawer();
   });
 })();

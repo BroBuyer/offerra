@@ -1,6 +1,6 @@
 # Vespera
 
-PHP multilingual offer (EN / DE) with geo-IP language redirect, light/dark theme, and intl-tel-input.
+PHP multilingual offer (EN / DE / IT / ES / FR) with dictionary i18n, light/dark theme, and intl-tel-input.
 
 ## Local run
 
@@ -8,7 +8,7 @@ PHP multilingual offer (EN / DE) with geo-IP language redirect, light/dark theme
 php -S localhost:8080 router.php
 ```
 
-Open http://localhost:8080/ — English stays on `/`; DE/AT/CH geo (or cookie) redirects to `/de/`.
+Open http://localhost:8080/ — `/` is always English. Other languages are a manual switch (`/de/`, `/it/`, `/es/`, `/fr/`).
 
 ## Production (Apache)
 
@@ -18,6 +18,6 @@ Document root = project folder. `.htaccess` rewrites all routes to `index.php`.
 
 - `index.php` — router
 - `includes/` — config, geo, helpers, header/footer
-- `lang/en.php`, `lang/de.php` — copy
+- `lang/{code}.php` — copy (en, de, it, es, fr)
 - `templates/` — pages
 - `assets/` — CSS / JS

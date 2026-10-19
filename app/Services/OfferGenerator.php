@@ -442,14 +442,13 @@ class OfferGenerator
         }
 
         if ($template === 'vespera') {
-            return [
+            $paths = [
                 'index.php',
                 'templates/home.php',
                 'templates/about.php',
                 'templates/legal.php',
                 'lang/en.php',
                 'langs/en/index.php',
-                'langs/de/index.php',
                 'sitemap.php',
                 'robots.php',
                 'includes/config.php',
@@ -469,6 +468,19 @@ class OfferGenerator
                 'integration/FormToken.php',
                 'integration/LeadProcessor.php',
             ];
+
+            $langDir = base_path('templates'.DIRECTORY_SEPARATOR.'vespera'.DIRECTORY_SEPARATOR.'lang');
+            if (is_dir($langDir)) {
+                foreach (scandir($langDir) ?: [] as $file) {
+                    if (! preg_match('/^([a-z]{2})\.php$/', $file, $matches)) {
+                        continue;
+                    }
+                    $paths[] = 'lang/'.$matches[1].'.php';
+                    $paths[] = 'langs/'.$matches[1].'/index.php';
+                }
+            }
+
+            return array_values(array_unique($paths));
         }
 
         return [
