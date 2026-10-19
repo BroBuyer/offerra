@@ -116,6 +116,23 @@ class TemplateCatalog
         };
     }
 
+    /** Copy the template root (dictionary i18n or overflow hub), not one langs/{code}/ folder. */
+    public static function copiesWholeTree(string $templateId): bool
+    {
+        return in_array($templateId, ['multilang', 'vespera'], true);
+    }
+
+    /** Old overflow hub only — Vespera is a separate ML offer. */
+    public static function isOverflowHub(string $templateId): bool
+    {
+        return $templateId === 'multilang';
+    }
+
+    public static function usesMlGeo(string $templateId): bool
+    {
+        return in_array($templateId, ['multilang', 'vespera'], true);
+    }
+
     /**
      * Filesystem root used for /preview/{template}/… rendering.
      * Prefer template root when it has index.php; otherwise the requested
@@ -190,6 +207,18 @@ class TemplateCatalog
 
                     if (preg_match('/^[a-z]{2}$/', $code)) {
                         $sources[$code] = $directory;
+                    }
+                }
+            }
+
+            $langFilesDir = $templatePath.DIRECTORY_SEPARATOR.'lang';
+
+            if (File::isDirectory($langFilesDir)) {
+                foreach (File::files($langFilesDir) as $file) {
+                    $code = strtolower($file->getFilenameWithoutExtension());
+
+                    if ($file->getExtension() === 'php' && preg_match('/^[a-z]{2}$/', $code)) {
+                        $sources[$code] = $templatePath;
                     }
                 }
             }

@@ -7,8 +7,8 @@ import { useEffect, useMemo } from 'react';
 /** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
 const MULTILANG_GEO = 'ML';
 
-function isMultilangTemplate(templateId) {
-    return templateId === 'multilang';
+function isMlOfferTemplate(templateId) {
+    return templateId === 'multilang' || templateId === 'vespera';
 }
 
 function resolveMarket(geo, geoPresets, availableLanguages) {
@@ -99,7 +99,7 @@ export default function OfferEditModal({
         [templates, data.template],
     );
     const availableLanguages = selectedTemplate?.languages ?? [];
-    const isMarketMultilang = isMultilangTemplate(data.template);
+    const isMarketMultilang = isMlOfferTemplate(data.template);
     const phoneOptions = useMemo(() => uniquePhonePresets(geoPresets), [geoPresets]);
     const selectedPhones = normalizePhoneCountries(data.phone_countries, data.phone);
 
@@ -127,8 +127,8 @@ export default function OfferEditModal({
     const onTemplateChange = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const wasMultilang = isMultilangTemplate(data.template);
-        const isMultilang = isMultilangTemplate(templateId);
+        const wasMultilang = isMlOfferTemplate(data.template);
+        const isMultilang = isMlOfferTemplate(templateId);
         const nextLang = isMultilang
             ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
             : (langs.some((item) => item.code === data.lang) ? data.lang : (langs[0]?.code || data.lang));

@@ -1,0 +1,43 @@
+:root {
+  --canvas: #f7f6f1;
+  --ink: #12141a;
+  --muted: #3f4752;
+  --card: #ffffff;
+  --border: rgba(18, 20, 26, 0.12);
+  --header-bg: rgba(247, 246, 241, 0.92);
+  --shadow: 0 8px 28px rgba(18, 20, 26, 0.06);
+  --accent: #0f766e;
+  --cta: #0f766e;
+  --accent-soft: rgba(15, 118, 110, 0.12);
+  --cta-ink: #ffffff;
+  --input-bg: #ffffff;
+  --success: #15803d;
+  --danger: #b91c1c;
+  --color-accent: var(--cta);
+  --color-cyan: var(--accent);
+  --color-bg: var(--canvas);
+  --color-success: var(--success);
+}
+
+html {
+  color-scheme: light;
+  background: var(--canvas);
+}
+
+html[data-theme-mode="dark"] {
+  color-scheme: dark;
+  --canvas: #0e1214;
+  --ink: #f4f1ea;
+  --muted: #c5ccd4;
+  --card: #1a2027;
+  --border: rgba(244, 241, 234, 0.14);
+  --header-bg: rgba(14, 18, 20, 0.94);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --accent: #2dd4bf;
+  --cta: #0f766e;
+  --cta-ink: #ffffff;
+  --accent-soft: rgba(45, 212, 191, 0.16);
+  --input-bg: #12171c;
+  --color-bg: var(--canvas);
+  background: var(--canvas);
+}

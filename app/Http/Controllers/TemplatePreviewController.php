@@ -66,6 +66,11 @@ class TemplatePreviewController extends Controller
         $realFile = realpath($fullPath);
 
         if (! $realBase || ! $realFile || ! str_starts_with($realFile, $realBase)) {
+            $frontController = $basePath.DIRECTORY_SEPARATOR.'index.php';
+            if ($template === 'vespera' && is_file($frontController)) {
+                return $this->servePhp($template, $frontController, $path);
+            }
+
             abort(404);
         }
 

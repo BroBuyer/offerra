@@ -39,7 +39,7 @@ class OfferGenerator
         }
 
         $template = $input['template'];
-        $templateLangForSource = $template === 'multilang' ? 'en' : (string) $input['lang'];
+        $templateLangForSource = TemplateCatalog::copiesWholeTree($template) ? 'en' : (string) $input['lang'];
         $templatePath = $this->templateCatalog->resolveSourcePath($template, $templateLangForSource);
 
         if (! File::isDirectory($templatePath)) {
@@ -76,7 +76,7 @@ class OfferGenerator
             $this->syncSharedIntegrationFiles($targetPath, $template);
             $this->syncSharedStaticFiles($targetPath, $template, strtolower($input['lang']));
 
-            if ($template === 'multilang') {
+            if (TemplateCatalog::isOverflowHub($template)) {
                 $this->pruneMultilangDuplicates($targetPath);
             }
 
@@ -126,7 +126,7 @@ class OfferGenerator
                     && $hub !== ''
                     && $overflowCountry !== ''
                     && $overflowCountry !== 'ML'
-                    && $template !== 'multilang'
+                    && ! TemplateCatalog::isOverflowHub($template)
                 ) {
                     $infraMeta['geo_overflow_hub'] = $hub;
                     $infraMeta['geo_overflow_country'] = $overflowCountry;
@@ -382,7 +382,7 @@ class OfferGenerator
             // For multilang we rely on language switcher assets under `static/img/flags/*`.
             // If the folder was generated previously from `langs/<code>` (without root `static/`),
             // those files may be missing while the generic required files are still present.
-            if ($offer->template === 'multilang' && ! File::isFile($targetPath.DIRECTORY_SEPARATOR.'static'.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.'flags'.DIRECTORY_SEPARATOR.'gb.png')) {
+            if (TemplateCatalog::isOverflowHub($offer->template) && ! File::isFile($targetPath.DIRECTORY_SEPARATOR.'static'.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.'flags'.DIRECTORY_SEPARATOR.'gb.png')) {
                 $needsRebuild = true;
             }
         } else {
@@ -390,7 +390,7 @@ class OfferGenerator
         }
 
         if (! $needsRebuild) {
-            if ($offer->template === 'multilang') {
+            if (TemplateCatalog::isOverflowHub($offer->template)) {
                 $this->pruneMultilangDuplicates($targetPath);
             }
 
@@ -436,6 +436,31 @@ class OfferGenerator
             ];
         }
 
+        if ($template === 'vespera') {
+            return [
+                'index.php',
+                'templates/home.php',
+                'templates/about.php',
+                'templates/legal.php',
+                'lang/en.php',
+                'includes/config.php',
+                'includes/helpers.php',
+                'includes/geo.php',
+                'includes/header.php',
+                'includes/footer.php',
+                'includes/lead-form.php',
+                'includes/routes.php',
+                'includes/keitaro.php',
+                'assets/css/global.css',
+                'integration/validation.js',
+                'integration/visitor-geo.php',
+                'integration/send.php',
+                'integration/form-token.php',
+                'integration/FormToken.php',
+                'integration/LeadProcessor.php',
+            ];
+        }
+
         return [
             ...$paths,
             'static/css/main.css',
@@ -463,7 +488,7 @@ class OfferGenerator
             );
         }
 
-        $templateLangForSource = $offer->template === 'multilang' ? 'en' : $offer->lang;
+        $templateLangForSource = TemplateCatalog::copiesWholeTree($offer->template) ? 'en' : $offer->lang;
         $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $templateLangForSource);
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
 
@@ -478,7 +503,7 @@ class OfferGenerator
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->syncSharedStaticFiles($targetPath, $offer->template, $offer->lang);
 
-        if ($offer->template === 'multilang') {
+        if (TemplateCatalog::isOverflowHub($offer->template)) {
             $this->pruneMultilangDuplicates($targetPath);
         }
 
@@ -494,6 +519,7 @@ class OfferGenerator
             'lang' => $offer->lang,
             'phone' => $phones['phone'],
             'phone_countries' => $phones['phone_countries'],
+            'template' => $offer->template,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $preservedFormTokenSecret,
@@ -564,6 +590,7 @@ class OfferGenerator
             'lang' => $offer->lang,
             'phone' => $phones['phone'],
             'phone_countries' => $phones['phone_countries'],
+            'template' => $offer->template,
             'keitaro_token' => $keitaroToken,
             'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $formTokenSecret,

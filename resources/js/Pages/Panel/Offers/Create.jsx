@@ -43,8 +43,12 @@ function anyInfraEnabled(data) {
 /** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
 const MULTILANG_GEO = 'ML';
 
-function isMultilangTemplate(templateId) {
+function isOverflowHubTemplate(templateId) {
     return templateId === 'multilang';
+}
+
+function isMlOfferTemplate(templateId) {
+    return templateId === 'multilang' || templateId === 'vespera';
 }
 
 function normalizeGeo(value) {
@@ -308,7 +312,7 @@ export default function OffersCreate({
     );
 
     const bulkMultilangFlags = useMemo(
-        () => bulkItems.map((item) => isMultilangTemplate(item.template)),
+        () => bulkItems.map((item) => isOverflowHubTemplate(item.template)),
         [bulkItems],
     );
 
@@ -323,7 +327,7 @@ export default function OffersCreate({
         [bulkMultilangFlags, bulkItems.length],
     );
     const bulkHubDomain = useMemo(() => {
-        const row = bulkItems.find((item) => isMultilangTemplate(item.template));
+        const row = bulkItems.find((item) => isOverflowHubTemplate(item.template));
 
         return row?.domain ?? '';
     }, [bulkItems]);
@@ -336,7 +340,7 @@ export default function OffersCreate({
 
     const isMarketMultilang = isBulkMode
         ? bulkAllMultilang
-        : isMultilangTemplate(data.template);
+        : isMlOfferTemplate(data.template);
 
     const availableLanguages = useMemo(() => {
         if (isMarketMultilang) {
@@ -474,7 +478,7 @@ export default function OffersCreate({
             setData((prev) => ({
                 ...prev,
                 template: initialTemplate,
-                ...(isMultilangTemplate(initialTemplate)
+                ...(isMlOfferTemplate(initialTemplate)
                     ? { geo: MULTILANG_GEO, lang: 'en', phone: 'ip' }
                     : {}),
             }));
@@ -593,8 +597,8 @@ export default function OffersCreate({
     const updateTemplate = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const wasMultilang = isMultilangTemplate(data.template);
-        const isMultilang = isMultilangTemplate(templateId);
+        const wasMultilang = isMlOfferTemplate(data.template);
+        const isMultilang = isMlOfferTemplate(templateId);
         const lang = isMultilang
             ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
             : (data.lang && langs.some((item) => item.code === data.lang) ? data.lang : '');
@@ -1284,7 +1288,7 @@ export default function OffersCreate({
             if (!item.template) {
                 return false;
             }
-            if (isMultilangTemplate(item.template) || !data.lang || isMarketMultilang) {
+            if (isMlOfferTemplate(item.template) || !data.lang || isMarketMultilang) {
                 return true;
             }
             const template = templates.find((row) => row.id === item.template);
@@ -1328,7 +1332,7 @@ export default function OffersCreate({
         if (data.infra_cloudflare_geo_overflow && isBulkMode && !bulkMixedPack) {
             return 'Overflow: потрібні GEO-офери + один multilang hub у пакеті.';
         }
-        if (data.infra_cloudflare_geo_overflow && !isBulkMode && !isMultilangTemplate(data.template)) {
+        if (data.infra_cloudflare_geo_overflow && !isBulkMode && !isOverflowHubTemplate(data.template)) {
             // single GEO offer without hub domain field yet — block until hub domain provided via pack
             return 'Overflow для одного офера: створіть пакет GEO + multilang hub.';
         }
@@ -2044,25 +2048,25 @@ export default function OffersCreate({
                                         <li key={item.domain} className="offer-bulk-map__row">
                                             <span className="offer-bulk-map__domain">
                                                 {item.domain}
-                                                {isMultilangTemplate(item.template) ? ' · hub' : ''}
+                                                {isOverflowHubTemplate(item.template) ? ' · hub' : ''}
                                             </span>
                                             <select
                                                 className="offer-bulk-map__select"
                                                 value={item.template}
                                                 onChange={(e) => updateBulkItemTemplate(item.domain, e.target.value)}
                                                 aria-label={`Шаблон для ${item.domain}`}
-                                                disabled={!data.lang && !isMarketMultilang && !isMultilangTemplate(item.template)}
+                                                disabled={!data.lang && !isMarketMultilang && !isMlOfferTemplate(item.template)}
                                             >
                                                 <option value="">
                                                     {!data.lang && !isMarketMultilang ? 'Спочатку мова' : '— шаблон —'}
                                                 </option>
                                                 {templates.map((template) => {
-                                                    const isHubTpl = isMultilangTemplate(template.id);
+                                                    const isHubTpl = isOverflowHubTemplate(template.id);
                                                     const langOk = isHubTpl || isMarketMultilang || templateSupportsLang(template, data.lang);
                                                     const used = usedTemplateIds.includes(template.id);
                                                     const hubTaken = isHubTpl
                                                         && bulkHasHub
-                                                        && !isMultilangTemplate(item.template);
+                                                        && !isOverflowHubTemplate(item.template);
 
                                                     return (
                                                         <option

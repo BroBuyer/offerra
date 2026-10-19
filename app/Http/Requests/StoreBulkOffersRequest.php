@@ -107,9 +107,13 @@ class StoreBulkOffersRequest extends FormRequest
                 $template = (string) ($item['template'] ?? '');
                 $domain = (string) ($item['domain'] ?? '');
 
-                if ($template === 'multilang') {
+                if (TemplateCatalog::isOverflowHub($template)) {
                     $hubDomains[] = $domain;
 
+                    continue;
+                }
+
+                if (TemplateCatalog::usesMlGeo($template)) {
                     continue;
                 }
 

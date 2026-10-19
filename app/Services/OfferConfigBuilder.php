@@ -61,6 +61,7 @@ class OfferConfigBuilder
         $crmSub8 = $this->quote($fromSearchTeam ? 'SearchAM' : '');
         $geoClickUrl = $this->quote($this->geoClicks->clickUrl($settings));
         $offerDomainRaw = $this->quote(strtolower(trim((string) $offer['domain'])));
+        $vesperaExtras = $this->vesperaDefines($offer, $siteUrl);
 
         return <<<PHP
 <?php
@@ -118,6 +119,10 @@ define('KEITARO_CAMPAIGN_ID', {$keitaroCampaignId});
 define('KEITARO_API_KEY', {$keitaroApiKey});
 define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
 define('KEITARO_DEBUG', false);
+{$vesperaExtras}
+if (is_file(__DIR__ . '/routes.php')) {
+    require_once __DIR__ . '/routes.php';
+}
 
 // ─── Edge CDN assets / RUM ──────────────────────────────────────────────────
 define('VITALS_ENABLED', {$vitalsEnabled});
@@ -244,6 +249,90 @@ PHP;
     private function quote(string $value): string
     {
         return "'".str_replace(["\\", "'"], ["\\\\", "\\'"], $value)."'";
+    }
+
+    /**
+     * Dictionary-i18n extras for Vespera. Other templates get an empty string.
+     *
+     * @param  array<string, mixed>  $offer
+     */
+    private function vesperaDefines(array $offer, string $siteUrl): string
+    {
+        if (($offer['template'] ?? '') !== 'vespera') {
+            return '';
+        }
+
+        $supported = $this->vesperaSupportedLangs();
+        $map = $this->vesperaGeoLangMap($supported);
+        $email = $this->quote('support@'.strtolower(trim((string) $offer['domain'])));
+
+        return <<<PHP
+
+define('SITE_DOMAIN', {$siteUrl});
+define('SITE_EMAIL', {$email});
+define('DEFAULT_LANG', 'en');
+define('SUPPORTED_LANGS', {$this->phpArray($supported)});
+define('GEO_LANG_MAP', {$this->phpArray($map)});
+define('KEITARO_CLICK_VERIFY', false);
+
+PHP;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function vesperaSupportedLangs(): array
+    {
+        $dir = base_path('templates'.DIRECTORY_SEPARATOR.'vespera'.DIRECTORY_SEPARATOR.'lang');
+        $codes = [];
+
+        if (is_dir($dir)) {
+            foreach (scandir($dir) ?: [] as $file) {
+                if (! preg_match('/^([a-z]{2})\.php$/', $file, $matches)) {
+                    continue;
+                }
+                $codes[] = $matches[1];
+            }
+        }
+
+        if ($codes === []) {
+            $codes = ['en'];
+        }
+
+        sort($codes);
+
+        return $codes;
+    }
+
+    /**
+     * @param  list<string>  $supported
+     * @return array<string, string>
+     */
+    private function vesperaGeoLangMap(array $supported): array
+    {
+        $map = [];
+
+        foreach (config('offerra.geo_presets', []) as $preset) {
+            if (! is_array($preset)) {
+                continue;
+            }
+
+            $code = strtoupper((string) ($preset['code'] ?? ''));
+            $lang = strtolower((string) ($preset['lang'] ?? ''));
+
+            if (! preg_match('/^[A-Z]{2}$/', $code) || ! in_array($lang, $supported, true)) {
+                continue;
+            }
+
+            $map[$code] = $lang;
+        }
+
+        return $map;
+    }
+
+    private function phpArray(array $value): string
+    {
+        return var_export($value, true);
     }
 
     /**

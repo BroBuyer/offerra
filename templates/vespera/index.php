@@ -1,0 +1,108 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/geo.php';
+require_once __DIR__ . '/includes/helpers.php';
+if (is_file(__DIR__ . '/includes/keitaro.php')) {
+    require_once __DIR__ . '/includes/keitaro.php';
+    if (function_exists('keitaro_bootstrap')) {
+        keitaro_bootstrap();
+    }
+}
+
+if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+}
+
+$path = current_request_path();
+
+// robots.txt + sitemap.xml (Altvecto-style: default lang unprefixed, others prefixed)
+if ($path === '/robots.txt') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo "User-agent: *\nAllow: /\n\nSitemap: " . base_url() . "/sitemap.xml\n";
+    exit;
+}
+
+if ($path === '/sitemap.xml') {
+    header('Content-Type: application/xml; charset=UTF-8');
+    $pages = sitemap_page_keys();
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    foreach (SUPPORTED_LANGS as $lang) {
+        foreach ($pages as $pageKey) {
+            $loc = abs_lang_url($lang, $pageKey);
+            $priority = $pageKey === 'home' ? '1.0' : '0.8';
+            echo "  <url>\n";
+            echo '    <loc>' . htmlspecialchars($loc, ENT_XML1) . "</loc>\n";
+            echo "    <changefreq>weekly</changefreq>\n";
+            echo '    <priority>' . $priority . "</priority>\n";
+            echo "  </url>\n";
+        }
+    }
+    echo "</urlset>\n";
+    exit;
+}
+
+$route = parse_route($path);
+
+if (($route['type'] ?? '') === 'redirect') {
+    header('Location: ' . $route['to'], true, (int) ($route['code'] ?? 301));
+    exit;
+}
+
+// Root `/` only: cookie / hybrid GEO. Open /de/ or /de/about/ stays. Bots stay on EN.
+if (($route['type'] ?? '') === 'root') {
+    if (!offer_is_preview()) {
+        $preferred = geo_preferred_lang();
+        if ($preferred !== DEFAULT_LANG) {
+            header('Location: ' . lang_path($preferred, 'home'), true, 302);
+            exit;
+        }
+    }
+    $route = ['type' => 'page', 'lang' => DEFAULT_LANG, 'page' => 'home'];
+}
+
+if (($route['type'] ?? '') === '404') {
+    http_response_code(404);
+    $lang = $route['lang'] ?? DEFAULT_LANG;
+    if (!in_array($lang, SUPPORTED_LANGS, true)) {
+        $lang = DEFAULT_LANG;
+    }
+    $langData = load_lang($lang);
+    $country = geo_detect_country();
+    $phoneCountry = strtolower($country);
+    $page = '404';
+    $meta = [
+        'title' => t($langData, 'meta.404.title', 'Page not found | ' . SITE_NAME),
+        'description' => t($langData, 'meta.404.description', ''),
+    ];
+    render('404', compact('lang', 'langData', 'page', 'meta', 'country', 'phoneCountry'));
+    exit;
+}
+
+$lang = $route['lang'];
+$page = $route['page'];
+geo_set_lang_cookie($lang);
+
+$langData = load_lang($lang);
+$meta = page_meta($langData, $page);
+$country = geo_detect_country();
+$phoneCountry = strtolower($country);
+
+$templateMap = [
+    'home' => 'home',
+    'about' => 'about',
+    'product' => 'product',
+    'offer' => 'offer',
+    'sign-up' => 'sign-up',
+    'contact' => 'contact',
+    'faq' => 'faq',
+    'privacy' => 'legal',
+    'terms' => 'legal',
+    'cookie-policy' => 'legal',
+    'abuse' => 'legal',
+];
+
+$template = $templateMap[$page] ?? 'home';
+render($template, compact('lang', 'langData', 'page', 'meta', 'country', 'phoneCountry'));
