@@ -324,7 +324,7 @@ html[data-theme-mode="dark"] .field input {
 .lead-form .btn-pill {
   margin-top: 1.15rem;
   position: relative;
-  z-index: 3;
+  z-index: 0;
   transform: translateZ(0);
 }
 .lead-form .btn-pill:active {
@@ -414,9 +414,10 @@ html:not([data-theme-mode="dark"]) .pay-secure {
   background: #f0fdfa; color: #0f766e; border-color: rgba(15, 118, 110, 0.35);
 }
 
-.iti { width: 100%; max-width: 100%; }
-.iti__country-list { max-width: min(calc(100vw - 2rem), 22rem); }
-.iti__flag-container { z-index: 2; }
+.iti { width: 100%; max-width: 100%; position: relative; z-index: 20; }
+.iti__country-list { max-width: min(calc(100vw - 2rem), 22rem); z-index: 30; }
+.iti__flag-container,
+.iti__dropdown-content { z-index: 30; }
 html[data-theme-mode="dark"] .iti__selected-flag { background: transparent !important; }
 html[data-theme-mode="dark"] .iti input.iti__tel-input {
   background: #0b1016; border-color: rgba(255, 255, 255, 0.1); color: var(--ink);
