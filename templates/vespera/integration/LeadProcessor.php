@@ -53,43 +53,6 @@ final class LeadProcessor
         return '';
     }
 
-    /** Чи збігається країна IP з GEO оффера або дозволеними phone GEO. */
-    public static function ipCountryMatchesOffer(): bool
-    {
-        $ipCountry = self::detectIpCountry();
-
-        if ($ipCountry === '') {
-            return false;
-        }
-
-        $offerCountry = self::crmCountryCode();
-
-        if ($offerCountry !== '' && $ipCountry === $offerCountry) {
-            return true;
-        }
-
-        if (! function_exists('form_allowed_countries')) {
-            return false;
-        }
-
-        $allowed = form_allowed_countries();
-
-        if ($allowed === []) {
-            return $offerCountry === '';
-        }
-
-        $ipPhoneCode = self::ipToPhoneCountryCode($ipCountry);
-
-        return $ipPhoneCode !== '' && in_array($ipPhoneCode, $allowed, true);
-    }
-
-    private static function ipToPhoneCountryCode(string $ipCountry): string
-    {
-        $code = strtolower(trim($ipCountry));
-
-        return $code === 'uk' ? 'gb' : $code;
-    }
-
     public static function clientIp(): string
     {
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
@@ -150,15 +113,6 @@ final class LeadProcessor
         return array_merge($payload, crm_aff_subs_resolved($lead));
     }
 
-    private static function detectContentSpamReason(array $lead): ?string
-    {
-        if (self::ipCountryMatchesOffer()) {
-            return null;
-        }
-
-        return 'GEO_MISMATCH';
-    }
-
     /** @return array<string, string> */
     private static function applySpamMarkers(array $crmData, string $reason): array
     {
@@ -184,7 +138,7 @@ final class LeadProcessor
             }
         }
 
-        return self::detectContentSpamReason($lead);
+        return null;
     }
 
     private static function formatKeitaroDetail(string $spamReason): string
