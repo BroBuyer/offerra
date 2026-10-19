@@ -74,6 +74,7 @@ return [
         ['code' => 'COP', 'name' => 'Колумбійське песо'],
         ['code' => 'CRC', 'name' => 'Костариканський колон (₡)'],
         ['code' => 'DOP', 'name' => 'Домініканське песо (RD$)'],
+        ['code' => 'HTG', 'name' => 'Гаїтянський гурд (G)'],
         ['code' => 'PEN', 'name' => 'Перуанський соль'],
         ['code' => 'ZAR', 'name' => 'Південноафриканський ранд'],
         ['code' => 'NGN', 'name' => 'Нігерійська найра (₦)'],
@@ -97,6 +98,7 @@ return [
         ['code' => 'HKD', 'name' => 'Гонконгський долар'],
         ['code' => 'LKR', 'name' => 'Шрі-ланкійська рупія (Rs)'],
         ['code' => 'SL', 'name' => 'Леоне Сьєрра-Леоне (SL)'],
+        ['code' => 'DZD', 'name' => 'Алжирський динар (DA)'],
     ],
 
     // Підказки GEO — можна вибрати або вписати свій код (2 літери)
@@ -133,6 +135,7 @@ return [
         ['code' => 'NG', 'name' => 'Нігерія', 'lang' => 'en', 'phone' => 'ng', 'currency' => 'NGN'],
         ['code' => 'KE', 'name' => 'Кенія', 'lang' => 'en', 'phone' => 'ke', 'currency' => 'KES'],
         ['code' => 'SL', 'name' => 'Сьєрра-Леоне', 'lang' => 'en', 'phone' => 'sl', 'currency' => 'SL'],
+        ['code' => 'DZ', 'name' => 'Алжир', 'lang' => 'fr', 'phone' => 'dz', 'currency' => 'DZD'],
         ['code' => 'AR', 'name' => 'Аргентина', 'lang' => 'es', 'phone' => 'ar'],
         ['code' => 'BR', 'name' => 'Бразилія', 'lang' => 'pt', 'phone' => 'br'],
         ['code' => 'MX', 'name' => 'Мексика', 'lang' => 'es', 'phone' => 'mx'],
@@ -140,6 +143,7 @@ return [
         ['code' => 'CO', 'name' => 'Колумбія', 'lang' => 'es', 'phone' => 'co'],
         ['code' => 'CR', 'name' => 'Коста-Рика', 'lang' => 'es', 'phone' => 'cr', 'currency' => 'CRC'],
         ['code' => 'DO', 'name' => 'Домініканська Республіка', 'lang' => 'es', 'phone' => 'do', 'currency' => 'DOP'],
+        ['code' => 'HT', 'name' => 'Гаїті', 'lang' => 'fr', 'phone' => 'ht', 'currency' => 'HTG'],
         ['code' => 'EC', 'name' => 'Еквадор', 'lang' => 'es', 'phone' => 'ec', 'currency' => 'USD'],
         ['code' => 'GE', 'name' => 'Грузія', 'lang' => 'ka', 'phone' => 'ge'],
         ['code' => 'AU', 'name' => 'Австралія', 'lang' => 'en', 'phone' => 'au'],
