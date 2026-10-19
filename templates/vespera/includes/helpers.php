@@ -270,6 +270,34 @@ function site_slug(): string
     return strtolower(preg_replace('/[^a-z0-9]/i', '', SITE_NAME) ?: 'offer');
 }
 
+function hero_image_rel(): string
+{
+    $slug = site_slug();
+    $root = dirname(__DIR__);
+    foreach ([
+        'assets/img/'.$slug.'-neural-core.jpg',
+        'static/img/'.$slug.'-neural-core.jpg',
+        'assets/img/ai-head.jpg',
+        'static/img/ai-head.jpg',
+    ] as $rel) {
+        if (is_file($root.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $rel))) {
+            return $rel;
+        }
+    }
+
+    return 'assets/img/'.$slug.'-neural-core.jpg';
+}
+
+function hero_image_url(): string
+{
+    return public_url(hero_image_rel());
+}
+
+function hero_image_abs(): string
+{
+    return rtrim(base_url(), '/').'/'.ltrim(hero_image_rel(), '/');
+}
+
 function site_domain(): string
 {
     if (defined('SITE_URL') && SITE_URL !== '') {

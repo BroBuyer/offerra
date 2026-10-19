@@ -82,6 +82,7 @@ class OfferGenerator
 
             if ($template === 'vespera') {
                 $this->syncVesperaLangFrontControllers($targetPath);
+                $this->syncVesperaBrandAssets($targetPath, (string) $input['brand']);
             }
 
             if (! empty($input['vitals_enabled'])) {
@@ -460,6 +461,7 @@ class OfferGenerator
                 'includes/routes.php',
                 'includes/keitaro.php',
                 'assets/css/global.css',
+                'assets/img/ai-head.jpg',
                 'integration/validation.js',
                 'integration/visitor-geo.php',
                 'integration/send.php',
@@ -517,6 +519,7 @@ class OfferGenerator
 
         if ($offer->template === 'vespera') {
             $this->syncVesperaLangFrontControllers($targetPath);
+            $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
         }
 
         $keitaroToken = $this->resolveKeitaroToken($offer, $settings);
@@ -568,7 +571,10 @@ class OfferGenerator
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
         );
 
-        $this->migrateLegacyAssets($targetPath);
+        $this->migrateLegacyAssets($targetPath, $offer->template);
+        if ($offer->template === 'vespera') {
+            $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
+        }
 
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->ensureWorkerWritable($targetPath);
@@ -617,8 +623,9 @@ class OfferGenerator
         $this->syncSharedStaticFiles($targetPath, $offer->template, $offer->lang);
         if ($offer->template === 'vespera') {
             $this->syncVesperaLangFrontControllers($targetPath);
+            $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
         }
-        $this->migrateLegacyAssets($targetPath);
+        $this->migrateLegacyAssets($targetPath, $offer->template);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
     }
@@ -781,6 +788,33 @@ PHP;
             $destDir = $targetPath.DIRECTORY_SEPARATOR.'langs'.DIRECTORY_SEPARATOR.$code;
             File::ensureDirectoryExists($destDir);
             File::put($destDir.DIRECTORY_SEPARATOR.'index.php', $boot);
+        }
+    }
+
+    /**
+     * Copy the stock hero into a brand-named file so Google Images can match the funnel.
+     */
+    public function syncVesperaBrandAssets(string $targetPath, string $brand): void
+    {
+        $slug = strtolower((string) preg_replace('/[^a-z0-9]/i', '', $brand)) ?: 'offer';
+        $candidates = [
+            $targetPath.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'img',
+            $targetPath.DIRECTORY_SEPARATOR.'static'.DIRECTORY_SEPARATOR.'img',
+        ];
+
+        foreach ($candidates as $imgDir) {
+            $source = $imgDir.DIRECTORY_SEPARATOR.'ai-head.jpg';
+            if (! File::isFile($source)) {
+                continue;
+            }
+
+            File::copy($source, $imgDir.DIRECTORY_SEPARATOR.$slug.'-neural-core.jpg');
+            $webp = $imgDir.DIRECTORY_SEPARATOR.'ai-head.webp';
+            if (File::isFile($webp)) {
+                File::copy($webp, $imgDir.DIRECTORY_SEPARATOR.$slug.'-neural-core.webp');
+            }
+
+            return;
         }
     }
 
@@ -960,9 +994,13 @@ PHP;
         return '';
     }
 
-    /** Старі оффери з папкою assets/ — один раз перед деплоєм. */
-    public function migrateLegacyAssets(string $targetPath): void
+    /** Старі оффери з папкою assets/ — один раз перед деплоєм. Vespera keeps assets/. */
+    public function migrateLegacyAssets(string $targetPath, ?string $template = null): void
     {
+        if ($template === 'vespera') {
+            return;
+        }
+
         if (! File::isDirectory($targetPath.DIRECTORY_SEPARATOR.'assets')) {
             return;
         }

@@ -173,7 +173,7 @@ $yearColors = [
       </div>
 
       <div class="earn-aihead-wrap">
-        <img src="<?= e(public_url('assets/img/ai-head.jpg')) ?>" alt="<?= e($earn['ai_alt']) ?>" class="earn-aihead-img" loading="eager" decoding="async" width="560" height="560">
+        <img src="<?= e(hero_image_url()) ?>" alt="<?= e($earn['ai_alt']) ?>" title="<?= e($earn['ai_alt']) ?>" class="earn-aihead-img" loading="eager" decoding="async" width="560" height="560">
         <div class="earn-chip earn-chip--tl">
           <div class="earn-chip-val">94.7%</div>
           <div class="earn-chip-desc"><?= e($ai['precision']) ?></div>

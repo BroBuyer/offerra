@@ -14,6 +14,11 @@ $homeUrl = lang_path($lang, 'home');
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= e($meta['title']) ?></title>
   <meta name="description" content="<?= e($meta['description']) ?>">
+  <?php if ($page === 'home'): ?>
+  <meta property="og:image" content="<?= e(hero_image_abs()) ?>">
+  <meta property="og:image:alt" content="<?= e($langData['earnings']['ai_alt'] ?? SITE_NAME) ?>">
+  <meta name="twitter:image" content="<?= e(hero_image_abs()) ?>">
+  <?php endif; ?>
   <link rel="canonical" href="<?= e(abs_lang_url($lang, $page)) ?>">
   <?php foreach (SUPPORTED_LANGS as $hl): ?>
   <link rel="alternate" hreflang="<?= e($hl) ?>" href="<?= e(abs_lang_url($hl, $page)) ?>">

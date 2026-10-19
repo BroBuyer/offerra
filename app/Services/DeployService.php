@@ -265,7 +265,7 @@ class DeployService
             $this->generator->syncSharedIncludeFiles($localPath, $offer->template);
             $this->generator->syncSharedIntegrationFiles($localPath, $offer->template);
             $this->generator->syncSharedStaticFiles($localPath, $offer->template, $offer->lang);
-            $this->generator->migrateLegacyAssets($localPath);
+            $this->generator->migrateLegacyAssets($localPath, $offer->template);
 
             $remotePath = $this->origin->deployArchive(
                 $settings,
