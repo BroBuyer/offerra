@@ -282,8 +282,16 @@ html[data-theme-mode="dark"] .glass-card {
 .golv-trust-meta strong { color: var(--accent); }
 
 .lead-form {
+  position: relative;
+  isolation: isolate;
   padding: 1.6rem 1.5rem 1.35rem;
   border-radius: 1.25rem;
+}
+/* backdrop-filter on the card steals clicks on the bottom CTA in Chrome/Edge. */
+.lead-form.card,
+html[data-theme-mode="dark"] .lead-form.card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 html[data-theme-mode="dark"] .lead-form.card {
   background: rgba(18, 25, 33, 0.92);
@@ -313,7 +321,15 @@ html[data-theme-mode="dark"] .field input {
   outline: none; border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-.lead-form .btn-pill { margin-top: 1.15rem; }
+.lead-form .btn-pill {
+  margin-top: 1.15rem;
+  position: relative;
+  z-index: 3;
+  transform: translateZ(0);
+}
+.lead-form .btn-pill:active {
+  transform: translateZ(0) translateY(1px);
+}
 .form-legal {
   margin-top: .95rem; font-size: .78rem; line-height: 1.55; color: var(--muted); text-align: center;
 }
@@ -327,7 +343,10 @@ html[data-theme-mode="dark"] .field input {
 .form-msg.ok { display: block; background: rgba(21, 128, 61, .12); color: var(--success); }
 .form-msg.err { display: block; background: rgba(185, 28, 28, .12); color: var(--danger); }
 .form-msg.hidden { display: none !important; }
-.honeypot { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+.honeypot {
+  position: absolute; left: -9999px; width: 1px; height: 1px;
+  opacity: 0; overflow: hidden; pointer-events: none;
+}
 .hidden { display: none !important; }
 .hide { display: none !important; }
 .field.is-invalid input {
@@ -344,7 +363,6 @@ html[data-theme-mode="dark"] .field input {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   background: color-mix(in srgb, var(--input-bg) 70%, transparent); border-radius: 1.25rem; z-index: 2;
 }
-.lead-form { position: relative; }
 .form-preloader .spinner {
   width: 2rem; height: 2rem; border-radius: 50%;
   border: 3px solid var(--border); border-top-color: var(--accent); animation: vespera-spin .7s linear infinite;

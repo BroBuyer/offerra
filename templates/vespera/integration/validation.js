@@ -304,8 +304,8 @@ function setupFormValidation(form) {
     e.preventDefault();
     hideFormMessage(form);
 
-    const hp = form.querySelector('[name="company_url"], [name="website"]');
-    if (hp && hp.value) return;
+    const traps = form.querySelectorAll('[data-honeypot], [name="hp_trap"], [name="hp_trap2"], [name="company_url"], [name="website"]');
+    if ([...traps].some((input) => (input.value || '').trim())) return;
 
     if (!validateNativeFields(form)) return;
 

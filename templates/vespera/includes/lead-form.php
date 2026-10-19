@@ -63,8 +63,8 @@ $keitaroSubid = function_exists('keitaro_subid') ? keitaro_subid() : '';
         </div>
       </div>
       <div class="honeypot" aria-hidden="true">
-        <input type="text" name="company_url" tabindex="-1" autocomplete="off">
-        <input type="text" name="website" tabindex="-1" autocomplete="off">
+        <input type="text" name="hp_trap" tabindex="-1" autocomplete="off" data-honeypot readonly>
+        <input type="text" name="hp_trap2" tabindex="-1" autocomplete="off" data-honeypot readonly>
       </div>
       <button class="btn-primary block btn-pill" type="submit"><?= e($h['submit']) ?></button>
       <p class="form-legal"><?= $legalHtml ?></p>

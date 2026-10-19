@@ -21,8 +21,8 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var msg = form.querySelector('.form-msg');
-        var hp = form.querySelector('[name="company_url"]');
-        if (hp && hp.value) return;
+        var traps = form.querySelectorAll('[data-honeypot], [name="hp_trap"], [name="company_url"], [name="website"]');
+        if ([].some.call(traps, function (input) { return (input.value || '').trim(); })) return;
 
         var first = form.querySelector('[name="first_name"]');
         var last = form.querySelector('[name="last_name"]');
