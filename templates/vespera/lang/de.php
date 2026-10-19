@@ -251,7 +251,7 @@ return [
             ],
             [
                 'title' => 'Einzahlen und zugreifen',
-                'text' => 'Leisten Sie die Mindesteinzahlung ($250) und öffnen Sie das Dashboard mit KI-Tools und Positionsüberwachung.',
+                'text' => 'Zahlen Sie die Mindesteinzahlung für Ihre Region ein und öffnen Sie das Dashboard mit KI-Tools und Positionsüberwachung.',
             ],
         ],
     ],
@@ -260,7 +260,7 @@ return [
         'title' => 'Häufig gestellte Fragen',
         'subtitle' => 'Was Sie wissen sollten, bevor Sie mit {brand} starten.',
         'page_notes' => [
-            'Diese Seite beantwortet strukturierte Fragen zu Registrierung, Kontoverifizierung, Mindesteinzahlung ($250), Auszahlungen, Datensicherheit und KI-Funktionen von {brand}. Jeder Abschnitt soll klären, was Sie vor der Kontoeröffnung erwarten können und wie Sie Risiken bewusst steuern.',
+            'Diese Seite beantwortet strukturierte Fragen zu Registrierung, Kontoverifizierung, der regionalen Mindesteinzahlung, Auszahlungen, Datensicherheit und KI-Funktionen von {brand}. Jeder Abschnitt soll klären, was Sie vor der Kontoeröffnung erwarten können und wie Sie Risiken bewusst steuern.',
             'Online-Trading birgt stets das Risiko, einen Teil oder das gesamte eingesetzte Kapital zu verlieren. {brand} verspricht keine garantierten Renditen: Analysetools und Warnungen strukturieren Entscheidungen, ersetzen aber nicht Ihr eigenes Urteil. Lesen Sie die AGB, den Datenschutzhinweis und die Cookie-Richtlinie im Footer. Fehlt eine Antwort, hilft der Support über die Kontaktseite bei Onboarding, Dokumenten, Gutschriftszeiten und Dashboard-Setup.',
             'Wir empfehlen außerdem die Nutzungsbedingungen und den Datenschutzhinweis, damit Sie Rechte, Pflichten und die Verarbeitung personenbezogener Daten im Zusammenhang mit dem {brand}-Konto verstehen.',
         ],
@@ -297,6 +297,10 @@ return [
                 'q' => 'Wie starte ich heute?',
                 'a' => 'Füllen Sie das Registrierungsformular aus, schließen Sie die Verifizierung ab und öffnen Sie das Dashboard.',
             ],
+            [
+                'q' => 'Wie hoch ist die Mindesteinzahlung?',
+                'a' => 'Mindesteinzahlung und Währung hängen vom Land oder der Region ab, in der Sie leben. Den genauen Betrag sehen Sie bei der Registrierung, nach der Kontoverifizierung.',
+            ],
         ],
     ],
     'seo' => [
@@ -305,7 +309,7 @@ return [
         'p1' => '{brand} kombiniert KI-gestützte Analysen, konfigurierbare Alarme und ein Dashboard für Trader, die mehrere Assets an einem Ort überwachen möchten. Ziel ist es nicht, Ergebnisse zu versprechen, sondern klare Werkzeuge zu bieten.',
         'p2' => 'Die Analyse-Engine verarbeitet Preisströme, Volumen und technische Signale über verschiedene Zeitrahmen und hebt Konfigurationen hervor, ohne das Urteil des Nutzers zu ersetzen.',
         'p3' => 'Risikomanagement ist in den Betriebsablauf integriert: Expositionsgrenzen, Positionsgrößenerinnerungen und Vorbestätigungen helfen Ihnen, konsistent zu bleiben. Online-Handel birgt das Risiko eines Kapitalverlusts.',
-        'p4' => 'Nach der Registrierung erklärt ein geführter Pfad Kontoverifizierung, Mindesteinzahlung ($250), Gebühren und Kreditzeiten. Support hilft bei Dokumenten, Auszahlungen und mobiler Einrichtung.',
+        'p4' => 'Nach der Registrierung erklärt ein geführter Pfad Kontoverifizierung, die Mindesteinzahlung für Ihre Region, Gebühren und Kreditzeiten. Support hilft bei Dokumenten, Auszahlungen und mobiler Einrichtung.',
         'cards' => [
             [
                 'title' => 'Analyse über mehrere Zeitrahmen',
@@ -418,7 +422,7 @@ return [
         'q1b' => 'Ich möchte Warnungen, damit ich nicht ständig auf Bildschirme schauen muss',
         'q1c' => 'Ich fange an und möchte einen geführten Weg',
         'q2' => 'Was ist am ersten Tag am wichtigsten?',
-        'q2a' => 'Klare Mindesteinzahlung und Gebühren',
+        'q2a' => 'Klare Gebühren und regionale Mindesteinzahlung',
         'q2b' => 'Risikolimits, die ich selbst festlegen kann',
         'q2c' => 'Support in meiner Sprache',
         'q3' => 'Wie möchten Sie starten?',
@@ -502,7 +506,7 @@ return [
         'items' => [
             ['title' => 'Kostenlose Registrierung', 'text' => 'Konto mit Name, E-Mail und Telefon eröffnen. Keine Lizenz bei der Anmeldung.'],
             ['title' => 'Geführte Verifizierung', 'text' => 'Onboarding mit Risikopräferenzen und mehrsprachigem Support.'],
-            ['title' => 'Mindesteinzahlung $250', 'text' => 'Nach der Finanzierung Zugang zum Dashboard mit KI-Tools.'],
+            ['title' => 'Regionale Mindesteinzahlung', 'text' => 'Betrag und Währung hängen davon ab, wo Sie leben. Nach der Einzahlung erhalten Sie das Dashboard mit KI-Tools.'],
             ['title' => 'Persönlicher Manager', 'text' => 'Nach der Registrierung kann ein Manager anrufen, um Details zu bestätigen.'],
         ],
         'cta_btn' => 'Platz sichern',

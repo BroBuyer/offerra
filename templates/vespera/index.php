@@ -51,15 +51,8 @@ if (($route['type'] ?? '') === 'redirect') {
     exit;
 }
 
-// Root `/` only: cookie / hybrid GEO. Open /de/ or /de/about/ stays. Bots stay on EN.
+// `/` is always English. Other languages are a manual switch (`/de/`, …).
 if (($route['type'] ?? '') === 'root') {
-    if (!offer_is_preview()) {
-        $preferred = geo_preferred_lang();
-        if ($preferred !== DEFAULT_LANG) {
-            header('Location: ' . lang_path($preferred, 'home'), true, 302);
-            exit;
-        }
-    }
     $route = ['type' => 'page', 'lang' => DEFAULT_LANG, 'page' => 'home'];
 }
 

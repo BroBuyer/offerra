@@ -251,7 +251,7 @@ return [
             ],
             [
                 'title' => 'Deposit and access',
-                'text' => 'Make the stated minimum deposit ($250) and open the dashboard with AI tools and position monitoring.',
+                'text' => 'Fund your account with the minimum deposit for your region, then open the dashboard with AI tools and position monitoring.',
             ],
         ],
     ],
@@ -260,7 +260,7 @@ return [
         'title' => 'Frequently asked questions',
         'subtitle' => 'What to know before you start with {brand}.',
         'page_notes' => [
-            'This page answers structured questions on registration, account verification, the minimum deposit ($250), withdrawals, data security and AI features on {brand}. Each section is meant to clarify what to expect before you open an account and how to manage risk deliberately.',
+            'This page answers structured questions on registration, account verification, the regional minimum deposit, withdrawals, data security and AI features on {brand}. Each section is meant to clarify what to expect before you open an account and how to manage risk deliberately.',
             'Online trading always includes the chance of losing part or all of the capital you expose. {brand} does not promise guaranteed returns: analysis tools and alerts organise decisions, they do not replace the operator’s judgement. Read the terms, privacy notice and cookie policy linked in the footer. If you cannot find an answer, support is available from the contact page for onboarding, required documents, credit times and dashboard setup on desktop or mobile.',
             'We also recommend the terms of service and privacy notice so you understand rights, duties and how personal data linked to the {brand} account is processed.',
         ],
@@ -297,6 +297,10 @@ return [
                 'q' => 'How do I start today?',
                 'a' => 'Complete the registration form, finish verification and open the dashboard. The guided path explains each step before you confirm.',
             ],
+            [
+                'q' => 'What is the minimum deposit?',
+                'a' => 'The minimum deposit and its currency depend on the country or region you live in. The exact amount is shown during registration, after your account is verified.',
+            ],
         ],
     ],
     'seo' => [
@@ -305,7 +309,7 @@ return [
         'p1' => '{brand} combines AI-assisted analysis, configurable alerts and a dashboard for traders who want to monitor several assets in one place. The aim is not to promise results, but to give clear tools to read volatility, set operating limits and document each step — from registration to withdrawal.',
         'p2' => 'The analysis engine processes price streams, volumes and technical signals across timeframes, highlighting configurations that deserve attention without replacing the operator’s judgement. You can filter by market, set alert thresholds and receive summaries when conditions change.',
         'p3' => 'Risk management is built into the operating flow: exposure limits, position-size reminders and pre-confirm summaries help you stay consistent with the profile defined at onboarding. {brand} reminds you that online trading involves a risk of losing capital; no algorithm removes market volatility or guarantees returns.',
-        'p4' => 'After registration, a guided path explains account verification, the minimum deposit ($250), applicable fees and credit times. Support assists with documents, withdrawals and mobile setup.',
+        'p4' => 'After registration, a guided path explains account verification, the minimum deposit for your region, applicable fees and credit times. Support assists with documents, withdrawals and mobile setup.',
         'cards' => [
             [
                 'title' => 'Multi-timeframe analysis',
@@ -418,7 +422,7 @@ return [
         'q1b' => 'I want alerts so I am not glued to screens',
         'q1c' => 'I am starting and want a guided path',
         'q2' => 'What matters most on day one?',
-        'q2a' => 'Clear minimum deposit and fees',
+        'q2a' => 'Clear fees and a regional minimum deposit',
         'q2b' => 'Risk limits I can set myself',
         'q2c' => 'Support in my language',
         'q3' => 'How do you want to start?',
@@ -502,7 +506,7 @@ return [
         'items' => [
             ['title' => 'Free registration', 'text' => 'Open an account with name, email and phone. No licence is granted at signup.'],
             ['title' => 'Guided verification', 'text' => 'Complete onboarding with risk preferences and multilingual support.'],
-            ['title' => 'Minimum deposit $250', 'text' => 'Access the dashboard with AI tools and position monitoring after funding.'],
+            ['title' => 'Regional minimum deposit', 'text' => 'The amount and currency depend on where you live. After funding, you get the dashboard with AI tools and position monitoring.'],
             ['title' => 'Personal manager', 'text' => 'After registration, a manager can call to confirm your account details.'],
         ],
         'cta_btn' => 'Secure your place',

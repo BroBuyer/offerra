@@ -91,8 +91,8 @@ function geo_cookie_lang(): ?string
 }
 
 /**
- * Cookie > bots stay on default > monolingual IP > CH/BE/CA/LU Accept-Language then IP map
- * > Accept-Language fallback > EN.
+ * Kept for Thanks.php / diagnostics. Homepage no longer auto-redirects:
+ * `/` is always DEFAULT_LANG; the visitor picks a prefix in the switcher.
  */
 function geo_preferred_lang(): string
 {
