@@ -22,8 +22,16 @@ class OfferConfigBuilder
         $domain = $this->quote($offer['domain']);
         $siteUrl = $this->quote('https://'.$offer['domain']);
         $lang = $this->quote($offer['lang']);
-        $minDeposit = $this->quote($offer['min_deposit']);
-        $currency = $this->quote($offer['currency']);
+        $minDepositRaw = trim((string) ($offer['min_deposit'] ?? ''));
+        if ($minDepositRaw === '' || ($offer['template'] ?? '') === 'vespera') {
+            $minDepositRaw = '250';
+        }
+        $minDeposit = $this->quote($minDepositRaw);
+        $currencyRaw = strtoupper(trim((string) ($offer['currency'] ?? '')));
+        if ($currencyRaw === '' || ($offer['template'] ?? '') === 'vespera') {
+            $currencyRaw = 'USD';
+        }
+        $currency = $this->quote($currencyRaw);
         $crmKey = $this->quote(SecretValue::normalize($settings->crm_api_key ?? ''));
         $affiliate = $this->quote($settings->affiliate_tag ?? 'BRO');
         $funnel = $this->quote($offer['brand']);

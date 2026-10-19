@@ -62,9 +62,16 @@
         if (t.classList.contains('earn-earner-card')) t.classList.add('in');
         io.unobserve(t);
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
 
-    if (strip) io.observe(strip);
+    if (strip) {
+      io.observe(strip);
+      var rect = strip.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        strip.querySelectorAll('.earn-kpi').forEach(function (k) { k.classList.add('in'); });
+        animateCounters(strip);
+      }
+    }
     if (winSection) io.observe(winSection);
     earners.forEach(function (e) { io.observe(e); });
   }

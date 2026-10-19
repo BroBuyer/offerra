@@ -119,14 +119,19 @@ $yearColors = [
     <div class="earn-kpi-strip" id="earnKpis">
       <?php foreach ($earn['stats'] as $i => $s):
         $decimals = (int) ($s['decimals'] ?? (str_contains((string) $s['value'], '.') ? 1 : 0));
+        $kpiPrefix = (string) ($s['prefix'] ?? '');
+        $kpiSuffix = (string) ($s['suffix'] ?? '');
+        $kpiDisplay = $decimals > 0
+            ? number_format((float) $s['value'], $decimals, '.', '')
+            : (string) $s['value'];
       ?>
       <?php if ($i > 0): ?><div class="earn-kpi-divider" aria-hidden="true"></div><?php endif; ?>
       <div class="earn-kpi">
         <div class="earn-kpi-value"
           data-count="<?= e($s['value']) ?>"
-          data-prefix="<?= e($s['prefix'] ?? '') ?>"
-          data-suffix="<?= e($s['suffix'] ?? '') ?>"
-          data-decimals="<?= $decimals ?>">0</div>
+          data-prefix="<?= e($kpiPrefix) ?>"
+          data-suffix="<?= e($kpiSuffix) ?>"
+          data-decimals="<?= $decimals ?>"><?= e($kpiPrefix.$kpiDisplay.$kpiSuffix) ?></div>
         <div class="earn-kpi-label"><?= e($s['label']) ?></div>
         <div class="earn-kpi-sub"><?= e($s['note']) ?></div>
       </div>

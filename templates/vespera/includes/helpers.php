@@ -35,18 +35,36 @@ function public_url(string $path): string
     return $preview !== null ? rtrim($preview, '/') . $path : $path;
 }
 
+function currency_symbol(?string $code = null): string
+{
+    $code = strtoupper($code ?? (defined('CURRENCY') ? (string) CURRENCY : 'EUR'));
+
+    return match ($code) {
+        'USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD' => '$',
+        'GBP' => '£',
+        'JPY', 'CNY' => '¥',
+        'KRW' => '₩',
+        'CHF' => 'CHF',
+        'EUR' => '€',
+        default => $code,
+    };
+}
+
 function interpolate_placeholders(string $value): string
 {
     $brand = defined('SITE_NAME') ? (string) SITE_NAME : 'Vespera';
     $email = defined('SITE_EMAIL') && SITE_EMAIL !== ''
         ? (string) SITE_EMAIL
         : 'support@example.com';
-    $deposit = defined('MIN_DEPOSIT') ? (string) MIN_DEPOSIT : '250';
+    $deposit = defined('MIN_DEPOSIT') && trim((string) MIN_DEPOSIT) !== ''
+        ? (string) MIN_DEPOSIT
+        : '250';
     $currency = defined('CURRENCY') ? (string) CURRENCY : 'EUR';
+    $domain = function_exists('site_domain') ? site_domain() : 'example.com';
 
     return str_replace(
-        ['{brand}', '{email}', '{min_deposit}', '{currency}'],
-        [$brand, $email, $deposit, $currency],
+        ['{brand}', '{email}', '{min_deposit}', '{currency}', '{currency_symbol}', '{domain}'],
+        [$brand, $email, $deposit, $currency, currency_symbol($currency), $domain],
         $value
     );
 }

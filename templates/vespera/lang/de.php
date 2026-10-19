@@ -149,13 +149,13 @@ return [
     'earnings' => [
         'badge' => 'VERIFIZIERTE ERFOLGSBILANZ · 4 JAHRE AM MARKT',
         'title_before' => 'Wie viel können Sie ',
-        'title_accent' => 'Tatsächlich verdienen mit {brand}',
+        'title_accent' => 'tatsächlich verdienen mit {brand}',
         'title_after' => '?',
         'lead' => 'Seit 2021 macht unsere KI das Krypto-Trading einfach und zugänglich <span class="hl">für alle</span>. Sie analysiert den Markt <span class="hl">unabhängig</span>, hebt die vielversprechendsten Setups hervor und liefert klare Handelssignale — ohne komplexe Technik oder Vorerfahrung. Verifizierte Live-Performance über vier Jahre hilft Menschen <span class="hl">jeden Alters</span> Marktchancen mit mehr Vertrauen in konsistente Ergebnisse zu verwandeln.',
         'stats' => [
             ['value' => '312', 'suffix' => '%', 'label' => 'Kumulierte Rendite seit Start', 'note' => 'Top 10 % der Nutzer · 2021–2025'],
             ['value' => '94.7', 'suffix' => '%', 'decimals' => 1, 'label' => 'KI-Prognosegenauigkeit', 'note' => 'Verifiziert bei über 1 Mio. Handelssignalen'],
-            ['value' => '4.2', 'prefix' => '€', 'suffix' => 'B+', 'decimals' => 1, 'label' => 'Gesamtkundengewinne generiert', 'note' => 'Über alle Anlageklassen hinweg'],
+            ['value' => '4.2', 'prefix' => '{currency_symbol}', 'suffix' => 'B+', 'decimals' => 1, 'label' => 'Gesamtkundengewinne generiert', 'note' => 'Über alle Anlageklassen hinweg'],
             ['value' => '88', 'suffix' => '%', 'label' => 'Erfolgsquote bei Trades', 'note' => 'Plattformdurchschnitt 2025'],
         ],
         'tiers_label' => 'Illustriertes Verdienstpotenzial',
@@ -251,7 +251,7 @@ return [
             ],
             [
                 'title' => 'Einzahlen und zugreifen',
-                'text' => 'Leisten Sie die Mindesteinzahlung ({min_deposit} {currency}) und öffnen Sie das Dashboard mit KI-Tools und Positionsüberwachung.',
+                'text' => 'Leisten Sie die Mindesteinzahlung ($250) und öffnen Sie das Dashboard mit KI-Tools und Positionsüberwachung.',
             ],
         ],
     ],
@@ -260,7 +260,7 @@ return [
         'title' => 'Häufig gestellte Fragen',
         'subtitle' => 'Was Sie wissen sollten, bevor Sie mit {brand} starten.',
         'page_notes' => [
-            'Diese Seite beantwortet strukturierte Fragen zu Registrierung, Kontoverifizierung, Mindesteinzahlung ({min_deposit} {currency}), Auszahlungen, Datensicherheit und KI-Funktionen von {brand}. Jeder Abschnitt soll klären, was Sie vor der Kontoeröffnung erwarten können und wie Sie Risiken bewusst steuern.',
+            'Diese Seite beantwortet strukturierte Fragen zu Registrierung, Kontoverifizierung, Mindesteinzahlung ($250), Auszahlungen, Datensicherheit und KI-Funktionen von {brand}. Jeder Abschnitt soll klären, was Sie vor der Kontoeröffnung erwarten können und wie Sie Risiken bewusst steuern.',
             'Online-Trading birgt stets das Risiko, einen Teil oder das gesamte eingesetzte Kapital zu verlieren. {brand} verspricht keine garantierten Renditen: Analysetools und Warnungen strukturieren Entscheidungen, ersetzen aber nicht Ihr eigenes Urteil. Lesen Sie die AGB, den Datenschutzhinweis und die Cookie-Richtlinie im Footer. Fehlt eine Antwort, hilft der Support über die Kontaktseite bei Onboarding, Dokumenten, Gutschriftszeiten und Dashboard-Setup.',
             'Wir empfehlen außerdem die Nutzungsbedingungen und den Datenschutzhinweis, damit Sie Rechte, Pflichten und die Verarbeitung personenbezogener Daten im Zusammenhang mit dem {brand}-Konto verstehen.',
         ],
@@ -278,8 +278,8 @@ return [
                 'a' => 'Verbindungen sind geschützt, Konten werden verifiziert, und Einzahlungs-/Auszahlungsschritte werden im Voraus beschrieben. Handel birgt immer das Risiko eines Kapitalverlusts.',
             ],
             [
-                'q' => 'Welche Renditen kann ich erwarten?',
-                'a' => 'Keine Rendite ist garantiert. Ergebnisse hängen von Kapital, Strategie, Volatilität und Ihrem Risikomanagement ab.',
+                'q' => 'Mit welcher Art von Renditen kann ich rechnen?',
+                'a' => 'Renditen sind nicht garantiert. Die Ergebnisse hängen von Ihrem Kapital, der Handelsstrategie, der Marktvolatilität und dem Risikomanagement ab.',
             ],
             [
                 'q' => 'Welche Märkte sind verfügbar?',
@@ -305,7 +305,7 @@ return [
         'p1' => '{brand} kombiniert KI-gestützte Analysen, konfigurierbare Alarme und ein Dashboard für Trader, die mehrere Assets an einem Ort überwachen möchten. Ziel ist es nicht, Ergebnisse zu versprechen, sondern klare Werkzeuge zu bieten.',
         'p2' => 'Die Analyse-Engine verarbeitet Preisströme, Volumen und technische Signale über verschiedene Zeitrahmen und hebt Konfigurationen hervor, ohne das Urteil des Nutzers zu ersetzen.',
         'p3' => 'Risikomanagement ist in den Betriebsablauf integriert: Expositionsgrenzen, Positionsgrößenerinnerungen und Vorbestätigungen helfen Ihnen, konsistent zu bleiben. Online-Handel birgt das Risiko eines Kapitalverlusts.',
-        'p4' => 'Nach der Registrierung erklärt ein geführter Pfad Kontoverifizierung, Mindesteinzahlung ({min_deposit} {currency}), Gebühren und Kreditzeiten. Support hilft bei Dokumenten, Auszahlungen und mobiler Einrichtung.',
+        'p4' => 'Nach der Registrierung erklärt ein geführter Pfad Kontoverifizierung, Mindesteinzahlung ($250), Gebühren und Kreditzeiten. Support hilft bei Dokumenten, Auszahlungen und mobiler Einrichtung.',
         'cards' => [
             [
                 'title' => 'Analyse über mehrere Zeitrahmen',
@@ -442,7 +442,7 @@ return [
         'stats' => [
             ['value' => '2021', 'label' => 'Gründungsjahr'],
             ['value' => '500k+', 'label' => 'Aktive Trader'],
-            ['value' => '€4,2B', 'label' => 'Generierte Kundengewinne'],
+            ['value' => '{currency_symbol}4,2B', 'label' => 'Generierte Kundengewinne'],
             ['value' => '60+', 'label' => 'Bediente Länder'],
             ['value' => '6', 'label' => 'Globale Büros'],
             ['value' => '94,7%', 'label' => 'KI-Vorhersagegenauigkeit'],
@@ -484,7 +484,7 @@ return [
                 'tag' => 'Alarme',
                 'title' => 'Signale, die Sie konfigurieren',
                 'text' => 'Legen Sie Märkte und Bedingungen fest. {brand} hebt Setups hervor; Sie entscheiden.',
-                'bullets' => ['Filter pro Markt', 'Mobil bereit', 'Ruhezeiten'],
+                'bullets' => ['Filter pro Markt', 'Mobil optimiert', 'Ruhezeiten'],
             ],
             [
                 'tag' => 'Zugang',
@@ -502,7 +502,7 @@ return [
         'items' => [
             ['title' => 'Kostenlose Registrierung', 'text' => 'Konto mit Name, E-Mail und Telefon eröffnen. Keine Lizenz bei der Anmeldung.'],
             ['title' => 'Geführte Verifizierung', 'text' => 'Onboarding mit Risikopräferenzen und mehrsprachigem Support.'],
-            ['title' => 'Mindesteinzahlung {min_deposit} {currency}', 'text' => 'Nach der Finanzierung Zugang zum Dashboard mit KI-Tools.'],
+            ['title' => 'Mindesteinzahlung $250', 'text' => 'Nach der Finanzierung Zugang zum Dashboard mit KI-Tools.'],
             ['title' => 'Persönlicher Manager', 'text' => 'Nach der Registrierung kann ein Manager anrufen, um Details zu bestätigen.'],
         ],
         'cta_btn' => 'Platz sichern',
@@ -526,7 +526,7 @@ return [
         'privacy' => [
             'title' => 'Datenschutzhinweis',
             'updated' => 'Letzte Aktualisierung: 1. Mai 2025',
-            'intro' => '{brand} Inc. („{brand}", „wir“, „uns“ oder „unser“) verpflichtet sich, Ihre Privatsphäre zu schützen. Diese Datenschutzrichtlinie erklärt, wie wir Ihre Informationen sammeln, verwenden, offenlegen und schützen, wenn Sie unsere Website besuchen vespera.example und unsere KI-Handelsplattform nutzen (zusammenfassend der „Dienst“). Bitte lesen Sie diese Richtlinie sorgfältig. Wenn Sie den Bedingungen nicht zustimmen, stellen Sie bitte die Nutzung des Dienstes ein.',
+            'intro' => '{brand} Inc. („{brand}", „wir“, „uns“ oder „unser“) verpflichtet sich, Ihre Privatsphäre zu schützen. Diese Datenschutzrichtlinie erklärt, wie wir Ihre Informationen sammeln, verwenden, offenlegen und schützen, wenn Sie unsere Website {domain} besuchen und unsere KI-Handelsplattform nutzen (zusammenfassend der „Dienst“). Bitte lesen Sie diese Richtlinie sorgfältig. Wenn Sie den Bedingungen nicht zustimmen, stellen Sie bitte die Nutzung des Dienstes ein.',
             'sections' => [
                 [
                     'h' => '1. Gesammelte Informationen',
@@ -877,7 +877,7 @@ return [
         'cookie-policy' => [
             'title' => 'Cookie-Hinweis',
             'updated' => 'Letzte Aktualisierung: 1. Mai 2025',
-            'intro' => 'Diese Cookie-Richtlinie erklärt, wie {brand} Inc. („{brand}", „wir“, „uns“) Cookies und ähnliche Tracking-Technologien verwendet, wenn Sie vespera.example besuchen oder unsere Handelsplattform nutzen. Durch die weitere Nutzung unseres Dienstes stimmen Sie der Verwendung von Cookies gemäß dieser Richtlinie zu. Sie können Ihre Präferenzen jederzeit über Ihre Browsereinstellungen oder unser Cookie-Präferenz-Center verwalten.',
+            'intro' => 'Diese Cookie-Richtlinie erklärt, wie {brand} Inc. („{brand}", „wir“, „uns“) Cookies und ähnliche Tracking-Technologien verwendet, wenn Sie {domain} besuchen oder unsere Handelsplattform nutzen. Durch die weitere Nutzung unseres Dienstes stimmen Sie der Verwendung von Cookies gemäß dieser Richtlinie zu. Sie können Ihre Präferenzen jederzeit über Ihre Browsereinstellungen oder unser Cookie-Präferenz-Center verwalten.',
             'sections' => [
                 [
                     'h' => '1. Was sind Cookies?',

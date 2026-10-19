@@ -149,13 +149,13 @@ return [
     'earnings' => [
         'badge' => 'VERIFIED TRACK RECORD · 4 YEARS ON THE MARKET',
         'title_before' => 'How much can you ',
-        'title_accent' => 'Actually earn with {brand}',
+        'title_accent' => 'actually earn with {brand}',
         'title_after' => '?',
         'lead' => 'Since 2021, our AI engine has made crypto trading simple and accessible <span class="hl">to everyone</span>. It analyses the market <span class="hl">independently</span>, highlights the most promising setups and delivers clear trading signals — without complex technology or prior trading experience. Verified live performance over four years helps ordinary people of <span class="hl">all ages</span> turn market opportunities into consistent results with more confidence.',
         'stats' => [
             ['value' => '312', 'suffix' => '%', 'label' => 'Cumulative ROI since launch', 'note' => 'Top 10% of users · 2021–2025'],
             ['value' => '94.7', 'suffix' => '%', 'decimals' => 1, 'label' => 'AI forecast precision', 'note' => 'Verified on 1M+ trading signals'],
-            ['value' => '4.2', 'prefix' => '$', 'suffix' => 'B+', 'decimals' => 1, 'label' => 'Total client profits generated', 'note' => 'Across all asset classes'],
+            ['value' => '4.2', 'prefix' => '{currency_symbol}', 'suffix' => 'B+', 'decimals' => 1, 'label' => 'Total client profits generated', 'note' => 'Across all asset classes'],
             ['value' => '88', 'suffix' => '%', 'label' => 'Successful-trade ratio', 'note' => 'Platform average 2025'],
         ],
         'tiers_label' => 'Illustrated earning potential',
@@ -251,7 +251,7 @@ return [
             ],
             [
                 'title' => 'Deposit and access',
-                'text' => 'Make the stated minimum deposit ({min_deposit} {currency}) and open the dashboard with AI tools and position monitoring.',
+                'text' => 'Make the stated minimum deposit ($250) and open the dashboard with AI tools and position monitoring.',
             ],
         ],
     ],
@@ -260,7 +260,7 @@ return [
         'title' => 'Frequently asked questions',
         'subtitle' => 'What to know before you start with {brand}.',
         'page_notes' => [
-            'This page answers structured questions on registration, account verification, the minimum deposit ({min_deposit} {currency}), withdrawals, data security and AI features on {brand}. Each section is meant to clarify what to expect before you open an account and how to manage risk deliberately.',
+            'This page answers structured questions on registration, account verification, the minimum deposit ($250), withdrawals, data security and AI features on {brand}. Each section is meant to clarify what to expect before you open an account and how to manage risk deliberately.',
             'Online trading always includes the chance of losing part or all of the capital you expose. {brand} does not promise guaranteed returns: analysis tools and alerts organise decisions, they do not replace the operator’s judgement. Read the terms, privacy notice and cookie policy linked in the footer. If you cannot find an answer, support is available from the contact page for onboarding, required documents, credit times and dashboard setup on desktop or mobile.',
             'We also recommend the terms of service and privacy notice so you understand rights, duties and how personal data linked to the {brand} account is processed.',
         ],
@@ -278,8 +278,8 @@ return [
                 'a' => 'Connections are protected, accounts are verified, and deposit/withdrawal steps are described in advance. Trading always involves a risk of losing capital.',
             ],
             [
-                'q' => 'What returns can I expect?',
-                'a' => 'No return is guaranteed. Results depend on capital, strategy, market volatility and how you manage risk.',
+                'q' => 'What kind of returns can I expect?',
+                'a' => 'Returns are not guaranteed. Results depend on your capital, trading strategy, market volatility, and risk management.',
             ],
             [
                 'q' => 'Which markets are available?',
@@ -305,7 +305,7 @@ return [
         'p1' => '{brand} combines AI-assisted analysis, configurable alerts and a dashboard for traders who want to monitor several assets in one place. The aim is not to promise results, but to give clear tools to read volatility, set operating limits and document each step — from registration to withdrawal.',
         'p2' => 'The analysis engine processes price streams, volumes and technical signals across timeframes, highlighting configurations that deserve attention without replacing the operator’s judgement. You can filter by market, set alert thresholds and receive summaries when conditions change.',
         'p3' => 'Risk management is built into the operating flow: exposure limits, position-size reminders and pre-confirm summaries help you stay consistent with the profile defined at onboarding. {brand} reminds you that online trading involves a risk of losing capital; no algorithm removes market volatility or guarantees returns.',
-        'p4' => 'After registration, a guided path explains account verification, the minimum deposit ({min_deposit} {currency}), applicable fees and credit times. Support assists with documents, withdrawals and mobile setup.',
+        'p4' => 'After registration, a guided path explains account verification, the minimum deposit ($250), applicable fees and credit times. Support assists with documents, withdrawals and mobile setup.',
         'cards' => [
             [
                 'title' => 'Multi-timeframe analysis',
@@ -442,7 +442,7 @@ return [
         'stats' => [
             ['value' => '2021', 'label' => 'Founding year'],
             ['value' => '500k+', 'label' => 'Active traders'],
-            ['value' => '$4.2B', 'label' => 'Client profits generated'],
+            ['value' => '{currency_symbol}4.2B', 'label' => 'Client profits generated'],
             ['value' => '60+', 'label' => 'Countries served'],
             ['value' => '6', 'label' => 'Global offices'],
             ['value' => '94.7%', 'label' => 'AI prediction accuracy'],
@@ -502,7 +502,7 @@ return [
         'items' => [
             ['title' => 'Free registration', 'text' => 'Open an account with name, email and phone. No licence is granted at signup.'],
             ['title' => 'Guided verification', 'text' => 'Complete onboarding with risk preferences and multilingual support.'],
-            ['title' => 'Minimum deposit {min_deposit} {currency}', 'text' => 'Access the dashboard with AI tools and position monitoring after funding.'],
+            ['title' => 'Minimum deposit $250', 'text' => 'Access the dashboard with AI tools and position monitoring after funding.'],
             ['title' => 'Personal manager', 'text' => 'After registration, a manager can call to confirm your account details.'],
         ],
         'cta_btn' => 'Secure your place',
@@ -526,7 +526,7 @@ return [
         'privacy' => [
             'title' => 'Privacy notice',
             'updated' => 'Last updated: 1 May 2025',
-            'intro' => '{brand} Inc. ("{brand}", "we", "us" or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose and safeguard your information when you visit our website vespera.example and use our AI trading platform (collectively, the “Service”). Please read this policy carefully. If you do not agree to its terms, please discontinue use of the Service.',
+            'intro' => '{brand} Inc. ("{brand}", "we", "us" or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose and safeguard your information when you visit our website {domain} and use our AI trading platform (collectively, the “Service”). Please read this policy carefully. If you do not agree to its terms, please discontinue use of the Service.',
             'sections' => [
                 [
                     'h' => '1. Information We Collect',
@@ -894,7 +894,7 @@ return [
         'cookie-policy' => [
             'title' => 'Cookie notice',
             'updated' => 'Last updated: 1 May 2025',
-            'intro' => 'This Cookie Policy explains how {brand} Inc. ("{brand}", "we", "us") uses cookies and similar tracking technologies when you visit vespera.example or use our trading platform. By continuing to use our Service, you agree to our use of cookies as described in this policy. You can manage your preferences at any time through your browser settings or our cookie preferences center.',
+            'intro' => 'This Cookie Policy explains how {brand} Inc. ("{brand}", "we", "us") uses cookies and similar tracking technologies when you visit {domain} or use our trading platform. By continuing to use our Service, you agree to our use of cookies as described in this policy. You can manage your preferences at any time through your browser settings or our cookie preferences center.',
             'sections' => [
                 [
                     'h' => '1. What are Cookies?',
