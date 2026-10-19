@@ -171,13 +171,20 @@ server {
         rewrite ^ /robots.php last;
     }
 
-    # Multilang hub: /{lang}/ -> langs/{lang}/ (Apache .htaccess ignored by nginx)
+    # Multilang hub: /{lang}/ -> langs/{lang}/ when that pack exists.
+    # Dictionary landers (Vespera) have no langs/{lang}/ — fall through to /index.php.
     location ~ ^/([a-z][a-z])/?$ {
-        rewrite ^/([a-z][a-z])/?$ /langs/\$1/index.php last;
+        if (-f \$offer_root/langs/\$1/index.php) {
+            rewrite ^ /langs/\$1/index.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location ~ ^/([a-z][a-z])/(.+\.php)$ {
-        rewrite ^/([a-z][a-z])/(.+\.php)$ /langs/\$1/\$2 last;
+        if (-f \$offer_root/langs/\$1/\$2) {
+            rewrite ^ /langs/\$1/\$2 last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location / {

@@ -123,6 +123,11 @@ function current_request_path(): string
         $path = substr($path, strlen($preview)) ?: '/';
     }
 
+    // Origin nginx rewrites /de/ → /langs/de/index.php. Some stacks overwrite REQUEST_URI.
+    if (preg_match('#^/langs/([a-z]{2})/index\.php$#', $path, $matches)) {
+        return '/'.$matches[1].'/';
+    }
+
     return $path === '' ? '/' : $path;
 }
 

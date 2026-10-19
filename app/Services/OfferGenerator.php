@@ -80,6 +80,10 @@ class OfferGenerator
                 $this->pruneMultilangDuplicates($targetPath);
             }
 
+            if ($template === 'vespera') {
+                $this->syncVesperaLangFrontControllers($targetPath);
+            }
+
             if (! empty($input['vitals_enabled'])) {
                 app(MirrorProbeService::class)->ensureProbeToken($settings);
             }
@@ -443,6 +447,8 @@ class OfferGenerator
                 'templates/about.php',
                 'templates/legal.php',
                 'lang/en.php',
+                'langs/en/index.php',
+                'langs/de/index.php',
                 'includes/config.php',
                 'includes/helpers.php',
                 'includes/geo.php',
@@ -505,6 +511,10 @@ class OfferGenerator
 
         if (TemplateCatalog::isOverflowHub($offer->template)) {
             $this->pruneMultilangDuplicates($targetPath);
+        }
+
+        if ($offer->template === 'vespera') {
+            $this->syncVesperaLangFrontControllers($targetPath);
         }
 
         $keitaroToken = $this->resolveKeitaroToken($offer, $settings);
@@ -603,6 +613,9 @@ class OfferGenerator
         $this->syncSharedIncludeFiles($targetPath, $offer->template);
         $this->syncSharedIntegrationFiles($targetPath, $offer->template);
         $this->syncSharedStaticFiles($targetPath, $offer->template, $offer->lang);
+        if ($offer->template === 'vespera') {
+            $this->syncVesperaLangFrontControllers($targetPath);
+        }
         $this->migrateLegacyAssets($targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
@@ -734,6 +747,39 @@ class OfferGenerator
             $manifestPath,
             json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."\n",
         );
+    }
+
+    /**
+     * Origin nginx rewrites /{lang}/ to langs/{lang}/index.php (overflow hub).
+     * Vespera has no lang packs there — drop a front-controller stub per lang/*.php.
+     */
+    public function syncVesperaLangFrontControllers(string $targetPath): void
+    {
+        $langDir = $targetPath.DIRECTORY_SEPARATOR.'lang';
+
+        if (! File::isDirectory($langDir)) {
+            return;
+        }
+
+        $boot = <<<'PHP'
+<?php
+declare(strict_types=1);
+
+require dirname(__DIR__, 2).'/index.php';
+
+PHP;
+
+        foreach (File::files($langDir) as $file) {
+            $code = strtolower($file->getFilenameWithoutExtension());
+
+            if ($file->getExtension() !== 'php' || ! preg_match('/^[a-z]{2}$/', $code)) {
+                continue;
+            }
+
+            $destDir = $targetPath.DIRECTORY_SEPARATOR.'langs'.DIRECTORY_SEPARATOR.$code;
+            File::ensureDirectoryExists($destDir);
+            File::put($destDir.DIRECTORY_SEPARATOR.'index.php', $boot);
+        }
     }
 
     /**

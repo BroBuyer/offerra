@@ -214,11 +214,17 @@ server {
     }
 
     location ~ ^/([a-z][a-z])/?$ {
-        rewrite ^/([a-z][a-z])/?$ /langs/\$1/index.php last;
+        if (-f \$offer_root/langs/\$1/index.php) {
+            rewrite ^ /langs/\$1/index.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location ~ ^/([a-z][a-z])/(.+\\.php)$ {
-        rewrite ^/([a-z][a-z])/(.+\\.php)$ /langs/\$1/\$2 last;
+        if (-f \$offer_root/langs/\$1/\$2) {
+            rewrite ^ /langs/\$1/\$2 last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location / {
