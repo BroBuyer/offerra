@@ -125,6 +125,27 @@ class MarketOptions
         ];
     }
 
+    /**
+     * Unique ISO phone codes from every GEO preset — used by multilang landers.
+     *
+     * @return list<string>
+     */
+    public static function allPhoneCodes(): array
+    {
+        $out = [];
+
+        foreach (config('offerra.geo_presets', []) as $preset) {
+            $code = self::sanitizePhoneCode((string) ($preset['phone'] ?? $preset['code'] ?? ''));
+            if ($code === '' || self::isAutoPhone($code) || in_array($code, $out, true)) {
+                continue;
+            }
+
+            $out[] = $code;
+        }
+
+        return $out;
+    }
+
     public static function phoneForGeo(string $geo): string
     {
         $geo = strtoupper($geo);

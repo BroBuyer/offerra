@@ -2032,7 +2032,7 @@ export default function OffersCreate({
                                 </ul>
                                 {packHasVespera && (
                                     <p className="field-hint">
-                                        Домени з Vespera збережуться як ML / en. Інші візьмуть {data.geo || 'GEO'} / {data.lang || 'мову'}.
+                                        Домени з Vespera збережуться як ML / en і з усіма phone GEO. Інші візьмуть {data.geo || 'GEO'} / {data.lang || 'мову'}.
                                     </p>
                                 )}
                             </div>
@@ -2055,7 +2055,7 @@ export default function OffersCreate({
                                 )}
                                 {data.template === 'vespera' && (
                                     <p className="field-hint">
-                                        Vespera збережеться як ML / en. Мін. деп і валюта з форми лишаються.
+                                        Vespera збережеться як ML / en і з усіма phone GEO. Мін. деп і валюта з форми лишаються.
                                     </p>
                                 )}
                                 {selectedTemplate && data.lang && data.template !== 'vespera' && (

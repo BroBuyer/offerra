@@ -646,21 +646,19 @@ class OfferGenerator
             );
         }
 
-        $phone = strtolower((string) $input['phone']);
-        $phoneCountriesCsv = $this->configBuilder->phoneCountriesCsv([
-            'phone' => $phone,
-            'phone_countries' => $input['phone_countries'] ?? [],
-        ]);
-
         $brand = trim((string) ($input['brand'] ?? $offer->brand));
         $template = trim((string) ($input['template'] ?? $offer->template));
         $pinned = TemplateCatalog::pinVesperaMarket([
             'template' => $template,
             'geo' => strtoupper(trim((string) ($input['geo'] ?? $offer->geo))),
             'lang' => strtolower(trim((string) ($input['lang'] ?? $offer->lang))),
+            'phone' => strtolower((string) ($input['phone'] ?? $offer->phone)),
+            'phone_countries' => $input['phone_countries'] ?? $offer->phone_countries ?? [],
         ]);
         $geo = $pinned['geo'];
         $lang = $pinned['lang'];
+        $phone = strtolower((string) $pinned['phone']);
+        $phoneCountriesCsv = $this->configBuilder->phoneCountriesCsv($pinned);
         $minDeposit = trim((string) ($input['min_deposit'] ?? $offer->min_deposit ?: '250'));
         $currency = strtoupper(trim((string) ($input['currency'] ?? $offer->currency ?: 'EUR')));
 
@@ -1113,10 +1111,17 @@ PHP;
      */
     private function syncOfferPhoneFields(Offer $offer): array
     {
+        $pinned = TemplateCatalog::pinVesperaMarket([
+            'template' => (string) $offer->template,
+            'geo' => (string) $offer->geo,
+            'lang' => (string) $offer->lang,
+            'phone' => (string) $offer->phone,
+            'phone_countries' => $offer->phone_countries ?? '',
+        ]);
         $normalized = MarketOptions::normalizePhoneFields(
-            (string) $offer->phone,
-            (string) ($offer->phone_countries ?? ''),
-            (string) $offer->geo,
+            (string) $pinned['phone'],
+            $pinned['phone_countries'] ?? '',
+            (string) $pinned['geo'],
         );
         $csv = implode(',', $normalized['phone_countries']);
 

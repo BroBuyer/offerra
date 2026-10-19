@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\MarketOptions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 
@@ -145,6 +146,8 @@ class TemplateCatalog
 
         $input['geo'] = 'ML';
         $input['lang'] = 'en';
+        $input['phone'] = 'ip';
+        $input['phone_countries'] = MarketOptions::allPhoneCodes();
 
         return $input;
     }
