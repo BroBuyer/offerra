@@ -56,7 +56,9 @@ class StoreOfferRequest extends FormRequest
             'min_deposit' => ['required', 'string', 'max:20'],
             'currency' => ['required', 'string', 'min:2', 'max:8', Rule::in($currencyCodes)],
             'geo' => ['required', 'string', 'size:2', 'alpha:ascii'],
-            'lang' => ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
+            'lang' => TemplateCatalog::usesMlGeo($template)
+                ? ['required', 'string', 'max:8']
+                : ['required', 'string', Rule::in($catalog->languageCodesFor($template))],
             'phone' => ['required', 'string', 'regex:/^(ip|[a-zA-Z]{2})$/'],
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],

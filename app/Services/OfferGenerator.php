@@ -38,6 +38,7 @@ class OfferGenerator
             );
         }
 
+        $input = TemplateCatalog::pinVesperaMarket($input);
         $template = $input['template'];
         $templateLangForSource = TemplateCatalog::copiesWholeTree($template) ? 'en' : (string) $input['lang'];
         $templatePath = $this->templateCatalog->resolveSourcePath($template, $templateLangForSource);
@@ -669,9 +670,14 @@ class OfferGenerator
         ]);
 
         $brand = trim((string) ($input['brand'] ?? $offer->brand));
-        $geo = strtoupper(trim((string) ($input['geo'] ?? $offer->geo)));
-        $lang = strtolower(trim((string) ($input['lang'] ?? $offer->lang)));
         $template = trim((string) ($input['template'] ?? $offer->template));
+        $pinned = TemplateCatalog::pinVesperaMarket([
+            'template' => $template,
+            'geo' => strtoupper(trim((string) ($input['geo'] ?? $offer->geo))),
+            'lang' => strtolower(trim((string) ($input['lang'] ?? $offer->lang))),
+        ]);
+        $geo = $pinned['geo'];
+        $lang = $pinned['lang'];
         $minDeposit = trim((string) ($input['min_deposit'] ?? $offer->min_deposit ?: '250'));
         $currency = strtoupper(trim((string) ($input['currency'] ?? $offer->currency ?: 'EUR')));
 

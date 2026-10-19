@@ -134,6 +134,22 @@ class TemplateCatalog
     }
 
     /**
+     * Vespera can sit in a single-GEO pack (min deposit + currency from the form),
+     * but the stored offer is always ML / en — not the market GEO/lang.
+     */
+    public static function pinVesperaMarket(array $input): array
+    {
+        if (($input['template'] ?? '') !== 'vespera') {
+            return $input;
+        }
+
+        $input['geo'] = 'ML';
+        $input['lang'] = 'en';
+
+        return $input;
+    }
+
+    /**
      * Filesystem root used for /preview/{template}/… rendering.
      * Prefer template root when it has index.php; otherwise the requested
      * (or first available) language under langs/.

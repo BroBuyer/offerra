@@ -51,6 +51,11 @@ function isMlOfferTemplate(templateId) {
     return templateId === 'multilang' || templateId === 'vespera';
 }
 
+/** Vespera can sit in any GEO pack; generator pins ML / en. */
+function templateAlwaysSelectable(templateId) {
+    return isMlOfferTemplate(templateId);
+}
+
 function normalizeGeo(value) {
     return value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 }
@@ -340,7 +345,10 @@ export default function OffersCreate({
 
     const isMarketMultilang = isBulkMode
         ? bulkAllMultilang
-        : isMlOfferTemplate(data.template);
+        : isOverflowHubTemplate(data.template);
+    const packHasVespera = isBulkMode
+        ? bulkItems.some((item) => item.template === 'vespera')
+        : data.template === 'vespera';
 
     const availableLanguages = useMemo(() => {
         if (isMarketMultilang) {
@@ -358,7 +366,9 @@ export default function OffersCreate({
             return templates;
         }
 
-        return templates.filter((item) => templateSupportsLang(item, data.lang));
+        return templates.filter((item) => (
+            templateAlwaysSelectable(item.id) || templateSupportsLang(item, data.lang)
+        ));
     }, [templates, data.lang, isMarketMultilang]);
 
     const disabledTemplateIds = useMemo(() => {
@@ -366,12 +376,14 @@ export default function OffersCreate({
             return [];
         }
 
-        if (!data.lang) {
-            return templates.map((item) => item.id);
-        }
-
         return templates
-            .filter((item) => !templateSupportsLang(item, data.lang))
+            .filter((item) => {
+                if (templateAlwaysSelectable(item.id)) {
+                    return false;
+                }
+
+                return !data.lang || !templateSupportsLang(item, data.lang);
+            })
             .map((item) => item.id);
     }, [templates, data.lang, isMarketMultilang]);
 
@@ -597,23 +609,25 @@ export default function OffersCreate({
     const updateTemplate = (templateId) => {
         const template = templates.find((item) => item.id === templateId);
         const langs = template?.languages ?? [];
-        const wasMultilang = isMlOfferTemplate(data.template);
-        const isMultilang = isMlOfferTemplate(templateId);
-        const lang = isMultilang
+        const wasHub = isOverflowHubTemplate(data.template);
+        const isHub = isOverflowHubTemplate(templateId);
+        const lang = isHub
             ? (langs.some((item) => item.code === 'en') ? 'en' : (langs[0]?.code ?? ''))
-            : (data.lang && langs.some((item) => item.code === data.lang) ? data.lang : '');
+            : (data.lang && (templateAlwaysSelectable(templateId) || langs.some((item) => item.code === data.lang))
+                ? data.lang
+                : '');
 
         setData((prev) => ({
             ...prev,
             template: templateId,
             lang,
-            ...(isMultilang
+            ...(isHub
                 ? {
                     geo: MULTILANG_GEO,
                     phone: 'ip',
                     phone_countries: uniquePhonePresets(geoPresets).map((item) => phoneOptionCode(item)),
                 }
-                : wasMultilang
+                : wasHub && !templateAlwaysSelectable(templateId)
                     ? { geo: '', phone: '', phone_countries: [] }
                     : {}),
         }));
@@ -1010,7 +1024,7 @@ export default function OffersCreate({
 
                 const template = templates.find((row) => row.id === item.template);
 
-                return !templateSupportsLang(template, langCode);
+                return !templateAlwaysSelectable(item.template) && !templateSupportsLang(template, langCode);
             });
 
             if (!needsAssign) {
@@ -1028,10 +1042,14 @@ export default function OffersCreate({
                 langCode,
             );
 
-            return prev.map((item, index) => ({
-                ...item,
-                template: assigned[index]?.template || item.template,
-            }));
+            return prev.map((item, index) => (
+                templateAlwaysSelectable(item.template)
+                    ? item
+                    : {
+                        ...item,
+                        template: assigned[index]?.template || item.template,
+                    }
+            ));
         });
     };
 
@@ -1301,6 +1319,7 @@ export default function OffersCreate({
             && templates.length > 0
             && (
                 isMarketMultilang
+                || templateAlwaysSelectable(data.template)
                 || !data.lang
                 || templateSupportsLang(selectedTemplate, data.lang)
             );
@@ -1852,8 +1871,10 @@ export default function OffersCreate({
                         <h3>Ринок і мова</h3>
                         <p className="card-desc" style={{ marginBottom: '1rem' }}>
                             Спочатку GEO, мова й валюта — далі шаблони, які підтримують цю мову.
+                            {' '}
+                            Vespera можна поставити на будь-який домен: він завжди збережеться як ML / en.
                             {isMarketMultilang ? (
-                                <> Multilang: у CRM країна з IP; мови через URL (<code>/fr/</code>, …).</>
+                                <> Multilang hub: у CRM країна з IP; мови через URL (<code>/fr/</code>, …).</>
                             ) : null}
                         </p>
                         <div className="field-row">
@@ -2020,7 +2041,7 @@ export default function OffersCreate({
                     <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Шаблони</h3>
                         <p className="card-desc" style={{ marginBottom: '0.75rem' }}>
-                            Папки з <code>templates/</code>. Без обраної мови шаблон недоступний.
+                            Папки з <code>templates/</code>. Без обраної мови шаблон недоступний, крім Vespera (завжди ML / en).
                         </p>
                         {data.brand.trim() && usedTemplateIds.length > 0 && (
                             <p className="field-hint" style={{ marginBottom: '0.85rem' }}>
@@ -2049,6 +2070,7 @@ export default function OffersCreate({
                                             <span className="offer-bulk-map__domain">
                                                 {item.domain}
                                                 {isOverflowHubTemplate(item.template) ? ' · hub' : ''}
+                                                {item.template === 'vespera' ? ' · ML/en' : ''}
                                             </span>
                                             <select
                                                 className="offer-bulk-map__select"
@@ -2062,7 +2084,9 @@ export default function OffersCreate({
                                                 </option>
                                                 {templates.map((template) => {
                                                     const isHubTpl = isOverflowHubTemplate(template.id);
-                                                    const langOk = isHubTpl || isMarketMultilang || templateSupportsLang(template, data.lang);
+                                                    const langOk = templateAlwaysSelectable(template.id)
+                                                        || isMarketMultilang
+                                                        || templateSupportsLang(template, data.lang);
                                                     const used = usedTemplateIds.includes(template.id);
                                                     const hubTaken = isHubTpl
                                                         && bulkHasHub
@@ -2091,6 +2115,11 @@ export default function OffersCreate({
                                         Лише один multilang hub на пакет.
                                     </p>
                                 )}
+                                {packHasVespera && (
+                                    <p className="field-hint">
+                                        Домени з Vespera збережуться як ML / en. Інші візьмуть {data.geo || 'GEO'} / {data.lang || 'мову'}.
+                                    </p>
+                                )}
                                 {bulkMixedPack && (
                                     <p className="field-hint">
                                         Пакет GEO + hub ({bulkHubDomain}): чужі GEO з GEO-доменів можна редиректити на hub у кроці інфри.
@@ -2114,7 +2143,12 @@ export default function OffersCreate({
                                         «вже є» — шаблон уже стоїть на воронці «{data.brand.trim()}». Можна обрати інший.
                                     </p>
                                 )}
-                                {selectedTemplate && data.lang && (
+                                {data.template === 'vespera' && (
+                                    <p className="field-hint">
+                                        Vespera збережеться як ML / en. Мін. деп і валюта з форми лишаються.
+                                    </p>
+                                )}
+                                {selectedTemplate && data.lang && data.template !== 'vespera' && (
                                     <p className="field-hint">
                                         Обрано: {selectedTemplate.name}. Мови шаблону:{' '}
                                         {selectedTemplate.languages.map((item) => item.code).join(', ') || '—'}
@@ -2288,8 +2322,10 @@ export default function OffersCreate({
                                     {isMarketMultilang
                                         ? `Multi (${MULTILANG_GEO}) / en + ${Math.max(0, availableLanguages.length - 1)} мов`
                                         : bulkMixedPack
-                                            ? `${data.geo} / ${data.lang} + hub ML/en (${bulkHubDomain})`
-                                            : `${data.geo} / ${data.lang}`}
+                                            ? `${data.geo} / ${data.lang} + hub ML/en (${bulkHubDomain})${packHasVespera ? ' · vespera → ML/en' : ''}`
+                                            : packHasVespera
+                                                ? `${data.geo} / ${data.lang} · vespera → ML/en`
+                                                : `${data.geo} / ${data.lang}`}
                                 </span>
                             </div>
                             {data.infra_cloudflare_geo_overflow && bulkHubDomain && (
