@@ -48,7 +48,6 @@ class StoreBulkOffersRequest extends FormRequest
             'phone' => $normalized['phone'],
             'phone_countries' => $normalized['phone_countries'],
             'items' => $items,
-            'geo_overflow_hub' => DomainName::normalize((string) $this->input('geo_overflow_hub', '')),
         ]);
     }
 
@@ -78,8 +77,6 @@ class StoreBulkOffersRequest extends FormRequest
             'infra_cloudflare_ssl' => ['boolean'],
             'infra_cloudflare_https' => ['boolean'],
             'infra_cloudflare_www_redirect' => ['boolean'],
-            'infra_cloudflare_geo_overflow' => ['boolean'],
-            'geo_overflow_hub' => ['nullable', 'string', 'max:120'],
             'items' => ['required', 'array', 'min:1', 'max:10'],
             'items.*.domain' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i', 'distinct'],
             'items.*.template' => ['required', 'string', Rule::in($catalog->ids())],
@@ -92,13 +89,11 @@ class StoreBulkOffersRequest extends FormRequest
             $catalog = app(TemplateCatalog::class);
             $lang = strtolower((string) $this->input('lang'));
             $items = $this->input('items', []);
-            $geoOverflow = $this->boolean('infra_cloudflare_geo_overflow');
 
             if (! is_array($items)) {
                 return;
             }
 
-            $hubDomains = [];
             foreach ($items as $index => $item) {
                 if (! is_array($item)) {
                     continue;
@@ -106,12 +101,6 @@ class StoreBulkOffersRequest extends FormRequest
 
                 $template = (string) ($item['template'] ?? '');
                 $domain = (string) ($item['domain'] ?? '');
-
-                if (TemplateCatalog::isOverflowHub($template)) {
-                    $hubDomains[] = $domain;
-
-                    continue;
-                }
 
                 if (TemplateCatalog::usesMlGeo($template)) {
                     continue;
@@ -123,43 +112,6 @@ class StoreBulkOffersRequest extends FormRequest
                     $validator->errors()->add(
                         "items.{$index}.template",
                         "Мова «{$lang}» недоступна для шаблону «{$template}» (домен {$domain}).",
-                    );
-                }
-            }
-
-            if (count($hubDomains) > 1) {
-                $validator->errors()->add(
-                    'items',
-                    'У пакеті може бути лише один multilang hub.',
-                );
-            }
-
-            if ($geoOverflow) {
-                $hub = strtolower(trim((string) $this->input('geo_overflow_hub', '')));
-                if ($hub === '' && $hubDomains !== []) {
-                    $hub = $hubDomains[0];
-                    $this->merge(['geo_overflow_hub' => $hub]);
-                }
-
-                if ($hub === '') {
-                    $validator->errors()->add(
-                        'infra_cloudflare_geo_overflow',
-                        'Для overflow потрібен multilang hub у пакеті (або geo_overflow_hub).',
-                    );
-                } elseif ($hubDomains !== [] && ! in_array($hub, $hubDomains, true)) {
-                    $validator->errors()->add(
-                        'geo_overflow_hub',
-                        'Hub має бути одним із multilang-доменів пакета.',
-                    );
-                }
-
-                $hasGeo = collect($items)->contains(
-                    static fn ($item) => is_array($item) && ($item['template'] ?? '') !== 'multilang',
-                );
-                if (! $hasGeo) {
-                    $validator->errors()->add(
-                        'infra_cloudflare_geo_overflow',
-                        'Overflow має сенс лише коли в пакеті є GEO-офери + multilang hub.',
                     );
                 }
             }

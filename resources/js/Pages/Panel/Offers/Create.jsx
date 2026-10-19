@@ -16,12 +16,6 @@ const INFRA_TASKS = [
     { key: 'infra_cloudflare_ssl', label: 'Cloudflare — SSL (flexible)', requiresZone: true },
     { key: 'infra_cloudflare_https', label: 'Cloudflare — HTTP → HTTPS', requiresZone: true },
     { key: 'infra_cloudflare_www_redirect', label: 'Cloudflare — www → домен (301)', requiresZone: true },
-    {
-        key: 'infra_cloudflare_geo_overflow',
-        label: 'Cloudflare — чуже GEO → multilang hub (302, боти без redirect)',
-        requiresZone: true,
-        requiresHub: true,
-    },
 ];
 
 function defaultInfraOptions(enabled = false) {
@@ -32,7 +26,6 @@ function defaultInfraOptions(enabled = false) {
         infra_cloudflare_ssl: enabled,
         infra_cloudflare_https: enabled,
         infra_cloudflare_www_redirect: enabled,
-        infra_cloudflare_geo_overflow: false,
     };
 }
 
@@ -316,32 +309,9 @@ export default function OffersCreate({
         [templates, usedTemplateIds, usedTemplateCounts],
     );
 
-    const bulkMultilangFlags = useMemo(
-        () => bulkItems.map((item) => isOverflowHubTemplate(item.template)),
-        [bulkItems],
-    );
-
-    const bulkHubCount = useMemo(
-        () => bulkMultilangFlags.filter(Boolean).length,
-        [bulkMultilangFlags],
-    );
-
-    const bulkHasHub = bulkHubCount > 0;
-    const bulkHasGeo = useMemo(
-        () => bulkMultilangFlags.some((flag) => !flag) && bulkItems.length > 0,
-        [bulkMultilangFlags, bulkItems.length],
-    );
-    const bulkHubDomain = useMemo(() => {
-        const row = bulkItems.find((item) => isOverflowHubTemplate(item.template));
-
-        return row?.domain ?? '';
-    }, [bulkItems]);
-    const bulkTooManyHubs = bulkHubCount > 1;
-    const bulkMixedPack = bulkHasHub && bulkHasGeo;
-
     const bulkAllMultilang = isBulkMode
         && bulkItems.length > 0
-        && bulkMultilangFlags.every(Boolean);
+        && bulkItems.every((item) => isOverflowHubTemplate(item.template));
 
     const isMarketMultilang = isBulkMode
         ? bulkAllMultilang
@@ -1197,10 +1167,6 @@ export default function OffersCreate({
     const toggleInfraOption = (key, checked) => {
         setData((prev) => {
             const task = INFRA_TASKS.find((row) => row.key === key);
-            if (checked && task?.requiresHub && !bulkMixedPack) {
-                return prev;
-            }
-
             const next = { ...prev, [key]: checked };
 
             if (!checked && key === 'infra_cloudflare_zone') {
@@ -1223,31 +1189,8 @@ export default function OffersCreate({
         setData((prev) => ({
             ...prev,
             ...defaultInfraOptions(true),
-            infra_cloudflare_geo_overflow: bulkMixedPack,
         }));
     };
-
-    useEffect(() => {
-        if (!canProvisionInfrastructure) {
-            return;
-        }
-
-        setData((prev) => {
-            const wantOverflow = Boolean(bulkMixedPack);
-            if (
-                Boolean(prev.infra_cloudflare_geo_overflow) === wantOverflow
-                && (!wantOverflow || prev.infra_cloudflare_zone)
-            ) {
-                return prev;
-            }
-
-            return {
-                ...prev,
-                infra_cloudflare_geo_overflow: wantOverflow,
-                ...(wantOverflow ? { infra_cloudflare_zone: true } : {}),
-            };
-        });
-    }, [bulkMixedPack, canProvisionInfrastructure, setData]);
 
     useEffect(() => {
         if (canProvisionInfrastructure && domainPurchasedViaPanel && !anyInfraEnabled(data)) {
@@ -1314,7 +1257,6 @@ export default function OffersCreate({
             return templateSupportsLang(template, data.lang);
         })
             && templates.length > 0
-            && !bulkTooManyHubs
         : Boolean(data.template)
             && templates.length > 0
             && (
@@ -1345,16 +1287,6 @@ export default function OffersCreate({
                     : 'Заповніть бренд і зберіть пакет доменів (крок 1).')
                 : 'Заповніть бренд і домен (крок 1).';
         }
-        if (isBulkMode && bulkTooManyHubs) {
-            return 'У пакеті може бути лише один multilang hub.';
-        }
-        if (data.infra_cloudflare_geo_overflow && isBulkMode && !bulkMixedPack) {
-            return 'Overflow: потрібні GEO-офери + один multilang hub у пакеті.';
-        }
-        if (data.infra_cloudflare_geo_overflow && !isBulkMode && !isOverflowHubTemplate(data.template)) {
-            // single GEO offer without hub domain field yet — block until hub domain provided via pack
-            return 'Overflow для одного офера: створіть пакет GEO + multilang hub.';
-        }
         if (!canProceedTemplate) {
             return isBulkMode
                 ? 'Оберіть шаблон з підтримкою мови для кожного домену (крок 2).'
@@ -1379,13 +1311,10 @@ export default function OffersCreate({
         data.create_keitaro,
         hasKeitaroApiKey,
         isBulkMode,
-        bulkTooManyHubs,
-        bulkMixedPack,
         packNeedsPurchase,
         bulkItems.length,
         templatesForLang.length,
         data.lang,
-        data.infra_cloudflare_geo_overflow,
         data.template,
         isMarketMultilang,
     ]);
@@ -1437,8 +1366,6 @@ export default function OffersCreate({
                 infra_cloudflare_ssl: data.infra_cloudflare_ssl,
                 infra_cloudflare_https: data.infra_cloudflare_https,
                 infra_cloudflare_www_redirect: data.infra_cloudflare_www_redirect,
-                infra_cloudflare_geo_overflow: data.infra_cloudflare_geo_overflow,
-                geo_overflow_hub: bulkHubDomain || '',
                 items: bulkItems.map(({ domain, template }) => ({ domain, template })),
             }, {
                 preserveScroll: true,
@@ -1874,7 +1801,7 @@ export default function OffersCreate({
                             {' '}
                             Vespera можна поставити на будь-який домен: він завжди збережеться як ML / en.
                             {isMarketMultilang ? (
-                                <> Multilang hub: у CRM країна з IP; мови через URL (<code>/fr/</code>, …).</>
+                                <> Multilang: у CRM країна з IP; мови через URL (<code>/fr/</code>, …).</>
                             ) : null}
                         </p>
                         <div className="field-row">
@@ -2069,7 +1996,6 @@ export default function OffersCreate({
                                         <li key={item.domain} className="offer-bulk-map__row">
                                             <span className="offer-bulk-map__domain">
                                                 {item.domain}
-                                                {isOverflowHubTemplate(item.template) ? ' · hub' : ''}
                                                 {item.template === 'vespera' ? ' · ML/en' : ''}
                                             </span>
                                             <select
@@ -2083,26 +2009,20 @@ export default function OffersCreate({
                                                     {!data.lang && !isMarketMultilang ? 'Спочатку мова' : '— шаблон —'}
                                                 </option>
                                                 {templates.map((template) => {
-                                                    const isHubTpl = isOverflowHubTemplate(template.id);
                                                     const langOk = templateAlwaysSelectable(template.id)
                                                         || isMarketMultilang
                                                         || templateSupportsLang(template, data.lang);
                                                     const used = usedTemplateIds.includes(template.id);
-                                                    const hubTaken = isHubTpl
-                                                        && bulkHasHub
-                                                        && !isOverflowHubTemplate(item.template);
 
                                                     return (
                                                         <option
                                                             key={template.id}
                                                             value={template.id}
-                                                            disabled={!langOk || hubTaken}
+                                                            disabled={!langOk}
                                                         >
                                                             {template.name}
-                                                            {isHubTpl ? ' · hub' : ''}
                                                             {used ? ' · вже є' : ''}
                                                             {!langOk ? ' · немає мови' : ''}
-                                                            {hubTaken ? ' · вже обрано' : ''}
                                                         </option>
                                                     );
                                                 })}
@@ -2110,19 +2030,9 @@ export default function OffersCreate({
                                         </li>
                                     ))}
                                 </ul>
-                                {bulkTooManyHubs && (
-                                    <p className="field-hint" style={{ color: '#f87171' }}>
-                                        Лише один multilang hub на пакет.
-                                    </p>
-                                )}
                                 {packHasVespera && (
                                     <p className="field-hint">
                                         Домени з Vespera збережуться як ML / en. Інші візьмуть {data.geo || 'GEO'} / {data.lang || 'мову'}.
-                                    </p>
-                                )}
-                                {bulkMixedPack && (
-                                    <p className="field-hint">
-                                        Пакет GEO + hub ({bulkHubDomain}): чужі GEO з GEO-доменів можна редиректити на hub у кроці інфри.
                                     </p>
                                 )}
                             </div>
@@ -2223,28 +2133,17 @@ export default function OffersCreate({
                                 Оберіть, що виконати автоматично після генерації. Кожен пункт — окремо.
                             </p>
                             <div className="field" style={{ display: 'grid', gap: '0.65rem' }}>
-                                {INFRA_TASKS.map((task) => {
-                                    const hubBlocked = Boolean(task.requiresHub) && !bulkMixedPack;
-
-                                    return (
-                                        <label key={task.key} className="field-check" htmlFor={task.key}>
-                                            <input
-                                                id={task.key}
-                                                type="checkbox"
-                                                checked={Boolean(data[task.key])}
-                                                disabled={hubBlocked}
-                                                onChange={(e) => toggleInfraOption(task.key, e.target.checked)}
-                                            />
-                                            <span>
-                                                {task.label}
-                                                {hubBlocked ? ' — додайте GEO + 1 multilang у пакет' : ''}
-                                                {task.requiresHub && bulkMixedPack && bulkHubDomain
-                                                    ? ` → ${bulkHubDomain}`
-                                                    : ''}
-                                            </span>
-                                        </label>
-                                    );
-                                })}
+                                {INFRA_TASKS.map((task) => (
+                                    <label key={task.key} className="field-check" htmlFor={task.key}>
+                                        <input
+                                            id={task.key}
+                                            type="checkbox"
+                                            checked={Boolean(data[task.key])}
+                                            onChange={(e) => toggleInfraOption(task.key, e.target.checked)}
+                                        />
+                                        <span>{task.label}</span>
+                                    </label>
+                                ))}
                             </div>
                             <div className="btn-row" style={{ marginTop: '0.75rem' }}>
                                 <button type="button" className="btn btn-ghost btn-sm" onClick={enableAllInfraOptions}>
@@ -2321,19 +2220,11 @@ export default function OffersCreate({
                                 <span>
                                     {isMarketMultilang
                                         ? `Multi (${MULTILANG_GEO}) / en + ${Math.max(0, availableLanguages.length - 1)} мов`
-                                        : bulkMixedPack
-                                            ? `${data.geo} / ${data.lang} + hub ML/en (${bulkHubDomain})${packHasVespera ? ' · vespera → ML/en' : ''}`
-                                            : packHasVespera
-                                                ? `${data.geo} / ${data.lang} · vespera → ML/en`
-                                                : `${data.geo} / ${data.lang}`}
+                                        : packHasVespera
+                                            ? `${data.geo} / ${data.lang} · vespera → ML/en`
+                                            : `${data.geo} / ${data.lang}`}
                                 </span>
                             </div>
-                            {data.infra_cloudflare_geo_overflow && bulkHubDomain && (
-                                <div className="summary-row">
-                                    <span>GEO overflow</span>
-                                    <span>чуже GEO → {bulkHubDomain} (302, bots OK)</span>
-                                </div>
-                            )}
                             <div className="summary-row"><span>Phone GEO</span><span>{selectedPhones.join(', ')} (default: {data.phone})</span></div>
                             <div className="summary-row"><span>Мін. депозит</span><span>{data.min_deposit || '—'} {data.currency || ''}</span></div>
                             {!isBulkMode && (

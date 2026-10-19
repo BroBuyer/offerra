@@ -72,8 +72,6 @@ class UpdateOfferRequest extends FormRequest
             'create_keitaro' => $this->boolean('create_keitaro'),
             'vitals_enabled' => $this->boolean('vitals_enabled'),
             'auto_redeploy' => $this->boolean('auto_redeploy', true),
-            'infra_cloudflare_geo_overflow' => $this->boolean('infra_cloudflare_geo_overflow'),
-            'geo_overflow_hub' => \App\Support\DomainName::normalize((string) $this->input('geo_overflow_hub', '')),
         ]);
     }
 
@@ -101,8 +99,6 @@ class UpdateOfferRequest extends FormRequest
             'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
             'auto_redeploy' => ['boolean'],
-            'infra_cloudflare_geo_overflow' => ['boolean'],
-            'geo_overflow_hub' => ['nullable', 'string', 'max:120'],
         ];
     }
 
@@ -116,30 +112,5 @@ class UpdateOfferRequest extends FormRequest
             'currency.in' => 'Оберіть валюту зі списку',
             'geo.size' => 'GEO — 2 літери, наприклад IE, IT, ZA',
         ];
-    }
-
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator): void {
-            if (! $this->boolean('infra_cloudflare_geo_overflow')) {
-                return;
-            }
-
-            $hub = strtolower(trim((string) $this->input('geo_overflow_hub', '')));
-            if ($hub === '' || ! preg_match('/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i', $hub)) {
-                $validator->errors()->add('geo_overflow_hub', 'Вкажіть валідний домен multilang hub.');
-            }
-
-            /** @var \App\Models\Offer|null $offer */
-            $offer = $this->route('offer');
-            $template = (string) $this->input('template', $offer?->template);
-            $geo = strtoupper((string) $this->input('geo', $offer?->geo));
-            if ($template === 'multilang' || $geo === 'ML') {
-                $validator->errors()->add(
-                    'infra_cloudflare_geo_overflow',
-                    'На multilang hub overflow не ставиться.',
-                );
-            }
-        });
     }
 }

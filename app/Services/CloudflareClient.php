@@ -390,51 +390,6 @@ class CloudflareClient
         ]);
     }
 
-    /**
-     * Redirect non-target GEO visitors to a multilang hub (before origin / Keitaro).
-     */
-    public function ensureGeoOverflowRedirectRule(
-        UserSetting $settings,
-        string $zoneId,
-        string $country,
-        string $hubDomain,
-    ): void {
-        $country = strtoupper(trim($country));
-        $hubDomain = strtolower(trim($hubDomain));
-        $description = 'Offerra: geo overflow to hub';
-
-        if (! preg_match('/^[A-Z]{2}$/', $country) || $hubDomain === '') {
-            throw new RuntimeException('Geo overflow потребує ISO2 country і hub domain.');
-        }
-
-        $expression = sprintf(
-            '(ip.geoip.country ne "%s"'
-            .' and not http.user_agent contains "Google"'
-            .' and not http.user_agent contains "bingbot"'
-            .' and not http.user_agent contains "Bingbot"'
-            .' and not http.user_agent contains "Yandex"'
-            .' and http.request.uri.path ne "/sitemap.xml"'
-            .' and http.request.uri.path ne "/robots.txt"'
-            .' and not starts_with(http.request.uri.path, "/google"))',
-            $country,
-        );
-
-        $this->upsertDynamicRedirectRule($settings, $zoneId, $description, [
-            'description' => $description,
-            'expression' => $expression,
-            'action' => 'redirect',
-            'action_parameters' => [
-                'from_value' => [
-                    'status_code' => 302,
-                    'preserve_query_string' => true,
-                    'target_url' => [
-                        'value' => 'https://'.$hubDomain,
-                    ],
-                ],
-            ],
-        ]);
-    }
-
     public function removeDynamicRedirectRule(UserSetting $settings, string $zoneId, string $description): void
     {
         $description = trim($description);

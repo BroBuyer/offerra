@@ -34,13 +34,11 @@ export default function OfferEditModal({
     currencies = [],
     templates = [],
     brandTemplateUsage = {},
-    multilangHubs = [],
     hasKeitaroApiKey,
     onClose,
 }) {
     const phoneCountries = normalizePhoneCountries(offer.phone_countries, offer.phone);
     const initialTemplate = offer.template_id || 'default';
-    const canGeoOverflow = Boolean(offer.can_geo_overflow);
 
     const { errors: pageErrors, panel } = usePage().props;
     const geoMinDeposits = panel?.geo_min_deposits || {};
@@ -56,23 +54,7 @@ export default function OfferEditModal({
         create_keitaro: false,
         vitals_enabled: Boolean(offer.vitals_enabled),
         auto_redeploy: true,
-        infra_cloudflare_geo_overflow: Boolean(offer.geo_overflow_enabled),
-        geo_overflow_hub: offer.geo_overflow_hub || '',
     });
-
-    const brandHubs = useMemo(() => {
-        const brand = String(data.brand || '').trim().toLowerCase();
-        const ownerId = offer.user_id;
-        return multilangHubs.filter((hub) => {
-            if (ownerId && hub.user_id && hub.user_id !== ownerId) {
-                return false;
-            }
-            if (!brand) {
-                return true;
-            }
-            return String(hub.brand || '').trim().toLowerCase() === brand;
-        });
-    }, [multilangHubs, data.brand, offer.user_id]);
 
     const usedTemplateIds = useMemo(
         () => usedTemplatesForBrand(brandTemplateUsage, data.brand, {
@@ -253,9 +235,7 @@ export default function OfferEditModal({
         || errors.phone
         || errors.phone_countries
         || errors.create_keitaro
-        || errors.vitals_enabled
-        || errors.infra_cloudflare_geo_overflow
-        || errors.geo_overflow_hub;
+        || errors.vitals_enabled;
 
     return (
         <div className="modal-backdrop" onClick={() => !processing && onClose()}>
@@ -483,64 +463,6 @@ export default function OfferEditModal({
                             Зміна мови/шаблону перезбирає ленд з нуля. Домен і Cloudflare/Dynadot не чіпаються.
                         </p>
                     </div>
-
-                    {canGeoOverflow && data.template !== 'multilang' && (
-                        <div className="field" style={{ marginTop: '0.5rem' }}>
-                            <label className="field-check" htmlFor="edit-geo-overflow">
-                                <input
-                                    id="edit-geo-overflow"
-                                    type="checkbox"
-                                    checked={Boolean(data.infra_cloudflare_geo_overflow)}
-                                    onChange={(event) => {
-                                        const on = event.target.checked;
-                                        setData((prev) => ({
-                                            ...prev,
-                                            infra_cloudflare_geo_overflow: on,
-                                            geo_overflow_hub: on
-                                                ? (prev.geo_overflow_hub || brandHubs[0]?.domain || '')
-                                                : prev.geo_overflow_hub,
-                                        }));
-                                    }}
-                                />
-                                <span>Cloudflare — чуже GEO → multilang hub (302)</span>
-                            </label>
-                            <p className="field-hint">
-                                Відвідувачі не з GEO офера йдуть на hub. Googlebot / CF bots лишаються на цьому домені.
-                            </p>
-                            {data.infra_cloudflare_geo_overflow && (
-                                <div className="field" style={{ marginTop: '0.5rem' }}>
-                                    <label htmlFor="edit-geo-overflow-hub">Multilang hub</label>
-                                    {brandHubs.length > 0 ? (
-                                        <select
-                                            id="edit-geo-overflow-hub"
-                                            value={data.geo_overflow_hub}
-                                            onChange={(event) => setData('geo_overflow_hub', event.target.value)}
-                                        >
-                                            <option value="">— оберіть hub —</option>
-                                            {brandHubs.map((hub) => (
-                                                <option key={hub.id} value={hub.domain}>
-                                                    {hub.domain} ({hub.brand})
-                                                </option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        <input
-                                            id="edit-geo-overflow-hub"
-                                            type="text"
-                                            placeholder="example-hub.com"
-                                            value={data.geo_overflow_hub}
-                                            onChange={(event) => setData('geo_overflow_hub', event.target.value.toLowerCase())}
-                                        />
-                                    )}
-                                    {brandHubs.length === 0 && (
-                                        <p className="field-hint">
-                                            Немає multilang оферів цього бренду в панелі — вкажіть домен hub вручну.
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
 
                     {fieldError && (
                         <p className="field-hint" style={{ color: '#f87171' }}>

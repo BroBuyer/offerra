@@ -122,26 +122,9 @@ class OfferGenerator
             $provisionInfrastructure = InfrastructureOptions::anyEnabled($infraOptions);
             $providerSnapshot = $settings->providerSnapshotForOffer();
 
-            $infraMeta = null;
-            if ($provisionInfrastructure) {
-                $infraMeta = ['options' => $infraOptions];
-                $hub = strtolower(trim((string) ($input['geo_overflow_hub'] ?? '')));
-                $overflowCountry = strtoupper(trim((string) ($input['geo'] ?? '')));
-                if (
-                    ($infraOptions['cloudflare_geo_overflow'] ?? false)
-                    && $hub !== ''
-                    && $overflowCountry !== ''
-                    && $overflowCountry !== 'ML'
-                    && ! TemplateCatalog::isOverflowHub($template)
-                ) {
-                    $infraMeta['geo_overflow_hub'] = $hub;
-                    $infraMeta['geo_overflow_country'] = $overflowCountry;
-                } else {
-                    // Hub itself must not redirect away.
-                    $infraOptions['cloudflare_geo_overflow'] = false;
-                    $infraMeta['options'] = $infraOptions;
-                }
-            }
+            $infraMeta = $provisionInfrastructure
+                ? ['options' => $infraOptions]
+                : null;
 
             $offer = Offer::create([
                 'user_id' => $user->id,

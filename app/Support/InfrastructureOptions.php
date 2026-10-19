@@ -13,7 +13,6 @@ class InfrastructureOptions
         'infra_cloudflare_ssl',
         'infra_cloudflare_https',
         'infra_cloudflare_www_redirect',
-        'infra_cloudflare_geo_overflow',
     ];
 
     public const META_KEYS = [
@@ -23,7 +22,6 @@ class InfrastructureOptions
         'cloudflare_ssl',
         'cloudflare_https',
         'cloudflare_www_redirect',
-        'cloudflare_geo_overflow',
     ];
 
     /**
@@ -31,11 +29,7 @@ class InfrastructureOptions
      */
     public static function defaults(): array
     {
-        $options = array_fill_keys(self::META_KEYS, true);
-        // Opt-in: only when pack has a multilang hub + user enables it.
-        $options['cloudflare_geo_overflow'] = false;
-
-        return $options;
+        return array_fill_keys(self::META_KEYS, true);
     }
 
     /**
@@ -51,7 +45,6 @@ class InfrastructureOptions
             'infra_cloudflare_ssl' => 'cloudflare_ssl',
             'infra_cloudflare_https' => 'cloudflare_https',
             'infra_cloudflare_www_redirect' => 'cloudflare_www_redirect',
-            'infra_cloudflare_geo_overflow' => 'cloudflare_geo_overflow',
         ];
 
         $options = [];
@@ -120,7 +113,6 @@ class InfrastructureOptions
             || ($options['cloudflare_ssl'] ?? false)
             || ($options['cloudflare_https'] ?? false)
             || ($options['cloudflare_www_redirect'] ?? false)
-            || ($options['cloudflare_geo_overflow'] ?? false)
             || ($options['dynadot_ns'] ?? false);
     }
 
@@ -139,7 +131,6 @@ class InfrastructureOptions
     {
         return ($options['cloudflare_ssl'] ?? false)
             || ($options['cloudflare_https'] ?? false)
-            || ($options['cloudflare_www_redirect'] ?? false)
-            || ($options['cloudflare_geo_overflow'] ?? false);
+            || ($options['cloudflare_www_redirect'] ?? false);
     }
 }

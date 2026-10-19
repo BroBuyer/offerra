@@ -81,7 +81,6 @@ class OfferRestoreService
         // Rebuild while still archived so a failure keeps the offer in the archive list.
         $this->generator->rebuildLocalFolder($offer->fresh());
 
-        $oldMeta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
         $options = InfrastructureOptions::forOffer($offer);
 
         if (! InfrastructureOptions::anyEnabled($options)) {
@@ -90,12 +89,6 @@ class OfferRestoreService
 
         // Fresh infra progress — archive deleted origin/CF zone; do not trust old "done" flags.
         $meta = ['options' => $options];
-
-        foreach (['geo_overflow_hub', 'geo_overflow_country'] as $keepKey) {
-            if (! empty($oldMeta[$keepKey])) {
-                $meta[$keepKey] = $oldMeta[$keepKey];
-            }
-        }
 
         $offer->update([
             'status' => 'generated',

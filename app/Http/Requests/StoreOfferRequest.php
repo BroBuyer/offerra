@@ -73,8 +73,6 @@ class StoreOfferRequest extends FormRequest
             'infra_cloudflare_ssl' => ['boolean'],
             'infra_cloudflare_https' => ['boolean'],
             'infra_cloudflare_www_redirect' => ['boolean'],
-            'infra_cloudflare_geo_overflow' => ['boolean'],
-            'geo_overflow_hub' => ['nullable', 'string', 'max:120'],
         ];
     }
 
