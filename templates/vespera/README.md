@@ -18,6 +18,6 @@ Document root = project folder. `.htaccess` rewrites all routes to `index.php`.
 
 - `index.php` — router
 - `includes/` — config, geo, helpers, header/footer
-- `lang/{code}.php` — copy (en, de, it, es, fr)
+- `lang/{code}.php` — copy (en, de, it, es, fr, pt, tr, nl, no)
 - `templates/` — pages
 - `assets/` — CSS / JS

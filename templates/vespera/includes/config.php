@@ -7,7 +7,7 @@ const SITE_URL = '';
 const SITE_LANG = 'en';
 const SITE_EMAIL = 'support@example.com';
 const DEFAULT_LANG = 'en';
-const SUPPORTED_LANGS = ['de', 'en', 'es', 'fr', 'it'];
+const SUPPORTED_LANGS = ['de', 'en', 'es', 'fr', 'it', 'nl', 'no', 'pt', 'tr'];
 const MIN_DEPOSIT = '250';
 const CURRENCY = 'EUR';
 const FORM_PHONE_COUNTRY = 'ip';
@@ -32,6 +32,11 @@ const GEO_LANG_MAP = [
     'FR' => 'fr',
     'BE' => 'fr',
     'LU' => 'fr',
+    'PT' => 'pt',
+    'BR' => 'pt',
+    'TR' => 'tr',
+    'NL' => 'nl',
+    'NO' => 'no',
 ];
 
 require_once __DIR__ . '/routes.php';
