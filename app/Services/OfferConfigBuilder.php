@@ -275,6 +275,7 @@ define('SITE_EMAIL', {$email});
 define('DEFAULT_LANG', 'en');
 define('SUPPORTED_LANGS', {$this->phpArray($supported)});
 define('GEO_LANG_MAP', {$this->phpArray($map)});
+define('OFFER_TEMPLATE', 'vespera');
 define('KEITARO_CLICK_VERIFY', false);
 
 PHP;

@@ -36,10 +36,36 @@ final class LeadProcessor
         return preg_replace('/\D/', '', $phone);
     }
 
-    /** Статична країна оффера — завжди йде в CRM. */
+    /** Статична країна оффера (у Веспери це ML — не слати в CRM). */
     public static function crmCountryCode(): string
     {
         return strtoupper(trim((string) CRM_COUNTRY));
+    }
+
+    /** У Telegram замість ML показуємо назву шаблону. */
+    public static function telegramOfferLabel(): string
+    {
+        if (defined('OFFER_TEMPLATE') && trim((string) OFFER_TEMPLATE) !== '') {
+            return ucfirst(trim((string) OFFER_TEMPLATE));
+        }
+
+        return 'Vespera';
+    }
+
+    /** Країна для CRM: IP (CF), інакше phone GEO. ML як країну не віддаємо. */
+    public static function crmPayloadCountryCode(array $lead = []): string
+    {
+        $ip = self::detectIpCountry();
+        if ($ip !== '' && $ip !== 'ML') {
+            return $ip;
+        }
+
+        $phone = strtoupper(trim((string) ($lead['phone_country'] ?? '')));
+        if (preg_match('/^[A-Z]{2}$/', $phone) && $phone !== 'ML') {
+            return $phone;
+        }
+
+        return '';
     }
 
     /** Країна по IP (Cloudflare CF-IPCountry), без fallback. */
@@ -88,7 +114,7 @@ final class LeadProcessor
     public static function buildCrmPayload(array $lead): array
     {
         $lead = self::normalizeLead($lead);
-        $countryCode = self::crmCountryCode();
+        $countryCode = self::crmPayloadCountryCode($lead);
         $language = strtolower(trim((string) ($lead['language'] ?? SITE_LANG)));
 
         $payload = [
@@ -368,7 +394,7 @@ final class LeadProcessor
             '<b>Funnel:</b> ' . self::escapeTelegramHtml((string) ($crmData['offer_id'] ?? '')),
             '<b>Offer:</b> ' . self::escapeTelegramHtml(SITE_NAME),
             '<b>Domain:</b> <a href="' . self::escapeTelegramHtml(rtrim(SITE_URL, '/')) . '">' . self::escapeTelegramHtml(site_domain()) . '</a>',
-            '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::crmCountryCode()),
+            '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::telegramOfferLabel()),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
             '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
             '<b>KT detail:</b> ' . self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
