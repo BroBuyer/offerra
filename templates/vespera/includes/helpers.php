@@ -128,6 +128,14 @@ function current_request_path(): string
         return '/'.$matches[1].'/';
     }
 
+    if ($path === '/sitemap.php') {
+        return '/sitemap.xml';
+    }
+
+    if ($path === '/robots.php') {
+        return '/robots.txt';
+    }
+
     return $path === '' ? '/' : $path;
 }
 

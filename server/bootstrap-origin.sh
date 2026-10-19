@@ -162,13 +162,20 @@ server {
     root \$offer_root;
     index index.php index.html;
 
-    # GSC / bots expect these paths; files are PHP (nginx ignores .htaccess)
+    # GSC / bots expect these paths; files are PHP (nginx ignores .htaccess).
+    # Dictionary landers generate them from index.php when the PHP file is missing.
     location = /sitemap.xml {
-        rewrite ^ /sitemap.php last;
+        if (-f \$offer_root/sitemap.php) {
+            rewrite ^ /sitemap.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location = /robots.txt {
-        rewrite ^ /robots.php last;
+        if (-f \$offer_root/robots.php) {
+            rewrite ^ /robots.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     # Multilang hub: /{lang}/ -> langs/{lang}/ when that pack exists.

@@ -34,7 +34,7 @@ function keitaro_should_track(): bool
         return false;
     }
 
-    if (str_contains($uri, 'sitemap') || str_contains($uri, 'robots.php')) {
+    if (str_contains($uri, 'sitemap') || str_contains($uri, 'robots')) {
         return false;
     }
 

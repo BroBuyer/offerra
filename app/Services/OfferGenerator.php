@@ -449,6 +449,8 @@ class OfferGenerator
                 'lang/en.php',
                 'langs/en/index.php',
                 'langs/de/index.php',
+                'sitemap.php',
+                'robots.php',
                 'includes/config.php',
                 'includes/helpers.php',
                 'includes/geo.php',

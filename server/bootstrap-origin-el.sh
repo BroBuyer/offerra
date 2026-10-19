@@ -206,11 +206,17 @@ server {
     index index.php index.html;
 
     location = /sitemap.xml {
-        rewrite ^ /sitemap.php last;
+        if (-f \$offer_root/sitemap.php) {
+            rewrite ^ /sitemap.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location = /robots.txt {
-        rewrite ^ /robots.php last;
+        if (-f \$offer_root/robots.php) {
+            rewrite ^ /robots.php last;
+        }
+        rewrite ^ /index.php last;
     }
 
     location ~ ^/([a-z][a-z])/?$ {
