@@ -31,8 +31,16 @@ function public_url(string $path): string
 {
     $path = '/' . ltrim($path, '/');
     $preview = offer_preview_base();
+    $url = $preview !== null ? rtrim($preview, '/') . $path : $path;
 
-    return $preview !== null ? rtrim($preview, '/') . $path : $path;
+    if (preg_match('/\.(css|js)$/i', $path) === 1) {
+        $local = dirname(__DIR__) . str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if (is_file($local)) {
+            $url .= '?v=' . filemtime($local);
+        }
+    }
+
+    return $url;
 }
 
 function currency_symbol(?string $code = null): string
