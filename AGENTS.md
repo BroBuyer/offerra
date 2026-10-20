@@ -4,6 +4,8 @@
 
 Always in this order. Never skip a step, never upload files to the panel directly.
 
+When asked to implement or fix something, do this immediately — do not wait for a separate «пуш і деплой».
+
 1. Write and verify the change locally (`npm run build`, `php -l`).
 2. Commit, then push to GitHub.
 3. Deploy by pulling on the panel: `node scripts/deploy.cjs`.
