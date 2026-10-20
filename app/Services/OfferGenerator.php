@@ -50,6 +50,8 @@ class OfferGenerator
         $affiliateTag = $this->normalizeAffiliateTag($settings->affiliate_tag);
         $input['affiliate_tag'] = $affiliateTag;
 
+        $this->ensureWorkerWritable($this->offersPath, recursive: false);
+
         $resolved = $this->resolveTargetFolder($user, $input);
         $folder = $resolved['folder'];
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder;
@@ -152,6 +154,7 @@ class OfferGenerator
                 ...$providerSnapshot,
             ]);
 
+            $this->prepareVerificationCopy($offer, $targetPath);
             $this->verificationFiles->syncToOfferFolder($offer);
         } catch (UniqueConstraintViolationException $e) {
             if (File::isDirectory($targetPath)) {
@@ -186,9 +189,6 @@ class OfferGenerator
         }
 
         $this->ensureWorkerWritable($targetPath);
-        if ($offer) {
-            $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
-        }
 
         return [
             'folder' => $folder,
@@ -494,6 +494,8 @@ class OfferGenerator
             );
         }
 
+        $this->ensureWorkerWritable($this->offersPath, recursive: false);
+
         $templateLangForSource = TemplateCatalog::copiesWholeTree($offer->template) ? 'en' : $offer->lang;
         $templatePath = $this->templateCatalog->resolveSourcePath($offer->template, $templateLangForSource);
         $targetPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
@@ -572,9 +574,9 @@ class OfferGenerator
             $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
         }
 
+        $this->prepareVerificationCopy($offer, $targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->ensureWorkerWritable($targetPath);
-        $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
 
         return $targetPath;
     }
@@ -622,6 +624,7 @@ class OfferGenerator
             $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
         }
         $this->migrateLegacyAssets($targetPath, $offer->template);
+        $this->prepareVerificationCopy($offer, $targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
     }
@@ -1141,13 +1144,22 @@ PHP;
         ];
     }
 
+    private function prepareVerificationCopy(Offer $offer, string $targetPath): void
+    {
+        $this->ensureWorkerWritable($this->offersPath, recursive: false);
+        $this->ensureWorkerWritable($targetPath);
+        $this->ensureWorkerWritable(storage_path('app/offer-verification'), recursive: false);
+        $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
+        $this->ensureWorkerWritable(storage_path('app/user-verification'), recursive: false);
+    }
+
     /**
      * Queue workers run as the web user. Artisan/CLI as root must not leave
      * offer folders owned by root — refreshConfig then fails with EACCES.
      */
-    private function ensureWorkerWritable(string $path): void
+    public function ensureWorkerWritable(string $path, bool $recursive = true): void
     {
-        if ($path === '' || ! is_dir($path)) {
+        if ($path === '' || (! is_dir($path) && ! is_file($path))) {
             return;
         }
 
@@ -1166,7 +1178,8 @@ PHP;
 
         $user = escapeshellarg($owner['name']);
         $quoted = escapeshellarg($path);
-        exec('chown -R '.$user.':'.$user.' '.$quoted.' && chmod -R ug+rwX '.$quoted, $out, $code);
+        $flag = ($recursive && is_dir($path)) ? '-R ' : '';
+        exec('chown '.$flag.$user.':'.$user.' '.$quoted.' && chmod '.$flag.'ug+rwX '.$quoted, $out, $code);
 
         if ($code !== 0) {
             Log::warning('Could not chown offer folder for queue workers', [

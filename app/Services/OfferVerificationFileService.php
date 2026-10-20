@@ -8,6 +8,7 @@ use App\Models\UserSetting;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
+use RuntimeException;
 
 class OfferVerificationFileService
 {
@@ -64,7 +65,7 @@ class OfferVerificationFileService
         $this->deleteStoredFile($offer);
 
         $directory = $this->storageDirectory($offer);
-        File::ensureDirectoryExists($directory);
+        $this->ensureWritableDirectory($directory);
         File::put($directory.DIRECTORY_SEPARATOR.$canonicalName, $this->readVerificationContents($file));
 
         $offer->update(['verification_filename' => $canonicalName]);
@@ -98,7 +99,7 @@ class OfferVerificationFileService
 
         $directory = $this->userStorageDirectory($settings->user);
         File::deleteDirectory($directory);
-        File::ensureDirectoryExists($directory);
+        $this->ensureWritableDirectory($directory);
         File::put($directory.DIRECTORY_SEPARATOR.$canonicalName, $this->readVerificationContents($file));
 
         $settings->update(['gsc_verification_filename' => $canonicalName]);
@@ -137,8 +138,8 @@ class OfferVerificationFileService
         $this->deleteStoredFile($offer);
 
         $directory = $this->storageDirectory($offer);
-        File::ensureDirectoryExists($directory);
-        File::copy($userPath, $directory.DIRECTORY_SEPARATOR.$filename);
+        $this->ensureWritableDirectory($directory);
+        $this->copyVerificationFile($userPath, $directory.DIRECTORY_SEPARATOR.$filename);
 
         if ($offer->verification_filename !== $filename) {
             $offer->update(['verification_filename' => $filename]);
@@ -177,7 +178,7 @@ class OfferVerificationFileService
 
         $filename = (string) $offer->verification_filename;
         $this->deleteOtherVerificationFiles($offerRoot, $filename);
-        File::copy($storagePath, $offerRoot.DIRECTORY_SEPARATOR.$filename);
+        $this->copyVerificationFile($storagePath, $offerRoot.DIRECTORY_SEPARATOR.$filename);
     }
 
     public function publicUrl(Offer $offer): ?string
@@ -257,5 +258,42 @@ class OfferVerificationFileService
     private function readVerificationContents(UploadedFile $file): string
     {
         return (string) file_get_contents($file->getRealPath());
+    }
+
+    private function ensureWritableDirectory(string $directory): void
+    {
+        File::ensureDirectoryExists($directory);
+        @chmod($directory, 0775);
+
+        if (is_dir($directory) && ! is_writable($directory)) {
+            throw new RuntimeException('Немає прав записати в '.$directory);
+        }
+    }
+
+    private function copyVerificationFile(string $from, string $to): void
+    {
+        if (! is_file($from) || ! is_readable($from)) {
+            throw new RuntimeException('Не вдалося прочитати файл верифікації Google.');
+        }
+
+        $contents = file_get_contents($from);
+        if ($contents === false) {
+            throw new RuntimeException('Не вдалося прочитати файл верифікації Google.');
+        }
+
+        $this->ensureWritableDirectory(dirname($to));
+
+        if (is_file($to) && ! is_writable($to)) {
+            @chmod($to, 0664);
+            if (! is_writable($to) && ! @unlink($to)) {
+                throw new RuntimeException('Немає прав записати файл верифікації Google.');
+            }
+        }
+
+        if (File::put($to, $contents) === false) {
+            throw new RuntimeException('Не вдалося записати файл верифікації Google.');
+        }
+
+        @chmod($to, 0664);
     }
 }

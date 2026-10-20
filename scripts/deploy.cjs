@@ -112,6 +112,18 @@ async function main() {
   await exec(conn, `cd ${REMOTE} && git reset --hard origin/${BRANCH}`, { timeoutMs: 120000 });
   const after = await exec(conn, `cd ${REMOTE} && git rev-parse HEAD`, { timeoutMs: 30000 });
 
+  // git reset / artisan as root can leave offers/ and GSC files owned by root;
+  // queue workers are www-data and then fail with EACCES on copy().
+  await exec(
+    conn,
+    [
+      `chown www-data:www-data ${REMOTE}/offers ${REMOTE}/bootstrap/cache ${REMOTE}/storage ${REMOTE}/storage/app ${REMOTE}/storage/logs ${REMOTE}/storage/framework`,
+      `chmod 775 ${REMOTE}/offers ${REMOTE}/bootstrap/cache ${REMOTE}/storage ${REMOTE}/storage/app ${REMOTE}/storage/logs ${REMOTE}/storage/framework`,
+      `find ${REMOTE}/storage/app/offer-verification ${REMOTE}/storage/app/user-verification -user root -exec chown www-data:www-data {} +`,
+    ].join(" ; "),
+    { timeoutMs: 120000, allowFail: true },
+  );
+
   const from = before.out.trim().slice(0, 40);
   const to = after.out.trim().slice(0, 40);
 
