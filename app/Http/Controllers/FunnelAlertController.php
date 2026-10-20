@@ -46,12 +46,14 @@ class FunnelAlertController extends Controller
             ->get();
 
         $existingKeys = $alerts->existingMatchKeys($rawEvents);
+        $archivedKeys = $alerts->archivedMatchKeys($rawEvents);
 
         $resolvedIds = [];
 
         $events = $rawEvents
-            ->map(function (FunnelAlertEvent $event) use ($ignoredKeys, $ignoredGeoKeys, $ignoredLangKeys, $existingKeys, &$resolvedIds) {
+            ->map(function (FunnelAlertEvent $event) use ($ignoredKeys, $ignoredGeoKeys, $ignoredLangKeys, $existingKeys, $archivedKeys, &$resolvedIds) {
                 $offerFound = isset($existingKeys[$event->match_key]);
+                $inArchive = ! $offerFound && isset($archivedKeys[$event->match_key]);
                 $ignoredBrand = in_array(FunnelAlertIgnoredBrand::keyFor((string) $event->brand), $ignoredKeys, true);
                 $ignoredGeo = in_array(FunnelAlertIgnoredGeo::keyFor((string) $event->geo), $ignoredGeoKeys, true);
                 $ignoredLang = in_array(FunnelAlertIgnoredLang::keyFor((string) $event->lang), $ignoredLangKeys, true);
@@ -69,6 +71,7 @@ class FunnelAlertController extends Controller
                     'geo' => $event->geo,
                     'lang' => $event->lang,
                     'offer_found' => $offerFound,
+                    'in_archive' => $inArchive,
                     'ignored' => $ignored,
                     'notified_at' => $event->notified_at?->format('Y-m-d H:i:s'),
                     'event_at' => $event->event_at?->format('Y-m-d H:i:s'),

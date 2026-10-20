@@ -9,6 +9,10 @@ function statusLabel(event) {
         return 'Оффер є';
     }
 
+    if (event.in_archive) {
+        return event.notified_at ? 'В архіві · TG' : 'В архіві';
+    }
+
     if (event.notified_at) {
         return 'TG надіслано';
     }

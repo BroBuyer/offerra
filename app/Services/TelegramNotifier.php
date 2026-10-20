@@ -58,17 +58,19 @@ class TelegramNotifier
 
     /**
      * @param  list<string>  $chatIds
+     * @param  list<list<array{text: string, url: string}>>|null  $inlineKeyboard
      */
-    public function sendRaw(string $token, array $chatIds, string $text, ?string $parseMode = null): bool
+    public function sendRaw(string $token, array $chatIds, string $text, ?string $parseMode = null, ?array $inlineKeyboard = null): bool
     {
-        return (bool) ($this->sendRawResult($token, $chatIds, $text, $parseMode)['ok'] ?? false);
+        return (bool) ($this->sendRawResult($token, $chatIds, $text, $parseMode, $inlineKeyboard)['ok'] ?? false);
     }
 
     /**
      * @param  list<string>  $chatIds
+     * @param  list<list<array{text: string, url: string}>>|null  $inlineKeyboard
      * @return array{ok: bool, error?: string}
      */
-    public function sendRawResult(string $token, array $chatIds, string $text, ?string $parseMode = null): array
+    public function sendRawResult(string $token, array $chatIds, string $text, ?string $parseMode = null, ?array $inlineKeyboard = null): array
     {
         $token = trim($token);
         $targets = array_values(array_unique(array_filter(array_map(
@@ -93,6 +95,13 @@ class TelegramNotifier
 
                 if ($parseMode !== null && $parseMode !== '') {
                     $payload['parse_mode'] = $parseMode;
+                }
+
+                if ($inlineKeyboard !== null && $inlineKeyboard !== []) {
+                    $payload['reply_markup'] = json_encode(
+                        ['inline_keyboard' => $inlineKeyboard],
+                        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+                    );
                 }
 
                 $response = Http::timeout(12)->asForm()->post(

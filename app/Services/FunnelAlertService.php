@@ -112,7 +112,9 @@ class FunnelAlertService
             return ['ok' => true];
         }
 
-        $result = $this->notifyMissingOffer($settings, $brand, $geo, $lang);
+        $result = $this->archivedOfferExists($brand, $geo, $lang)
+            ? $this->notifyArchivedOffer($settings, $brand, $geo, $lang)
+            : $this->notifyMissingOffer($settings, $brand, $geo, $lang);
 
         if ($result['ok'] ?? false) {
             $record->forceFill(['notified_at' => now()])->save();
@@ -166,7 +168,9 @@ class FunnelAlertService
                 continue;
             }
 
-            $result = $this->notifyMissingOffer($settings, $event->brand, $event->geo, $event->lang);
+            $result = $this->archivedOfferExists((string) $event->brand, (string) $event->geo, (string) $event->lang)
+                ? $this->notifyArchivedOffer($settings, (string) $event->brand, (string) $event->geo, (string) $event->lang)
+                : $this->notifyMissingOffer($settings, (string) $event->brand, (string) $event->geo, (string) $event->lang);
 
             if ($result['ok'] ?? false) {
                 $event->forceFill(['notified_at' => now()])->save();
@@ -385,6 +389,35 @@ class FunnelAlertService
             ->all();
     }
 
+    /**
+     * @param  \Illuminate\Support\Collection<int, FunnelAlertEvent>  $events
+     * @return array<string, true>
+     */
+    public function archivedMatchKeys($events): array
+    {
+        $brands = collect($events)
+            ->map(fn (FunnelAlertEvent $event) => mb_strtolower(trim((string) $event->brand)))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($brands === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($brands), '?'));
+
+        return Offer::query()
+            ->whereIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereRaw('LOWER(brand) in ('.$placeholders.')', $brands)
+            ->get(['brand', 'geo', 'lang'])
+            ->mapWithKeys(fn (Offer $offer) => [
+                FunnelAlertEvent::matchKey((string) $offer->brand, (string) $offer->geo, (string) $offer->lang) => true,
+            ])
+            ->all();
+    }
+
     private function offerExists(string $brand, string $geo, string $lang): bool
     {
         $brandKey = mb_strtolower(trim($brand));
@@ -392,6 +425,18 @@ class FunnelAlertService
         return Offer::query()
             ->where('status', '!=', 'archived')
             ->whereNull('archived_at')
+            ->whereRaw('LOWER(brand) = ?', [$brandKey])
+            ->where('geo', strtoupper(trim($geo)))
+            ->where('lang', strtolower(trim($lang)))
+            ->exists();
+    }
+
+    private function archivedOfferExists(string $brand, string $geo, string $lang): bool
+    {
+        $brandKey = mb_strtolower(trim($brand));
+
+        return Offer::query()
+            ->whereIn('status', ['archived', 'archiving', 'teardown_failed'])
             ->whereRaw('LOWER(brand) = ?', [$brandKey])
             ->where('geo', strtoupper(trim($geo)))
             ->where('lang', strtolower(trim($lang)))
@@ -433,6 +478,41 @@ class FunnelAlertService
         ]);
 
         return $this->telegram->sendRawResult($token, $chatIds, $text, 'HTML');
+    }
+
+    /**
+     * @return array{ok: bool, error?: string}
+     */
+    private function notifyArchivedOffer(FunnelAlertSetting $settings, string $brand, string $geo, string $lang): array
+    {
+        $token = trim((string) ($settings->tg_bot_token ?? ''));
+        $chatIds = $settings->chatIds();
+
+        if ($token === '' || $chatIds === []) {
+            return ['ok' => false, 'error' => 'telegram_not_configured'];
+        }
+
+        $base = rtrim((string) config('app.url'), '/');
+        $link = "{$base}/offers/archive?".http_build_query([
+            'brand' => $brand,
+            'geo' => $geo,
+            'lang' => $lang,
+        ]);
+
+        $safeBrand = htmlspecialchars($brand, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $safeGeo = htmlspecialchars($geo, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $safeLang = htmlspecialchars($lang, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        $text = implode("\n", [
+            '📦 Воронка в архіві',
+            "brand: <b>{$safeBrand}</b>",
+            "geo: <code>{$safeGeo}</code> · lang: <code>{$safeLang}</code>",
+            'Зараз її крутять, а в нас офер лежить в архіві — треба поновити.',
+        ]);
+
+        return $this->telegram->sendRawResult($token, $chatIds, $text, 'HTML', [
+            [['text' => 'Поновити', 'url' => $link]],
+        ]);
     }
 
     private function parseTimestamp(mixed $value): ?Carbon
