@@ -53,6 +53,76 @@ function normalizeGeo(value) {
     return value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 }
 
+/** Postbacks often send "Frugacella | IT" — keep the brand, drop the GEO suffix. */
+function sanitizeLinkBrand(brand, geo) {
+    const trimmed = String(brand ?? '').trim();
+    if (!trimmed) {
+        return '';
+    }
+
+    const match = trimmed.match(/^(.*?)(?:\s*\|\s*([A-Za-z]{2}))$/);
+    if (!match) {
+        return trimmed;
+    }
+
+    const suffix = match[2].toUpperCase();
+    const code = normalizeGeo(geo);
+    if (!code || suffix === code) {
+        return match[1].trim();
+    }
+
+    return trimmed;
+}
+
+function applyCreateLinkPrefill(prev, {
+    brand,
+    geo,
+    lang,
+    fromSearch,
+    template,
+    templates,
+    geoPresets,
+    geoMinDeposits,
+}) {
+    let next = { ...prev };
+
+    if (template && templates.some((item) => item.id === template)) {
+        next = {
+            ...next,
+            template,
+            ...(isMlOfferTemplate(template)
+                ? { geo: MULTILANG_GEO, lang: 'en', phone: 'ip' }
+                : {}),
+        };
+    }
+
+    if (brand) {
+        next = { ...next, brand };
+    }
+
+    if (geo && !isMlOfferTemplate(next.template)) {
+        const preset = geoPresets.find((item) => item.code === geo);
+        const remembered = lookupGeoDeposit(geo, geoMinDeposits);
+        next = {
+            ...next,
+            geo,
+            lang: lang || preset?.lang || next.lang,
+            phone: preset?.phone ?? geo.toLowerCase(),
+            phone_countries: [preset?.phone ?? geo.toLowerCase()],
+            min_deposit: remembered?.min_deposit || next.min_deposit,
+            currency: remembered?.currency || preset?.currency || next.currency,
+        };
+    } else if (lang && !isMlOfferTemplate(next.template)) {
+        next = { ...next, lang };
+    }
+
+    if (fromSearch) {
+        next = { ...next, from_search_team: true };
+    }
+
+    return next;
+}
+
 function domainNameWithoutZone(value) {
     const host = String(value ?? '')
         .trim()
@@ -414,13 +484,44 @@ export default function OffersCreate({
     );
 
     useEffect(() => {
-        if (!fresh || freshHandled.current) {
+        if (freshHandled.current) {
+            return;
+        }
+
+        freshHandled.current = true;
+
+        const geo = normalizeGeo(initialGeo ?? '');
+        const brand = sanitizeLinkBrand(initialBrand ?? '', geo || initialGeo);
+        const lang = (initialLang ?? '').trim().toLowerCase();
+        const hasLinkPrefill = Boolean(brand || geo || lang || initialFromSearch || initialTemplate);
+
+        const applyPrefill = (base = null) => {
+            if (!hasLinkPrefill) {
+                return;
+            }
+
+            setData((prev) => applyCreateLinkPrefill(base ?? prev, {
+                brand,
+                geo,
+                lang,
+                fromSearch: initialFromSearch,
+                template: initialTemplate,
+                templates,
+                geoPresets,
+                geoMinDeposits,
+            }));
+
+            if (brand) {
+                void lookupBrand(brand);
+            }
+        };
+
+        if (!fresh) {
+            applyPrefill();
             return;
         }
 
         // Intentional "new funnel" — but never silently wipe a draft with domains/progress.
-        freshHandled.current = true;
-
         const existing = peekWizardDraft(defaults);
         if (draftHasProgress(existing)) {
             const packCount = existing.bulkItems?.length ?? 0;
@@ -433,15 +534,19 @@ export default function OffersCreate({
             if (keepDraft) {
                 const restored = loadWizardState(defaults);
                 setStep(restored.step);
-                setData(restored.data);
                 setBulkItems(restored.bulkItems);
                 setDomainPurchasedViaPanel(restored.domainPurchasedViaPanel);
                 setBulkSubmitting(false);
                 skipPersist.current = false;
-                stripFreshQueryParam();
-                if (restored.data?.brand) {
-                    void lookupBrand(restored.data.brand);
+                if (hasLinkPrefill) {
+                    applyPrefill(restored.data);
+                } else {
+                    setData(restored.data);
+                    if (restored.data?.brand) {
+                        void lookupBrand(restored.data.brand);
+                    }
                 }
+                stripFreshQueryParam();
                 return;
             }
         }
@@ -455,52 +560,7 @@ export default function OffersCreate({
         setDomainPurchasedViaPanel(false);
         stripFreshQueryParam();
         skipPersist.current = false;
-
-        if (initialTemplate && templates.some((item) => item.id === initialTemplate)) {
-            setData((prev) => ({
-                ...prev,
-                template: initialTemplate,
-                ...(isMlOfferTemplate(initialTemplate)
-                    ? { geo: MULTILANG_GEO, lang: 'en', phone: 'ip' }
-                    : {}),
-            }));
-        }
-
-        const brand = (initialBrand ?? '').trim();
-        const geo = normalizeGeo(initialGeo ?? '');
-        const lang = (initialLang ?? '').trim().toLowerCase();
-
-        if (brand || geo || lang) {
-            setData((prev) => {
-                let next = { ...prev };
-
-                if (brand) {
-                    next = { ...next, brand };
-                }
-
-                if (geo) {
-                    const preset = geoPresets.find((item) => item.code === geo);
-                    const remembered = lookupGeoDeposit(geo, geoMinDeposits);
-                    next = {
-                        ...next,
-                        geo,
-                        lang: lang || preset?.lang || next.lang,
-                        phone: preset?.phone ?? geo.toLowerCase(),
-                        phone_countries: [preset?.phone ?? geo.toLowerCase()],
-                        min_deposit: remembered?.min_deposit || next.min_deposit,
-                        currency: remembered?.currency || preset?.currency || next.currency,
-                    };
-                } else if (lang) {
-                    next = { ...next, lang };
-                }
-
-                return next;
-            });
-        }
-
-        if (initialFromSearch) {
-            setData((prev) => ({ ...prev, from_search_team: true }));
-        }
+        applyPrefill();
     }, [fresh, reset, initialTemplate, initialBrand, initialGeo, initialLang, initialFromSearch, templates, geoPresets, geoMinDeposits, setData, defaults]);
 
     useEffect(() => {

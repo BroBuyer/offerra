@@ -57,7 +57,10 @@ class FunnelAlertService
             return ['ok' => false, 'reason' => 'invalid_token'];
         }
 
-        $brand = trim((string) ($input['brand'] ?? ''));
+        $brand = $this->canonicalBrand(
+            (string) ($input['brand'] ?? ''),
+            (string) ($input['geo'] ?? ''),
+        );
         $geo = strtoupper(trim((string) ($input['geo'] ?? '')));
         $lang = strtolower(trim((string) ($input['lang'] ?? '')));
         $externalId = trim((string) ($input['id'] ?? $input['external_id'] ?? ''));
@@ -416,6 +419,21 @@ class FunnelAlertService
                 FunnelAlertEvent::matchKey((string) $offer->brand, (string) $offer->geo, (string) $offer->lang) => true,
             ])
             ->all();
+    }
+
+    private function canonicalBrand(string $brand, string $geo = ''): string
+    {
+        $brand = trim($brand);
+        $geo = strtoupper(trim($geo));
+
+        if ($brand !== '' && preg_match('/^(.+?)\s*\|\s*([A-Za-z]{2})$/u', $brand, $matches)) {
+            $suffix = strtoupper($matches[2]);
+            if ($geo === '' || $suffix === $geo) {
+                return trim($matches[1]);
+            }
+        }
+
+        return $brand;
     }
 
     private function offerExists(string $brand, string $geo, string $lang): bool

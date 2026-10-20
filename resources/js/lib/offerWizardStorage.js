@@ -104,16 +104,11 @@ export function draftHasProgress(state) {
         return true;
     }
 
-    if ((state.step ?? 0) > 0) {
-        return true;
-    }
-
     const data = state.data ?? {};
     const brand = typeof data.brand === 'string' ? data.brand.trim() : '';
     const domain = typeof data.domain === 'string' ? data.domain.trim() : '';
-    const template = typeof data.template === 'string' ? data.template.trim() : '';
 
-    return Boolean(brand || domain || template);
+    return Boolean(brand || domain);
 }
 
 export function loadWizardState(defaults) {
