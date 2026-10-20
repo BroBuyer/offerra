@@ -1007,7 +1007,7 @@ class OfferController extends Controller
         }
 
         return redirect()
-            ->route('offers.index')
+            ->back()
             ->with('success', $message);
     }
 

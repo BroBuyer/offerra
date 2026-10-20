@@ -251,6 +251,7 @@ export default function Archive({
 
         setRestoringId(offer.id);
         router.post(route('offers.restore', offer.id), {}, {
+            preserveScroll: true,
             onFinish: () => setRestoringId(null),
         });
     };
