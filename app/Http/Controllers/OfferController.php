@@ -193,6 +193,22 @@ class OfferController extends Controller
         ];
     }
 
+    private function whereLikeInsensitive(Builder $query, string $column, string $value): void
+    {
+        $needle = mb_strtolower(trim($value));
+        if ($needle === '') {
+            return;
+        }
+
+        $escaped = str_replace(
+            ['\\', '%', '_'],
+            ['\\\\', '\\%', '\\_'],
+            $needle,
+        );
+
+        $query->whereRaw('LOWER('.$column.') LIKE ? ESCAPE ?', ['%'.$escaped.'%', '\\']);
+    }
+
     private function normalizeDomainFilter(string $domain): string
     {
         $domain = strtolower(trim($domain));
@@ -230,11 +246,11 @@ class OfferController extends Controller
     private function applyOfferFilters(Builder $query, array $filters, Carbon $today, string $dateColumn = 'created_at'): void
     {
         if ($filters['brand'] !== '') {
-            $query->where('brand', 'like', '%'.$filters['brand'].'%');
+            $this->whereLikeInsensitive($query, 'brand', $filters['brand']);
         }
 
         if ($filters['domain'] !== '') {
-            $query->where('domain', 'like', '%'.$filters['domain'].'%');
+            $this->whereLikeInsensitive($query, 'domain', $filters['domain']);
         }
 
         if ($filters['geo'] !== '') {
