@@ -49,6 +49,7 @@ function currency_symbol(?string $code = null): string
 
     return match ($code) {
         'USD', 'AUD', 'CAD', 'NZD', 'SGD', 'HKD' => '$',
+        'NAD' => 'N$',
         'GBP' => '£',
         'JPY', 'CNY' => '¥',
         'KRW' => '₩',
