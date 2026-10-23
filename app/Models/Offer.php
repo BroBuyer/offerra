@@ -123,6 +123,11 @@ class Offer extends Model
         return $this->status === 'archiving';
     }
 
+    public function isPurging(): bool
+    {
+        return $this->status === 'purging';
+    }
+
     /**
      * @return list<string>
      */

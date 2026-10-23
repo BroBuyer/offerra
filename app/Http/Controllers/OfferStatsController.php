@@ -117,7 +117,7 @@ class OfferStatsController extends Controller
     private function scopedOffers(User $user): Builder
     {
         $query = Offer::query()
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed']);
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed']);
 
         if (! $user->canSeeAllOffers()) {
             $query->where('user_id', $user->id);

@@ -22,18 +22,26 @@ class ArchiveOfferJob implements ShouldQueue
     {
         $offer = Offer::query()->with('user.settings')->find($this->offerId);
 
-        if (! $offer || $offer->status !== 'archiving') {
+        if (! $offer || ! in_array($offer->status, ['archiving', 'purging'], true)) {
             return;
         }
+
+        $purge = $offer->status === 'purging' || (bool) (($offer->teardown_meta ?? [])['purge'] ?? false);
 
         try {
             $teardown->run($offer);
         } catch (\Throwable $e) {
-            Log::error('Offer archive teardown failed', [
+            Log::error($purge ? 'Offer purge teardown failed' : 'Offer archive teardown failed', [
                 'offer_id' => $this->offerId,
                 'domain' => $offer->domain,
                 'error' => $e->getMessage(),
             ]);
+
+            if ($purge) {
+                $offer->delete();
+
+                return;
+            }
 
             $meta = is_array($offer->teardown_meta) ? $offer->teardown_meta : [];
             $meta['errors'] = array_merge($meta['errors'] ?? [], [$e->getMessage()]);

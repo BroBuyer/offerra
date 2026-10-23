@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/offers/bulk-action', [OfferController::class, 'bulkAction'])->name('offers.bulk-action');
     Route::post('/offers/{offer}/deploy', [OfferController::class, 'deploy'])->name('offers.deploy');
     Route::post('/offers/{offer}/archive', [OfferController::class, 'archive'])->name('offers.archive');
+    Route::delete('/offers/{offer}', [OfferController::class, 'destroy'])->name('offers.destroy');
     Route::post('/offers/{offer}/archive/retry', [OfferController::class, 'retryArchive'])->name('offers.archive.retry');
     Route::post('/offers/{offer}/restore', [OfferController::class, 'restore'])->name('offers.restore');
     Route::post('/offers/{offer}/provision', [OfferController::class, 'provision'])->name('offers.provision');

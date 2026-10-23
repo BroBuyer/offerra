@@ -48,7 +48,7 @@ class RebindOfferDnsJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        if (in_array($offer->status, ['archived', 'archiving'], true)) {
+        if (in_array($offer->status, ['archived', 'archiving', 'purging'], true)) {
             return;
         }
 

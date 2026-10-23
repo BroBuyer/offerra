@@ -602,7 +602,7 @@ class OfferController extends Controller
         $query = Offer::query()
             ->with('user.settings')
             ->whereIn('id', $request->input('ids'))
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed']);
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed']);
 
         if (! $authUser->isAdmin()) {
             $query->where('user_id', $authUser->id);
@@ -981,6 +981,25 @@ class OfferController extends Controller
         return redirect()
             ->back()
             ->with('success', "Архівація запущена: {$offer->domain}. Origin і Cloudflare будуть прибрані, домен лишиться в Dynadot.");
+    }
+
+    public function destroy(Offer $offer, OfferTeardownService $teardown): RedirectResponse
+    {
+        $this->authorizeOfferManagement($offer);
+
+        $domain = $offer->domain;
+
+        try {
+            $teardown->enqueuePurge($offer, auth()->user());
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['delete' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', "Видалення запущено: {$domain}. Офер зникне після зняття з origin і Cloudflare. Відновити не вийде.");
     }
 
     public function retryArchive(Offer $offer, OfferTeardownService $teardown): RedirectResponse

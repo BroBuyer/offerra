@@ -400,7 +400,7 @@ class OriginHealthMonitor
         }
 
         $query = Offer::query()
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->where(function ($q) use ($host) {
                 $q->where('infra_meta->deploy_host', $host)
                     ->orWhere('deploy_panel_name', $host);

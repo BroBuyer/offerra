@@ -43,7 +43,7 @@ class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        if (in_array($offer->status, ['archived', 'archiving', 'teardown_failed'], true)) {
+        if (in_array($offer->status, ['archived', 'archiving', 'purging', 'teardown_failed'], true)) {
             return;
         }
 

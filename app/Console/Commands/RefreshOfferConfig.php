@@ -37,7 +37,7 @@ class RefreshOfferConfig extends Command
         if ($all) {
             $query = Offer::query()
                 ->with('user.settings')
-                ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+                ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
                 ->orderBy('id');
 
             if ($limit > 0) {

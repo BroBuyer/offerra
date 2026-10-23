@@ -107,6 +107,8 @@ function statusBadge(status) {
             return <span className="badge badge-warn">Деплоїться…</span>;
         case 'archiving':
             return <span className="badge badge-warn">Архівація…</span>;
+        case 'purging':
+            return <span className="badge badge-warn">Видалення…</span>;
         case 'teardown_failed':
             return <span className="badge badge-error">Архів помилка</span>;
         case 'failed':
@@ -754,7 +756,7 @@ export default function OffersIndex({
     }, [domainQuery, filters.domain]);
 
     const hasDeploying = useMemo(
-        () => rows.some((offer) => offer.status === 'deploying' || offer.status === 'archiving'),
+        () => rows.some((offer) => ['deploying', 'archiving', 'purging'].includes(offer.status)),
         [rows],
     );
 
@@ -816,17 +818,17 @@ export default function OffersIndex({
         });
     };
 
-    const archiveOffer = (offer) => {
+    const deleteOffer = (offer) => {
         const ok = window.confirm(
-            `Архівувати ${offer.domain}?\n\n`
-            + 'Сайт буде знято з origin-сервера і Cloudflare. Домен лишиться в Dynadot, NS скинемо на parking.',
+            `Видалити ${offer.domain} назавжди?\n\n`
+            + 'Знімемо origin, Cloudflare і Keitaro. З архіву поновити не вийде — лише для мертвих/забанених доменів.',
         );
         if (!ok) {
             return;
         }
 
         setArchivingId(offer.id);
-        router.post(route('offers.archive', offer.id), {}, {
+        router.delete(route('offers.destroy', offer.id), {
             preserveScroll: true,
             onFinish: () => setArchivingId(null),
         });
@@ -852,7 +854,7 @@ export default function OffersIndex({
         () => rows
             .filter((offer) => {
                 const canManage = canManageAllOffers || offer.user_id === auth?.user?.id;
-                return canManage && !['archiving', 'archived'].includes(offer.status);
+                return canManage && !['archiving', 'purging', 'archived'].includes(offer.status);
             })
             .map((offer) => offer.id),
         [rows, canManageAllOffers, auth?.user?.id],
@@ -1194,14 +1196,14 @@ export default function OffersIndex({
                 ) : (
                     <span className="field-hint">—</span>
                 )}
-                {canManageOffer(offer) && !['archiving', 'archived'].includes(offer.status) && (
+                {canManageOffer(offer) && !['archiving', 'purging', 'archived'].includes(offer.status) && (
                     <button
                         type="button"
                         className="btn btn-ghost btn-sm btn-archive"
-                        disabled={archivingId === offer.id || offer.status === 'deploying'}
-                        onClick={() => archiveOffer(offer)}
-                        title="Архівувати: зняти з origin/Cloudflare, NS → parking Dynadot"
-                        aria-label={`Архівувати ${offer.domain}`}
+                        disabled={archivingId === offer.id || offer.status === 'deploying' || offer.status === 'purging'}
+                        onClick={() => deleteOffer(offer)}
+                        title="Видалити назавжди: мертвий/забанений домен, без відновлення"
+                        aria-label={`Видалити ${offer.domain}`}
                     >
                         {archivingId === offer.id ? (
                             <span className="btn-spinner" aria-hidden="true" />
@@ -1269,9 +1271,9 @@ export default function OffersIndex({
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.provision}</p>
                 </div>
             )}
-            {errors?.archive && (
+            {(errors?.archive || errors?.delete) && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
-                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.archive}</p>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.delete || errors.archive}</p>
                 </div>
             )}
 

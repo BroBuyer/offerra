@@ -26,27 +26,40 @@ class OfferTeardownService
 
     public function enqueueArchive(Offer $offer, User $initiatedBy): void
     {
-        if (in_array($offer->status, ['archiving', 'archived'], true)) {
-            throw new RuntimeException('Оффер вже архівується або в архіві.');
+        $this->enqueueTeardown($offer, $initiatedBy, purge: false);
+    }
+
+    public function enqueuePurge(Offer $offer, User $initiatedBy): void
+    {
+        $this->enqueueTeardown($offer, $initiatedBy, purge: true);
+    }
+
+    private function enqueueTeardown(Offer $offer, User $initiatedBy, bool $purge): void
+    {
+        if (in_array($offer->status, ['archiving', 'purging', 'archived'], true)) {
+            throw new RuntimeException($purge
+                ? 'Офер вже видаляється або в архіві.'
+                : 'Оффер вже архівується або в архіві.');
         }
 
         if ($offer->status === 'deploying') {
-            throw new RuntimeException('Зачекайте завершення деплою перед архівацією.');
+            throw new RuntimeException($purge
+                ? 'Зачекайте завершення деплою перед видаленням.'
+                : 'Зачекайте завершення деплою перед архівацією.');
         }
 
         $offer->update([
-            'status' => 'archiving',
+            'status' => $purge ? 'purging' : 'archiving',
             'archived_at' => null,
             'archived_by' => $initiatedBy->id,
             'teardown_meta' => [
                 'started_at' => now()->toIso8601String(),
                 'steps' => [],
+                'purge' => $purge,
             ],
         ]);
 
-        // Archiving is user-initiated and must not be starved behind the
-        // background DNS-recheck backlog on the "default" queue. Route it to the
-        // "deploy" queue, which has dedicated workers (same as provisioning/deploy).
+        // User-initiated teardown must not sit behind the DNS-recheck backlog.
         ArchiveOfferJob::dispatch($offer->id)->onQueue('deploy');
     }
 
@@ -154,6 +167,14 @@ class OfferTeardownService
         $meta['finished_at'] = now()->toIso8601String();
         $meta['dynadot'] = $steps['dynadot'] ?? 'kept';
         unset($meta['errors']);
+
+        $purge = (bool) ($meta['purge'] ?? false) || $offer->status === 'purging';
+
+        if ($purge) {
+            $offer->delete();
+
+            return;
+        }
 
         if ($errors !== []) {
             $meta['errors'] = $errors;
@@ -488,7 +509,7 @@ class OfferTeardownService
         $inUse = Offer::query()
             ->where('keitaro_campaign_id', $campaignId)
             ->where('id', '!=', $offer->id)
-            ->whereNotIn('status', ['archived', 'teardown_failed', 'archiving'])
+            ->whereNotIn('status', ['archived', 'teardown_failed', 'archiving', 'purging'])
             ->exists();
 
         if ($inUse) {

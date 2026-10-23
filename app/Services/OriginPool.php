@@ -94,7 +94,7 @@ class OriginPool
         $counts = [];
 
         Offer::query()
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->whereRaw('LOWER(TRIM(brand)) = ?', [$key])
             ->orderBy('id')
             ->select(['id', 'deploy_panel_name', 'infra_meta'])

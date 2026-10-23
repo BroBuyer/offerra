@@ -54,7 +54,7 @@ class OfferGoogleIndexInspector
         return Offer::query()
             ->where('submitted_for_indexing', true)
             ->whereNull('google_indexed_at')
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->whereNotNull('indexed_at')
             ->where('indexed_at', '<=', now()->subHours(self::FIRST_CHECK_HOURS))
             ->where(function (Builder $q): void {
@@ -95,7 +95,7 @@ class OfferGoogleIndexInspector
             ->where('submitted_for_indexing', true)
             ->whereNull('google_indexed_at')
             ->where('google_index_status', self::STATUS_TIMEOUT)
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed']);
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed']);
     }
 
     /**
@@ -103,7 +103,7 @@ class OfferGoogleIndexInspector
      */
     public function inspect(Offer $offer, bool $force = false): array
     {
-        if (in_array($offer->status, ['archived', 'archiving', 'teardown_failed'], true)) {
+        if (in_array($offer->status, ['archived', 'archiving', 'purging', 'teardown_failed'], true)) {
             return [
                 'status' => (string) ($offer->google_index_status ?? ''),
                 'indexed' => (bool) $offer->google_indexed_at,

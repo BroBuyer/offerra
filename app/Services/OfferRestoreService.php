@@ -30,7 +30,7 @@ class OfferRestoreService
         $conflict = Offer::query()
             ->whereRaw('LOWER(domain) = ?', [$domain])
             ->where('id', '!=', $offer->id)
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->exists();
 
         if ($conflict) {

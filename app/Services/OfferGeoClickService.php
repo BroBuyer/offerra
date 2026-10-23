@@ -75,14 +75,14 @@ class OfferGeoClickService
         $offer = Offer::query()
             ->where('user_id', $settings->user_id)
             ->where('domain', $domain)
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->first();
 
         if (! $offer) {
             // Fallback: domain unique across live offers
             $offer = Offer::query()
                 ->where('domain', $domain)
-                ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+                ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
                 ->first();
         }
 

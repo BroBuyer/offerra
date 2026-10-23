@@ -34,7 +34,7 @@ class OriginEvacuationService
         $ids = [];
 
         Offer::query()
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->orderBy('id')
             ->select(['id', 'deploy_panel_name', 'infra_meta'])
             ->chunkById(500, function ($chunk) use (&$ids, $host): void {

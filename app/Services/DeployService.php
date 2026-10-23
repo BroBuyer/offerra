@@ -64,7 +64,7 @@ class DeployService
             );
         }
 
-        if (in_array($offer->status, ['archived', 'archiving'], true)) {
+        if (in_array($offer->status, ['archived', 'archiving', 'purging'], true)) {
             throw new RuntimeException('Архівний оффер не можна деплоїти.');
         }
 
@@ -85,7 +85,7 @@ class DeployService
             return false;
         }
 
-        if (in_array($offer->status, ['deploying', 'archived', 'archiving'], true)) {
+        if (in_array($offer->status, ['deploying', 'archived', 'archiving', 'purging'], true)) {
             return false;
         }
 
@@ -127,7 +127,7 @@ class DeployService
             return false;
         }
 
-        if (in_array($offer->status, ['deploying', 'archived', 'archiving'], true)) {
+        if (in_array($offer->status, ['deploying', 'archived', 'archiving', 'purging'], true)) {
             return false;
         }
 

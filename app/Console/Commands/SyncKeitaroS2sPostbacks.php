@@ -23,7 +23,7 @@ class SyncKeitaroS2sPostbacks extends Command
             ->with('user.settings')
             ->whereNotNull('keitaro_campaign_id')
             ->where('keitaro_campaign_id', '>', 0)
-            ->whereNotIn('status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
             ->orderBy('id');
 
         if ($userId = $this->option('user')) {

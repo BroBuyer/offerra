@@ -330,7 +330,7 @@ class OfferGenerator
 
     private function isRetiredStatus(?string $status): bool
     {
-        return in_array($status, ['archived', 'archiving', 'teardown_failed'], true);
+        return in_array($status, ['archived', 'archiving', 'purging', 'teardown_failed'], true);
     }
 
     /**
@@ -641,7 +641,7 @@ class OfferGenerator
             throw new InvalidArgumentException('Налаштування користувача не знайдено.');
         }
 
-        if (in_array($offer->status, ['archived', 'archiving', 'deploying'], true)) {
+        if (in_array($offer->status, ['archived', 'archiving', 'purging', 'deploying'], true)) {
             throw new InvalidArgumentException(
                 $offer->status === 'deploying'
                     ? 'Оффер зараз деплоїться — зачекайте і спробуйте знову.'

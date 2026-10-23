@@ -16,7 +16,7 @@ class StaleDeadOfferService
     public const DEAD_AFTER_DAYS = 30;
 
     /** @var list<string> */
-    private const INACTIVE_STATUSES = ['archived', 'archiving', 'teardown_failed'];
+    private const INACTIVE_STATUSES = ['archived', 'archiving', 'purging', 'teardown_failed'];
 
     public function __construct(
         private readonly OfferTeardownService $teardown,

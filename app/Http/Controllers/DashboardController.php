@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
         $query = Offer::query()
             ->with('user:id,name,email')
-            ->whereNotIn('status', ['archived', 'archiving'])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging'])
             ->orderByDesc('created_at');
 
         if (! $canSeeAll) {
