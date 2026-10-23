@@ -153,6 +153,7 @@ class OfferTeardownService
         $meta['steps'] = $steps;
         $meta['finished_at'] = now()->toIso8601String();
         $meta['dynadot'] = $steps['dynadot'] ?? 'kept';
+        unset($meta['errors']);
 
         if ($errors !== []) {
             $meta['errors'] = $errors;

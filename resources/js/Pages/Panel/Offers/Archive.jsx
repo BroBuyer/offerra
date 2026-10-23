@@ -463,7 +463,9 @@ export default function Archive({
                         </thead>
                         <tbody>
                             {rows.map((offer) => {
-                                const teardownErrors = offer.teardown_meta?.errors ?? [];
+                                const teardownErrors = offer.status === 'teardown_failed'
+                                    ? (offer.teardown_meta?.errors ?? [])
+                                    : [];
                                 return (
                                     <tr key={offer.id}>
                                         {showUserColumn && (
