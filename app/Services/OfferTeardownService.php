@@ -385,7 +385,18 @@ class OfferTeardownService
             return ['status' => 'kept_no_key', 'detail' => ''];
         }
 
-        $this->dynadot->parkNameservers($settings, $offer->domain);
+        try {
+            $this->dynadot->parkNameservers($settings, $offer->domain);
+        } catch (\Throwable $e) {
+            if (DynadotClient::isUnmanageableDomainError($e->getMessage())) {
+                return [
+                    'status' => 'skipped_disabled',
+                    'detail' => $e->getMessage(),
+                ];
+            }
+
+            throw $e;
+        }
 
         return [
             'status' => 'parked',

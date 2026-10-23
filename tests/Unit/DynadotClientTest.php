@@ -61,4 +61,13 @@ class DynadotClientTest extends TestCase
         ));
         $this->assertFalse(DynadotClient::isNsNotReadyError('insufficient account balance'));
     }
+
+    public function test_disabled_dynadot_domain_is_unmanageable(): void
+    {
+        $this->assertTrue(DynadotClient::isUnmanageableDomainError('haute-mondreve.sbs was disabled'));
+        $this->assertTrue(DynadotClient::isUnmanageableDomainError('Domain example.com is disabled'));
+        $this->assertTrue(DynadotClient::isUnmanageableDomainError('Домен вимкнено в Dynadot, NS змінити не можна.'));
+        $this->assertFalse(DynadotClient::isUnmanageableDomainError('insufficient account balance'));
+        $this->assertFalse(DynadotClient::isUnmanageableDomainError('Domain initialization is still in progress'));
+    }
 }

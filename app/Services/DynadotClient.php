@@ -364,6 +364,27 @@ class DynadotClient
             || str_contains($normalized, 'domain initialization');
     }
 
+    /**
+     * Domain cannot have NS changed (disabled / expired / not in the account).
+     * Archive should skip parking instead of staying in teardown_failed.
+     */
+    public static function isUnmanageableDomainError(?string $message): bool
+    {
+        if ($message === null || $message === '') {
+            return false;
+        }
+
+        $normalized = strtolower($message);
+
+        return str_contains($normalized, 'was disabled')
+            || str_contains($normalized, 'is disabled')
+            || str_contains($normalized, 'has been disabled')
+            || str_contains($normalized, 'вимкнено в dynadot')
+            || str_contains($normalized, 'not in your account')
+            || str_contains($normalized, 'no such domain')
+            || (str_contains($normalized, 'expired') && str_contains($normalized, 'domain'));
+    }
+
     public static function isTransientTransportError(?string $message): bool
     {
         if ($message === null || $message === '') {
@@ -1168,6 +1189,9 @@ class DynadotClient
             str_contains($normalized, 'invalid key') => 'Невірний Dynadot API key. Вставте Production Key (не Secret Key) і збережіть налаштування.',
             str_contains($normalized, 'not enabled') => 'Dynadot API не увімкнено в акаунті.',
             str_contains($normalized, 'over quota') => 'Перевищено ліміт запитів Dynadot API.',
+            str_contains($normalized, 'was disabled')
+                || str_contains($normalized, 'is disabled')
+                || str_contains($normalized, 'has been disabled') => 'Домен вимкнено в Dynadot, NS змінити не можна.',
             default => $message,
         };
     }
