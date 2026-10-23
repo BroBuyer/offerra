@@ -10,7 +10,7 @@ class ScanStaleDeadOffers extends Command
     protected $signature = 'offers:scan-stale-dead
         {--days=30 : GSC submit older than N days}';
 
-    protected $description = 'Scan live offers submitted to GSC >N days with 0 leads/deps; stamp cache for Archive banner (no archive)';
+    protected $description = 'Scan live offers with GSC >N days and no recent brand lead/dep; stamp Archive banner (no archive)';
 
     public function handle(StaleDeadOfferService $service): int
     {

@@ -15,7 +15,7 @@ class ArchiveStaleDeadOffers extends Command
         {--dry-run : Only list count / sample, do not enqueue}
         {--limit=0 : Max offers to enqueue (0 = all)}';
 
-    protected $description = 'Archive live offers submitted to GSC > N days ago with 0 leads and 0 deposits';
+    protected $description = 'Archive live offers with GSC submit > N days and no lead/dep on the live brand in N days';
 
     public function handle(StaleDeadOfferService $staleDead, OfferTeardownService $teardown): int
     {
@@ -35,7 +35,7 @@ class ArchiveStaleDeadOffers extends Command
             return self::FAILURE;
         }
 
-        $idsQuery = $staleDead->baseCandidatesQuery($days)->orderBy('offers.id')->select('offers.id');
+        $idsQuery = $staleDead->baseCandidatesQuery($days)->orderBy('id')->select('id');
 
         if ($limit > 0) {
             $idsQuery->limit($limit);

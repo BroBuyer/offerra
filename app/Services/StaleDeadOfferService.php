@@ -15,6 +15,9 @@ class StaleDeadOfferService
 
     public const DEAD_AFTER_DAYS = 30;
 
+    /** @var list<string> */
+    private const INACTIVE_STATUSES = ['archived', 'archiving', 'teardown_failed'];
+
     public function __construct(
         private readonly OfferTeardownService $teardown,
     ) {}
@@ -25,27 +28,30 @@ class StaleDeadOfferService
     }
 
     /**
-     * Live offers submitted to GSC more than N days ago with 0 leads and 0 deposits.
-     * Clicks are ignored — traffic without a lead/dep is still a dead offer.
+     * Live offers submitted to GSC more than N days ago, whose buyer has no
+     * lead or deposit on any live offer of the same brand in those N days.
+     * Lifetime counts and clicks do not protect; archived siblings do not.
      */
     public function baseCandidatesQuery(int $days = self::DEAD_AFTER_DAYS): Builder
     {
         $cutoff = $this->cutoff($days);
 
         return Offer::query()
-            ->whereNotIn('offers.status', ['archived', 'archiving', 'teardown_failed'])
+            ->whereNotIn('offers.status', self::INACTIVE_STATUSES)
             ->whereNotNull('offers.indexed_at')
             ->where('offers.indexed_at', '<', $cutoff)
-            ->leftJoin('offer_stats', 'offer_stats.offer_id', '=', 'offers.id')
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.leads_count')
-                    ->orWhere('offer_stats.leads_count', '<=', 0);
-            })
-            ->where(function ($q) {
-                $q->whereNull('offer_stats.deposits_count')
-                    ->orWhere('offer_stats.deposits_count', '<=', 0);
-            })
-            ->select('offers.*');
+            ->whereNotExists(function ($q) use ($cutoff): void {
+                $q->selectRaw('1')
+                    ->from('offers as brand_offers')
+                    ->leftJoin('offer_stats as brand_stats', 'brand_stats.offer_id', '=', 'brand_offers.id')
+                    ->whereColumn('brand_offers.user_id', 'offers.user_id')
+                    ->whereRaw('LOWER(TRIM(brand_offers.brand)) = LOWER(TRIM(offers.brand))')
+                    ->whereNotIn('brand_offers.status', self::INACTIVE_STATUSES)
+                    ->where(function ($alive) use ($cutoff): void {
+                        $alive->where('brand_stats.last_lead_at', '>=', $cutoff)
+                            ->orWhere('brand_stats.last_deposit_at', '>=', $cutoff);
+                    });
+            });
     }
 
     /**
@@ -70,7 +76,7 @@ class StaleDeadOfferService
         $lastScan = Cache::get(self::CACHE_LAST_SCAN_AT);
 
         return [
-            'count' => (int) $this->candidatesQuery($user, $days)->count('offers.id'),
+            'count' => (int) $this->candidatesQuery($user, $days)->count('id'),
             'last_scan_at' => is_string($lastScan) && $lastScan !== '' ? $lastScan : null,
         ];
     }
@@ -83,8 +89,9 @@ class StaleDeadOfferService
     public function scan(int $days = self::DEAD_AFTER_DAYS): array
     {
         $rows = $this->baseCandidatesQuery($days)
+            ->select('offers.user_id')
+            ->selectRaw('count(*) as cnt')
             ->groupBy('offers.user_id')
-            ->selectRaw('offers.user_id, count(*) as cnt')
             ->pluck('cnt', 'user_id')
             ->all();
 
@@ -114,8 +121,8 @@ class StaleDeadOfferService
     public function archiveAllFor(User $user, int $days = self::DEAD_AFTER_DAYS): int
     {
         $ids = $this->candidatesQuery($user, $days)
-            ->orderBy('offers.id')
-            ->pluck('offers.id')
+            ->orderBy('id')
+            ->pluck('id')
             ->all();
 
         $enqueued = 0;
