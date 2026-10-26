@@ -250,6 +250,15 @@ class InfrastructureProvisioner
             return 'records';
         }
 
+        // HTTPS on the previous Cloudflare account must not finish a slot
+        // switch — public NS still have to match the new zone.
+        if ($expectedNs !== [] && ! InfrastructureDnsReadiness::nameserversAcceptable(
+            $this->publicDns->nameservers($domain),
+            $expectedNs,
+        )) {
+            return null;
+        }
+
         if ($this->httpsLooksLive($domain)) {
             return 'https';
         }
@@ -604,7 +613,7 @@ class InfrastructureProvisioner
         ]);
 
         // Force a fresh zone on the target account (do not reuse the old account's zone id).
-        unset($meta['cloudflare_zone_id'], $meta['nameservers'], $meta['dns_error'], $meta['dns_via']);
+        unset($meta['cloudflare_zone_id'], $meta['nameservers'], $meta['dns_error'], $meta['dns_via'], $meta['dns']);
         $meta['dynadot_ns'] = 'pending';
         $meta['options'] = $options;
         $meta['cloudflare_slot'] = $target;
@@ -628,7 +637,8 @@ class InfrastructureProvisioner
             $this->applyCloudflareEdge($targetSettings, $domain, $zoneId, $options, $meta);
 
             try {
-                $this->dynadot->setNameservers($userSettings, $domain, $nameservers);
+                $dynadotSettings = $this->providerSettings($offer) ?? $userSettings;
+                $this->dynadot->setNameservers($dynadotSettings, $domain, $nameservers);
                 $meta['dynadot_ns'] = 'done';
                 unset($meta['dynadot_ns_error']);
             } catch (\Throwable $e) {

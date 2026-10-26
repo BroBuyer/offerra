@@ -23,9 +23,9 @@ class InfrastructureDnsReadinessTest extends TestCase
         ));
     }
 
-    public function test_stale_cloudflare_pair_is_acceptable_after_restore(): void
+    public function test_stale_cloudflare_pair_is_not_the_new_account(): void
     {
-        $this->assertTrue(InfrastructureDnsReadiness::nameserversAcceptable(
+        $this->assertFalse(InfrastructureDnsReadiness::nameserversAcceptable(
             ['simon.ns.cloudflare.com', 'brianna.ns.cloudflare.com'],
             ['pam.ns.cloudflare.com', 'randy.ns.cloudflare.com'],
         ));

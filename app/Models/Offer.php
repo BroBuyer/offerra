@@ -151,7 +151,14 @@ class Offer extends Model
      */
     public function dnsStatus(): string
     {
-        $dns = is_array($this->infra_meta) ? ($this->infra_meta['dns'] ?? null) : null;
+        $meta = is_array($this->infra_meta) ? $this->infra_meta : [];
+        $dns = $meta['dns'] ?? null;
+
+        // Registrar still points at the previous CF account — keep retrying
+        // even if an older dns=done leftover survived the slot switch.
+        if (($meta['dynadot_ns'] ?? '') === 'pending' && $this->provision_infrastructure) {
+            return 'pending';
+        }
 
         if ($dns === 'done') {
             return 'ready';

@@ -3,8 +3,8 @@
 namespace App\Support;
 
 /**
- * Public DNS is "ready" when the name is on Cloudflare (or the exact
- * expected pair), not when the panel cache has caught up to a new zone.
+ * Public DNS is ready when live NS match the expected pair.
+ * Another Cloudflare pair is the previous account — not a cutover.
  */
 final class InfrastructureDnsReadiness
 {
@@ -33,13 +33,9 @@ final class InfrastructureDnsReadiness
             }
         }
 
-        if ($matched >= min(2, count($expected))) {
-            return true;
-        }
-
-        $cloudflare = array_values(array_filter($live, self::isCloudflareNameserver(...)));
-
-        return $cloudflare !== [] && count($cloudflare) >= min(2, count($live));
+        // Account switch assigns a new CF NS pair. Another Cloudflare pair
+        // means the old zone is still answering — cutover is not done.
+        return $matched >= min(2, count($expected));
     }
 
     public static function isCloudflareNameserver(string $ns): bool

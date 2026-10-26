@@ -40,6 +40,24 @@ class OfferDnsStatusTest extends TestCase
         $this->assertSame('pending', $offer->dnsStatus());
     }
 
+    public function test_dns_status_stays_pending_while_dynadot_ns_cutover_is_open(): void
+    {
+        $offer = new Offer([
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'infra_meta' => [
+                'dns' => 'done',
+                'dynadot_ns' => 'pending',
+                'options' => [
+                    'cloudflare_zone' => true,
+                    'dynadot_ns' => true,
+                ],
+            ],
+        ]);
+
+        $this->assertSame('pending', $offer->dnsStatus());
+    }
+
     public function test_dns_status_is_skipped_without_dns_wait_options(): void
     {
         $offer = new Offer([
