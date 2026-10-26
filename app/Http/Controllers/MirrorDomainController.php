@@ -169,6 +169,17 @@ class MirrorDomainController extends Controller
         return back()->with('success', "Видалено: {$host}");
     }
 
+    public function prune(Request $request, MirrorProbeService $probeService): RedirectResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $deleted = $probeService->pruneJunk($user->canSeeAllOffers() ? null : $user->id);
+
+        return back()->with('success', $deleted === 0
+            ? 'Фейкових дзеркал немає.'
+            : "Прибрано фейкових дзеркал: {$deleted}");
+    }
+
     private function authorizeMirror(Request $request, MirrorDomain $mirror): void
     {
         $user = $request->user();

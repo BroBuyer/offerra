@@ -394,11 +394,25 @@ export default function MirrorsIndex({
                             Чужі копії лендів. Увімкни редірект — і трафік піде на твій офер.
                         </p>
                     </div>
-                    {probe?.snippet && (
-                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setProbeOpen(true)}>
-                            CDN снипет
+                    <div className="btn-row">
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => {
+                                if (!window.confirm('Прибрати фейкові дзеркала (немає DNS або reserved TLD)? Редіректи не чіпаю.')) {
+                                    return;
+                                }
+                                router.post(route('mirrors.prune'), {}, { preserveScroll: true });
+                            }}
+                        >
+                            Прибрати сміття
                         </button>
-                    )}
+                        {probe?.snippet && (
+                            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setProbeOpen(true)}>
+                                CDN снипет
+                            </button>
+                        )}
+                    </div>
                 </header>
 
                 {flash?.success && (

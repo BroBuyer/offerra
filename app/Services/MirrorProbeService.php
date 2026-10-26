@@ -6,12 +6,17 @@ use App\Models\MirrorDomain;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
+use App\Support\PublicDnsLookup;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class MirrorProbeService
 {
+    private const NEW_MIRRORS_PER_IP_HOUR = 8;
+
     public function __construct(
         private readonly TelegramNotifier $telegram,
+        private readonly PublicDnsLookup $publicDns,
     ) {}
 
     public function ensureProbeToken(UserSetting $settings): string
@@ -152,13 +157,30 @@ HTML;
             return [];
         }
 
-        if ($this->isNoiseHost($host)) {
+        if (! $this->isPlausibleHost($host) || $this->isNoiseHost($host)) {
             return [];
         }
 
         $trusted = (bool) ($meta['host_trusted'] ?? false);
+        $exists = MirrorDomain::query()
+            ->where('user_id', $user->id)
+            ->where('host', $host)
+            ->exists();
 
-        if ($trusted && ! $this->hostMatchesBrowserContext($host, $meta)) {
+        if (! $exists) {
+            // Token lives in every lander. `?h=` without a matching Origin is just spam.
+            if (! $trusted || ! $this->hostMatchesBrowserContext($host, $meta, requireContext: true)) {
+                return [];
+            }
+
+            if (! $this->allowNewMirrorFromIp((string) ($meta['ip'] ?? ''), $settings->id)) {
+                return [];
+            }
+
+            if (! $this->hostResolves($host)) {
+                return [];
+            }
+        } elseif ($trusted && ! $this->hostMatchesBrowserContext($host, $meta)) {
             return [];
         }
 
@@ -222,14 +244,83 @@ HTML;
     }
 
     /**
+     * Drop fake / reserved hosts that never carry a real lander copy.
+     */
+    public function isPlausibleHost(string $host): bool
+    {
+        $host = $this->normalizeHost($host);
+
+        if ($host === '' || ! str_contains($host, '.')) {
+            return false;
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
+            return false;
+        }
+
+        if (preg_match('/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$/', $host) !== 1) {
+            return false;
+        }
+
+        $tld = substr($host, (int) strrpos($host, '.') + 1);
+        $reservedTlds = [
+            'example', 'test', 'invalid', 'localhost', 'local',
+            'internal', 'home', 'lan', 'corp', 'private', 'arpa',
+        ];
+
+        if (in_array($tld, $reservedTlds, true)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Delete junk rows (reserved TLD / no public DNS). Redirecting mirrors stay.
+     *
+     * @return int Number of deleted rows
+     */
+    public function pruneJunk(?int $userId = null): int
+    {
+        $query = MirrorDomain::query()
+            ->where('redirect_enabled', false)
+            ->whereIn('status', [MirrorDomain::STATUS_NEW, MirrorDomain::STATUS_WATCHING]);
+
+        if ($userId !== null) {
+            $query->where('user_id', $userId);
+        }
+
+        $deleted = 0;
+
+        foreach ($query->cursor() as $mirror) {
+            $host = $this->normalizeHost((string) $mirror->host);
+
+            if (
+                ! $this->isPlausibleHost($host)
+                || $this->isNoiseHost($host)
+                || ! $this->hostResolves($host)
+            ) {
+                $mirror->delete();
+                $deleted++;
+            }
+        }
+
+        return $deleted;
+    }
+
+    /**
      * When the browser sends Referer/Origin, it must agree with claimed host.
      *
      * @param  array{referer_host?: string, origin_host?: string}  $meta
      */
-    private function hostMatchesBrowserContext(string $host, array $meta): bool
+    private function hostMatchesBrowserContext(string $host, array $meta, bool $requireContext = false): bool
     {
         $ref = $this->normalizeHost((string) ($meta['referer_host'] ?? ''));
         $origin = $this->normalizeHost((string) ($meta['origin_host'] ?? ''));
+
+        if ($requireContext && $ref === '' && $origin === '') {
+            return false;
+        }
 
         if ($ref !== '' && $ref !== $host) {
             return false;
@@ -240,6 +331,36 @@ HTML;
         }
 
         return true;
+    }
+
+    private function allowNewMirrorFromIp(string $ip, int $settingsId): bool
+    {
+        $ip = trim($ip);
+
+        if ($ip === '') {
+            return false;
+        }
+
+        $key = 'mirror-new:'.$settingsId.':'.$ip;
+        $hits = (int) Cache::get($key, 0);
+
+        if ($hits >= self::NEW_MIRRORS_PER_IP_HOUR) {
+            return false;
+        }
+
+        Cache::put($key, $hits + 1, now()->addHour());
+
+        return true;
+    }
+
+    private function hostResolves(string $host): bool
+    {
+        try {
+            return $this->publicDns->aRecords($host) !== [];
+        } catch (\Throwable) {
+            // DNS transport down — do not invent a mirror from a guess.
+            return false;
+        }
     }
 
     /** Well-known sites that never host our landers — common fake Referers. */
@@ -253,6 +374,7 @@ HTML;
             'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
             'youtube.com', 'reddit.com', 'tiktok.com',
             'wikipedia.org', 'cloudflare.com', 'cdnedge.io',
+            'example.com', 'example.net', 'example.org', 'exemple.com',
         ];
 
         foreach ($noise as $blocked) {

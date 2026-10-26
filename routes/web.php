@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/leads', [CrmLeadController::class, 'store'])->name('leads.send');
 
     Route::get('/mirrors', [MirrorDomainController::class, 'index'])->name('mirrors.index');
+    Route::post('/mirrors/prune', [MirrorDomainController::class, 'prune'])->name('mirrors.prune');
     Route::patch('/mirrors/{mirror}', [MirrorDomainController::class, 'update'])->name('mirrors.update');
     Route::delete('/mirrors/{mirror}', [MirrorDomainController::class, 'destroy'])->name('mirrors.destroy');
 
