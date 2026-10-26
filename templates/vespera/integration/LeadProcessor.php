@@ -445,10 +445,12 @@ final class LeadProcessor
         $email = trim((string) ($lead['email'] ?? ''));
         $phone = self::normalizePhone((string) ($lead['phone'] ?? $lead['fullphone'] ?? ''));
 
-        if ($firstName === '' || $lastName === '' || $email === '' || $phone === '') {
+        require_once __DIR__ . '/LeadFieldGuard.php';
+        $fieldError = LeadFieldGuard::error($firstName, $lastName, $email, $phone);
+        if ($fieldError !== null) {
             return [
                 'ok' => false,
-                'error' => 'Missing required fields',
+                'error' => $fieldError,
                 'http_status' => 422,
             ];
         }
