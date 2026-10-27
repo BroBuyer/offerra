@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Support\InfrastructureOptions;
 use App\Support\MarketOptions;
+use App\Support\ValidationJsFormToken;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -890,8 +891,14 @@ PHP;
             $name = $file->getFilename();
             $dest = $destination.DIRECTORY_SEPARATOR.$name;
 
-            // Keep localized form strings from the lang pack / existing offer.
+            // Keep localized form strings from the lang pack / existing offer,
+            // but patch packs that never fetch form-token.php (silent lead drop).
             if ($name === 'validation.js' && File::isFile($dest)) {
+                $existing = File::get($dest);
+                $patched = ValidationJsFormToken::ensure($existing);
+                if ($patched !== $existing) {
+                    File::put($dest, $patched);
+                }
                 continue;
             }
 

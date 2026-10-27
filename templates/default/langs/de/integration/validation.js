@@ -120,6 +120,84 @@ function getThanksPageUrl(formAction, thankYouFile = 'Thanks.php') {
   return url;
 }
 
+
+function integrationBaseUrl(form) {
+  const action = form.action || '';
+  const match = action.match(/^(.*\/integration\/)/i);
+  if (match) return match[1];
+  return '/integration/';
+}
+
+async function resolveVisitorPhoneCountry(form, onlyCountries) {
+  try {
+    const res = await fetch(`${integrationBaseUrl(form)}visitor-geo.php`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
+    if (!res.ok) return '';
+    const data = await res.json();
+    const code = String(data.phone_country || '').toLowerCase();
+    if (!/^[a-z]{2}$/.test(code)) return '';
+    if (onlyCountries.length && !onlyCountries.includes(code)) return '';
+    return code;
+  } catch (_) {
+    return '';
+  }
+}
+
+function syncPhoneCountryHidden(form, iti) {
+  const hidden = form.querySelector('input[name="phone_country"]');
+  const iso2 = iti.getSelectedCountryData()?.iso2;
+  if (hidden && iso2) {
+    hidden.value = iso2.toLowerCase();
+  }
+}
+
+async function refreshFormToken(form) {
+  const input = form.querySelector('input[name="form_token"]');
+  if (!input) return false;
+
+  try {
+    const res = await fetch(`${integrationBaseUrl(form)}form-token.php`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data?.ok || !data?.token) return false;
+    input.value = String(data.token);
+    input.dataset.issuedAt = String(Date.now());
+    if (data.min_age != null) {
+      input.dataset.minAge = String(Number(data.min_age) || 3);
+    }
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+/** Prefer token from page-load prefetch; only refetch if missing. Honour min_age. */
+async function ensureFormToken(form) {
+  const input = form.querySelector('input[name="form_token"]');
+  if (!input) return false;
+
+  if (!input.value) {
+    const ok = await refreshFormToken(form);
+    if (!ok) return false;
+  }
+
+  const minAgeMs = Math.max(0, Number(input.dataset.minAge || 3) * 1000);
+  const issuedAt = Number(input.dataset.issuedAt || 0);
+  if (issuedAt > 0 && minAgeMs > 0) {
+    const wait = minAgeMs - (Date.now() - issuedAt);
+    if (wait > 0) {
+      await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+  }
+
+  return Boolean(input.value);
+}
+
 function setupFormValidation(form) {
   if (hasLeadCookie(form)) {
     showAlreadyRegistered(form);
@@ -162,7 +240,16 @@ function setupFormValidation(form) {
       },
       true,
     );
+  } else {
+    resolveVisitorPhoneCountry(form, onlyCountries).then((code) => {
+      if (code && code !== phoneCountry) {
+        iti.setCountry(code);
+        syncPhoneCountryHidden(form, iti);
+      }
+    });
   }
+
+  phone.addEventListener('countrychange', () => syncPhoneCountryHidden(form, iti));
 
   phone.addEventListener('input', () => {
     clearFieldError(phone);
@@ -178,6 +265,8 @@ function setupFormValidation(form) {
     if (msg) setFieldError(phone, msg);
     else clearFieldError(phone);
   });
+
+  refreshFormToken(form).catch(() => {});
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -195,6 +284,14 @@ function setupFormValidation(form) {
 
     preloader?.classList.remove('hidden');
 
+    const tokenOk = await ensureFormToken(form);
+    if (!tokenOk) {
+      showFormMessage(form, 'Sitzung abgelaufen. Bitte Seite neu laden und erneut versuchen.');
+      preloader?.classList.add('hidden');
+      return;
+    }
+
+    syncPhoneCountryHidden(form, iti);
     const fullPhone = iti.getNumber();
     const formData = new FormData(form);
     formData.set('fullphone', fullPhone);
