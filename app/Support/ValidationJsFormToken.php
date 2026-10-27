@@ -15,6 +15,8 @@ class ValidationJsFormToken
 
     public static function ensure(string $js): string
     {
+        $js = str_replace("\r\n", "\n", $js);
+
         if (! self::needsPatch($js)) {
             return $js;
         }

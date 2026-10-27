@@ -57,4 +57,13 @@ JS;
         $this->assertFalse(ValidationJsFormToken::needsPatch($current));
         $this->assertSame($current, ValidationJsFormToken::ensure($current));
     }
+
+    public function test_default_pro_tr_pack_has_form_token(): void
+    {
+        $current = file_get_contents(base_path('templates/default-pro/langs/tr/integration/validation.js'));
+
+        $this->assertIsString($current);
+        $this->assertFalse(ValidationJsFormToken::needsPatch($current));
+        $this->assertStringContainsString('const tokenOk = await ensureFormToken', $current);
+    }
 }
