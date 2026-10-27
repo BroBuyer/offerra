@@ -98,6 +98,7 @@ export default function OriginServersIndex({
     const [createOpen, setCreateOpen] = useState(false);
     const [syncing, setSyncing] = useState(false);
     const [checkingAll, setCheckingAll] = useState(false);
+    const [rebalancing, setRebalancing] = useState(false);
     const [savingEdit, setSavingEdit] = useState(false);
     const [savingCreate, setSavingCreate] = useState(false);
     const [submitError, setSubmitError] = useState('');
@@ -350,6 +351,26 @@ export default function OriginServersIndex({
         });
     };
 
+    const rebalancePool = () => {
+        if (!window.confirm(
+            'Вирівняти офери між серверами пулу?\n\n'
+            + 'Зайве з перевантажених піде на вільні: спочатку бренд (щоб воронка не сиділа на одному IP), потім навантаження.\n'
+            + 'Офери перезаллються і DNS перепривʼяжеться — це займе час.',
+        )) {
+            return;
+        }
+        setRebalancing(true);
+        setSubmitError('');
+        router.post(route('origin-servers.rebalance'), {}, {
+            preserveScroll: true,
+            onError: (errs) => {
+                const list = formErrorList(errs);
+                setSubmitError(list.join(' · ') || 'Не вдалося вирівняти пул.');
+            },
+            onFinish: () => setRebalancing(false),
+        });
+    };
+
     return (
         <PanelLayout title="Origin-сервери" wide>
             <header className="page-header origin-servers-header">
@@ -380,10 +401,10 @@ export default function OriginServersIndex({
                 </div>
             )}
 
-            {(submitError || errors.delete || errors.evacuate) && !createOpen && (
+            {(submitError || errors.delete || errors.evacuate || errors.rebalance) && !createOpen && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>
-                        {submitError || errors.delete || errors.evacuate}
+                        {submitError || errors.delete || errors.evacuate || errors.rebalance}
                     </p>
                 </div>
             )}
@@ -424,6 +445,9 @@ export default function OriginServersIndex({
                 </button>
                 <button type="button" className="btn btn-ghost" onClick={syncRegistry} disabled={syncing}>
                     {syncing ? 'Синхронізація…' : 'Синхронізувати з settings/офферами'}
+                </button>
+                <button type="button" className="btn btn-ghost" onClick={rebalancePool} disabled={rebalancing}>
+                    {rebalancing ? 'Вирівнювання…' : 'Вирівняти пул'}
                 </button>
             </div>
 

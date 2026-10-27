@@ -89,6 +89,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/origin-servers/{originServer}/check', [OriginServerController::class, 'check'])->name('origin-servers.check');
         Route::post('/origin-servers/{originServer}/evacuate', [OriginServerController::class, 'evacuate'])
             ->name('origin-servers.evacuate');
+        Route::post('/origin-servers/rebalance', [OriginServerController::class, 'rebalance'])
+            ->name('origin-servers.rebalance');
         Route::post('/origin-servers/sync', [OriginServerController::class, 'sync'])->name('origin-servers.sync');
         Route::post('/origin-servers/check-all', [OriginServerController::class, 'checkAll'])->name('origin-servers.check-all');
 

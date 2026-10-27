@@ -147,6 +147,31 @@ class OriginServerController extends Controller
             ->with('success', $message);
     }
 
+    public function rebalance(OriginEvacuationService $evacuation): RedirectResponse
+    {
+        try {
+            $result = $evacuation->rebalance();
+        } catch (\RuntimeException $e) {
+            return redirect()
+                ->route('origin-servers.index')
+                ->withErrors(['rebalance' => $e->getMessage()]);
+        }
+
+        if ($result['moved'] === 0) {
+            return redirect()
+                ->route('origin-servers.index')
+                ->with('success', 'Пул уже вирівняний — переносити нічого.');
+        }
+
+        $spread = collect($result['targets'])
+            ->map(fn (int $count, string $host) => "{$host}: +{$count}")
+            ->implode(', ');
+
+        return redirect()
+            ->route('origin-servers.index')
+            ->with('success', "Вирівнювання пулу: {$result['moved']} оферів у черзі → {$spread}");
+    }
+
     public function evacuate(OriginServer $originServer, OriginEvacuationService $evacuation): RedirectResponse
     {
         try {
