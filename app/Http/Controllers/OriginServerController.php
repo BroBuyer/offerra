@@ -23,9 +23,9 @@ class OriginServerController extends Controller
         $counts = $sync->offerCountsByHost();
 
         $servers = OriginServer::query()
-            ->orderByDesc('is_active')
-            ->orderBy('host')
             ->get()
+            ->sort(OriginServer::compareForPanel(...))
+            ->values()
             ->map(function (OriginServer $server) use ($sync, $counts) {
                 $host = $sync->normalizeHost((string) $server->host);
 

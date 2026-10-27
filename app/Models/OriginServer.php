@@ -62,6 +62,47 @@ class OriginServer extends Model
         return self::normalizeRole($this->role);
     }
 
+    /**
+     * Panel table: working servers first (hoster, then host), drain last.
+     */
+    public static function compareForPanel(self $a, self $b): int
+    {
+        $drainA = $a->role() === self::ROLE_DRAIN ? 1 : 0;
+        $drainB = $b->role() === self::ROLE_DRAIN ? 1 : 0;
+        if ($drainA !== $drainB) {
+            return $drainA <=> $drainB;
+        }
+
+        $hoster = strcasecmp(self::hosterSortKey($a), self::hosterSortKey($b));
+        if ($hoster !== 0) {
+            return $hoster;
+        }
+
+        return strcmp(self::hostSortKey((string) $a->host), self::hostSortKey((string) $b->host));
+    }
+
+    private static function hosterSortKey(self $server): string
+    {
+        $hoster = trim((string) ($server->hoster ?? ''));
+
+        return $hoster !== '' ? mb_strtolower($hoster) : "\xFF";
+    }
+
+    private static function hostSortKey(string $host): string
+    {
+        $host = strtolower(trim($host));
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $octets = array_map(
+                static fn (string $octet): string => str_pad($octet, 3, '0', STR_PAD_LEFT),
+                explode('.', $host),
+            );
+
+            return implode('.', $octets);
+        }
+
+        return $host;
+    }
+
     public function healthStatus(): string
     {
         $health = is_array($this->health) ? $this->health : [];
