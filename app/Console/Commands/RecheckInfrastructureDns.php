@@ -21,6 +21,8 @@ class RecheckInfrastructureDns extends Command
             ->orderBy('id')
             ->get(['id', 'domain', 'provision_infrastructure', 'infra_status', 'infra_meta']);
 
+        $this->settlePubliclyReadyRegistrarNs($offers);
+
         $pendingOffers = $offers->filter(fn ($offer) => $offer->dnsStatus() === 'pending');
 
         if ($pendingOffers->isEmpty()) {
@@ -46,6 +48,38 @@ class RecheckInfrastructureDns extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Public NS already match the CF pair, but Dynadot never confirmed set_ns.
+     * Stop the orange «Очікується DNS» and the every-minute retry.
+     *
+     * @param  \Illuminate\Support\Collection<int, Offer>  $offers
+     */
+    private function settlePubliclyReadyRegistrarNs($offers): void
+    {
+        $settled = 0;
+        foreach ($offers as $offer) {
+            $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+            if (($meta['dynadot_ns'] ?? '') !== 'pending') {
+                continue;
+            }
+            if (($meta['dns_via'] ?? '') !== 'records') {
+                continue;
+            }
+
+            $meta['dynadot_ns'] = 'done';
+            unset($meta['dynadot_ns_error']);
+            if (($meta['dns'] ?? null) !== 'done') {
+                $meta['dns'] = 'done';
+            }
+            $offer->update(['infra_meta' => $meta]);
+            $settled++;
+        }
+
+        if ($settled > 0) {
+            $this->info("settled registrar NS (public records already match): {$settled}");
+        }
     }
 
     /**

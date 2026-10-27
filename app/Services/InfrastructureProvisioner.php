@@ -228,6 +228,10 @@ class InfrastructureProvisioner
         $meta['dns'] = 'done';
         $meta['dns_via'] = $via;
         unset($meta['dns_error']);
+        if ($via === 'records') {
+            $meta['dynadot_ns'] = 'done';
+            unset($meta['dynadot_ns_error']);
+        }
         $offer->update([
             'infra_status' => 'ready',
             'infra_error' => null,

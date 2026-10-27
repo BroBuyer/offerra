@@ -58,6 +58,26 @@ class OfferDnsStatusTest extends TestCase
         $this->assertSame('pending', $offer->dnsStatus());
     }
 
+    public function test_dns_status_is_ready_when_public_ns_already_match(): void
+    {
+        $offer = new Offer([
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'infra_meta' => [
+                'dns' => 'done',
+                'dns_via' => 'records',
+                'dynadot_ns' => 'pending',
+                'dynadot_ns_error' => 'Domain initialization is still in progress.',
+                'options' => [
+                    'cloudflare_zone' => true,
+                    'dynadot_ns' => true,
+                ],
+            ],
+        ]);
+
+        $this->assertSame('ready', $offer->dnsStatus());
+    }
+
     public function test_dns_status_is_skipped_without_dns_wait_options(): void
     {
         $offer = new Offer([

@@ -155,10 +155,13 @@ class Offer extends Model
         $meta = is_array($this->infra_meta) ? $this->infra_meta : [];
         $dns = $meta['dns'] ?? null;
 
-        // Registrar still points at the previous CF account — keep retrying
-        // even if an older dns=done leftover survived the slot switch.
+        // Registrar NS cutover (CF slot switch): keep the orange wait until
+        // public NS actually match. dns_via=records means they already do —
+        // leftover Dynadot API errors must not keep the row orange forever.
         if (($meta['dynadot_ns'] ?? '') === 'pending' && $this->provision_infrastructure) {
-            return 'pending';
+            if (($meta['dns_via'] ?? '') !== 'records') {
+                return 'pending';
+            }
         }
 
         if ($dns === 'done') {
