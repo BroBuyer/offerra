@@ -16,7 +16,7 @@ class InspectGoogleIndexOffers extends Command
         {--force : Recheck even if a unique lock from a recent inspect is still held}
         {--dry-run : List due offers, do not inspect}';
 
-    protected $description = 'Inspect GSC index status for submitted offers (24h after submit, then daily until indexed or 7d timeout)';
+    protected $description = 'Inspect GSC index status for submitted offers (24h after submit, then daily until indexed / duplicate / 7d unseen)';
 
     public function handle(OfferGoogleIndexInspector $inspector): int
     {

@@ -129,7 +129,10 @@ class GoogleSearchConsoleClient
      *     indexing_state: string,
      *     last_crawl_at: ?string,
      *     indexed: bool,
-     *     site_url: string
+     *     site_url: string,
+     *     google_canonical: ?string,
+     *     user_canonical: ?string,
+     *     referring_urls: list<string>
      * }
      */
     public function inspectUrl(Offer $offer, UserSetting|GoogleAccount $source, ?string $siteUrl = null): array
@@ -351,7 +354,16 @@ class GoogleSearchConsoleClient
     }
 
     /**
-     * @return array{verdict: string, coverage: string, indexing_state: string, last_crawl_at: ?string, indexed: bool}
+     * @return array{
+     *     verdict: string,
+     *     coverage: string,
+     *     indexing_state: string,
+     *     last_crawl_at: ?string,
+     *     indexed: bool,
+     *     google_canonical: ?string,
+     *     user_canonical: ?string,
+     *     referring_urls: list<string>
+     * }
      */
     private function inspectUrlAt(string $accessToken, string $inspectionUrl, string $siteUrl): array
     {
@@ -376,6 +388,17 @@ class GoogleSearchConsoleClient
         $coverage = trim((string) ($index['coverageState'] ?? ''));
         $indexingState = strtoupper(trim((string) ($index['indexingState'] ?? '')));
         $lastCrawl = trim((string) ($index['lastCrawlTime'] ?? ''));
+        $googleCanonical = trim((string) ($index['googleCanonical'] ?? ''));
+        $userCanonical = trim((string) ($index['userCanonical'] ?? ''));
+        $referring = $index['referringUrls'] ?? [];
+        $referringUrls = [];
+        if (is_array($referring)) {
+            foreach ($referring as $url) {
+                if (is_string($url) && trim($url) !== '') {
+                    $referringUrls[] = trim($url);
+                }
+            }
+        }
 
         return [
             'verdict' => $verdict,
@@ -383,6 +406,9 @@ class GoogleSearchConsoleClient
             'indexing_state' => $indexingState,
             'last_crawl_at' => $lastCrawl !== '' ? $lastCrawl : null,
             'indexed' => in_array($verdict, ['PASS', 'PARTIAL'], true),
+            'google_canonical' => $googleCanonical !== '' ? $googleCanonical : null,
+            'user_canonical' => $userCanonical !== '' ? $userCanonical : null,
+            'referring_urls' => $referringUrls,
         ];
     }
 

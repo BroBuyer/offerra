@@ -23,6 +23,8 @@ class OfferGoogleIndexInspector
 
     public const STATUS_TIMEOUT = 'timeout';
 
+    public const STATUS_DUPLICATE = 'duplicate';
+
     public const STATUS_ERROR = 'error';
 
     public const FIRST_CHECK_HOURS = 24;
@@ -59,9 +61,13 @@ class OfferGoogleIndexInspector
             ->where('indexed_at', '<=', now()->subHours(self::FIRST_CHECK_HOURS))
             ->where(function (Builder $q): void {
                 $q->whereNull('google_index_status')
-                    ->orWhereNotIn('google_index_status', [self::STATUS_INDEXED, self::STATUS_TIMEOUT])
+                    ->orWhereIn('google_index_status', [self::STATUS_WAITING, self::STATUS_ERROR, self::STATUS_TIMEOUT])
+                    ->orWhere(function (Builder $open): void {
+                        $open->whereIn('google_index_status', [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
+                            ->where('indexed_at', '>', now()->subDays(self::TIMEOUT_DAYS));
+                    })
                     ->orWhere(function (Builder $retry): void {
-                        $retry->where('google_index_status', self::STATUS_TIMEOUT)
+                        $retry->whereIn('google_index_status', [self::STATUS_TIMEOUT, self::STATUS_DUPLICATE, self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
                             ->whereExists(function ($sub): void {
                                 $sub->from('google_accounts')
                                     ->whereColumn('google_accounts.user_id', 'offers.user_id')
@@ -99,7 +105,7 @@ class OfferGoogleIndexInspector
     }
 
     /**
-     * @return array{status: string, indexed: bool, coverage: ?string}
+     * @return array{status: string, indexed: bool, coverage: ?string, canonical: ?string}
      */
     public function inspect(Offer $offer, bool $force = false): array
     {
@@ -108,6 +114,7 @@ class OfferGoogleIndexInspector
                 'status' => (string) ($offer->google_index_status ?? ''),
                 'indexed' => (bool) $offer->google_indexed_at,
                 'coverage' => $offer->google_index_coverage,
+                'canonical' => $offer->google_index_canonical,
             ];
         }
 
@@ -116,6 +123,7 @@ class OfferGoogleIndexInspector
                 'status' => self::STATUS_INDEXED,
                 'indexed' => true,
                 'coverage' => $offer->google_index_coverage,
+                'canonical' => $offer->google_index_canonical,
             ];
         }
 
@@ -127,6 +135,7 @@ class OfferGoogleIndexInspector
                 'status' => self::STATUS_ERROR,
                 'indexed' => false,
                 'coverage' => 'Немає Google Connect',
+                'canonical' => null,
             ];
         }
 
@@ -186,12 +195,13 @@ class OfferGoogleIndexInspector
 
             if ($result['indexed']) {
                 $coverage = $this->coverageLabel($result, $account);
-                $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account, $result['site_url'] ?? $siteUrl);
+                $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account, $result['site_url'] ?? $siteUrl, null);
 
                 return [
                     'status' => self::STATUS_INDEXED,
                     'indexed' => true,
                     'coverage' => $coverage,
+                    'canonical' => null,
                 ];
             }
 
@@ -203,31 +213,22 @@ class OfferGoogleIndexInspector
 
         if ($ownedResult && $ownedAccount) {
             $siteUrl = (string) ($ownedResult['site_url'] ?? '');
-            if ($this->pastTimeout($offer)) {
-                $this->stamp(
-                    $offer,
-                    self::STATUS_TIMEOUT,
-                    null,
-                    'Не в індексі за '.self::TIMEOUT_DAYS.' днів після подачі',
-                    $ownedAccount,
-                    $siteUrl !== '' ? $siteUrl : null,
-                );
-
-                return [
-                    'status' => self::STATUS_TIMEOUT,
-                    'indexed' => false,
-                    'coverage' => 'Не в індексі за '.self::TIMEOUT_DAYS.' днів після подачі',
-                ];
-            }
-
-            $status = $this->statusFromResult($ownedResult);
-            $coverage = $this->coverageLabel($ownedResult, $ownedAccount);
-            $this->stamp($offer, $status, null, $coverage, $ownedAccount, $siteUrl !== '' ? $siteUrl : null);
+            $classified = self::classifyInspection((string) $offer->domain, $ownedResult);
+            $this->stamp(
+                $offer,
+                $classified['status'],
+                null,
+                $classified['coverage'],
+                $ownedAccount,
+                $siteUrl !== '' ? $siteUrl : null,
+                $classified['canonical'],
+            );
 
             return [
-                'status' => $status,
+                'status' => $classified['status'],
                 'indexed' => false,
-                'coverage' => $coverage,
+                'coverage' => $classified['coverage'],
+                'canonical' => $classified['canonical'],
             ];
         }
 
@@ -240,19 +241,117 @@ class OfferGoogleIndexInspector
                 'status' => self::STATUS_ERROR,
                 'indexed' => false,
                 'coverage' => substr($coverage, 0, 190),
+                'canonical' => null,
             ];
         }
 
         $coverage = $tried > 0
             ? 'Жоден з '.$tried.' Google не має цей сайт у Search Console'
             : 'Жоден підключений Google не бачить цей домен';
+        if ($this->pastTimeout($offer)) {
+            $this->stamp($offer, self::STATUS_TIMEOUT, null, 'Не в індексі за '.self::TIMEOUT_DAYS.' днів після подачі');
+
+            return [
+                'status' => self::STATUS_TIMEOUT,
+                'indexed' => false,
+                'coverage' => 'Не в індексі за '.self::TIMEOUT_DAYS.' днів після подачі',
+                'canonical' => null,
+            ];
+        }
         $this->stamp($offer, self::STATUS_ERROR, null, $coverage);
 
         return [
             'status' => self::STATUS_ERROR,
             'indexed' => false,
             'coverage' => $coverage,
+            'canonical' => null,
         ];
+    }
+
+    /**
+     * Map a GSC URL Inspection payload to the panel status — never a generic 7-day timeout.
+     *
+     * @param  array{verdict?: string, coverage?: string, indexing_state?: string, google_canonical?: ?string, user_canonical?: ?string, referring_urls?: list<string>}  $result
+     * @return array{status: string, coverage: string, canonical: ?string}
+     */
+    public static function classifyInspection(string $offerDomain, array $result): array
+    {
+        $canonical = self::chosenHost($offerDomain, $result);
+        $coverageRaw = trim((string) ($result['coverage'] ?? ''));
+        $isDuplicate = $canonical !== null
+            || str_contains(strtolower($coverageRaw), 'duplicate');
+
+        if ($isDuplicate) {
+            $coverage = $canonical !== null
+                ? 'Google індексує '.$canonical.' замість цього'
+                : 'Google вважає цей URL дублем';
+
+            return [
+                'status' => self::STATUS_DUPLICATE,
+                'coverage' => substr($coverage, 0, 190),
+                'canonical' => $canonical,
+            ];
+        }
+
+        if ($coverageRaw === '' || str_contains(strtolower($coverageRaw), 'unknown to google')) {
+            return [
+                'status' => self::STATUS_UNKNOWN,
+                'coverage' => 'Google ще не бачив цей URL',
+                'canonical' => null,
+            ];
+        }
+
+        $coverage = $coverageRaw !== '' ? $coverageRaw : 'Прокраулено, ще не в індексі';
+
+        return [
+            'status' => self::STATUS_NOT_INDEXED,
+            'coverage' => substr($coverage, 0, 190),
+            'canonical' => null,
+        ];
+    }
+
+    /**
+     * Host Google actually indexed instead of this offer, if any.
+     *
+     * @param  array{google_canonical?: ?string, referring_urls?: list<string>}  $result
+     */
+    public static function chosenHost(string $offerDomain, array $result): ?string
+    {
+        $offerHost = self::hostFromUrl($offerDomain) ?? strtolower(trim($offerDomain));
+        $googleHost = self::hostFromUrl((string) ($result['google_canonical'] ?? ''));
+        if ($googleHost !== null && $googleHost !== $offerHost) {
+            return $googleHost;
+        }
+
+        foreach ($result['referring_urls'] ?? [] as $url) {
+            $host = self::hostFromUrl((string) $url);
+            if ($host !== null && $host !== $offerHost) {
+                return $host;
+            }
+        }
+
+        return null;
+    }
+
+    public static function hostFromUrl(?string $value): ?string
+    {
+        $value = strtolower(trim((string) $value));
+        if ($value === '') {
+            return null;
+        }
+
+        $host = parse_url($value, PHP_URL_HOST);
+        if (! is_string($host) || $host === '') {
+            if (str_contains($value, '/') || str_contains($value, ':')) {
+                return null;
+            }
+            $host = $value;
+        }
+
+        $host = preg_replace('/^www\./', '', $host) ?? $host;
+        $host = rtrim($host, '.');
+
+        return $host !== '' ? $host : null;
     }
 
     public function pastTimeout(Offer $offer): bool
@@ -263,19 +362,6 @@ class OfferGoogleIndexInspector
         }
 
         return $submitted->lte(now()->subDays(self::TIMEOUT_DAYS));
-    }
-
-    /**
-     * @param  array{verdict: string, coverage: string, indexing_state: string, last_crawl_at: ?string, indexed: bool}  $result
-     */
-    private function statusFromResult(array $result): string
-    {
-        $coverage = strtolower($result['coverage']);
-        if ($coverage === '' || str_contains($coverage, 'unknown to google')) {
-            return self::STATUS_UNKNOWN;
-        }
-
-        return self::STATUS_NOT_INDEXED;
     }
 
     /**
@@ -292,8 +378,15 @@ class OfferGoogleIndexInspector
         return substr(implode(' · ', $parts), 0, 190);
     }
 
-    private function stamp(Offer $offer, string $status, mixed $indexedAt, ?string $coverage, ?GoogleAccount $account = null, ?string $siteUrl = null): void
-    {
+    private function stamp(
+        Offer $offer,
+        string $status,
+        mixed $indexedAt,
+        ?string $coverage,
+        ?GoogleAccount $account = null,
+        ?string $siteUrl = null,
+        ?string $canonical = null,
+    ): void {
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
         if ($account) {
             $gsc = is_array($meta['gsc'] ?? null) ? $meta['gsc'] : [];
@@ -310,6 +403,7 @@ class OfferGoogleIndexInspector
             'google_indexed_at' => $indexedAt,
             'google_index_checked_at' => now(),
             'google_index_coverage' => $coverage,
+            'google_index_canonical' => $canonical,
             'infra_meta' => $meta,
         ])->save();
     }

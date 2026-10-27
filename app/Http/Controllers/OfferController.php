@@ -285,14 +285,17 @@ class OfferController extends Controller
             $query->whereNull('google_indexed_at')
                 ->where(function (Builder $builder): void {
                     $builder->where('submitted_for_indexing', true)
-                        ->orWhereIn('google_index_status', ['waiting', 'unknown', 'not_indexed', 'error']);
+                        ->orWhereIn('google_index_status', ['waiting', 'error']);
                 })
                 ->where(function (Builder $builder): void {
                     $builder->whereNull('google_index_status')
-                        ->orWhereNotIn('google_index_status', ['indexed', 'timeout']);
+                        ->orWhereIn('google_index_status', ['waiting', 'error']);
                 });
-        } elseif (($filters['google_index'] ?? '') === 'timeout') {
-            $query->where('google_index_status', 'timeout');
+        } elseif (($filters['google_index'] ?? '') === 'duplicate') {
+            $query->where('google_index_status', 'duplicate');
+        } elseif (in_array($filters['google_index'] ?? '', ['timeout', 'unseen'], true)) {
+            $query->whereNull('google_indexed_at')
+                ->whereIn('google_index_status', ['timeout', 'unknown', 'not_indexed']);
         }
 
         if (($filters['availability'] ?? '') === 'ok') {
@@ -816,6 +819,7 @@ class OfferController extends Controller
                 'google_indexed_at' => null,
                 'google_index_checked_at' => null,
                 'google_index_coverage' => null,
+                'google_index_canonical' => null,
             ]),
         ]);
 
@@ -866,14 +870,18 @@ class OfferController extends Controller
                 ->with('success', $offer->domain.': Indexed'.($coverage !== '' ? ' · '.$coverage : ''));
         }
 
+        $canonical = trim((string) ($result['canonical'] ?? ''));
         $message = match ($status) {
-            OfferGoogleIndexInspector::STATUS_UNKNOWN => $offer->domain.': Google ще не знає цей URL',
+            OfferGoogleIndexInspector::STATUS_DUPLICATE => $canonical !== ''
+                ? $offer->domain.': Google індексує '.$canonical.' замість цього'
+                : $offer->domain.': Google вважає цей URL дублем',
+            OfferGoogleIndexInspector::STATUS_UNKNOWN => $offer->domain.': Google ще не бачив цей URL',
             OfferGoogleIndexInspector::STATUS_NOT_INDEXED => $offer->domain.': прокраулено, ще не в індексі',
             OfferGoogleIndexInspector::STATUS_TIMEOUT => $offer->domain.': не в індексі за 7 днів',
             default => $offer->domain.': не вдалося перевірити',
         };
 
-        if ($coverage !== '') {
+        if ($coverage !== '' && ! str_contains($message, $coverage)) {
             $message .= ' · '.$coverage;
         }
 

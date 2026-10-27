@@ -158,6 +158,7 @@ function indexedTick(offer) {
     if (offer.google_indexed) {
         return {
             tone: 'ok',
+            glyph: '✓',
             title: offer.google_indexed_at
                 ? `Indexed by Google: ${offer.google_indexed_at}${offer.google_index_coverage ? ` · ${offer.google_index_coverage}` : ''}`
                 : (offer.google_index_coverage || 'Indexed by Google'),
@@ -165,30 +166,46 @@ function indexedTick(offer) {
     }
 
     const coverage = offer.google_index_coverage || '';
-    if (offer.google_index_status === 'timeout') {
+    if (offer.google_index_status === 'duplicate' || /duplicate/i.test(coverage)) {
+        const host = offer.google_index_canonical || '';
         return {
-            tone: 'fail',
-            title: coverage || 'Not indexed within 7 days after submit',
+            tone: 'dup',
+            glyph: '⇄',
+            caption: host || null,
+            title: host
+                ? `Google індексує ${host} замість цього`
+                : (coverage || 'Google вважає цей URL дублем'),
+        };
+    }
+    if (offer.google_index_status === 'unknown' || offer.google_index_status === 'timeout') {
+        return {
+            tone: 'miss',
+            glyph: '–',
+            title: coverage || 'Google ще не бачив цей URL',
         };
     }
     if (offer.google_index_status === 'error') {
-        return { tone: 'wait', title: coverage || 'Index check error — will retry' };
+        return { tone: 'wait', glyph: '✓', title: coverage || 'Index check error — will retry' };
     }
     if (offer.google_index_status === 'not_indexed') {
-        return { tone: 'wait', title: coverage || 'Crawled, not in the index yet' };
-    }
-    if (offer.google_index_status === 'unknown') {
-        return { tone: 'wait', title: coverage || 'Google does not know this URL yet' };
+        return { tone: 'miss', glyph: '–', title: coverage || 'Прокраулено, ще не в індексі' };
     }
     if (offer.submitted_for_indexing || offer.google_index_status === 'waiting') {
-        return { tone: 'wait', title: 'Waiting for Google (~24h after submit, then daily)' };
+        return { tone: 'wait', glyph: '✓', title: 'Waiting for Google (~24h after submit, then daily)' };
     }
 
-    return { tone: 'wait', title: 'Not submitted yet' };
+    return { tone: 'wait', glyph: '✓', title: 'Not submitted yet' };
 }
 
-function IndexTick({ tone, title, onClick, busy = false, label }) {
-    const className = `index-tick index-tick--${tone}${onClick ? ' index-tick--button' : ''}${busy ? ' is-busy' : ''}`;
+function IndexTick({ tone, title, onClick, busy = false, label, glyph = '✓', caption }) {
+    const className = `index-tick index-tick--${tone}${onClick ? ' index-tick--button' : ''}${busy ? ' is-busy' : ''}${caption ? ' index-tick--captioned' : ''}`;
+
+    const inner = (
+        <>
+            <span className="index-tick__mark" aria-hidden="true">{glyph}</span>
+            {caption ? <span className="index-tick__caption">{caption}</span> : null}
+        </>
+    );
 
     if (typeof onClick === 'function') {
         return (
@@ -200,14 +217,14 @@ function IndexTick({ tone, title, onClick, busy = false, label }) {
                 disabled={busy}
                 onClick={onClick}
             >
-                ✓
+                {inner}
             </button>
         );
     }
 
     return (
         <span className={className} title={title} aria-label={label || title}>
-            ✓
+            {inner}
         </span>
     );
 }
@@ -494,10 +511,16 @@ function buildActiveFilterChips(filters, users) {
             label: 'Indexed: pending',
             clear: { google_index: '' },
         });
-    } else if (filters.google_index === 'timeout') {
+    } else if (filters.google_index === 'duplicate') {
         chips.push({
             id: 'google_index',
-            label: 'Indexed: timed out',
+            label: 'Indexed: duplicate',
+            clear: { google_index: '' },
+        });
+    } else if (filters.google_index === 'unseen' || filters.google_index === 'timeout') {
+        chips.push({
+            id: 'google_index',
+            label: 'Indexed: not in Google',
             clear: { google_index: '' },
         });
     }
@@ -1529,7 +1552,8 @@ export default function OffersIndex({
                     <option value="">Indexed</option>
                     <option value="indexed">Indexed</option>
                     <option value="pending">Pending</option>
-                    <option value="timeout">Timed out</option>
+                    <option value="duplicate">Duplicate</option>
+                    <option value="unseen">Not in Google</option>
                 </select>
                 <select
                     aria-label="Availability dots"
@@ -1757,7 +1781,7 @@ export default function OffersIndex({
                                 <th className="col-index" title="Sitemap submitted to Search Console">Submitted</th>
                             )}
                             {colVisible('google_index') && (
-                                <th className="col-index" title="Google has the URL in the index">Indexed</th>
+                                <th className="col-index" title="Що Google зробив з URL: в індексі, дубль іншого домену, або ще не бачив">Indexed</th>
                             )}
                             {colVisible('actions') && <th />}
                         </tr>
@@ -1944,12 +1968,14 @@ export default function OffersIndex({
                                                 return (
                                                     <IndexTick
                                                         tone={mark.tone}
+                                                        glyph={mark.glyph}
+                                                        caption={mark.caption}
                                                         title={
                                                             canInspect
                                                                 ? `${mark.title} · Натисни, щоб перевірити зараз`
                                                                 : mark.title
                                                         }
-                                                        label={mark.tone === 'ok' ? 'Indexed' : mark.tone === 'fail' ? 'Not indexed' : 'Indexing pending'}
+                                                        label={mark.title}
                                                         busy={checkingIndexId === offer.id}
                                                         onClick={canInspect ? () => inspectIndex(offer) : undefined}
                                                     />
@@ -2087,6 +2113,8 @@ export default function OffersIndex({
                                         <span className="field-hint">Indexed</span>
                                         <IndexTick
                                             tone={indexed.tone}
+                                            glyph={indexed.glyph}
+                                            caption={indexed.caption}
                                             title={
                                                 canInspect
                                                     ? `${indexed.title} · Натисни, щоб перевірити зараз`

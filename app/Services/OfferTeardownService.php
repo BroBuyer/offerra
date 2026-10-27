@@ -203,6 +203,7 @@ class OfferTeardownService
             'google_indexed_at' => null,
             'google_index_checked_at' => null,
             'google_index_coverage' => null,
+            'google_index_canonical' => null,
             'teardown_meta' => $meta,
         ]);
     }

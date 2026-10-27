@@ -1806,6 +1806,8 @@ a:hover { text-decoration: underline; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 0.12rem;
   font-size: 1.1rem;
   font-weight: 600;
   line-height: 1;
@@ -1813,6 +1815,21 @@ a:hover { text-decoration: underline; }
   padding: 0;
   background: transparent;
   font-family: inherit;
+  max-width: 8.5rem;
+}
+
+.index-tick__mark {
+  line-height: 1;
+}
+
+.index-tick__caption {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  max-width: 8.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .index-tick--ok {
@@ -1825,6 +1842,14 @@ a:hover { text-decoration: underline; }
 
 .index-tick--fail {
   color: #f87171;
+}
+
+.index-tick--dup {
+  color: #fbbf24;
+}
+
+.index-tick--miss {
+  color: color-mix(in srgb, var(--muted) 80%, var(--text));
 }
 
 .index-tick--button {
