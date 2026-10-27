@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Jobs\ProvisionInfrastructureJob;
 use App\Models\Offer;
+use App\Models\User;
 use App\Models\UserSetting;
 use App\Support\InfrastructureDnsReadiness;
 use App\Support\InfrastructureOptions;
@@ -489,15 +490,44 @@ class InfrastructureProvisioner
         }
 
         $offer->loadMissing('user.settings');
-        $settings = $this->providerSettings($offer);
+        $candidates = $this->cloudflareSettingsCandidates($offer);
 
-        if ($settings === null || ! filled($settings->cloudflare_api_token)) {
+        if ($candidates === []) {
             throw new \RuntimeException('Немає Cloudflare API token для '.$offer->domain);
         }
 
+        $last = null;
+
+        foreach ($candidates as $label => $settings) {
+            try {
+                $this->rebindARecordWith($offer, $settings, $ip, $label);
+
+                return;
+            } catch (\Throwable $e) {
+                $last = $e;
+
+                if (
+                    $this->cloudflare->isUnauthorizedError($e)
+                    || $this->cloudflare->isZoneAbsentError($e)
+                ) {
+                    continue;
+                }
+
+                throw $e;
+            }
+        }
+
+        throw $last ?? new \RuntimeException('Немає Cloudflare API token для '.$offer->domain);
+    }
+
+    /**
+     * @param  'offer'|'owner'|'owner_backup'|'admin'|'admin_backup'  $label
+     */
+    private function rebindARecordWith(Offer $offer, UserSetting $settings, string $ip, string $label): void
+    {
         $domain = strtolower(trim((string) $offer->domain));
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        $zoneId = (string) ($meta['cloudflare_zone_id'] ?? '');
+        $zoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
 
         try {
             if ($zoneId === '') {
@@ -526,10 +556,110 @@ class InfrastructureProvisioner
         $meta['cloudflare_zone_id'] = $zoneId;
         unset($meta['dns_error']);
 
+        if (str_contains($label, 'backup')) {
+            $meta['cloudflare_slot'] = 'backup';
+        } elseif ($label === 'owner' || $label === 'admin') {
+            $meta['cloudflare_slot'] = 'primary';
+        }
+
         $offer->update([
             'infra_meta' => $meta,
             'deploy_panel_name' => $ip,
+            'cloudflare_api_token' => $settings->cloudflare_api_token,
+            'cloudflare_account_id' => $settings->cloudflare_account_id,
+            'cloudflare_account_name' => $settings->cloudflare_account_name,
         ]);
+    }
+
+    /**
+     * Tokens that may own this zone: offer → owner primary/backup → admin slots.
+     *
+     * @return array<string, UserSetting>
+     */
+    private function cloudflareSettingsCandidates(Offer $offer): array
+    {
+        $candidates = [];
+        $owner = $offer->user?->settings;
+
+        $push = function (string $label, ?UserSetting $base, ?string $token, ?string $accountId = null, ?string $accountName = null) use (&$candidates): void {
+            $token = CloudflareClient::normalizeApiToken($token);
+            if ($token === '' || $base === null) {
+                return;
+            }
+
+            foreach ($candidates as $existing) {
+                if (CloudflareClient::normalizeApiToken($existing->cloudflare_api_token) === $token) {
+                    return;
+                }
+            }
+
+            $probe = $base->replicate();
+            $probe->cloudflare_api_token = $token;
+            if ($accountId !== null && $accountId !== '') {
+                $probe->cloudflare_account_id = $accountId;
+            }
+            if ($accountName !== null && $accountName !== '') {
+                $probe->cloudflare_account_name = $accountName;
+            }
+            $candidates[$label] = $probe;
+        };
+
+        if ($owner) {
+            $push(
+                'offer',
+                $owner,
+                $offer->cloudflare_api_token,
+                $offer->cloudflare_account_id,
+                $offer->cloudflare_account_name,
+            );
+            $push('owner', $owner, $owner->cloudflare_api_token, $owner->cloudflare_account_id, $owner->cloudflare_account_name);
+            $push(
+                'owner_backup',
+                $owner,
+                $owner->cloudflare_backup_api_token,
+                $owner->cloudflare_backup_account_id,
+                $owner->cloudflare_backup_account_name,
+            );
+
+            // Older CF accounts stay on sibling offers after Settings tokens rotate.
+            $sibling = 0;
+            Offer::query()
+                ->where('user_id', $offer->user_id)
+                ->whereNotNull('cloudflare_api_token')
+                ->where('cloudflare_api_token', '!=', '')
+                ->orderByDesc('id')
+                ->limit(400)
+                ->get(['cloudflare_api_token', 'cloudflare_account_id', 'cloudflare_account_name'])
+                ->each(function (Offer $row) use ($push, $owner, &$sibling): void {
+                    $sibling++;
+                    $push(
+                        'sibling_'.$sibling,
+                        $owner,
+                        $row->cloudflare_api_token,
+                        $row->cloudflare_account_id,
+                        $row->cloudflare_account_name,
+                    );
+                });
+        }
+
+        $admin = User::query()
+            ->where('role', User::ROLE_ADMIN)
+            ->orderBy('id')
+            ->with('settings')
+            ->first()?->settings;
+
+        if ($admin) {
+            $push('admin', $admin, $admin->cloudflare_api_token, $admin->cloudflare_account_id, $admin->cloudflare_account_name);
+            $push(
+                'admin_backup',
+                $admin,
+                $admin->cloudflare_backup_api_token,
+                $admin->cloudflare_backup_account_id,
+                $admin->cloudflare_backup_account_name,
+            );
+        }
+
+        return $candidates;
     }
 
     /**
