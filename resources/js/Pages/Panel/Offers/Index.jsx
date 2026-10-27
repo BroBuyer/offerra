@@ -77,6 +77,26 @@ function saveOfferColumnVisibility(visibility) {
     }
 }
 
+function ArchiveIcon() {
+    return (
+        <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M3 7h18v4H3z" />
+            <path d="M5 11v9h14v-9" />
+            <path d="M10 15h4" />
+        </svg>
+    );
+}
+
 function TrashIcon() {
     return (
         <svg
@@ -581,6 +601,7 @@ export default function OffersIndex({
     const [checkingAvailabilityId, setCheckingAvailabilityId] = useState(null);
     const [checkingIndexId, setCheckingIndexId] = useState(null);
     const [archivingId, setArchivingId] = useState(null);
+    const [teardownKind, setTeardownKind] = useState(null);
     const [copiedDomainId, setCopiedDomainId] = useState(null);
     const [editingOffer, setEditingOffer] = useState(null);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -818,6 +839,26 @@ export default function OffersIndex({
         });
     };
 
+    const archiveOffer = (offer) => {
+        const ok = window.confirm(
+            `Архівувати ${offer.domain}?\n\n`
+            + 'Знімемо origin і Cloudflare. Домен лишиться в Dynadot, офер буде в архіві — можна поновити.',
+        );
+        if (!ok) {
+            return;
+        }
+
+        setArchivingId(offer.id);
+        setTeardownKind('archive');
+        router.post(route('offers.archive', offer.id), {}, {
+            preserveScroll: true,
+            onFinish: () => {
+                setArchivingId(null);
+                setTeardownKind(null);
+            },
+        });
+    };
+
     const deleteOffer = (offer) => {
         const ok = window.confirm(
             `Видалити ${offer.domain} назавжди?\n\n`
@@ -828,9 +869,13 @@ export default function OffersIndex({
         }
 
         setArchivingId(offer.id);
+        setTeardownKind('purge');
         router.delete(route('offers.destroy', offer.id), {
             preserveScroll: true,
-            onFinish: () => setArchivingId(null),
+            onFinish: () => {
+                setArchivingId(null);
+                setTeardownKind(null);
+            },
         });
     };
 
@@ -1197,20 +1242,36 @@ export default function OffersIndex({
                     <span className="field-hint">—</span>
                 )}
                 {canManageOffer(offer) && !['archiving', 'purging', 'archived'].includes(offer.status) && (
-                    <button
-                        type="button"
-                        className="btn btn-ghost btn-sm btn-archive"
-                        disabled={archivingId === offer.id || offer.status === 'deploying' || offer.status === 'purging'}
-                        onClick={() => deleteOffer(offer)}
-                        title="Видалити назавжди: мертвий/забанений домен, без відновлення"
-                        aria-label={`Видалити ${offer.domain}`}
-                    >
-                        {archivingId === offer.id ? (
-                            <span className="btn-spinner" aria-hidden="true" />
-                        ) : (
-                            <TrashIcon />
-                        )}
-                    </button>
+                    <>
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm btn-shelve"
+                            disabled={archivingId === offer.id || offer.status === 'deploying' || offer.status === 'purging'}
+                            onClick={() => archiveOffer(offer)}
+                            title="Архівувати: зняти з origin і Cloudflare, домен лишиться, можна поновити"
+                            aria-label={`Архівувати ${offer.domain}`}
+                        >
+                            {archivingId === offer.id && teardownKind === 'archive' ? (
+                                <span className="btn-spinner" aria-hidden="true" />
+                            ) : (
+                                <ArchiveIcon />
+                            )}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm btn-purge"
+                            disabled={archivingId === offer.id || offer.status === 'deploying' || offer.status === 'purging'}
+                            onClick={() => deleteOffer(offer)}
+                            title="Видалити назавжди: мертвий/забанений домен, без відновлення"
+                            aria-label={`Видалити ${offer.domain}`}
+                        >
+                            {archivingId === offer.id && teardownKind === 'purge' ? (
+                                <span className="btn-spinner" aria-hidden="true" />
+                            ) : (
+                                <TrashIcon />
+                            )}
+                        </button>
+                    </>
                 )}
             </div>
         );

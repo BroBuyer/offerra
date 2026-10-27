@@ -1870,19 +1870,31 @@ a:hover { text-decoration: underline; }
   cursor: wait;
 }
 
-.btn-archive {
+.btn-shelve {
+  color: var(--muted);
+  border-color: color-mix(in srgb, var(--muted) 35%, var(--border));
+}
+
+.btn-shelve:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 12%, var(--surface));
+}
+
+.btn-shelve:disabled,
+.btn-purge:disabled {
+  opacity: 0.55;
+}
+
+.btn-purge {
   color: #f87171;
   border-color: rgba(248, 113, 113, 0.35);
 }
 
-.btn-archive:hover:not(:disabled) {
+.btn-purge:hover:not(:disabled) {
   color: #fca5a5;
   border-color: #f87171;
   background: rgba(248, 113, 113, 0.12);
-}
-
-.btn-archive:disabled {
-  opacity: 0.55;
 }
 
 .btn-spinner {
