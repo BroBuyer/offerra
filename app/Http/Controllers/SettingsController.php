@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Services\CloudflareClient;
 use App\Services\DynadotClient;
+use App\Services\DeployService;
 use App\Services\GoogleOAuthService;
 use App\Services\OfferVerificationFileService;
 use App\Services\SalesPostbackService;
@@ -147,6 +148,7 @@ class SettingsController extends Controller
     public function storeGscVerification(
         UpdateSettingsRequest $request,
         OfferVerificationFileService $verification,
+        DeployService $deploy,
     ): RedirectResponse {
         $authUser = $request->user();
         $targetUser = $this->resolveSettingsUser($authUser, $request->integer('user_id') ?: null);
@@ -164,13 +166,20 @@ class SettingsController extends Controller
                 ->withErrors(['gsc_verification' => $e->getMessage()]);
         }
 
+        $queued = $deploy->queueVerificationPushForUser($targetUser);
+
         $redirect = redirect()->route('settings.index');
 
         if ($authUser->isAdmin() && $targetUser->id !== $authUser->id) {
             $redirect = redirect()->route('settings.index', ['user' => $targetUser->id]);
         }
 
-        return $redirect->with('success', "Файл GSC збережено: {$filename}");
+        $message = "Файл GSC збережено: {$filename}";
+        if ($queued > 0) {
+            $message .= ". Заливаємо на {$queued} живих оферів без GSC.";
+        }
+
+        return $redirect->with('success', $message);
     }
 
     public function destroyGscVerification(

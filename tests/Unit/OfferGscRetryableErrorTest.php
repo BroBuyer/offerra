@@ -24,6 +24,13 @@ class OfferGscRetryableErrorTest extends TestCase
         $this->assertTrue(OfferGscSubmitter::isRetryableError('HTTPS is not live yet for example.com'));
     }
 
+    public function test_verification_file_mismatch_is_retryable(): void
+    {
+        $this->assertTrue(OfferGscSubmitter::isRetryableError(
+            'Verification file does not look like a GSC HTML token: https://example.com/googleabc.html',
+        ));
+    }
+
     public function test_permission_error_is_not_retryable(): void
     {
         $this->assertFalse(OfferGscSubmitter::isRetryableError(

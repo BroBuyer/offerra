@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\DeployOfferJob;
+use App\Jobs\PushGscVerificationFileJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
@@ -34,6 +35,7 @@ class DeployService
         private readonly OfferGenerator $generator,
         private readonly OriginHostService $origin,
         private readonly OriginPool $pool,
+        private readonly OfferVerificationFileService $verificationFiles,
         private readonly string $offersPath,
     ) {}
 
@@ -355,6 +357,61 @@ class DeployService
             'domain' => $offer->domain,
             'host' => $settings->deploy_host,
         ]);
+    }
+
+    /**
+     * Copy the owner's current GSC HTML token onto the live origin.
+     * Needed when Settings gets a new file after the lander was already deployed.
+     */
+    public function pushVerificationFile(User $user, Offer $offer): void
+    {
+        $offer->loadMissing('user.settings');
+        $settings = $this->resolveDeploySettings($user, $offer, allocate: false);
+
+        $this->verificationFiles->applyFromUserSettings($offer);
+        $offer->refresh();
+
+        $filename = trim((string) $offer->verification_filename);
+        $local = $this->verificationFiles->storagePath($offer);
+
+        if ($filename === '' || $local === null || ! File::isFile($local)) {
+            throw new RuntimeException('GSC verification HTML file is missing.');
+        }
+
+        $this->origin->uploadOfferRelativeFile(
+            $settings,
+            $offer->domain,
+            $local,
+            $filename,
+        );
+
+        Log::info('Pushed GSC verification file to origin', [
+            'offer' => $offer->id,
+            'domain' => $offer->domain,
+            'file' => $filename,
+            'host' => $settings->deploy_host,
+        ]);
+    }
+
+    /**
+     * Queue a verification-file push for every live offer that still needs GSC.
+     */
+    public function queueVerificationPushForUser(User $user): int
+    {
+        $ids = Offer::query()
+            ->where('user_id', $user->id)
+            ->where('status', 'deployed')
+            ->where('submitted_for_indexing', false)
+            ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed'])
+            ->orderBy('id')
+            ->pluck('id')
+            ->all();
+
+        foreach ($ids as $id) {
+            PushGscVerificationFileJob::dispatch((int) $id)->onQueue('deploy');
+        }
+
+        return count($ids);
     }
 
     private function purgeLocalFolder(string $localPath, Offer $offer): void

@@ -46,6 +46,7 @@ class OfferServiceProvider extends ServiceProvider
                 $app->make(OfferGenerator::class),
                 $app->make(OriginHostService::class),
                 $app->make(OriginPool::class),
+                $app->make(OfferVerificationFileService::class),
                 config('offerra.offers_path'),
             );
         });

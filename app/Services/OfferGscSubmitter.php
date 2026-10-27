@@ -14,6 +14,7 @@ class OfferGscSubmitter
     public function __construct(
         private readonly GoogleSearchConsoleClient $gsc,
         private readonly OfferGoogleIndexInspector $indexInspector,
+        private readonly DeployService $deploy,
     ) {}
 
     public function canSubmit(Offer $offer): bool
@@ -124,6 +125,10 @@ class OfferGscSubmitter
         $offer->update(['infra_meta' => $meta]);
 
         try {
+            if ($offer->user) {
+                $this->deploy->pushVerificationFile($offer->user, $offer);
+            }
+
             $result = $this->gsc->submitOffer($offer, $settings);
 
             if (! ($result['added'] ?? false) || ! ($result['sitemap_submitted'] ?? false)) {
@@ -196,6 +201,9 @@ class OfferGscSubmitter
         return str_contains($message, 'HTTPS is not live')
             || str_contains($message, 'Cannot fetch verification file')
             || str_contains($message, 'Verification file HTTP')
+            || str_contains($message, 'does not look like a GSC HTML token')
+            || str_contains($message, 'GSC verification HTML file is missing')
+            || str_contains($message, 'SFTP:')
             || str_contains($message, 'NXDOMAIN')
             || str_contains($message, 'не резолвиться')
             || str_contains($message, 'Timeout')
