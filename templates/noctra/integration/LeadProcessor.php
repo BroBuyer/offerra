@@ -452,6 +452,7 @@ final class LeadProcessor
             'FORM_TOKEN_TOO_FAST',
             'FORM_TOKEN_DROP',
             'NO_CLOUDFLARE',
+            'CHATGPT_REFERRAL',
         ], true);
     }
 

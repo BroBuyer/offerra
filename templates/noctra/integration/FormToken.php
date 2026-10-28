@@ -26,6 +26,8 @@ final class FormToken
         self::ensureStorage();
         self::gc();
 
+        self::rememberChatGptHit();
+
         $drop = self::looksLikeBotUa() || self::rateExceeded('issue', self::issueLimit());
         self::hitRate('issue');
 
@@ -257,6 +259,129 @@ final class FormToken
         }
 
         return (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+    }
+
+    /**
+     * ChatGPT appends ?utm_source=chatgpt.com when it cites a lander.
+     * Cookie + IP mark keep the second submit (URL already stripped) silent too.
+     */
+    public static function requestFromChatGpt(): bool
+    {
+        if (self::hasChatGptMark()) {
+            return true;
+        }
+
+        if (! self::currentRequestLooksLikeChatGpt()) {
+            return false;
+        }
+
+        self::rememberChatGptHit();
+
+        return true;
+    }
+
+    public static function rememberChatGptHit(): void
+    {
+        if (! self::currentRequestLooksLikeChatGpt() && ! self::hasChatGptMark()) {
+            return;
+        }
+
+        if (! headers_sent()) {
+            setcookie('ofr_src', 'chatgpt', [
+                'expires' => time() + 86400,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+        }
+        $_COOKIE['ofr_src'] = 'chatgpt';
+        self::writeChatGptFileMark();
+    }
+
+    public static function urlLooksLikeChatGpt(string $url): bool
+    {
+        $url = trim($url);
+        if ($url === '') {
+            return false;
+        }
+
+        $host = strtolower((string) (parse_url($url, PHP_URL_HOST) ?: ''));
+        if ($host === 'chatgpt.com' || $host === 'chat.openai.com' || str_ends_with($host, '.chatgpt.com')) {
+            return true;
+        }
+
+        $query = (string) (parse_url($url, PHP_URL_QUERY) ?: '');
+        if ($query === '') {
+            return false;
+        }
+
+        $params = [];
+        parse_str($query, $params);
+        foreach (['utm_source', 'utm_medium', 'utm_campaign'] as $key) {
+            $value = strtolower(trim((string) ($params[$key] ?? '')));
+            if ($value !== '' && (str_contains($value, 'chatgpt') || str_contains($value, 'openai'))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function currentRequestLooksLikeChatGpt(): bool
+    {
+        $referer = trim((string) ($_SERVER['HTTP_REFERER'] ?? ''));
+        if ($referer !== '' && self::urlLooksLikeChatGpt($referer)) {
+            return true;
+        }
+
+        $uri = trim((string) ($_SERVER['REQUEST_URI'] ?? ''));
+        if ($uri !== '' && self::urlLooksLikeChatGpt('https://local.invalid'.$uri)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static function hasChatGptMark(): bool
+    {
+        if (strtolower(trim((string) ($_COOKIE['ofr_src'] ?? ''))) === 'chatgpt') {
+            return true;
+        }
+
+        $path = self::chatGptMarkPath();
+        if (! is_file($path)) {
+            return false;
+        }
+
+        $mtime = @filemtime($path);
+        if ($mtime === false || (time() - $mtime) > 86400) {
+            @unlink($path);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private static function writeChatGptFileMark(): void
+    {
+        self::ensureStorage();
+        $payload = [
+            'ip' => self::clientIp(),
+            'kind' => 'chatgpt',
+            'updated_at' => date('c'),
+        ];
+        @file_put_contents(
+            self::chatGptMarkPath(),
+            json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n",
+            LOCK_EX,
+        );
+    }
+
+    private static function chatGptMarkPath(): string
+    {
+        return self::rateDir().DIRECTORY_SEPARATOR.hash('sha256', 'chatgpt|'.self::clientIp()).'.json';
     }
 
     public static function minAge(): int

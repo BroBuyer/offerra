@@ -25,6 +25,10 @@ function resolve_preflight_spam_reason(): ?string
         return 'BOT_UA';
     }
 
+    if (FormToken::requestFromChatGpt()) {
+        return 'CHATGPT_REFERRAL';
+    }
+
     if (FormToken::submitRateExceeded()) {
         return 'RATE_LIMIT';
     }
