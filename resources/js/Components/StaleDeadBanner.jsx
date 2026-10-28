@@ -43,13 +43,9 @@ export default function StaleDeadBanner({ hint }) {
                 оферів брендів без ліда 21 день, останній GSC старше 21 дня.
                 {scanLabel ? (
                     <span className="field-hint" style={{ display: 'inline', marginLeft: '0.5rem' }}>
-                        Останній скан: {scanLabel}
+                        Скан о 12:00: {scanLabel}
                     </span>
-                ) : (
-                    <span className="field-hint" style={{ display: 'inline', marginLeft: '0.5rem' }}>
-                        Скан ще не запускався (о 12:00 щодня).
-                    </span>
-                )}
+                ) : null}
             </div>
             <button
                 type="button"

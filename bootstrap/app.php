@@ -40,7 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ->hourly()
             ->withoutOverlapping(50);
 
-        // Daily stale-dead scan for Archive panel banner (no auto-archive).
+        // Daily 12:00 snapshot for Archive banner. No live recount, no auto-archive.
         $schedule->command('offers:scan-stale-dead')
             ->dailyAt('12:00')
             ->timezone(config('app.timezone'))

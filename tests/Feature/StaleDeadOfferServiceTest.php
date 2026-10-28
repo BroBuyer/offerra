@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Services\StaleDeadOfferService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class StaleDeadOfferServiceTest extends TestCase
@@ -20,6 +22,7 @@ class StaleDeadOfferServiceTest extends TestCase
     {
         parent::setUp();
         Carbon::setTestNow('2026-10-23 15:00:00');
+        Storage::fake('local');
         $this->service = $this->app->make(StaleDeadOfferService::class);
     }
 
@@ -174,6 +177,49 @@ class StaleDeadOfferServiceTest extends TestCase
         $this->assertSame(3, $result['total']);
         $this->assertSame(1, $result['by_user'][$first->id]);
         $this->assertSame(2, $result['by_user'][$second->id]);
+        $this->assertSame(1, $this->service->hintFor($first)['count']);
+        $this->assertSame(2, $this->service->hintFor($second)['count']);
+    }
+
+    public function test_banner_stays_empty_until_the_daily_scan(): void
+    {
+        $user = User::factory()->create();
+        $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+
+        $hint = $this->service->hintFor($user);
+
+        $this->assertSame(0, $hint['count']);
+        $this->assertNull($hint['last_scan_at']);
+    }
+
+    public function test_banner_does_not_pick_up_offers_that_age_after_scan(): void
+    {
+        $user = User::factory()->create();
+        $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $this->service->scan();
+
+        $this->makeOffer($user, 'Beta', 'beta.online', now()->subDays(40));
+
+        $this->assertSame(1, $this->service->hintFor($user)['count']);
+    }
+
+    public function test_archiving_the_snapshot_hides_the_banner_until_next_scan(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create();
+        $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $this->service->scan();
+        $this->assertSame(1, $this->service->hintFor($user)['count']);
+
+        $enqueued = $this->service->archiveAllFor($user);
+
+        $this->assertSame(1, $enqueued);
+        $this->assertSame(0, $this->service->hintFor($user)['count']);
+        $this->assertNotNull($this->service->hintFor($user)['last_scan_at']);
+
+        $this->makeOffer($user, 'Beta', 'beta.online', now()->subDays(40));
+        $this->assertSame(0, $this->service->hintFor($user)['count']);
     }
 
     /**
