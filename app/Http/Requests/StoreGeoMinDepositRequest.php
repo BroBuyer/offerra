@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\MarketOptions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +16,7 @@ class StoreGeoMinDepositRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'geo' => strtoupper(preg_replace('/[^a-zA-Z]/', '', (string) $this->input('geo', '')) ?? ''),
+            'geo' => MarketOptions::normalizeGeo((string) $this->input('geo', '')),
             'min_deposit' => trim((string) $this->input('min_deposit', '')),
             'currency' => strtoupper(trim((string) $this->input('currency', ''))),
         ]);

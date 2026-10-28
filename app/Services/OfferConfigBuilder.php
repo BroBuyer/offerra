@@ -29,7 +29,7 @@ class OfferConfigBuilder
         $crmKey = $this->quote(SecretValue::normalize($settings->crm_api_key ?? ''));
         $affiliate = $this->quote($settings->affiliate_tag ?? 'BRO');
         $funnel = $this->quote($offer['brand']);
-        $country = $this->quote(strtoupper($offer['geo']));
+        $country = $this->quote(MarketOptions::normalizeGeo((string) ($offer['geo'] ?? '')));
         $phones = MarketOptions::normalizePhoneFields(
             (string) ($offer['phone'] ?? ''),
             $offer['phone_countries'] ?? '',

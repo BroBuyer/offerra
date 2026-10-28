@@ -177,6 +177,8 @@ class MarketOptions
 
     public static function normalizeGeo(string $geo): string
     {
-        return strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $geo), 0, 2));
+        $code = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $geo) ?? '', 0, 2));
+
+        return $code === 'UK' ? 'GB' : $code;
     }
 }

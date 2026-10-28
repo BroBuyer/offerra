@@ -99,7 +99,7 @@ class OfferGenerator
             $manifest = [
                 'brand' => $input['brand'],
                 'domain' => $input['domain'],
-                'geo' => strtoupper($input['geo']),
+                'geo' => MarketOptions::normalizeGeo((string) $input['geo']),
                 'lang' => strtolower($input['lang']),
                 'phone' => strtolower($input['phone']),
                 'phone_countries' => $this->configBuilder->phoneCountriesCsv($input),
@@ -134,7 +134,7 @@ class OfferGenerator
                 'folder' => $folder,
                 'brand' => $input['brand'],
                 'domain' => $input['domain'],
-                'geo' => strtoupper($input['geo']),
+                'geo' => MarketOptions::normalizeGeo((string) $input['geo']),
                 'lang' => strtolower($input['lang']),
                 'phone' => strtolower($input['phone']),
                 'phone_countries' => $this->configBuilder->phoneCountriesCsv($input),
@@ -233,7 +233,7 @@ class OfferGenerator
                     'folder' => $folder,
                     'brand' => $manifest['brand'] ?? '',
                     'domain' => $manifest['domain'] ?? '',
-                    'geo' => strtoupper($manifest['geo'] ?? ''),
+                    'geo' => MarketOptions::normalizeGeo((string) ($manifest['geo'] ?? '')),
                     'lang' => strtolower($manifest['lang'] ?? ''),
                     'phone' => strtolower($manifest['phone'] ?? ''),
                     'phone_countries' => $manifest['phone_countries'] ?? strtolower($manifest['phone'] ?? ''),
@@ -268,7 +268,7 @@ class OfferGenerator
 
         return sprintf(
             '%s_%s_%s_%s_%s_%s',
-            strtoupper($input['geo']),
+            MarketOptions::normalizeGeo((string) $input['geo']),
             strtolower($input['lang']),
             $affiliate,
             $brandSlug,
@@ -546,7 +546,7 @@ class OfferGenerator
         $manifest = [
             'brand' => $offer->brand,
             'domain' => $offer->domain,
-            'geo' => strtoupper($offer->geo),
+            'geo' => MarketOptions::normalizeGeo((string) $offer->geo),
             'lang' => strtolower($offer->lang),
             'phone' => $phones['phone'],
             'phone_countries' => $phones['phone_countries'],
@@ -654,7 +654,7 @@ class OfferGenerator
         $template = trim((string) ($input['template'] ?? $offer->template));
         $pinned = TemplateCatalog::pinVesperaMarket([
             'template' => $template,
-            'geo' => strtoupper(trim((string) ($input['geo'] ?? $offer->geo))),
+            'geo' => MarketOptions::normalizeGeo((string) ($input['geo'] ?? $offer->geo)),
             'lang' => strtolower(trim((string) ($input['lang'] ?? $offer->lang))),
             'phone' => strtolower((string) ($input['phone'] ?? $offer->phone)),
             'phone_countries' => $input['phone_countries'] ?? $offer->phone_countries ?? [],
@@ -741,7 +741,7 @@ class OfferGenerator
 
         $manifest['brand'] = $offer->brand;
         $manifest['domain'] = $offer->domain;
-        $manifest['geo'] = strtoupper((string) $offer->geo);
+        $manifest['geo'] = MarketOptions::normalizeGeo((string) $offer->geo);
         $manifest['lang'] = strtolower((string) $offer->lang);
         $phones = $this->syncOfferPhoneFields($offer);
         $manifest['phone'] = $phones['phone'];
