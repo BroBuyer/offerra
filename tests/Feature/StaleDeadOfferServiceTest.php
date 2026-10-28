@@ -128,6 +128,39 @@ class StaleDeadOfferServiceTest extends TestCase
         $this->assertFalse($this->candidateIds()->contains($fresh->id));
     }
 
+    public function test_new_unsubmitted_domain_shields_stale_brand(): void
+    {
+        $user = User::factory()->create();
+        $old = $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $this->makeOffer($user, 'Acme', 'acme.com', null);
+
+        $this->assertCandidateIds([]);
+        $this->assertFalse($this->candidateIds()->contains($old->id));
+    }
+
+    public function test_restored_domain_shields_stale_siblings_like_a_new_offer(): void
+    {
+        $user = User::factory()->create();
+        $old = $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $restored = $this->makeOffer($user, 'Acme', 'acme.com', now());
+        $restored->forceFill([
+            'created_at' => now()->subDays(40),
+            'submitted_for_indexing' => false,
+        ])->save();
+
+        $this->assertCandidateIds([]);
+        $this->assertFalse($this->candidateIds()->contains($old->id));
+        $this->assertFalse($this->candidateIds()->contains($restored->id));
+    }
+
+    public function test_never_submitted_brand_is_not_a_candidate(): void
+    {
+        $user = User::factory()->create();
+        $this->makeOffer($user, 'Acme', 'acme.online', null);
+
+        $this->assertCandidateIds([]);
+    }
+
     public function test_scan_groups_candidates_by_user(): void
     {
         $first = User::factory()->create();

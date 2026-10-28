@@ -105,7 +105,9 @@ class OfferRestoreService
             'infra_error' => null,
             'infra_meta' => $meta,
             'submitted_for_indexing' => false,
-            'indexed_at' => null,
+            // Start a new 21-day brand shield immediately, same as adding a domain.
+            // Inspect still waits: it requires submitted_for_indexing.
+            'indexed_at' => now(),
             'google_index_status' => null,
             'google_indexed_at' => null,
             'google_index_checked_at' => null,

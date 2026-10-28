@@ -29,10 +29,13 @@ class StaleDeadOfferService
     }
 
     /**
-     * Live offers of a brand whose newest GSC submit is older than N days and
+     * Live offers of a brand whose newest circulation is older than N days and
      * whose newest lead on any live sibling is also older than N days (or never).
-     * Adding a new domain resets the GSC shield for the whole brand. Deposits
-     * and clicks do not protect; archived siblings do not.
+     *
+     * Circulation = GSC submit (`indexed_at`) when present, otherwise `created_at`.
+     * Adding or restoring a domain therefore resets the 21-day shield for the
+     * whole brand. Brands that never submitted to GSC are left alone.
+     * Deposits and clicks do not protect; archived siblings do not.
      */
     public function baseCandidatesQuery(int $days = self::DEAD_AFTER_DAYS): Builder
     {
@@ -50,7 +53,7 @@ class StaleDeadOfferService
                     ->groupBy('brand_offers.user_id')
                     ->groupByRaw('LOWER(TRIM(brand_offers.brand))')
                     ->havingRaw('MAX(brand_offers.indexed_at) IS NOT NULL')
-                    ->havingRaw('MAX(brand_offers.indexed_at) < ?', [$cutoff])
+                    ->havingRaw('MAX(COALESCE(brand_offers.indexed_at, brand_offers.created_at)) < ?', [$cutoff])
                     ->havingRaw('(MAX(brand_stats.last_lead_at) IS NULL OR MAX(brand_stats.last_lead_at) < ?)', [$cutoff]);
             });
     }
