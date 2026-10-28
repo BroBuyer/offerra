@@ -22,16 +22,55 @@ class GoogleIndexClassifyTest extends TestCase
         $this->assertSame('Google індексує turbohiberix-ai.com замість цього', $result['coverage']);
     }
 
-    public function test_duplicate_falls_back_to_referring_host_when_canonical_is_self(): void
+    public function test_self_canonical_is_indexed_even_with_referring_sibling(): void
     {
-        $result = OfferGoogleIndexInspector::classifyInspection('immediate-connect.cyou', [
+        $result = [
             'coverage' => 'Duplicate, Google chose different canonical than user',
+            'verdict' => 'NEUTRAL',
+            'indexing_state' => 'INDEXING_ALLOWED',
+            'last_crawl_at' => '2026-10-19T10:26:20Z',
+            'indexed' => false,
             'google_canonical' => 'https://immediate-connect.cyou/',
             'referring_urls' => ['https://immediate-connect-it.live/'],
-        ]);
+        ];
 
-        $this->assertSame('duplicate', $result['status']);
-        $this->assertSame('immediate-connect-it.live', $result['canonical']);
+        $this->assertTrue(OfferGoogleIndexInspector::isIndexedResult('immediate-connect.cyou', $result));
+        $this->assertNull(OfferGoogleIndexInspector::chosenHost('immediate-connect.cyou', $result));
+    }
+
+    public function test_indexing_allowed_duplicate_counts_as_indexed(): void
+    {
+        $result = [
+            'coverage' => 'Duplicate, Google chose different canonical than user',
+            'verdict' => 'NEUTRAL',
+            'indexing_state' => 'INDEXING_ALLOWED',
+            'last_crawl_at' => '2026-10-12T22:58:52Z',
+            'indexed' => false,
+            'google_canonical' => 'https://rentelucavie.online/',
+            'referring_urls' => [],
+        ];
+
+        $this->assertTrue(OfferGoogleIndexInspector::isIndexedResult('rentelucavie-fr.net', $result));
+        $this->assertSame('rentelucavie.online', OfferGoogleIndexInspector::chosenHost('rentelucavie-fr.net', $result));
+    }
+
+    public function test_referring_urls_do_not_mark_a_5xx_as_duplicate(): void
+    {
+        $result = [
+            'coverage' => 'Server error (5xx)',
+            'verdict' => 'NEUTRAL',
+            'indexing_state' => 'INDEXING_STATE_UNSPECIFIED',
+            'last_crawl_at' => '2026-10-27T11:05:43Z',
+            'indexed' => false,
+            'google_canonical' => null,
+            'referring_urls' => ['https://fr.gridinsoft.com/online-virus-scanner/url/pluris_a-online'],
+        ];
+
+        $this->assertFalse(OfferGoogleIndexInspector::isIndexedResult('pluris-a.online', $result));
+        $this->assertNull(OfferGoogleIndexInspector::chosenHost('pluris-a.online', $result));
+        $classified = OfferGoogleIndexInspector::classifyInspection('pluris-a.online', $result);
+        $this->assertSame('not_indexed', $classified['status']);
+        $this->assertSame('Server error (5xx)', $classified['coverage']);
     }
 
     public function test_unknown_url_is_not_a_timeout(): void

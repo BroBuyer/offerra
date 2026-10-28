@@ -61,22 +61,14 @@ class OfferGoogleIndexInspector
             ->where('indexed_at', '<=', now()->subHours(self::FIRST_CHECK_HOURS))
             ->where(function (Builder $q): void {
                 $q->whereNull('google_index_status')
-                    ->orWhereIn('google_index_status', [self::STATUS_WAITING, self::STATUS_ERROR, self::STATUS_TIMEOUT])
-                    ->orWhere(function (Builder $open): void {
-                        $open->whereIn('google_index_status', [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
-                            ->where('indexed_at', '>', now()->subDays(self::TIMEOUT_DAYS));
-                    })
-                    ->orWhere(function (Builder $retry): void {
-                        $retry->whereIn('google_index_status', [self::STATUS_TIMEOUT, self::STATUS_DUPLICATE, self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
-                            ->whereExists(function ($sub): void {
-                                $sub->from('google_accounts')
-                                    ->whereColumn('google_accounts.user_id', 'offers.user_id')
-                                    ->where(function ($when): void {
-                                        $when->whereNull('offers.google_index_checked_at')
-                                            ->orWhereColumn('google_accounts.connected_at', '>', 'offers.google_index_checked_at');
-                                    });
-                            });
-                    });
+                    ->orWhereIn('google_index_status', [
+                        self::STATUS_WAITING,
+                        self::STATUS_ERROR,
+                        self::STATUS_TIMEOUT,
+                        self::STATUS_DUPLICATE,
+                        self::STATUS_UNKNOWN,
+                        self::STATUS_NOT_INDEXED,
+                    ]);
             })
             ->where(function (Builder $q): void {
                 $q->whereNull('google_index_checked_at')
@@ -193,8 +185,11 @@ class OfferGoogleIndexInspector
                 continue;
             }
 
-            if ($result['indexed']) {
-                $coverage = $this->coverageLabel($result, $account);
+            if (self::isIndexedResult((string) $offer->domain, $result)) {
+                $other = self::chosenHost((string) $offer->domain, $result);
+                $coverage = $other
+                    ? 'Indexed · canonical '.$other
+                    : $this->coverageLabel($result, $account);
                 $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account, $result['site_url'] ?? $siteUrl, null);
 
                 return [
@@ -278,6 +273,33 @@ class OfferGoogleIndexInspector
      * @param  array{verdict?: string, coverage?: string, indexing_state?: string, google_canonical?: ?string, user_canonical?: ?string, referring_urls?: list<string>}  $result
      * @return array{status: string, coverage: string, canonical: ?string}
      */
+    /**
+     * GSC "indexed" plus duplicates that still appear in site: search.
+     * referringUrls are ignored — they are inbound links (Gridinsoft, blogs), not the canonical.
+     *
+     * @param  array{indexed?: bool, coverage?: string, indexing_state?: string, last_crawl_at?: ?string, google_canonical?: ?string}  $result
+     */
+    public static function isIndexedResult(string $offerDomain, array $result): bool
+    {
+        if (! empty($result['indexed'])) {
+            return true;
+        }
+
+        $offerHost = self::hostFromUrl($offerDomain) ?? strtolower(trim($offerDomain));
+        $googleHost = self::hostFromUrl((string) ($result['google_canonical'] ?? ''));
+        if ($googleHost !== null && $googleHost === $offerHost) {
+            return true;
+        }
+
+        $coverage = strtolower(trim((string) ($result['coverage'] ?? '')));
+        $state = strtoupper(trim((string) ($result['indexing_state'] ?? '')));
+        $crawled = trim((string) ($result['last_crawl_at'] ?? '')) !== '';
+
+        return $state === 'INDEXING_ALLOWED'
+            && $crawled
+            && str_contains($coverage, 'duplicate');
+    }
+
     public static function classifyInspection(string $offerDomain, array $result): array
     {
         $canonical = self::chosenHost($offerDomain, $result);
@@ -316,8 +338,9 @@ class OfferGoogleIndexInspector
 
     /**
      * Host Google actually indexed instead of this offer, if any.
+     * Only googleCanonical — referringUrls are inbound links, not the chosen URL.
      *
-     * @param  array{google_canonical?: ?string, referring_urls?: list<string>}  $result
+     * @param  array{google_canonical?: ?string}  $result
      */
     public static function chosenHost(string $offerDomain, array $result): ?string
     {
@@ -325,13 +348,6 @@ class OfferGoogleIndexInspector
         $googleHost = self::hostFromUrl((string) ($result['google_canonical'] ?? ''));
         if ($googleHost !== null && $googleHost !== $offerHost) {
             return $googleHost;
-        }
-
-        foreach ($result['referring_urls'] ?? [] as $url) {
-            $host = self::hostFromUrl((string) $url);
-            if ($host !== null && $host !== $offerHost) {
-                return $host;
-            }
         }
 
         return null;
