@@ -13,7 +13,8 @@ class StaleDeadOfferService
 {
     public const CACHE_LAST_SCAN_AT = 'stale_dead.last_scan_at';
 
-    public const DEAD_AFTER_DAYS = 30;
+    /** Last GSC submit of the brand, and last lead on any live sibling. */
+    public const DEAD_AFTER_DAYS = 21;
 
     /** @var list<string> */
     private const INACTIVE_STATUSES = ['archived', 'archiving', 'purging', 'teardown_failed'];
@@ -28,9 +29,10 @@ class StaleDeadOfferService
     }
 
     /**
-     * Live offers submitted to GSC more than N days ago, whose buyer has no
-     * lead or deposit on any live offer of the same brand in those N days.
-     * Lifetime counts and clicks do not protect; archived siblings do not.
+     * Live offers of a brand whose newest GSC submit is older than N days and
+     * whose newest lead on any live sibling is also older than N days (or never).
+     * Adding a new domain resets the GSC shield for the whole brand. Deposits
+     * and clicks do not protect; archived siblings do not.
      */
     public function baseCandidatesQuery(int $days = self::DEAD_AFTER_DAYS): Builder
     {
@@ -38,19 +40,18 @@ class StaleDeadOfferService
 
         return Offer::query()
             ->whereNotIn('offers.status', self::INACTIVE_STATUSES)
-            ->whereNotNull('offers.indexed_at')
-            ->where('offers.indexed_at', '<', $cutoff)
-            ->whereNotExists(function ($q) use ($cutoff): void {
+            ->whereExists(function ($q) use ($cutoff): void {
                 $q->selectRaw('1')
                     ->from('offers as brand_offers')
                     ->leftJoin('offer_stats as brand_stats', 'brand_stats.offer_id', '=', 'brand_offers.id')
                     ->whereColumn('brand_offers.user_id', 'offers.user_id')
                     ->whereRaw('LOWER(TRIM(brand_offers.brand)) = LOWER(TRIM(offers.brand))')
                     ->whereNotIn('brand_offers.status', self::INACTIVE_STATUSES)
-                    ->where(function ($alive) use ($cutoff): void {
-                        $alive->where('brand_stats.last_lead_at', '>=', $cutoff)
-                            ->orWhere('brand_stats.last_deposit_at', '>=', $cutoff);
-                    });
+                    ->groupBy('brand_offers.user_id')
+                    ->groupByRaw('LOWER(TRIM(brand_offers.brand))')
+                    ->havingRaw('MAX(brand_offers.indexed_at) IS NOT NULL')
+                    ->havingRaw('MAX(brand_offers.indexed_at) < ?', [$cutoff])
+                    ->havingRaw('(MAX(brand_stats.last_lead_at) IS NULL OR MAX(brand_stats.last_lead_at) < ?)', [$cutoff]);
             });
     }
 

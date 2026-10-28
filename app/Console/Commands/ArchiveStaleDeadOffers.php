@@ -11,11 +11,11 @@ use Illuminate\Console\Command;
 class ArchiveStaleDeadOffers extends Command
 {
     protected $signature = 'offers:archive-stale-dead
-        {--days=30 : GSC submit older than N days}
+        {--days=21 : Last brand GSC and last brand lead older than N days}
         {--dry-run : Only list count / sample, do not enqueue}
         {--limit=0 : Max offers to enqueue (0 = all)}';
 
-    protected $description = 'Archive live offers with GSC submit > N days and no lead/dep on the live brand in N days';
+    protected $description = 'Archive live offers of brands whose last GSC and last lead are older than N days';
 
     public function handle(StaleDeadOfferService $staleDead, OfferTeardownService $teardown): int
     {

@@ -52,7 +52,7 @@ class StaleDeadOfferServiceTest extends TestCase
     {
         $user = User::factory()->create();
         $this->makeOffer($user, 'Mzancexai', 'mzancexai.online', now()->subDays(40));
-        $live = $this->makeOffer($user, 'MzancexAI', 'mzancex-ai.com', now()->subDays(12));
+        $live = $this->makeOffer($user, 'MzancexAI', 'mzancex-ai.com', now()->subDays(40));
         $this->setStats($live, lastLeadAt: now()->subDays(3), leads: 1);
 
         $this->assertCandidateIds([]);
@@ -68,14 +68,34 @@ class StaleDeadOfferServiceTest extends TestCase
         $this->assertCandidateIds([$zero->id, $stale->id]);
     }
 
-    public function test_recent_deposit_without_lead_protects_brand(): void
+    public function test_recent_deposit_without_lead_does_not_protect_brand(): void
     {
         $user = User::factory()->create();
-        $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $zero = $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
         $paid = $this->makeOffer($user, 'Acme', 'acme.com', now()->subDays(40));
         $this->setStats($paid, lastDepositAt: now()->subDays(5), deposits: 1);
 
+        $this->assertCandidateIds([$zero->id, $paid->id]);
+    }
+
+    public function test_newer_gsc_sibling_shields_the_whole_brand(): void
+    {
+        $user = User::factory()->create();
+        $old = $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $fresh = $this->makeOffer($user, 'Acme', 'acme.com', now()->subDays(10));
+
         $this->assertCandidateIds([]);
+        $this->assertFalse($this->candidateIds()->contains($old->id));
+        $this->assertFalse($this->candidateIds()->contains($fresh->id));
+    }
+
+    public function test_lead_older_than_window_does_not_protect(): void
+    {
+        $user = User::factory()->create();
+        $offer = $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $this->setStats($offer, lastLeadAt: now()->subDays(22), leads: 3);
+
+        $this->assertCandidateIds([$offer->id]);
     }
 
     public function test_other_buyers_brand_does_not_protect(): void

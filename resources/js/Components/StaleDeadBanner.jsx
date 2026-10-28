@@ -24,7 +24,7 @@ export default function StaleDeadBanner({ hint }) {
 
     const onArchiveAll = () => {
         const ok = window.confirm(
-            `Заархівувати всі ${count} оферів, у яких на живому бренді не було ліда/депа 30 днів (GSC >30 днів)?\nЗнімемо з Search Console, origin і Cloudflare. Домен лишиться в Dynadot, NS скинемо на parking.`,
+            `Заархівувати всі ${count} оферів брендів без ліда 21 день, де останній GSC старший за 21 день?\nЗнімемо з Search Console, origin і Cloudflare. Домен лишиться в Dynadot, NS скинемо на parking.`,
         );
         if (!ok) {
             return;
@@ -40,7 +40,7 @@ export default function StaleDeadBanner({ hint }) {
             <div className="stale-dead-banner__text">
                 <strong>{count}</strong>
                 {' '}
-                оферів брендів без ліда/депа 30 днів, GSC-сабміт старше 30 днів.
+                оферів брендів без ліда 21 день, останній GSC старше 21 дня.
                 {scanLabel ? (
                     <span className="field-hint" style={{ display: 'inline', marginLeft: '0.5rem' }}>
                         Останній скан: {scanLabel}
