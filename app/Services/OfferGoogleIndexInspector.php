@@ -187,9 +187,16 @@ class OfferGoogleIndexInspector
 
             if (self::isIndexedResult((string) $offer->domain, $result)) {
                 $other = self::chosenHost((string) $offer->domain, $result);
-                $coverage = $other
-                    ? 'Indexed · canonical '.$other
-                    : $this->coverageLabel($result, $account);
+                if ($other) {
+                    $coverage = 'Indexed · canonical '.$other;
+                } elseif (str_contains(strtolower((string) ($result['coverage'] ?? '')), 'duplicate')) {
+                    $coverage = $this->coverageLabel([
+                        'coverage' => 'Submitted and indexed',
+                        'verdict' => (string) ($result['verdict'] ?: 'PASS'),
+                    ], $account);
+                } else {
+                    $coverage = $this->coverageLabel($result, $account);
+                }
                 $this->stamp($offer, self::STATUS_INDEXED, now(), $coverage, $account, $result['site_url'] ?? $siteUrl, null);
 
                 return [
