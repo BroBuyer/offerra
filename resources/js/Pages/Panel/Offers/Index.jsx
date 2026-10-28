@@ -502,25 +502,19 @@ function buildActiveFilterChips(filters, users) {
     if (filters.google_index === 'indexed') {
         chips.push({
             id: 'google_index',
-            label: 'Indexed: yes',
+            label: 'Indexed',
             clear: { google_index: '' },
         });
     } else if (filters.google_index === 'pending') {
         chips.push({
             id: 'google_index',
-            label: 'Indexed: pending',
+            label: 'Pending',
             clear: { google_index: '' },
         });
-    } else if (filters.google_index === 'duplicate') {
+    } else if (['not_indexed', 'duplicate', 'unseen', 'timeout'].includes(filters.google_index)) {
         chips.push({
             id: 'google_index',
-            label: 'Indexed: duplicate',
-            clear: { google_index: '' },
-        });
-    } else if (filters.google_index === 'unseen' || filters.google_index === 'timeout') {
-        chips.push({
-            id: 'google_index',
-            label: 'Indexed: not in Google',
+            label: 'Not indexed',
             clear: { google_index: '' },
         });
     }
@@ -1546,14 +1540,15 @@ export default function OffersIndex({
                 </select>
                 <select
                     aria-label="Google index status"
-                    value={filters.google_index ?? ''}
+                    value={['duplicate', 'unseen', 'timeout'].includes(filters.google_index)
+                        ? 'not_indexed'
+                        : (filters.google_index ?? '')}
                     onChange={(e) => reloadOffers({ google_index: e.target.value })}
                 >
-                    <option value="">Indexed</option>
+                    <option value="">All</option>
                     <option value="indexed">Indexed</option>
                     <option value="pending">Pending</option>
-                    <option value="duplicate">Duplicate</option>
-                    <option value="unseen">Not in Google</option>
+                    <option value="not_indexed">Not indexed</option>
                 </select>
                 <select
                     aria-label="Availability dots"
@@ -1781,7 +1776,7 @@ export default function OffersIndex({
                                 <th className="col-index" title="Sitemap submitted to Search Console">Submitted</th>
                             )}
                             {colVisible('google_index') && (
-                                <th className="col-index" title="Що Google зробив з URL: в індексі, дубль іншого домену, або ще не бачив">Indexed</th>
+                                <th className="col-index" title="Google index: indexed, pending, or not indexed">Indexed</th>
                             )}
                             {colVisible('actions') && <th />}
                         </tr>

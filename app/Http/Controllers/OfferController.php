@@ -291,11 +291,9 @@ class OfferController extends Controller
                     $builder->whereNull('google_index_status')
                         ->orWhereIn('google_index_status', ['waiting', 'error']);
                 });
-        } elseif (($filters['google_index'] ?? '') === 'duplicate') {
-            $query->where('google_index_status', 'duplicate');
-        } elseif (in_array($filters['google_index'] ?? '', ['timeout', 'unseen'], true)) {
+        } elseif (in_array($filters['google_index'] ?? '', ['not_indexed', 'duplicate', 'timeout', 'unseen'], true)) {
             $query->whereNull('google_indexed_at')
-                ->whereIn('google_index_status', ['timeout', 'unknown', 'not_indexed']);
+                ->whereIn('google_index_status', ['duplicate', 'timeout', 'unknown', 'not_indexed']);
         }
 
         if (($filters['availability'] ?? '') === 'ok') {
