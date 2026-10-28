@@ -18,6 +18,7 @@ class UpdateUserAccessRequest extends FormRequest
     {
         return [
             'can_see_all_offers' => ['required', 'boolean'],
+            'can_manage_all_offers' => ['required', 'boolean'],
         ];
     }
 }

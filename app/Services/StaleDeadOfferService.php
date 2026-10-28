@@ -62,13 +62,13 @@ class StaleDeadOfferService
     }
 
     /**
-     * Scope: own offers, or all if admin (management rule — not canSeeAllOffers).
+     * Scope: own offers, or all if the user may manage everyone's offers.
      */
     public function candidatesQuery(User $user, int $days = self::DEAD_AFTER_DAYS): Builder
     {
         $query = $this->baseCandidatesQuery($days);
 
-        if (! $user->isAdmin()) {
+        if (! $user->canManageAllOffers()) {
             $query->where('offers.user_id', $user->id);
         }
 
@@ -150,7 +150,7 @@ class StaleDeadOfferService
                 continue;
             }
 
-            if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+            if (! $user->canManageOffer($offer)) {
                 continue;
             }
 
@@ -225,7 +225,7 @@ class StaleDeadOfferService
      */
     private function snapshotCountFor(User $user, array $snapshot): int
     {
-        if ($user->isAdmin()) {
+        if ($user->canManageAllOffers()) {
             $total = 0;
             foreach ($snapshot['by_user'] as $row) {
                 $total += (int) $row['count'];
@@ -243,7 +243,7 @@ class StaleDeadOfferService
      */
     private function snapshotIdsFor(User $user, array $snapshot): array
     {
-        if ($user->isAdmin()) {
+        if ($user->canManageAllOffers()) {
             $ids = [];
             foreach ($snapshot['by_user'] as $row) {
                 foreach ($row['ids'] as $id) {
@@ -262,7 +262,7 @@ class StaleDeadOfferService
      */
     private function clearSnapshotFor(User $user, array $snapshot): void
     {
-        if ($user->isAdmin()) {
+        if ($user->canManageAllOffers()) {
             foreach (array_keys($snapshot['by_user']) as $userId) {
                 $snapshot['by_user'][$userId] = ['count' => 0, 'ids' => []];
             }

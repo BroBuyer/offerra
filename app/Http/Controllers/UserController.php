@@ -25,7 +25,8 @@ class UserController extends Controller
                 'email' => $user->email,
                 'role' => $user->isAdmin() ? User::ROLE_ADMIN : ($user->role ?: User::ROLE_USER),
                 'role_label' => $user->isAdmin() ? 'Адмін' : $user->roleLabel(),
-                'can_see_all_offers' => $user->isAdmin() ? true : (bool) $user->can_see_all_offers,
+                'can_see_all_offers' => $user->canSeeAllOffers(),
+                'can_manage_all_offers' => $user->canManageAllOffers(),
                 'offers_count' => $user->offers_count,
                 'created_at' => $user->created_at?->format('Y-m-d'),
             ]);
@@ -40,17 +41,30 @@ class UserController extends Controller
         if ($user->isAdmin()) {
             return redirect()
                 ->route('users.index')
-                ->withErrors(['access' => 'Адмін і так бачить усі оффери.']);
+                ->withErrors(['access' => 'Адмін і так бачить і керує всіма офферами.']);
         }
 
-        $enabled = $request->boolean('can_see_all_offers');
-        $user->update(['can_see_all_offers' => $enabled]);
+        $see = $request->boolean('can_see_all_offers');
+        $manage = $request->boolean('can_manage_all_offers');
+        if ($manage) {
+            $see = true;
+        }
+        if (! $see) {
+            $manage = false;
+        }
+
+        $user->update([
+            'can_see_all_offers' => $see,
+            'can_manage_all_offers' => $manage,
+        ]);
+
+        $parts = [];
+        $parts[] = $see ? 'бачить усі оффери' : 'бачить лише свої';
+        $parts[] = $manage ? 'може редагувати і діставати з архіву чужі' : 'керує лише своїми';
 
         return redirect()
             ->route('users.index')
-            ->with('success', $enabled
-                ? "{$user->email}: доступ до всіх офферів увімкнено."
-                : "{$user->email}: знову бачить лише свої оффери.");
+            ->with('success', "{$user->email}: ".implode(', ', $parts).'.');
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -63,6 +77,7 @@ class UserController extends Controller
             'password' => $password,
             'role' => User::ROLE_USER,
             'can_see_all_offers' => false,
+            'can_manage_all_offers' => false,
             'email_verified_at' => now(),
         ]);
 

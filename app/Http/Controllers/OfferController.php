@@ -78,7 +78,7 @@ class OfferController extends Controller
             'templates' => app(TemplateCatalog::class)->forWizard(),
             'brandTemplateUsage' => $this->brandTemplateUsage($user),
             'showUserColumn' => $user->canSeeAllOffers(),
-            'canManageAllOffers' => $user->isAdmin(),
+            'canManageAllOffers' => $user->canManageAllOffers(),
             'users' => $user->canSeeAllOffers()
                 ? User::query()->orderBy('name')->get(['id', 'name', 'email'])
                 : [],
@@ -559,7 +559,7 @@ class OfferController extends Controller
     {
         $authUser = auth()->user();
 
-        if ($offer->user_id !== $authUser->id && ! $authUser->isAdmin()) {
+        if (! $authUser->canManageOffer($offer)) {
             abort(403);
         }
 
@@ -596,7 +596,7 @@ class OfferController extends Controller
             ->whereIn('id', $request->input('ids'))
             ->whereNotIn('status', ['archived', 'archiving', 'purging', 'teardown_failed']);
 
-        if (! $authUser->isAdmin()) {
+        if (! $authUser->canManageAllOffers()) {
             $query->where('user_id', $authUser->id);
         }
 
@@ -712,7 +712,7 @@ class OfferController extends Controller
     ): RedirectResponse {
         $authUser = auth()->user();
 
-        if ($offer->user_id !== $authUser->id && ! $authUser->isAdmin()) {
+        if (! $authUser->canManageOffer($offer)) {
             abort(403);
         }
 
@@ -794,7 +794,7 @@ class OfferController extends Controller
     {
         $user = auth()->user();
 
-        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+        if (! $user->canManageOffer($offer)) {
             abort(403);
         }
 
@@ -884,7 +884,7 @@ class OfferController extends Controller
         @set_time_limit(120);
         $user = auth()->user();
 
-        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+        if (! $user->canManageOffer($offer)) {
             abort(403);
         }
 
@@ -945,6 +945,7 @@ class OfferController extends Controller
                 'monthStart' => $today->copy()->startOfMonth()->toDateString(),
             ],
             'staleDeadHint' => $staleDead->hintFor($user),
+            'canManageAllOffers' => $user->canManageAllOffers(),
         ]);
     }
 
@@ -1061,7 +1062,7 @@ class OfferController extends Controller
     {
         $user = auth()->user();
 
-        if ($offer->user_id !== $user->id && ! $user->isAdmin()) {
+        if (! $user->canManageOffer($offer)) {
             abort(403);
         }
     }

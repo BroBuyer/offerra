@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers'])]
+#[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers', 'can_manage_all_offers'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,6 +33,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'can_see_all_offers' => 'boolean',
+            'can_manage_all_offers' => 'boolean',
         ];
     }
 
@@ -67,10 +68,23 @@ class User extends Authenticatable
 
     /**
      * Whether this user may list/filter offers belonging to everyone.
-     * Management (edit/deploy/archive) stays owner-or-admin unless isAdmin().
+     * Manage-all implies see-all so they can find the rows they may edit.
      */
     public function canSeeAllOffers(): bool
     {
-        return $this->isAdmin() || (bool) $this->can_see_all_offers;
+        return $this->isAdmin() || (bool) $this->can_see_all_offers || $this->canManageAllOffers();
+    }
+
+    /**
+     * Edit / deploy / archive / restore any user's offers.
+     */
+    public function canManageAllOffers(): bool
+    {
+        return $this->isAdmin() || (bool) $this->can_manage_all_offers;
+    }
+
+    public function canManageOffer(Offer $offer): bool
+    {
+        return (int) $offer->user_id === (int) $this->id || $this->canManageAllOffers();
     }
 }

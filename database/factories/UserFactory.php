@@ -50,4 +50,12 @@ class UserFactory extends Factory
             'role' => User::ROLE_ADMIN,
         ]);
     }
+
+    public function manageAllOffers(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'can_see_all_offers' => true,
+            'can_manage_all_offers' => true,
+        ]);
+    }
 }

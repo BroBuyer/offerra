@@ -60,10 +60,20 @@ export default function UsersIndex({ users }) {
         });
     };
 
-    const toggleSeeAllOffers = (user, enabled) => {
+    const updateAccess = (user, patch) => {
+        let see = patch.can_see_all_offers ?? Boolean(user.can_see_all_offers);
+        let manage = patch.can_manage_all_offers ?? Boolean(user.can_manage_all_offers);
+        if (manage) {
+            see = true;
+        }
+        if (! see) {
+            manage = false;
+        }
+
         setAccessBusyId(user.id);
         router.patch(route('users.access.update', user.id), {
-            can_see_all_offers: enabled,
+            can_see_all_offers: see,
+            can_manage_all_offers: manage,
         }, {
             preserveScroll: true,
             onFinish: () => setAccessBusyId(null),
@@ -75,8 +85,8 @@ export default function UsersIndex({ users }) {
             <header className="page-header">
                 <h2>Користувачі</h2>
                 <p>
-                    Створення акаунтів для команди. Доступ «бачити всі оффери» можна вмикати окремо
-                    для кожного користувача. Редагувати чужі оффери можуть лише адміни.
+                    Створення акаунтів для команди. Окремо можна дати «бачити всі оффери»
+                    і «керувати всіма» — редагувати, деплоїти, архівувати і діставати з архіву чужі.
                 </p>
             </header>
 
@@ -181,6 +191,7 @@ export default function UsersIndex({ users }) {
                             <th>Роль</th>
                             <th>Офферів</th>
                             <th title="Бачити оффери всіх користувачів">Усі оффери</th>
+                            <th title="Редагувати, деплоїти, архівувати і діставати з архіву чужі оффери">Керувати всіма</th>
                             <th>Створено</th>
                             <th />
                         </tr>
@@ -217,10 +228,27 @@ export default function UsersIndex({ users }) {
                                                 type="checkbox"
                                                 checked={Boolean(user.can_see_all_offers)}
                                                 disabled={accessBusyId === user.id}
-                                                onChange={(e) => toggleSeeAllOffers(user, e.target.checked)}
+                                                onChange={(e) => updateAccess(user, { can_see_all_offers: e.target.checked })}
                                             />
                                             <span className="field-hint">
                                                 {accessBusyId === user.id ? '…' : (user.can_see_all_offers ? 'так' : 'ні')}
+                                            </span>
+                                        </label>
+                                    )}
+                                </td>
+                                <td>
+                                    {user.role === 'admin' ? (
+                                        <span className="field-hint">завжди</span>
+                                    ) : (
+                                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={Boolean(user.can_manage_all_offers)}
+                                                disabled={accessBusyId === user.id}
+                                                onChange={(e) => updateAccess(user, { can_manage_all_offers: e.target.checked })}
+                                            />
+                                            <span className="field-hint">
+                                                {accessBusyId === user.id ? '…' : (user.can_manage_all_offers ? 'так' : 'ні')}
                                             </span>
                                         </label>
                                     )}
@@ -248,7 +276,7 @@ export default function UsersIndex({ users }) {
                         ))}
                         {users.length === 0 && (
                             <tr>
-                                <td colSpan={7} className="field-hint">
+                                <td colSpan={8} className="field-hint">
                                     Користувачів ще немає
                                 </td>
                             </tr>

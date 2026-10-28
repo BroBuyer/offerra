@@ -19,7 +19,7 @@ class UpdateOfferRequest extends FormRequest
 
         $user = $this->user();
 
-        return $offer->user_id === $user->id || $user->isAdmin();
+        return $user->canManageOffer($offer);
     }
 
     public function prepareForValidation(): void

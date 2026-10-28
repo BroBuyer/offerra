@@ -138,6 +138,7 @@ export default function Archive({
     users = [],
     dateFilters = {},
     staleDeadHint = null,
+    canManageAllOffers = false,
 }) {
     const { auth, errors, flash } = usePage().props;
     const rows = offers?.data ?? [];
@@ -150,13 +151,12 @@ export default function Archive({
     const currentPage = offers?.current_page ?? 1;
     const lastPage = offers?.last_page ?? 1;
     const total = offers?.total ?? rows.length;
-    const isAdmin = auth?.user?.role === 'admin';
     const geos = filterOptions.geos ?? [];
     const langs = filterOptions.langs ?? [];
     const templateOptions = filterOptions.templates ?? [];
     const panelOptions = filterOptions.panels ?? [];
 
-    const canManageOffer = (offer) => isAdmin || offer.user_id === auth?.user?.id;
+    const canManageOffer = (offer) => canManageAllOffers || offer.user_id === auth?.user?.id;
 
     const activeChips = useMemo(
         () => buildActiveFilterChips(filters, users),
