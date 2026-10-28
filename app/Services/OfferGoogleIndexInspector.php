@@ -214,9 +214,13 @@ class OfferGoogleIndexInspector
         if ($ownedResult && $ownedAccount) {
             $siteUrl = (string) ($ownedResult['site_url'] ?? '');
             $classified = self::classifyInspection((string) $offer->domain, $ownedResult);
+            $status = $classified['status'];
+            if (in_array($status, [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED], true) && $this->pastTimeout($offer)) {
+                $status = self::STATUS_TIMEOUT;
+            }
             $this->stamp(
                 $offer,
-                $classified['status'],
+                $status,
                 null,
                 $classified['coverage'],
                 $ownedAccount,
@@ -225,7 +229,7 @@ class OfferGoogleIndexInspector
             );
 
             return [
-                'status' => $classified['status'],
+                'status' => $status,
                 'indexed' => false,
                 'coverage' => $classified['coverage'],
                 'canonical' => $classified['canonical'],
@@ -362,6 +366,68 @@ class OfferGoogleIndexInspector
         }
 
         return $submitted->lte(now()->subDays(self::TIMEOUT_DAYS));
+    }
+
+    /**
+     * Submitted, not yet indexed, still inside the 7-day wait — including
+     * "unknown to Google" / crawled-not-indexed from the first GSC check.
+     */
+    public static function applyPendingFilter(Builder $query): void
+    {
+        $cutoff = now()->subDays(self::TIMEOUT_DAYS);
+
+        $query->whereNull('google_indexed_at')
+            ->where(function (Builder $builder): void {
+                $builder->where('submitted_for_indexing', true)
+                    ->orWhereIn('google_index_status', [self::STATUS_WAITING, self::STATUS_ERROR]);
+            })
+            ->where(function (Builder $builder) use ($cutoff): void {
+                $builder->whereNull('google_index_status')
+                    ->orWhereIn('google_index_status', [self::STATUS_WAITING, self::STATUS_ERROR])
+                    ->orWhere(function (Builder $open) use ($cutoff): void {
+                        $open->whereIn('google_index_status', [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
+                            ->where(function (Builder $fresh) use ($cutoff): void {
+                                $fresh->whereNull('indexed_at')
+                                    ->orWhere('indexed_at', '>', $cutoff);
+                            });
+                    });
+            });
+    }
+
+    /**
+     * Terminal miss: duplicate, 7-day timeout, or unknown/not_indexed past the wait.
+     */
+    public static function applyMissFilter(Builder $query): void
+    {
+        $cutoff = now()->subDays(self::TIMEOUT_DAYS);
+
+        $query->whereNull('google_indexed_at')
+            ->where(function (Builder $builder) use ($cutoff): void {
+                $builder->whereIn('google_index_status', [self::STATUS_DUPLICATE, self::STATUS_TIMEOUT])
+                    ->orWhere(function (Builder $stale) use ($cutoff): void {
+                        $stale->whereIn('google_index_status', [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED])
+                            ->whereNotNull('indexed_at')
+                            ->where('indexed_at', '<=', $cutoff);
+                    });
+            });
+    }
+
+    public static function isMiss(Offer $offer): bool
+    {
+        if ($offer->google_indexed_at) {
+            return false;
+        }
+
+        $status = (string) $offer->google_index_status;
+        if (in_array($status, [self::STATUS_DUPLICATE, self::STATUS_TIMEOUT], true)) {
+            return true;
+        }
+
+        if (! in_array($status, [self::STATUS_UNKNOWN, self::STATUS_NOT_INDEXED], true) || ! $offer->indexed_at) {
+            return false;
+        }
+
+        return $offer->indexed_at->lte(now()->subDays(self::TIMEOUT_DAYS));
     }
 
     /**

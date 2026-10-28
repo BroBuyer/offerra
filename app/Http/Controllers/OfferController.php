@@ -282,18 +282,9 @@ class OfferController extends Controller
         if (($filters['google_index'] ?? '') === 'indexed') {
             $query->whereNotNull('google_indexed_at');
         } elseif (($filters['google_index'] ?? '') === 'pending') {
-            $query->whereNull('google_indexed_at')
-                ->where(function (Builder $builder): void {
-                    $builder->where('submitted_for_indexing', true)
-                        ->orWhereIn('google_index_status', ['waiting', 'error']);
-                })
-                ->where(function (Builder $builder): void {
-                    $builder->whereNull('google_index_status')
-                        ->orWhereIn('google_index_status', ['waiting', 'error']);
-                });
+            OfferGoogleIndexInspector::applyPendingFilter($query);
         } elseif (in_array($filters['google_index'] ?? '', ['not_indexed', 'duplicate', 'timeout', 'unseen'], true)) {
-            $query->whereNull('google_indexed_at')
-                ->whereIn('google_index_status', ['duplicate', 'timeout', 'unknown', 'not_indexed']);
+            OfferGoogleIndexInspector::applyMissFilter($query);
         }
 
         if (($filters['availability'] ?? '') === 'ok') {

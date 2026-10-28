@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Offer;
 use App\Services\OfferGoogleIndexInspector;
 use Tests\TestCase;
 
@@ -45,6 +46,36 @@ class GoogleIndexClassifyTest extends TestCase
         $this->assertSame('unknown', $result['status']);
         $this->assertNull($result['canonical']);
         $this->assertSame('Google ще не бачив цей URL', $result['coverage']);
+    }
+
+    public function test_fresh_unknown_is_not_a_miss(): void
+    {
+        $offer = new Offer([
+            'google_index_status' => 'unknown',
+            'indexed_at' => now()->subDay(),
+        ]);
+
+        $this->assertFalse(OfferGoogleIndexInspector::isMiss($offer));
+    }
+
+    public function test_week_old_unknown_is_a_miss(): void
+    {
+        $offer = new Offer([
+            'google_index_status' => 'unknown',
+            'indexed_at' => now()->subDays(8),
+        ]);
+
+        $this->assertTrue(OfferGoogleIndexInspector::isMiss($offer));
+    }
+
+    public function test_duplicate_is_a_miss_immediately(): void
+    {
+        $offer = new Offer([
+            'google_index_status' => 'duplicate',
+            'indexed_at' => now()->subDay(),
+        ]);
+
+        $this->assertTrue(OfferGoogleIndexInspector::isMiss($offer));
     }
 
     public function test_host_from_url_strips_www(): void

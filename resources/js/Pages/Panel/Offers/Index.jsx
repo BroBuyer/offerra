@@ -154,47 +154,51 @@ function infraBadge(offer) {
     }
 }
 
+function missTitle(offer) {
+    const coverage = offer.google_index_coverage || '';
+    if (coverage) {
+        return coverage;
+    }
+
+    const host = offer.google_index_canonical || '';
+    if (offer.google_index_status === 'duplicate' || host) {
+        return host
+            ? `Google індексує ${host} замість цього`
+            : 'Google вважає цей URL дублем';
+    }
+    if (offer.google_index_status === 'not_indexed') {
+        return 'Прокраулено, ще не в індексі';
+    }
+
+    return 'Не в індексі Google';
+}
+
 function indexedTick(offer) {
     if (offer.google_indexed) {
         return {
             tone: 'ok',
-            glyph: '✓',
             title: offer.google_indexed_at
                 ? `Indexed by Google: ${offer.google_indexed_at}${offer.google_index_coverage ? ` · ${offer.google_index_coverage}` : ''}`
                 : (offer.google_index_coverage || 'Indexed by Google'),
         };
     }
 
-    const coverage = offer.google_index_coverage || '';
-    if (offer.google_index_status === 'duplicate' || /duplicate/i.test(coverage)) {
-        const host = offer.google_index_canonical || '';
-        return {
-            tone: 'dup',
-            glyph: '⇄',
-            caption: host || null,
-            title: host
-                ? `Google індексує ${host} замість цього`
-                : (coverage || 'Google вважає цей URL дублем'),
-        };
-    }
-    if (offer.google_index_status === 'unknown' || offer.google_index_status === 'timeout') {
-        return {
-            tone: 'miss',
-            glyph: '–',
-            title: coverage || 'Google ще не бачив цей URL',
-        };
-    }
-    if (offer.google_index_status === 'error') {
-        return { tone: 'wait', glyph: '✓', title: coverage || 'Index check error — will retry' };
-    }
-    if (offer.google_index_status === 'not_indexed') {
-        return { tone: 'miss', glyph: '–', title: coverage || 'Прокраулено, ще не в індексі' };
-    }
-    if (offer.submitted_for_indexing || offer.google_index_status === 'waiting') {
-        return { tone: 'wait', glyph: '✓', title: 'Waiting for Google (~24h after submit, then daily)' };
+    if (offer.google_index_miss || offer.google_index_status === 'duplicate' || offer.google_index_status === 'timeout') {
+        return { tone: 'fail', title: missTitle(offer) };
     }
 
-    return { tone: 'wait', glyph: '✓', title: 'Not submitted yet' };
+    const coverage = offer.google_index_coverage || '';
+    if (offer.google_index_status === 'error') {
+        return { tone: 'wait', title: coverage || 'Index check error — will retry' };
+    }
+    if (coverage && (offer.google_index_status === 'unknown' || offer.google_index_status === 'not_indexed')) {
+        return { tone: 'wait', title: coverage };
+    }
+    if (offer.submitted_for_indexing || offer.google_index_status === 'waiting') {
+        return { tone: 'wait', title: 'Waiting for Google (~24h after submit, then daily)' };
+    }
+
+    return { tone: 'wait', title: 'Not submitted yet' };
 }
 
 function IndexTick({ tone, title, onClick, busy = false, label, glyph = '✓', caption }) {
@@ -1963,8 +1967,6 @@ export default function OffersIndex({
                                                 return (
                                                     <IndexTick
                                                         tone={mark.tone}
-                                                        glyph={mark.glyph}
-                                                        caption={mark.caption}
                                                         title={
                                                             canInspect
                                                                 ? `${mark.title} · Натисни, щоб перевірити зараз`
@@ -2108,8 +2110,6 @@ export default function OffersIndex({
                                         <span className="field-hint">Indexed</span>
                                         <IndexTick
                                             tone={indexed.tone}
-                                            glyph={indexed.glyph}
-                                            caption={indexed.caption}
                                             title={
                                                 canInspect
                                                     ? `${indexed.title} · Натисни, щоб перевірити зараз`

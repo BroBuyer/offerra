@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\InfrastructureOptions;
+use App\Services\OfferGoogleIndexInspector;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -226,6 +227,7 @@ class Offer extends Model
             'submitted_for_indexing' => $this->submitted_for_indexing,
             'indexed_at' => $this->indexed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'google_index_status' => (string) ($this->google_index_status ?? ''),
+            'google_index_miss' => OfferGoogleIndexInspector::isMiss($this),
             'google_indexed' => (bool) $this->google_indexed_at,
             'google_indexed_at' => $this->google_indexed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
             'google_index_checked_at' => $this->google_index_checked_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
