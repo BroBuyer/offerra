@@ -154,6 +154,11 @@ final class LeadProcessor
             return $preflightReason;
         }
 
+        $langGeo = self::langGeoSpamReason($lead);
+        if ($langGeo !== null) {
+            return $langGeo;
+        }
+
         $clickVerify = ! defined('KEITARO_CLICK_VERIFY') || KEITARO_CLICK_VERIFY;
         if ($clickVerify) {
             require_once __DIR__ . '/KeitaroClickVerifier.php';
@@ -165,6 +170,62 @@ final class LeadProcessor
         }
 
         return null;
+    }
+
+    /**
+     * Vespera multi-offer: CRM country comes from IP, form language from the page.
+     * FR on `/` (en) must not reach CRM/Telegram. US is dropped entirely.
+     */
+    public static function langGeoSpamReason(array $lead): ?string
+    {
+        $ip = self::detectIpCountry();
+        if ($ip === '') {
+            return null;
+        }
+        if ($ip === 'UK') {
+            $ip = 'GB';
+        }
+
+        if (in_array($ip, self::geoSkipCountries(), true)) {
+            return 'GEO_SKIP';
+        }
+
+        $submitted = strtolower(trim((string) ($lead['language'] ?? '')));
+        if ($submitted === '') {
+            $submitted = strtolower(defined('SITE_LANG') ? (string) SITE_LANG : 'en');
+        }
+
+        $allow = self::geoLangAllow()[$ip] ?? null;
+        if (is_array($allow)) {
+            return in_array($submitted, $allow, true) ? null : 'LANG_GEO_MISMATCH';
+        }
+
+        $map = defined('GEO_LANG_MAP') && is_array(GEO_LANG_MAP) ? GEO_LANG_MAP : [];
+        $expected = strtolower(trim((string) ($map[$ip] ?? '')));
+        if ($expected === '') {
+            return null;
+        }
+
+        return $submitted === $expected ? null : 'LANG_GEO_MISMATCH';
+    }
+
+    /** @return list<string> */
+    private static function geoSkipCountries(): array
+    {
+        return ['US'];
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    private static function geoLangAllow(): array
+    {
+        return [
+            'CH' => ['de', 'fr', 'it'],
+            'BE' => ['fr', 'nl', 'de'],
+            'CA' => ['en', 'fr'],
+            'LU' => ['fr', 'de', 'en'],
+        ];
     }
 
     private static function formatKeitaroDetail(string $spamReason): string
@@ -436,6 +497,8 @@ final class LeadProcessor
             'FORM_TOKEN_DROP',
             'NO_CLOUDFLARE',
             'CHATGPT_REFERRAL',
+            'GEO_SKIP',
+            'LANG_GEO_MISMATCH',
         ], true);
     }
 
