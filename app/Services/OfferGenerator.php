@@ -157,6 +157,7 @@ class OfferGenerator
 
             $this->prepareVerificationCopy($offer, $targetPath);
             $this->verificationFiles->syncToOfferFolder($offer);
+            $this->ensureVerificationDirWritable($offer);
         } catch (UniqueConstraintViolationException $e) {
             if (File::isDirectory($targetPath)) {
                 File::deleteDirectory($targetPath);
@@ -577,6 +578,7 @@ class OfferGenerator
 
         $this->prepareVerificationCopy($offer, $targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
+        $this->ensureVerificationDirWritable($offer);
         $this->ensureWorkerWritable($targetPath);
 
         return $targetPath;
@@ -627,6 +629,7 @@ class OfferGenerator
         $this->migrateLegacyAssets($targetPath, $offer->template);
         $this->prepareVerificationCopy($offer, $targetPath);
         $this->verificationFiles->syncToOfferFolder($offer);
+        $this->ensureVerificationDirWritable($offer);
         $this->syncManifestFromOffer($offer, $targetPath);
     }
 
@@ -1156,8 +1159,13 @@ PHP;
         $this->ensureWorkerWritable($this->offersPath, recursive: false);
         $this->ensureWorkerWritable($targetPath);
         $this->ensureWorkerWritable(storage_path('app/offer-verification'), recursive: false);
-        $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
+        $this->ensureVerificationDirWritable($offer);
         $this->ensureWorkerWritable(storage_path('app/user-verification'), recursive: false);
+    }
+
+    private function ensureVerificationDirWritable(Offer $offer): void
+    {
+        $this->ensureWorkerWritable(storage_path('app/offer-verification/'.$offer->id));
     }
 
     /**
@@ -1166,7 +1174,15 @@ PHP;
      */
     public function ensureWorkerWritable(string $path, bool $recursive = true): void
     {
-        if ($path === '' || (! is_dir($path) && ! is_file($path))) {
+        if ($path === '') {
+            return;
+        }
+
+        if (! is_dir($path) && ! is_file($path)) {
+            @mkdir($path, 0775, true);
+        }
+
+        if (! is_dir($path) && ! is_file($path)) {
             return;
         }
 
