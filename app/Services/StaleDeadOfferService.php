@@ -278,9 +278,20 @@ class StaleDeadOfferService
      */
     private function writeSnapshot(array $snapshot): void
     {
-        Storage::disk('local')->put(
+        $disk = Storage::disk('local');
+        $ok = $disk->put(
             self::SNAPSHOT_PATH,
             json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
         );
+        if ($ok === false) {
+            throw new \RuntimeException('Не вдалося записати stale-dead snapshot.');
+        }
+
+        // Scheduler often runs as www-data; a root deploy scan must not leave
+        // a 644 root-owned file that the next noon cannot overwrite.
+        $path = $disk->path(self::SNAPSHOT_PATH);
+        if (is_file($path)) {
+            @chmod($path, 0666);
+        }
     }
 }
