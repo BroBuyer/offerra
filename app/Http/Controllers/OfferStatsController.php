@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Offer;
 use App\Models\User;
-use App\Services\KeitaroTodayStats;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,7 +32,7 @@ class OfferStatsController extends Controller
         'deployed_at',
     ];
 
-    public function index(Request $request, TemplateCatalog $catalog, KeitaroTodayStats $keitaro): Response
+    public function index(Request $request, TemplateCatalog $catalog): Response
     {
         $user = $request->user();
         $filters = $this->filters($request, $user);
@@ -64,8 +62,7 @@ class OfferStatsController extends Controller
         return Inertia::render('Panel/Offers/Stats', [
             'rows' => $rows,
             'filters' => $filters,
-            'templateTotals' => $this->templateTotals($baseQuery, $filters, $catalog, $keitaro),
-            'templatePeriod' => $this->templatePeriodPayload($filters['tpl_week']),
+            'templateTotals' => $this->templateTotals($baseQuery, $filters, $catalog),
             'filterOptions' => [
                 'geos' => (clone $baseQuery)->reorder()->distinct()->orderBy('geo')->pluck('geo')->values()->all(),
                 'langs' => (clone $baseQuery)->reorder()->distinct()->orderBy('lang')->pluck('lang')->values()->all(),
@@ -114,61 +111,6 @@ class OfferStatsController extends Controller
             'dir' => $dir,
             'per_page' => $perPage,
             'page' => max(1, $request->integer('page', 1)),
-            'tpl_week' => $this->normalizeWeekDate($request->string('tpl_week')->toString()),
-        ];
-    }
-
-    private function normalizeWeekDate(string $raw): string
-    {
-        $raw = trim($raw);
-        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw)) {
-            return '';
-        }
-
-        try {
-            $day = Carbon::createFromFormat('Y-m-d', $raw, 'Europe/Kyiv');
-        } catch (\Throwable) {
-            return '';
-        }
-
-        return $day && $day->format('Y-m-d') === $raw ? $raw : '';
-    }
-
-    /**
-     * @return array{from: string, to: string}|null
-     */
-    private function weekBounds(string $date): ?array
-    {
-        $date = $this->normalizeWeekDate($date);
-        if ($date === '') {
-            return null;
-        }
-
-        $from = Carbon::createFromFormat('Y-m-d', $date, 'Europe/Kyiv')
-            ->startOfWeek(Carbon::MONDAY)
-            ->startOfDay();
-
-        return [
-            'from' => $from->toDateString(),
-            'to' => $from->copy()->addDays(6)->toDateString(),
-        ];
-    }
-
-    /**
-     * @return array{source: string, week?: string, from?: string, to?: string}
-     */
-    private function templatePeriodPayload(string $week): array
-    {
-        $bounds = $this->weekBounds($week);
-        if ($bounds === null) {
-            return ['source' => 'lifetime'];
-        }
-
-        return [
-            'source' => 'keitaro',
-            'week' => $week,
-            'from' => $bounds['from'],
-            'to' => $bounds['to'],
         ];
     }
 
@@ -217,18 +159,14 @@ class OfferStatsController extends Controller
      * @param  array<string, mixed>  $filters
      * @return list<array<string, mixed>>
      */
-    private function templateTotals(
-        Builder $baseQuery,
-        array $filters,
-        TemplateCatalog $catalog,
-        KeitaroTodayStats $keitaro,
-    ): array {
+    private function templateTotals(Builder $baseQuery, array $filters, TemplateCatalog $catalog): array
+    {
         $filters['template'] = '';
 
         $filtered = (clone $baseQuery)->reorder();
         $this->applyFilters($filtered, $filters);
 
-        $rows = (clone $filtered)
+        $rows = $filtered
             ->leftJoin('offer_stats', 'offer_stats.offer_id', '=', 'offers.id')
             ->whereNotNull('offers.template')
             ->where('offers.template', '!=', '')
@@ -243,7 +181,7 @@ class OfferStatsController extends Controller
             ->toBase()
             ->get();
 
-        $totals = $rows
+        return $rows
             ->map(fn ($row) => [
                 'template' => (string) $row->template,
                 'label' => $catalog->label((string) $row->template),
@@ -251,48 +189,7 @@ class OfferStatsController extends Controller
                 'clicks' => (int) $row->clicks,
                 'leads' => (int) $row->leads,
                 'deposits' => (int) $row->deposits,
-            ]);
-
-        $bounds = $this->weekBounds((string) ($filters['tpl_week'] ?? ''));
-        if ($bounds !== null) {
-            $offers = (clone $filtered)
-                ->whereNotNull('offers.template')
-                ->where('offers.template', '!=', '')
-                ->select(['offers.id', 'offers.user_id', 'offers.template', 'offers.keitaro_campaign_id'])
-                ->get();
-            $byCampaign = $keitaro->byCampaign($offers, $bounds['from'], $bounds['to']);
-            $campaignTemplate = [];
-            foreach ($offers as $offer) {
-                $cid = (int) $offer->keitaro_campaign_id;
-                $tpl = (string) $offer->template;
-                if ($cid > 0 && $tpl !== '' && ! isset($campaignTemplate[$cid])) {
-                    $campaignTemplate[$cid] = $tpl;
-                }
-            }
-
-            $weekByTpl = [];
-            foreach ($byCampaign as $cid => $row) {
-                $tpl = $campaignTemplate[$cid] ?? '';
-                if ($tpl === '') {
-                    continue;
-                }
-                $weekByTpl[$tpl] ??= ['clicks' => 0, 'leads' => 0, 'deposits' => 0];
-                $weekByTpl[$tpl]['clicks'] += (int) $row['clicks'];
-                $weekByTpl[$tpl]['leads'] += (int) $row['leads'];
-                $weekByTpl[$tpl]['deposits'] += (int) $row['sales'];
-            }
-
-            $totals = $totals->map(function (array $row) use ($weekByTpl) {
-                $hit = $weekByTpl[$row['template']] ?? ['clicks' => 0, 'leads' => 0, 'deposits' => 0];
-                $row['clicks'] = (int) $hit['clicks'];
-                $row['leads'] = (int) $hit['leads'];
-                $row['deposits'] = (int) $hit['deposits'];
-
-                return $row;
-            });
-        }
-
-        return $totals
+            ])
             ->sortByDesc('leads')
             ->values()
             ->all();

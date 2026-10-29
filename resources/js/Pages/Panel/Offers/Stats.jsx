@@ -25,34 +25,6 @@ function ratio(part, whole) {
     return `${((part / whole) * 100).toFixed(1)}%`;
 }
 
-function formatDay(iso) {
-    if (!iso) {
-        return '';
-    }
-    const [year, month, day] = String(iso).split('-');
-    if (!year || !month || !day) {
-        return String(iso);
-    }
-    return `${day}.${month}.${year}`;
-}
-
-function addDays(iso, days) {
-    const d = new Date(`${iso}T12:00:00`);
-    d.setDate(d.getDate() + days);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-}
-
-function todayIso() {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-}
-
 function buildQueryParams(filters, overrides = {}) {
     const merged = { ...filters, ...overrides };
     const params = {};
@@ -89,7 +61,6 @@ export default function OfferStats({
     filters,
     filterOptions = {},
     templateTotals = [],
-    templatePeriod = { source: 'lifetime' },
     perPageOptions = [50],
     showUserColumn = false,
     users = [],
@@ -254,71 +225,17 @@ export default function OfferStats({
                 </form>
 
                 {templateTotals.length > 0 && (
-                    <details className="stats-templates" open={templatePeriod.source === 'keitaro' ? true : undefined}>
+                    <details className="stats-templates">
                         <summary>
                             Підсумок по шаблонах
                             <span className="muted">
                                 {' '}— найбільше лідів: {templateTotals[0].label} ({templateTotals[0].leads})
                             </span>
-                            <span
-                                className="stats-templates-week"
-                                onClick={(e) => e.stopPropagation()}
-                                onKeyDown={(e) => e.stopPropagation()}
-                            >
-                                <label>
-                                    Тиждень
-                                    <input
-                                        type="date"
-                                        value={filters.tpl_week || ''}
-                                        onChange={(e) => applyFilters({ tpl_week: e.target.value, page: 1 })}
-                                    />
-                                </label>
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    title="Попередній тиждень"
-                                    onClick={() => applyFilters({
-                                        tpl_week: addDays(templatePeriod.from || filters.tpl_week || todayIso(), -7),
-                                        page: 1,
-                                    })}
-                                >
-                                    ←
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    title="Наступний тиждень"
-                                    onClick={() => applyFilters({
-                                        tpl_week: addDays(templatePeriod.from || filters.tpl_week || todayIso(), 7),
-                                        page: 1,
-                                    })}
-                                >
-                                    →
-                                </button>
-                                {filters.tpl_week ? (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={() => applyFilters({ tpl_week: '', page: 1 })}
-                                    >
-                                        Весь час
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={() => applyFilters({ tpl_week: todayIso(), page: 1 })}
-                                    >
-                                        Цей тиждень
-                                    </button>
-                                )}
-                            </span>
                         </summary>
                         <p className="muted">
-                            {templatePeriod.source === 'keitaro'
-                                ? `Цифри за тиждень ${formatDay(templatePeriod.from)} – ${formatDay(templatePeriod.to)} (Київ) з Keitaro. Кількість оферів — як зараз у фільтрах.`
-                                : 'Сума за весь час по оферах під поточними фільтрами. Постав дату — побачиш тиждень Mon–Sun.'}
-                            {' '}CR — ліди від кліків. Натисни на шаблон, щоб залишити в таблиці нижче лише його.
+                            Сума за весь час зі своєї статистики під поточними фільтрами.
+                            Кліки — цільове GEO. CR — депи від лідів.
+                            Натисни на шаблон, щоб залишити в таблиці нижче лише його.
                         </p>
                         <div className="table-wrap">
                             <table className="offers-table-desktop">
@@ -348,7 +265,7 @@ export default function OfferStats({
                                             <td className="text-right">{t.clicks}</td>
                                             <td className="text-right">{t.leads}</td>
                                             <td className="text-right">{t.deposits}</td>
-                                            <td className="text-right muted">{ratio(t.leads, t.clicks)}</td>
+                                            <td className="text-right muted">{ratio(t.deposits, t.leads)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
