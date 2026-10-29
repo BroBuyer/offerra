@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Offer;
-use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -122,10 +120,135 @@ class KeitaroTodayStats
     }
 
     /**
+     * Per-campaign clicks/leads/sales for a Kyiv calendar range.
+     *
+     * @return array<int, array{clicks: int, leads: int, sales: int}>
+     */
+    public function byCampaign(Collection $offers, string $from, string $to): array
+    {
+        $campaignIds = $offers
+            ->pluck('keitaro_campaign_id')
+            ->filter(fn ($id) => (int) $id > 0)
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($campaignIds === []) {
+            return [];
+        }
+
+        $userIds = $offers->pluck('user_id')->unique()->sort()->values()->all();
+        $cacheKey = 'stats.kt_range.'.$from.'.'.$to.'.'.md5(implode(',', $userIds).'|'.implode(',', $campaignIds));
+
+        /** @var array<int, array{clicks: int, leads: int, sales: int}> $payload */
+        $payload = Cache::remember($cacheKey, now()->addMinutes(3), function () use ($userIds, $campaignIds, $from, $to) {
+            return $this->pullRange($userIds, $campaignIds, $from, $to);
+        });
+
+        return $payload;
+    }
+
+    /**
+     * @param  list<int>  $userIds
+     * @param  list<int>  $campaignIds
+     * @return array<int, array{clicks: int, leads: int, sales: int}>
+     */
+    private function pullRange(array $userIds, array $campaignIds, string $from, string $to): array
+    {
+        $wanted = array_fill_keys($campaignIds, true);
+        $byCampaign = [];
+        $pulled = [];
+
+        $settingsList = UserSetting::query()
+            ->whereIn('user_id', $userIds)
+            ->whereNotNull('keitaro_api_key')
+            ->where('keitaro_api_key', '!=', '')
+            ->get();
+
+        if ($settingsList->isEmpty()) {
+            return [];
+        }
+
+        foreach ($settingsList as $settings) {
+            $base = rtrim((string) ($settings->keitaro_url ?: 'https://clickmetrics38.com'), '/');
+            $key = (string) $settings->keitaro_api_key;
+            $fp = $base.'|'.$key;
+            if (isset($pulled[$fp])) {
+                continue;
+            }
+            $pulled[$fp] = true;
+
+            $rows = $this->fetchReportRows($base, $key, $from, $to, ['clicks', 'leads', 'sales'], false);
+            if ($rows === null) {
+                continue;
+            }
+
+            foreach ($rows as $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+                $cid = (int) ($row['campaign_id'] ?? 0);
+                if ($cid <= 0 || ! isset($wanted[$cid])) {
+                    continue;
+                }
+                $clicks = (int) ($row['clicks'] ?? 0);
+                $leads = (int) ($row['leads'] ?? 0);
+                $sales = (int) ($row['sales'] ?? 0);
+                if ($clicks === 0 && $leads === 0 && $sales === 0) {
+                    continue;
+                }
+                $prev = $byCampaign[$cid] ?? ['clicks' => 0, 'leads' => 0, 'sales' => 0];
+                $byCampaign[$cid] = [
+                    'clicks' => max($prev['clicks'], $clicks),
+                    'leads' => max($prev['leads'], $leads),
+                    'sales' => max($prev['sales'], $sales),
+                ];
+            }
+        }
+
+        return $byCampaign;
+    }
+
+    /**
      * @return list<array<string, mixed>>|null
      */
     private function fetchTodayRows(string $base, string $apiKey, string $today): ?array
     {
+        return $this->fetchReportRows($base, $apiKey, $today, $today, ['leads', 'sales', 'conversions'], true);
+    }
+
+    /**
+     * @param  list<string>  $metrics
+     * @return list<array<string, mixed>>|null
+     */
+    private function fetchReportRows(
+        string $base,
+        string $apiKey,
+        string $from,
+        string $to,
+        array $metrics,
+        bool $onlyConversions,
+    ): ?array {
+        $payload = [
+            'range' => [
+                'from' => $from,
+                'to' => $to,
+                'timezone' => 'Europe/Kyiv',
+            ],
+            'dimensions' => ['campaign_id'],
+            'metrics' => $metrics,
+        ];
+        if ($onlyConversions) {
+            $payload['filters'] = [
+                [
+                    'name' => 'conversions',
+                    'operator' => 'GREATER_THAN',
+                    'expression' => 0,
+                ],
+            ];
+        }
+
         try {
             $res = Http::withHeaders([
                 'Api-Key' => $apiKey,
@@ -133,22 +256,7 @@ class KeitaroTodayStats
                 'Content-Type' => 'application/json',
             ])
                 ->timeout(45)
-                ->post("{$base}/admin_api/v1/report/build", [
-                    'range' => [
-                        'from' => $today,
-                        'to' => $today,
-                        'timezone' => 'Europe/Kyiv',
-                    ],
-                    'dimensions' => ['campaign_id'],
-                    'metrics' => ['leads', 'sales', 'conversions'],
-                    'filters' => [
-                        [
-                            'name' => 'conversions',
-                            'operator' => 'GREATER_THAN',
-                            'expression' => 0,
-                        ],
-                    ],
-                ]);
+                ->post("{$base}/admin_api/v1/report/build", $payload);
         } catch (\Throwable $e) {
             Log::warning('KeitaroTodayStats: report exception', ['error' => $e->getMessage()]);
 
