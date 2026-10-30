@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Jobs\DeployOfferJob;
+use App\Jobs\PurgeOfferFromOriginJob;
 use App\Jobs\RebindOfferDnsJob;
 use App\Models\Offer;
 use App\Models\OriginServer;
 use App\Support\OriginRebalancePlanner;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 /**
  * Move every live offer off one origin server and spread it across the pool:
@@ -20,6 +22,9 @@ class OriginEvacuationService
 
     /** Head start so files land before DNS follows. */
     private const REBIND_BASE_DELAY = 90;
+
+    /** Wait for DNS TTL before deleting the old origin copy. */
+    private const PURGE_BASE_DELAY = 1800;
 
     public function __construct(
         private readonly OriginPool $pool,
@@ -65,47 +70,24 @@ class OriginEvacuationService
         }
 
         $assignment = $this->pool->spread($offerIds, $server);
+        $from = trim((string) $server->host);
+        $moves = [];
         $targets = [];
 
-        foreach (Offer::query()->whereIn('id', $offerIds)->orderBy('id')->cursor() as $offer) {
-            $host = $assignment[(int) $offer->id] ?? null;
-            if ($host === null) {
-                continue;
-            }
-
-            $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-            $meta['deploy_host'] = $host;
-            $meta['migrated_from'] = trim((string) $server->host);
-
-            $offer->forceFill([
-                'infra_meta' => $meta,
-                'deploy_panel_name' => $host,
-                'provision_infrastructure' => true,
-            ])->save();
-
-            $targets[$host] = ($targets[$host] ?? 0) + 1;
-        }
-
-        $this->pool->forgetCounts();
-
-        $queued = 0;
-        foreach ($offerIds as $offerId) {
-            DeployOfferJob::dispatch((int) $offerId)->onQueue('deploy');
-            $queued++;
-        }
-
-        $index = 0;
         foreach ($offerIds as $offerId) {
             $host = $assignment[(int) $offerId] ?? null;
             if ($host === null) {
                 continue;
             }
-
-            RebindOfferDnsJob::dispatch((int) $offerId, $host)
-                ->delay(now()->addSeconds(self::REBIND_BASE_DELAY + ($index * self::REBIND_DELAY_SEC)))
-                ->onQueue('deploy');
-            $index++;
+            $moves[(int) $offerId] = [
+                'id' => (int) $offerId,
+                'from' => $from,
+                'to' => $host,
+            ];
+            $targets[$host] = ($targets[$host] ?? 0) + 1;
         }
+
+        $queued = $this->retargetAndQueue($moves);
 
         Log::info('Origin evacuation queued', [
             'from' => $server->host,
@@ -118,6 +100,110 @@ class OriginEvacuationService
             'targets' => $targets,
             'queued' => $queued,
         ];
+    }
+
+    /**
+     * Origins an offer can be moved onto (active, SSH, not draining, not down).
+     *
+     * @return list<array{host: string, label: string, hoster: string, role: string, offers_count: int}>
+     */
+    public function moveTargets(): array
+    {
+        $counts = $this->pool->offerCounts();
+
+        return OriginServer::query()
+            ->where('is_active', true)
+            ->get()
+            ->sort(OriginServer::compareForPanel(...))
+            ->values()
+            ->filter(fn (OriginServer $server) => $this->isMovableTarget($server))
+            ->map(function (OriginServer $server) use ($counts) {
+                $host = $this->sync->normalizeHost((string) $server->host);
+
+                return [
+                    'host' => trim((string) $server->host),
+                    'label' => $server->displayLabel(),
+                    'hoster' => trim((string) ($server->hoster ?? '')),
+                    'role' => $server->role(),
+                    'offers_count' => (int) ($counts[$host] ?? 0),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    public function movableTarget(string $host): OriginServer
+    {
+        $server = $this->pool->serverForHost($host);
+        if ($server === null) {
+            throw new InvalidArgumentException("Сервер {$host} не в реєстрі origin.");
+        }
+        if (! $server->is_active) {
+            throw new InvalidArgumentException("Сервер {$host} вимкнений.");
+        }
+        if (! $server->hasSshCredentials()) {
+            throw new InvalidArgumentException("Немає SSH до {$host}.");
+        }
+        if ($server->role() === OriginServer::ROLE_DRAIN) {
+            throw new InvalidArgumentException("Сервер {$host} звільняється — на нього не перекидаємо.");
+        }
+        if ($server->healthStatus() === 'down') {
+            throw new InvalidArgumentException("Сервер {$host} зараз down.");
+        }
+
+        return $server;
+    }
+
+    /**
+     * Pin selected offers to one origin, redeploy files, then rebind DNS.
+     *
+     * @param  iterable<Offer>  $offers
+     * @return array{moved: int, queued: int, skipped: int}
+     */
+    public function moveOffersTo(iterable $offers, OriginServer $target): array
+    {
+        $targetHost = $this->sync->normalizeHost((string) $target->host);
+        $moves = [];
+        $skipped = 0;
+
+        foreach ($offers as $offer) {
+            $from = $this->sync->normalizeHost($this->pool->boundHost($offer));
+            if ($from === $targetHost) {
+                $skipped++;
+                continue;
+            }
+
+            $moves[(int) $offer->id] = [
+                'id' => (int) $offer->id,
+                'from' => $from,
+                'to' => trim((string) $target->host),
+            ];
+        }
+
+        if ($moves === []) {
+            return ['moved' => 0, 'queued' => 0, 'skipped' => $skipped];
+        }
+
+        $queued = $this->retargetAndQueue($moves);
+
+        Log::info('Offer origin move queued', [
+            'to' => $targetHost,
+            'moved' => count($moves),
+        ]);
+
+        return [
+            'moved' => count($moves),
+            'queued' => $queued,
+            'skipped' => $skipped,
+        ];
+    }
+
+    private function isMovableTarget(OriginServer $server): bool
+    {
+        return $server->is_active
+            && $server->hasSshCredentials()
+            && $server->role() !== OriginServer::ROLE_DRAIN
+            && $server->healthStatus() !== 'down';
     }
 
     /**
@@ -294,6 +380,15 @@ class OriginEvacuationService
             RebindOfferDnsJob::dispatch($offerId, $host)
                 ->delay(now()->addSeconds(self::REBIND_BASE_DELAY + ($index * self::REBIND_DELAY_SEC)))
                 ->onQueue('deploy');
+
+            $from = $this->sync->normalizeHost((string) ($moves[$offerId]['from'] ?? ''));
+            $to = $this->sync->normalizeHost((string) $host);
+            if ($from !== '' && $from !== $to) {
+                PurgeOfferFromOriginJob::dispatch($offerId, $from)
+                    ->delay(now()->addSeconds(self::PURGE_BASE_DELAY + ($index * self::REBIND_DELAY_SEC)))
+                    ->onQueue('deploy');
+            }
+
             $index++;
         }
 

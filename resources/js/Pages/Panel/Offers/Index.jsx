@@ -613,6 +613,7 @@ export default function OffersIndex({
     hasCloudflareBackup = false,
     cloudflarePrimaryName = 'Основний CF',
     cloudflareBackupName = 'Запасний CF',
+    originServers = [],
 }) {
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
@@ -630,6 +631,7 @@ export default function OffersIndex({
     const [bulkIp, setBulkIp] = useState('');
     const [rebindOpen, setRebindOpen] = useState(false);
     const [cfSwitchOpen, setCfSwitchOpen] = useState(false);
+    const [serverSwitchOpen, setServerSwitchOpen] = useState(false);
     const selectAllRef = useRef(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
@@ -929,6 +931,26 @@ export default function OffersIndex({
     const selectedCount = selectedIds.length;
     const selectedOnPageCount = selectableIds.filter((id) => selectedIds.includes(id)).length;
     const allPageSelected = selectableIds.length > 0 && selectedOnPageCount === selectableIds.length;
+    const originTargets = Array.isArray(originServers) ? originServers : [];
+
+    const selectedRowsOnPage = useMemo(
+        () => rows.filter((offer) => selectedIds.includes(offer.id)),
+        [rows, selectedIds],
+    );
+
+    const allKnownSelectedOnHost = (host) => {
+        if (selectedRowsOnPage.length === 0 || selectedRowsOnPage.length !== selectedIds.length) {
+            return false;
+        }
+
+        return selectedRowsOnPage.every((offer) => String(offer.deploy_panel || '') === String(host));
+    };
+
+    const originButtonLabel = (server) => {
+        const hoster = String(server.hoster || '').trim();
+
+        return hoster !== '' ? `${hoster} · ${server.host}` : (server.label || server.host);
+    };
 
     const selectedCfContext = useMemo(() => {
         const selected = rows.filter((offer) => selectedIds.includes(offer.id));
@@ -1063,18 +1085,38 @@ export default function OffersIndex({
             }
         }
 
+        if (action === 'move_server') {
+            const host = String(extra.target_host || '').trim();
+            if (!host) {
+                window.alert('Оберіть origin-сервер.');
+                return;
+            }
+            if (allKnownSelectedOnHost(host)) {
+                window.alert(`Обрані офери вже на ${host}.`);
+                return;
+            }
+            if (!window.confirm(
+                `Перекинути ${selectedCount} оффер(ів) на ${host}?\n` +
+                'Файли заллються на новий origin, A-запис оновиться, копія зі старого сервера зніметься пізніше.',
+            )) {
+                return;
+            }
+        }
+
         setBulkBusy(true);
         router.post(route('offers.bulk-action'), {
             ids: selectedIds,
             action,
             ...(action === 'rebind_dns' ? { ip: bulkIp.trim() } : {}),
             ...(action === 'switch_cloudflare' ? { cloudflare_target: extra.cloudflare_target } : {}),
+            ...(action === 'move_server' ? { target_host: extra.target_host } : {}),
         }, {
             preserveScroll: true,
             onSuccess: () => {
                 setSelectedIds([]);
                 setRebindOpen(false);
                 setCfSwitchOpen(false);
+                setServerSwitchOpen(false);
             },
             onFinish: () => setBulkBusy(false),
         });
@@ -1645,6 +1687,7 @@ export default function OffersIndex({
                         disabled={bulkBusy}
                         onClick={() => {
                             setCfSwitchOpen(false);
+                            setServerSwitchOpen(false);
                             setRebindOpen((open) => !open);
                         }}
                     >
@@ -1685,6 +1728,7 @@ export default function OffersIndex({
                         disabled={bulkBusy}
                         onClick={() => {
                             setRebindOpen(false);
+                            setServerSwitchOpen(false);
                             setCfSwitchOpen((open) => !open);
                         }}
                     >
@@ -1724,6 +1768,46 @@ export default function OffersIndex({
                             </button>
                         </div>
                     )}
+                    {originTargets.length > 0 && (
+                        <>
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-sm"
+                                disabled={bulkBusy}
+                                onClick={() => {
+                                    setRebindOpen(false);
+                                    setCfSwitchOpen(false);
+                                    setServerSwitchOpen((open) => !open);
+                                }}
+                            >
+                                Сервер
+                            </button>
+                            {serverSwitchOpen && (
+                                <div className="offer-bulk-bar__rebind">
+                                    {originTargets.map((server) => {
+                                        const already = allKnownSelectedOnHost(server.host);
+
+                                        return (
+                                            <button
+                                                key={server.host}
+                                                type="button"
+                                                className="btn btn-primary btn-sm"
+                                                disabled={bulkBusy || already}
+                                                title={
+                                                    already
+                                                        ? `Вже на ${server.host}`
+                                                        : `${server.host} · ${server.offers_count} оферів${server.role === 'spare' ? ' · запасний' : ''}`
+                                                }
+                                                onClick={() => runBulkAction('move_server', { target_host: server.host })}
+                                            >
+                                                → {originButtonLabel(server)}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </>
+                    )}
                     <button
                         type="button"
                         className="btn btn-ghost btn-sm"
@@ -1732,6 +1816,7 @@ export default function OffersIndex({
                             setSelectedIds([]);
                             setRebindOpen(false);
                             setCfSwitchOpen(false);
+                            setServerSwitchOpen(false);
                         }}
                     >
                         Скинути

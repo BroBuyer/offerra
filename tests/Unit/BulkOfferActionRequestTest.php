@@ -42,6 +42,29 @@ class BulkOfferActionRequestTest extends TestCase
         $this->assertFalse($validator->fails(), $validator->errors()->toJson());
     }
 
+    public function test_move_server_requires_target_host(): void
+    {
+        $request = new BulkOfferActionRequest;
+        $validator = Validator::make(
+            ['ids' => [1], 'action' => 'move_server'],
+            $request->rules(),
+            $request->messages(),
+        );
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('target_host', $validator->errors()->toArray());
+    }
+
+    public function test_move_server_accepts_target_host(): void
+    {
+        $validator = Validator::make(
+            ['ids' => [8], 'action' => 'move_server', 'target_host' => '84.200.89.234'],
+            (new BulkOfferActionRequest)->rules(),
+        );
+
+        $this->assertFalse($validator->fails(), $validator->errors()->toJson());
+    }
+
     public function test_dns_job_is_unique_per_offer_and_ip(): void
     {
         $job = new RebindOfferDnsJob(12, '91.224.92.135');

@@ -19,6 +19,7 @@ use App\Services\OfferGscSubmitter;
 use App\Services\OfferGoogleIndexInspector;
 use App\Services\OfferRestoreService;
 use App\Services\OfferTeardownService;
+use App\Services\OriginEvacuationService;
 use App\Services\StaleDeadOfferService;
 use App\Services\TemplateCatalog;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +35,7 @@ class OfferController extends Controller
 {
     private const PER_PAGE_OPTIONS = [10, 30, 50, 100];
 
-    public function index(DeployService $deploy): Response
+    public function index(DeployService $deploy, OriginEvacuationService $evacuation): Response
     {
         $user = auth()->user();
         $settings = $user->settings;
@@ -73,6 +74,7 @@ class OfferController extends Controller
             'hasCloudflareBackup' => (bool) $settings?->hasCloudflareSlot('backup'),
             'cloudflarePrimaryName' => trim((string) ($settings?->cloudflare_account_name ?? '')) ?: 'Основний CF',
             'cloudflareBackupName' => trim((string) ($settings?->cloudflare_backup_account_name ?? '')) ?: 'Запасний CF',
+            'originServers' => $evacuation->moveTargets(),
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
             'templates' => app(TemplateCatalog::class)->forWizard(),
@@ -585,11 +587,13 @@ class OfferController extends Controller
     public function bulkAction(
         BulkOfferActionRequest $request,
         DeployService $deploy,
+        OriginEvacuationService $evacuation,
     ): RedirectResponse {
         $authUser = $request->user();
         $action = $request->string('action')->toString();
         $ip = trim((string) $request->input('ip', ''));
         $cloudflareTarget = $request->string('cloudflare_target')->toString();
+        $targetHost = trim((string) $request->input('target_host', ''));
 
         $query = Offer::query()
             ->with('user.settings')
@@ -611,6 +615,37 @@ class OfferController extends Controller
         $queued = 0;
         $skipped = 0;
         $failed = [];
+
+        if ($action === 'move_server') {
+            try {
+                $target = $evacuation->movableTarget($targetHost);
+            } catch (\InvalidArgumentException $e) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['bulk' => $e->getMessage()]);
+            }
+
+            $result = $evacuation->moveOffersTo($offers, $target);
+            $queued = (int) $result['queued'];
+            $skipped = (int) $result['skipped'];
+            if ($skipped > 0) {
+                $failed[] = 'вже на '.$target->host;
+            }
+
+            $parts = ["Перекид на {$target->host} у черзі: {$queued}"];
+            if ($skipped > 0) {
+                $parts[] = "пропущено {$skipped}";
+            }
+            if ($failed !== []) {
+                $parts[] = implode('; ', array_slice($failed, 0, 8));
+            }
+
+            $level = $queued > 0 ? 'success' : 'warning';
+
+            return redirect()
+                ->back()
+                ->with($level, implode(' · ', $parts));
+        }
 
         foreach ($offers as $offer) {
             if ($action === 'redeploy') {
