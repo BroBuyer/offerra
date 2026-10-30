@@ -53,6 +53,11 @@ function normalizeGeo(value) {
     return value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 }
 
+/** Same slug Dynadot search uses for a brand without a zone. */
+function domainSeedFromBrand(brand) {
+    return String(brand || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+}
+
 /** Postbacks often send "Frugacella | IT" — keep the brand, drop the GEO suffix. */
 function sanitizeLinkBrand(brand, geo) {
     const trimmed = String(brand ?? '').trim();
@@ -98,6 +103,12 @@ function applyCreateLinkPrefill(prev, {
 
     if (brand) {
         next = { ...next, brand };
+        if (!String(next.domain || '').trim()) {
+            const seed = domainSeedFromBrand(brand);
+            if (seed) {
+                next = { ...next, domain: seed };
+            }
+        }
     }
 
     if (geo && !isMlOfferTemplate(next.template)) {
@@ -336,6 +347,12 @@ export default function OffersCreate({
     const [brandLookup, setBrandLookup] = useState(null);
     const [brandLookupLoading, setBrandLookupLoading] = useState(false);
     const brandLookupSeq = useRef(0);
+    const autoDomainFromBrandRef = useRef((() => {
+        const seed = domainSeedFromBrand(initial.data.brand);
+        const domain = String(initial.data.domain || '').trim();
+
+        return seed !== '' && domain === seed ? domain : '';
+    })());
 
     const { data, setData, post, processing, reset } = useForm(initial.data);
 
@@ -795,6 +812,27 @@ export default function OffersCreate({
         if (field === 'brand') {
             setBrandLookup(null);
         }
+    };
+
+    const applyBrandToDomain = (brandValue) => {
+        const seed = domainSeedFromBrand(brandValue);
+        if (!seed) {
+            return;
+        }
+
+        const current = String(data.domain || '').trim();
+        if (current !== '' && current !== autoDomainFromBrandRef.current) {
+            return;
+        }
+
+        autoDomainFromBrandRef.current = seed;
+        if (current === seed) {
+            return;
+        }
+
+        setData('domain', seed);
+        setDomainSearchResults(null);
+        setDomainSearchResultsVisible(false);
     };
 
     const lookupBrand = async (brandOverride) => {
@@ -1543,6 +1581,7 @@ export default function OffersCreate({
                                 onChange={(e) => update('brand', e.target.value)}
                                 onBlur={() => {
                                     void lookupBrand();
+                                    applyBrandToDomain(data.brand);
                                 }}
                                 placeholder="Spire Bondtron"
                             />
