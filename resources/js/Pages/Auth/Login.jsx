@@ -1,100 +1,132 @@
-import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Login({ status, canResetPassword, challenge = null }) {
+    const passwordForm = useForm({
         email: '',
         password: '',
         remember: false,
     });
+    const codeForm = useForm({
+        code: '',
+    });
 
-    const submit = (e) => {
+    const submitPassword = (e) => {
         e.preventDefault();
-
-        post(route('login'), {
-            onFinish: () => reset('password'),
+        passwordForm.post(route('login'), {
+            onFinish: () => passwordForm.reset('password'),
         });
     };
 
+    const submitCode = (e) => {
+        e.preventDefault();
+        codeForm.post(route('login.2fa'));
+    };
+
     return (
-        <GuestLayout>
-            <Head title="Log in" />
+        <GuestLayout subtitle={challenge ? 'Код із Telegram' : 'Панель оферів'}>
+            <Head title="Вхід" />
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
+            {status && <div className="auth-status">{status}</div>}
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+            {challenge ? (
+                <form onSubmit={submitCode} className="auth-form">
+                    <p className="auth-lead">
+                        Код надіслано в Telegram
+                        {challenge.email ? <> для <strong>{challenge.email}</strong></> : null}.
+                    </p>
 
-                    <TextInput
+                    <label className="auth-label" htmlFor="code">
+                        4-значний код
+                    </label>
+                    <input
+                        id="code"
+                        name="code"
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        pattern="[0-9]*"
+                        maxLength={4}
+                        value={codeForm.data.code}
+                        onChange={(e) => codeForm.setData('code', e.target.value.replace(/\D/g, '').slice(0, 4))}
+                        className="auth-input auth-input-code"
+                        autoFocus
+                    />
+                    <InputError message={codeForm.errors.code} className="mt-2" />
+
+                    <button type="submit" className="btn btn-primary auth-submit" disabled={codeForm.processing}>
+                        Увійти
+                    </button>
+
+                    <div className="auth-row">
+                        <button
+                            type="button"
+                            className="auth-link"
+                            disabled={codeForm.processing}
+                            onClick={() => codeForm.post(route('login.2fa.resend'))}
+                        >
+                            Надіслати ще раз
+                        </button>
+                        <Link href={route('login.2fa.cancel')} method="post" as="button" className="auth-link">
+                            Інший акаунт
+                        </Link>
+                    </div>
+                </form>
+            ) : (
+                <form onSubmit={submitPassword} className="auth-form">
+                    <label className="auth-label" htmlFor="email">
+                        Email
+                    </label>
+                    <input
                         id="email"
                         type="email"
                         name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
+                        value={passwordForm.data.email}
                         autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        autoFocus
+                        onChange={(e) => passwordForm.setData('email', e.target.value)}
+                        className="auth-input"
                     />
+                    <InputError message={passwordForm.errors.email} className="mt-2" />
 
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
+                    <label className="auth-label" htmlFor="password">
+                        Пароль
+                    </label>
+                    <input
                         id="password"
                         type="password"
                         name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
+                        value={passwordForm.data.password}
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => passwordForm.setData('password', e.target.value)}
+                        className="auth-input"
                     />
+                    <InputError message={passwordForm.errors.password} className="mt-2" />
 
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
+                    <label className="auth-check">
+                        <input
+                            type="checkbox"
                             name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                            checked={passwordForm.data.remember}
+                            onChange={(e) => passwordForm.setData('remember', e.target.checked)}
                         />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
+                        Запам’ятати мене
                     </label>
-                </div>
 
-                <div className="mt-4 flex items-center justify-end">
+                    <button type="submit" className="btn btn-primary auth-submit" disabled={passwordForm.processing}>
+                        Далі
+                    </button>
+
                     {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
+                        <div className="auth-row">
+                            <Link href={route('password.request')} className="auth-link">
+                                Забув пароль?
+                            </Link>
+                        </div>
                     )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
-            </form>
+                </form>
+            )}
         </GuestLayout>
     );
 }
