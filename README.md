@@ -185,8 +185,10 @@ node scripts/deploy.cjs                  # потрібні PANEL_HOST і PANEL_
 Сенс у відновлюваності: git — єдине джерело правди, тож мертвий сервер
 замінюється з `origin/main`. Подробиці й правила — в [AGENTS.md](AGENTS.md).
 
-Поза git лишаються тільки дві речі, і їм потрібні власні бекапи: `.env` і база
-PostgreSQL. Папка `offers/` на панелі порожня — при `OFFERRA_PURGE_LOCAL_AFTER_DEPLOY=true`
+Поза git лишаються `.env`, PostgreSQL і `storage/app`. Раз на добу панель
+робить encrypted restic-знімок на окремий backup VPS (14 днів). Пароль restic
+не в git — без нього архіви не читаються. Відновлення: `scripts/panel-backup-restore.sh`.
+Папка `offers/` на панелі порожня — при `OFFERRA_PURGE_LOCAL_AFTER_DEPLOY=true`
 ленд видаляється одразу після заливки, а оригінали живуть на origin-серверах і
 перегенеровуються з БД.
 

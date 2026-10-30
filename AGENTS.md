@@ -47,6 +47,11 @@ panel and need their own backups:
 each lander once it reaches its origin. The live files sit on the origin servers
 and are re-deployable from the DB, but slowly.
 
+Nightly encrypted restic dump (Postgres + `.env` + `storage/app`) goes to a
+separate backup VPS over SFTP. The restic password lives in
+`/root/offerra-backup.env` on the panel and in a password manager — never in
+git. The backup box only stores ciphertext. Restore: `scripts/panel-backup-restore.sh`.
+
 ## Origin servers
 
 Servers belong to the admin, not to user settings. `OriginPool` assigns each new
