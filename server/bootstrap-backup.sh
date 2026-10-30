@@ -72,8 +72,10 @@ Match User ${BACKUP_USER}
     X11Forwarding no
 EOF
 fi
+mkdir -p /run/sshd
+chmod 0755 /run/sshd
 sshd -t
-systemctl reload ssh 2>/dev/null || systemctl reload sshd
+systemctl reload ssh 2>/dev/null || systemctl restart ssh 2>/dev/null || systemctl reload sshd
 
 log "firewall"
 ufw default deny incoming
