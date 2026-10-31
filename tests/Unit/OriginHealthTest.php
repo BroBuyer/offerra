@@ -29,6 +29,22 @@ class OriginHealthTest extends TestCase
         $this->assertSame(['SSH timeout'], $result['issues']);
     }
 
+    public function test_hung_session_after_login_is_down_not_ok(): void
+    {
+        $result = (new OriginHealthProbe)->evaluate(
+            [
+                'ok' => false,
+                'latency_ms' => 15000,
+                'error' => 'SSH: логін пройшов, але сесія зависла (канал команди не відкрився). Перезавантаж VPS з панелі хостера.',
+            ],
+            ['ok' => true, 'status' => 200, 'latency_ms' => 5, 'error' => null],
+            [],
+        );
+
+        $this->assertSame('down', $result['status']);
+        $this->assertStringContainsString('сесія зависла', $result['message']);
+    }
+
     public function test_healthy_origin_is_ok(): void
     {
         $result = (new OriginHealthProbe)->evaluate(

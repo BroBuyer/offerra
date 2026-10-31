@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\OriginServer;
 use App\Models\UserSetting;
 use App\Support\DeployDriver;
+use App\Support\OriginSsh;
 use Illuminate\Support\Facades\Http;
-use phpseclib3\Net\SSH2;
 
 class OriginHealthProbe
 {
@@ -225,21 +225,16 @@ class OriginHealthProbe
         $started = microtime(true);
 
         try {
-            $ssh = new SSH2($host, $port, 10);
-            $ssh->setTimeout(12);
-
-            if (! $ssh->login($username, $password)) {
-                return [
-                    'ok' => false,
-                    'latency_ms' => $this->elapsedMs($started),
-                    'error' => 'SSH: логін відхилено. Перевір користувача і пароль.',
-                ];
-            }
-
             $probePath = $this->probePath($pathTemplate, $username);
             $safePath = preg_replace('#[^a-zA-Z0-9/._-]#', '', $probePath) ?: '/tmp/offerra_health';
-            $output = (string) $ssh->exec($this->metricsScript($safePath));
-            $ssh->disconnect();
+            $output = app(OriginSsh::class)->exec(
+                $host,
+                $port,
+                $username,
+                $password,
+                $this->metricsScript($safePath),
+                15,
+            );
 
             $metrics = $this->parseMetrics($output);
 
@@ -264,10 +259,12 @@ class OriginHealthProbe
                 'metrics' => $metrics,
             ];
         } catch (\Throwable $e) {
+            $message = $e->getMessage();
+
             return [
                 'ok' => false,
                 'latency_ms' => $this->elapsedMs($started),
-                'error' => 'SSH: '.$e->getMessage(),
+                'error' => str_starts_with($message, 'SSH:') ? $message : 'SSH: '.$message,
             ];
         }
     }

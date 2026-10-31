@@ -6,9 +6,8 @@ use App\Models\Offer;
 use App\Models\OriginServer;
 use App\Models\UserSetting;
 use App\Support\DeployDriver;
+use App\Support\OriginSsh;
 use RuntimeException;
-use phpseclib3\Net\SFTP;
-use phpseclib3\Net\SSH2;
 
 class OriginHostService
 {
@@ -294,18 +293,15 @@ SH;
         $path = '/var/www/offers/'.$domain.'/public_html';
 
         try {
-            $ssh = new SSH2($creds['host'], $creds['port'], 8);
-            $ssh->setTimeout(12);
-            if (! $ssh->login($creds['user'], $creds['pass'])) {
-                $ssh->disconnect();
-
-                return false;
-            }
-            $out = trim((string) $ssh->exec(
+            $out = trim(app(OriginSsh::class)->exec(
+                $creds['host'],
+                $creds['port'],
+                $creds['user'],
+                $creds['pass'],
                 'if [ -f '.escapeshellarg($path.'/index.php').' ] || [ -f '.escapeshellarg($path.'/index.html').' ]; '
-                .'then echo YES; else echo NO; fi'
+                .'then echo YES; else echo NO; fi',
+                12,
             ));
-            $ssh->disconnect();
 
             return str_starts_with($out, 'YES');
         } catch (\Throwable) {
@@ -383,20 +379,7 @@ SH;
     private function uploadFile(UserSetting $settings, string $localFile, string $remoteFile): void
     {
         [$host, $port, $username, $password] = $this->credentials($settings);
-        $sftp = new SFTP($host, $port, 20);
-        $sftp->setTimeout(60);
-
-        if (! $sftp->login($username, $password)) {
-            $sftp->disconnect();
-            throw new RuntimeException('SFTP: логін відхилено під час завантаження архіву.');
-        }
-
-        $ok = $sftp->put($remoteFile, $localFile, SFTP::SOURCE_LOCAL_FILE);
-        $sftp->disconnect();
-
-        if (! $ok) {
-            throw new RuntimeException('SFTP: не вдалося завантажити tar.gz на origin.');
-        }
+        app(OriginSsh::class)->upload($host, $port, $username, $password, $localFile, $remoteFile, 90);
     }
 
     /**
@@ -430,17 +413,14 @@ SH;
     private function exec(UserSetting $settings, string $command, int $timeout = 20): string
     {
         [$host, $port, $username, $password] = $this->credentials($settings);
-
-        $ssh = new SSH2($host, $port, 12);
-        $ssh->setTimeout($timeout);
-
-        if (! $ssh->login($username, $password)) {
-            $ssh->disconnect();
-            throw new RuntimeException('SSH: логін відхилено. Перевір користувача і пароль.');
-        }
-
-        $output = (string) $ssh->exec($command.'; echo __EC__:$?');
-        $ssh->disconnect();
+        $output = app(OriginSsh::class)->exec(
+            $host,
+            $port,
+            $username,
+            $password,
+            $command.'; echo __EC__:$?',
+            $timeout,
+        );
 
         if (! preg_match('/__EC__:(\d+)/', $output, $match)) {
             throw new RuntimeException('SSH команда не повернула код виходу.');
