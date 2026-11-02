@@ -34,13 +34,8 @@ $cookieDays = defined('FORM_LEAD_COOKIE_DAYS') ? (int) FORM_LEAD_COOKIE_DAYS : 3
       <input type="hidden" name="language" value="<?= e($lang) ?>">
       <input type="hidden" name="phone_country" value="<?= e($phoneCountry) ?>">
       <input type="hidden" name="only_countries" value='<?= e(json_encode($allowedCountries)) ?>'>
-<?php
-      $offer_subid = trim((string) ($_GET['subid'] ?? $_GET['_subid'] ?? ''));
-      if ($offer_subid !== ''):
-      ?>
-      <input type="hidden" name="subid" value="<?= e($offer_subid) ?>">
-      <?php endif; ?>
-      <input type="hidden" name="form_token" value="" autocomplete="off">
+<input type="hidden" name="subid" value="<?= e(function_exists('offer_click_id') ? offer_click_id() : '') ?>">
+<input type="hidden" name="form_token" value="" autocomplete="off">
       <div class="form-preloader hidden" aria-hidden="true"><div class="spinner"></div></div>
       <div class="form-stack">
         <div class="field">

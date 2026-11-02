@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $lead = LeadProcessor::parsePayload();
 
+if ($lead && function_exists('offer_click_id')) {
+    $lead['subid'] = offer_click_id();
+}
+
 if (!$lead) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Empty request'], JSON_UNESCAPED_UNICODE);

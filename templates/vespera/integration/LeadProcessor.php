@@ -100,12 +100,19 @@ final class LeadProcessor
     {
         $subid = trim((string) ($lead['subid'] ?? ''));
         if ($subid === '' || $subid === 'no_subid') {
-            return $lead;
+            $subid = function_exists('offer_click_id') ? offer_click_id() : '';
         }
-
-        $crmField = 'aff_sub3';
-        if (empty($lead[$crmField])) {
-            $lead[$crmField] = $subid;
+        if ($subid !== '' && $subid !== 'no_subid') {
+            $lead['subid'] = $subid;
+            if (empty($lead['aff_sub3'])) {
+                $lead['aff_sub3'] = $subid;
+            }
+        }
+        if (empty($lead['aff_sub4']) && function_exists('site_domain')) {
+            $domain = strtolower(trim((string) site_domain()));
+            if ($domain !== '' && $domain !== 'localhost') {
+                $lead['aff_sub4'] = $domain;
+            }
         }
 
         return $lead;

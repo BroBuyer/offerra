@@ -678,3 +678,52 @@ function form_token_issue(): string
 }
 
 define('SUPPORT_EMAIL', 'support@' . site_domain());
+
+if (! function_exists('offer_click_id_normalize')) {
+    function offer_click_id_normalize(string $id): string
+    {
+        $id = trim($id);
+        if ($id === '' || strtolower($id) === 'no_subid') {
+            return '';
+        }
+        if (! preg_match('/^[a-zA-Z0-9._-]{8,64}$/', $id)) {
+            return '';
+        }
+
+        return $id;
+    }
+}
+
+if (! function_exists('offer_click_id')) {
+    function offer_click_id(): string
+    {
+        if (isset($GLOBALS['_offer_cid']) && is_string($GLOBALS['_offer_cid']) && $GLOBALS['_offer_cid'] !== '') {
+            return $GLOBALS['_offer_cid'];
+        }
+
+        $cookie = (function_exists('site_slug') ? site_slug() : 'offerra') . '_cid';
+        $fromGet = offer_click_id_normalize((string) ($_GET['subid'] ?? $_GET['_subid'] ?? $_GET['cid'] ?? ''));
+        $fromCookie = offer_click_id_normalize((string) ($_COOKIE[$cookie] ?? ''));
+        $fromPost = offer_click_id_normalize((string) ($_POST['subid'] ?? ''));
+
+        $id = $fromGet !== '' ? $fromGet : ($fromCookie !== '' ? $fromCookie : ($fromPost !== '' ? $fromPost : bin2hex(random_bytes(12))));
+        $GLOBALS['_offer_cid'] = $id;
+
+        if (PHP_SAPI !== 'cli' && ! headers_sent()) {
+            @setcookie($cookie, $id, [
+                'expires' => time() + 90 * 86400,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            $_COOKIE[$cookie] = $id;
+        }
+
+        return $id;
+    }
+}
+
+if (PHP_SAPI !== 'cli') {
+    offer_click_id();
+}

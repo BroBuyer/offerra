@@ -267,21 +267,37 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             Додайте бота в групу — ліди дублюватимуться туди. Якщо порожньо, лише в особистий чат.
                         </p>
                     </div>
-                    {settings.sales_postback_url && (
-                        <div className="field">
-                            <label htmlFor="sales-s2s">S2S postback (деп → Telegram)</label>
-                            <input
-                                type="text"
-                                id="sales-s2s"
-                                readOnly
-                                value={settings.sales_postback_url}
-                                onFocus={(e) => e.target.select()}
-                            />
+                    {(settings.lead_postback_url || settings.sales_postback_url) && (
+                        <>
+                            {settings.lead_postback_url && (
+                                <div className="field">
+                                    <label htmlFor="sales-s2s-lead">Postback — лід</label>
+                                    <input
+                                        type="text"
+                                        id="sales-s2s-lead"
+                                        readOnly
+                                        value={settings.lead_postback_url}
+                                        onFocus={(e) => e.target.select()}
+                                    />
+                                </div>
+                            )}
+                            {settings.sales_postback_url && (
+                                <div className="field">
+                                    <label htmlFor="sales-s2s">Postback — деп</label>
+                                    <input
+                                        type="text"
+                                        id="sales-s2s"
+                                        readOnly
+                                        value={settings.sales_postback_url}
+                                        onFocus={(e) => e.target.select()}
+                                    />
+                                </div>
+                            )}
                             <p className="field-hint">
-                                CRM шле payout сюди — у TG прийде subid + сума.
-                                Параметр domain= привʼязує подію до оффера в статистиці.
+                                Встав у YourLeads як GET S2S. <code>aff_sub3</code> — click id ленда,
+                                <code> aff_sub4</code> — домен оффера. Деп також прийде в Telegram (subid + сума).
                             </p>
-                        </div>
+                        </>
                     )}
                 </section>
 

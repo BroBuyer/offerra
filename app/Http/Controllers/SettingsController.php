@@ -28,11 +28,13 @@ class SettingsController extends Controller
         $settings = $targetUser->settings()->firstOrCreate([]);
 
         $salesPostbackUrl = $postbacks->postbackUrl($settings);
+        $leadPostbackUrl = $postbacks->leadPostbackUrl($settings);
         $settings->refresh();
 
         return Inertia::render('Panel/Settings/Index', [
             'settings' => array_merge($settings->toEditArray(), [
                 'sales_postback_url' => $salesPostbackUrl,
+                'lead_postback_url' => $leadPostbackUrl,
             ]),
             'settingsUser' => [
                 'id' => $targetUser->id,

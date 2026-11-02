@@ -28,11 +28,25 @@ class SalesPostbackService
 
     public function postbackUrl(UserSetting $settings): string
     {
+        return $this->salePostbackUrl($settings);
+    }
+
+    public function leadPostbackUrl(UserSetting $settings): string
+    {
+        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=lead&domain={aff_sub4}';
+    }
+
+    public function salePostbackUrl(UserSetting $settings): string
+    {
+        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=sale&payout={payout}&domain={aff_sub4}';
+    }
+
+    private function basePostbackUrl(UserSetting $settings): string
+    {
         $token = $this->ensureToken($settings);
         $base = rtrim((string) config('app.url'), '/');
 
-        return "{$base}/api/v1/postback/{$token}"
-            .'?subid={subid}&status={status}&payout={revenue}&domain={domain}';
+        return "{$base}/api/v1/postback/{$token}";
     }
 
     /**
@@ -55,7 +69,13 @@ class SalesPostbackService
             return ['ok' => false, 'reason' => 'unknown_token'];
         }
 
-        $subid = trim((string) ($input['subid'] ?? $input['sub_id'] ?? ''));
+        $subid = trim((string) (
+            $input['subid']
+            ?? $input['sub_id']
+            ?? $input['aff_sub3']
+            ?? $input['click_id']
+            ?? ''
+        ));
         $status = strtolower(trim((string) ($input['status'] ?? '')));
         $payout = trim((string) (
             $input['payout']
@@ -63,7 +83,12 @@ class SalesPostbackService
             ?? $input['conversion_revenue']
             ?? ''
         ));
-        $domain = $this->normalizeDomain((string) ($input['domain'] ?? $input['offer_domain'] ?? ''));
+        $domain = $this->normalizeDomain((string) (
+            $input['domain']
+            ?? $input['offer_domain']
+            ?? $input['aff_sub4']
+            ?? ''
+        ));
 
         if ($subid === '') {
             return ['ok' => false, 'reason' => 'missing_subid'];
