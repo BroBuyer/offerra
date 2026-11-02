@@ -54,10 +54,14 @@ class OriginServerController extends Controller
             'password' => filled($data['password'] ?? null) ? $data['password'] : null,
             'label' => $data['label'] ?? null,
             'hoster' => filled($data['hoster'] ?? null) ? trim((string) $data['hoster']) : null,
+            'hoster_url' => OriginServer::normalizeHosterUrl($data['hoster_url'] ?? null),
+            'hoster_email' => filled($data['hoster_email'] ?? null) ? trim((string) $data['hoster_email']) : null,
+            'hoster_password' => filled($data['hoster_password'] ?? null) ? $data['hoster_password'] : null,
             'cpu' => filled($data['cpu'] ?? null) ? trim((string) $data['cpu']) : null,
             'ram' => filled($data['ram'] ?? null) ? trim((string) $data['ram']) : null,
             'disk' => filled($data['disk'] ?? null) ? trim((string) $data['disk']) : null,
             'price' => filled($data['price'] ?? null) ? trim((string) $data['price']) : null,
+            'paid_until' => filled($data['paid_until'] ?? null) ? $data['paid_until'] : null,
             'deploy_driver' => DeployDriver::UBUNTU,
             'deploy_path_template' => $data['deploy_path_template'] ?? DeployDriver::UBUNTU_PATH,
             'role' => OriginServer::normalizeRole($data['role'] ?? null),
@@ -86,10 +90,13 @@ class OriginServerController extends Controller
             'username' => $data['username'] ?? null,
             'label' => $data['label'] ?? null,
             'hoster' => filled($data['hoster'] ?? null) ? trim((string) $data['hoster']) : null,
+            'hoster_url' => OriginServer::normalizeHosterUrl($data['hoster_url'] ?? null),
+            'hoster_email' => filled($data['hoster_email'] ?? null) ? trim((string) $data['hoster_email']) : null,
             'cpu' => filled($data['cpu'] ?? null) ? trim((string) $data['cpu']) : null,
             'ram' => filled($data['ram'] ?? null) ? trim((string) $data['ram']) : null,
             'disk' => filled($data['disk'] ?? null) ? trim((string) $data['disk']) : null,
             'price' => filled($data['price'] ?? null) ? trim((string) $data['price']) : null,
+            'paid_until' => filled($data['paid_until'] ?? null) ? $data['paid_until'] : null,
             'deploy_path_template' => $data['deploy_path_template'] ?? DeployDriver::UBUNTU_PATH,
             'role' => OriginServer::normalizeRole($data['role'] ?? $originServer->role),
             'max_offers' => ((int) ($data['max_offers'] ?? 0)) ?: null,
@@ -99,6 +106,11 @@ class OriginServerController extends Controller
 
         if ($password !== '') {
             $originServer->password = $password;
+        }
+
+        $hosterPassword = SecretValue::normalize((string) ($data['hoster_password'] ?? ''));
+        if ($hosterPassword !== '') {
+            $originServer->hoster_password = $hosterPassword;
         }
 
         $originServer->save();

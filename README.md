@@ -141,6 +141,7 @@ Telegram. Спам отримує «тихий успіх» — редірект
 |---|---|
 | `offers:recheck-infra-dns` | щохвилини |
 | `origin:check-health` | щохвилини |
+| `origin:billing-remind` | щогодини |
 | `offers:check-availability --only-down` | кожні 10 хв |
 | `offers:heal-landers` | кожні 15 хв |
 | `origin:sync-servers` | щогодини |
@@ -167,6 +168,7 @@ php artisan keitaro:sync-s2s-postbacks
 php artisan offer-stats:backfill-from-keitaro
 
 php artisan origin:check-health --sync   # перевірити пул
+php artisan origin:billing-remind        # нагадування оплатити VPS
 php artisan origin:sync-servers
 ```
 

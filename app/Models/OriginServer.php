@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\DeployDriver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class OriginServer extends Model
 {
@@ -25,10 +26,15 @@ class OriginServer extends Model
         'password',
         'label',
         'hoster',
+        'hoster_url',
+        'hoster_email',
+        'hoster_password',
         'cpu',
         'ram',
         'disk',
         'price',
+        'paid_until',
+        'paid_until_alerted_for',
         'deploy_driver',
         'deploy_path_template',
         'is_active',
@@ -42,12 +48,29 @@ class OriginServer extends Model
     {
         return [
             'password' => 'encrypted',
+            'hoster_password' => 'encrypted',
             'port' => 'integer',
             'max_offers' => 'integer',
             'is_active' => 'boolean',
             'alerts_enabled' => 'boolean',
             'health' => 'array',
+            'paid_until' => 'date',
+            'paid_until_alerted_for' => 'date',
         ];
+    }
+
+    public static function normalizeHosterUrl(?string $url): ?string
+    {
+        $url = trim((string) $url);
+        if ($url === '') {
+            return null;
+        }
+
+        if (! preg_match('#^https?://#i', $url)) {
+            $url = 'https://'.$url;
+        }
+
+        return mb_substr($url, 0, 255);
     }
 
     public static function normalizeRole(?string $role): string
@@ -149,6 +172,45 @@ class OriginServer extends Model
             && filled($this->password);
     }
 
+    public function hasHosterLogin(): bool
+    {
+        return filled($this->hoster_url)
+            || filled($this->hoster_email)
+            || filled($this->hoster_password);
+    }
+
+    /**
+     * Whole days until paid_until (negative = overdue). Null when the date is empty.
+     */
+    public function daysUntilPaid(?Carbon $now = null): ?int
+    {
+        if ($this->paid_until === null) {
+            return null;
+        }
+
+        $today = ($now ?? now())->copy()->startOfDay();
+        $until = $this->paid_until->copy()->startOfDay();
+
+        return (int) $today->diffInDays($until, false);
+    }
+
+    public function dueForBillingReminder(?Carbon $now = null): bool
+    {
+        if (! ($this->alerts_enabled ?? true)) {
+            return false;
+        }
+
+        $days = $this->daysUntilPaid($now);
+        if ($days === null || $days > 1) {
+            return false;
+        }
+
+        $until = $this->paid_until?->toDateString();
+        $alerted = $this->paid_until_alerted_for?->toDateString();
+
+        return $until !== null && $alerted !== $until;
+    }
+
     public function displayLabel(): string
     {
         $label = trim((string) ($this->label ?? ''));
@@ -188,10 +250,17 @@ class OriginServer extends Model
             'label' => $this->label ?? '',
             'display_label' => $this->displayLabel(),
             'hoster' => $this->hoster ?? '',
+            'hoster_url' => $this->hoster_url ?? '',
+            'hoster_email' => $this->hoster_email ?? '',
+            'hoster_password' => filled($this->hoster_password) ? (string) $this->hoster_password : '',
+            'has_hoster_password' => filled($this->hoster_password),
+            'has_hoster_login' => $this->hasHosterLogin(),
             'cpu' => $this->cpu ?? '',
             'ram' => $this->ram ?? '',
             'disk' => $this->disk ?? '',
             'price' => $this->price ?? '',
+            'paid_until' => $this->paid_until?->toDateString(),
+            'days_until_paid' => $this->daysUntilPaid(),
             'deploy_driver' => DeployDriver::normalize($this->deploy_driver),
             'deploy_path_template' => $this->deploy_path_template
                 ?: DeployDriver::defaultPath($this->deploy_driver),
