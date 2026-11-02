@@ -16,6 +16,8 @@ use phpseclib3\Net\SSH2;
  */
 class OriginSsh
 {
+    public const HUNG_EXEC = 'SSH: логін пройшов, але сесія зависла (канал команди не відкрився). Перезавантаж VPS з панелі хостера.';
+
     public function exec(
         string $host,
         int $port,
@@ -54,6 +56,8 @@ class OriginSsh
             throw new RuntimeException('Локальний файл для upload не знайдено.');
         }
 
+        $timeout = self::timeoutForUploadBytes((int) filesize($localFile), $timeout);
+
         if ($this->canUseOpenSsh() && is_executable('/usr/bin/scp')) {
             $this->uploadOpenSsh($host, $port, $username, $password, $localFile, $remoteFile, $timeout);
 
@@ -71,6 +75,40 @@ class OriginSsh
             && is_executable('/usr/bin/ssh');
     }
 
+    /**
+     * Give slow archives enough time, but never wait more than 5 minutes.
+     */
+    public static function timeoutForUploadBytes(int $bytes, int $requested = 90): int
+    {
+        $fromSize = 45 + (int) ceil(max(0, $bytes) / (128 * 1024));
+
+        return max(20, min(300, max($requested, $fromSize)));
+    }
+
+    public static function hungUploadMessage(int $timeout): string
+    {
+        return 'SFTP: завантаження не завершилось за '.$timeout.' с. Повторіть деплой.';
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sshFlags(): array
+    {
+        return [
+            '-o', 'StrictHostKeyChecking=accept-new',
+            '-o', 'UserKnownHostsFile=/dev/null',
+            '-o', 'GlobalKnownHostsFile=/dev/null',
+            '-o', 'LogLevel=ERROR',
+            '-o', 'ConnectTimeout=8',
+            '-o', 'PreferredAuthentications=password',
+            '-o', 'PubkeyAuthentication=no',
+            '-o', 'NumberOfPasswordPrompts=1',
+            '-o', 'ServerAliveInterval=3',
+            '-o', 'ServerAliveCountMax=2',
+        ];
+    }
+
     private function execOpenSsh(
         string $host,
         int $port,
@@ -79,39 +117,24 @@ class OriginSsh
         string $command,
         int $timeout,
     ): string {
-        $process = new Process(
+        $process = $this->openSshProcess(
             [
-                '/usr/bin/timeout', '-k', '2', (string) $timeout,
-                '/usr/bin/sshpass', '-e',
                 '/usr/bin/ssh',
-                '-o', 'StrictHostKeyChecking=accept-new',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'GlobalKnownHostsFile=/dev/null',
-                '-o', 'LogLevel=ERROR',
-                '-o', 'ConnectTimeout=8',
-                '-o', 'PreferredAuthentications=password',
-                '-o', 'PubkeyAuthentication=no',
-                '-o', 'NumberOfPasswordPrompts=1',
-                '-o', 'ServerAliveInterval=3',
-                '-o', 'ServerAliveCountMax=2',
+                ...$this->sshFlags(),
                 '-p', (string) $port,
                 $username.'@'.$host,
                 $command,
             ],
-            null,
-            ['SSHPASS' => $password],
-            null,
-            $timeout + 4,
+            $password,
+            $timeout,
         );
 
         $process->run();
         $code = $process->getExitCode();
         $out = trim($process->getOutput()."\n".$process->getErrorOutput());
 
-        if ($code === 124 || $code === 137) {
-            throw new RuntimeException(
-                'SSH: логін пройшов, але сесія зависла (канал команди не відкрився). Перезавантаж VPS з панелі хостера.',
-            );
+        if ($this->isTimeoutCode($code)) {
+            throw new RuntimeException(self::HUNG_EXEC);
         }
 
         if ($code !== 0) {
@@ -146,11 +169,7 @@ class OriginSsh
             return (string) $output;
         } catch (\ErrorException $e) {
             if (str_contains($e->getMessage(), 'Undefined array key')) {
-                throw new RuntimeException(
-                    'SSH: логін пройшов, але сесія зависла (канал команди не відкрився). Перезавантаж VPS з панелі хостера.',
-                    0,
-                    $e,
-                );
+                throw new RuntimeException(self::HUNG_EXEC, 0, $e);
             }
 
             throw new RuntimeException('SSH: '.$e->getMessage(), 0, $e);
@@ -171,40 +190,124 @@ class OriginSsh
         string $remoteFile,
         int $timeout,
     ): void {
-        $process = new Process(
+        $result = $this->runScp($host, $port, $username, $password, $localFile, $remoteFile, $timeout);
+        if ($result['code'] === 0) {
+            return;
+        }
+
+        if ($this->isTimeoutCode($result['code'])) {
+            usleep(1_500_000);
+            $result = $this->runScp($host, $port, $username, $password, $localFile, $remoteFile, $timeout);
+            if ($result['code'] === 0) {
+                return;
+            }
+
+            $fallback = $this->runExecCat($host, $port, $username, $password, $localFile, $remoteFile, $timeout);
+            if ($fallback['code'] === 0) {
+                return;
+            }
+
+            throw new RuntimeException(self::hungUploadMessage($timeout));
+        }
+
+        $hint = trim($result['error'].' '.$result['output']);
+        throw new RuntimeException('SFTP: не вдалося завантажити файл.'.($hint !== '' ? ' '.mb_substr($hint, 0, 180) : ''));
+    }
+
+    /**
+     * @return array{code: int|null, output: string, error: string}
+     */
+    private function runScp(
+        string $host,
+        int $port,
+        string $username,
+        string $password,
+        string $localFile,
+        string $remoteFile,
+        int $timeout,
+    ): array {
+        $process = $this->openSshProcess(
             [
-                '/usr/bin/timeout', '-k', '2', (string) $timeout,
-                '/usr/bin/sshpass', '-e',
                 '/usr/bin/scp',
-                '-o', 'StrictHostKeyChecking=accept-new',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'GlobalKnownHostsFile=/dev/null',
-                '-o', 'LogLevel=ERROR',
-                '-o', 'ConnectTimeout=8',
-                '-o', 'PreferredAuthentications=password',
-                '-o', 'PubkeyAuthentication=no',
+                ...$this->sshFlags(),
                 '-P', (string) ($port > 0 ? $port : 22),
                 $localFile,
                 $username.'@'.$host.':'.$remoteFile,
             ],
-            null,
-            ['SSHPASS' => $password],
-            null,
-            $timeout + 4,
+            $password,
+            $timeout,
         );
         $process->run();
-        $code = $process->getExitCode();
 
-        if ($code === 124 || $code === 137) {
-            throw new RuntimeException(
-                'SFTP: сесія зависла після логіну. Перезавантаж VPS з панелі хостера.',
+        return [
+            'code' => $process->getExitCode(),
+            'output' => $process->getOutput(),
+            'error' => $process->getErrorOutput(),
+        ];
+    }
+
+    /**
+     * scp uses the SFTP subsystem; a hung subsystem can still allow exec+stdin.
+     *
+     * @return array{code: int|null, output: string, error: string}
+     */
+    private function runExecCat(
+        string $host,
+        int $port,
+        string $username,
+        string $password,
+        string $localFile,
+        string $remoteFile,
+        int $timeout,
+    ): array {
+        $input = fopen($localFile, 'rb');
+        if ($input === false) {
+            return ['code' => 1, 'output' => '', 'error' => 'cannot read local file'];
+        }
+
+        try {
+            $process = $this->openSshProcess(
+                [
+                    '/usr/bin/ssh',
+                    ...$this->sshFlags(),
+                    '-p', (string) $port,
+                    $username.'@'.$host,
+                    'cat > '.escapeshellarg($remoteFile),
+                ],
+                $password,
+                $timeout,
+                $input,
             );
-        }
+            $process->run();
 
-        if ($code !== 0) {
-            $hint = trim($process->getErrorOutput().' '.$process->getOutput());
-            throw new RuntimeException('SFTP: не вдалося завантажити файл.'.($hint !== '' ? ' '.mb_substr($hint, 0, 180) : ''));
+            return [
+                'code' => $process->getExitCode(),
+                'output' => $process->getOutput(),
+                'error' => $process->getErrorOutput(),
+            ];
+        } finally {
+            fclose($input);
         }
+    }
+
+    private function openSshProcess(array $command, string $password, int $timeout, mixed $input = null): Process
+    {
+        return new Process(
+            [
+                '/usr/bin/timeout', '-k', '2', (string) $timeout,
+                '/usr/bin/sshpass', '-e',
+                ...$command,
+            ],
+            null,
+            ['SSHPASS' => $password],
+            $input,
+            $timeout + 4,
+        );
+    }
+
+    private function isTimeoutCode(?int $code): bool
+    {
+        return $code === 124 || $code === 137;
     }
 
     private function uploadPhpSecLib(

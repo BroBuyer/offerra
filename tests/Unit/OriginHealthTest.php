@@ -35,7 +35,7 @@ class OriginHealthTest extends TestCase
             [
                 'ok' => false,
                 'latency_ms' => 15000,
-                'error' => 'SSH: логін пройшов, але сесія зависла (канал команди не відкрився). Перезавантаж VPS з панелі хостера.',
+                'error' => \App\Support\OriginSsh::HUNG_EXEC,
             ],
             ['ok' => true, 'status' => 200, 'latency_ms' => 5, 'error' => null],
             [],

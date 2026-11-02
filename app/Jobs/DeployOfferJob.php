@@ -15,10 +15,10 @@ class DeployOfferJob implements ShouldBeUnique, ShouldQueue
 
     public int $timeout = 600;
 
-    public int $tries = 1;
+    public int $tries = 3;
 
-    /** Prevent duplicate deploy jobs for the same offer while queued/running. */
-    public int $uniqueFor = 900;
+    /** Cover 3 attempts + backoff without dropping the unique lock. */
+    public int $uniqueFor = 3600;
 
     public function __construct(public int $offerId)
     {
@@ -28,6 +28,14 @@ class DeployOfferJob implements ShouldBeUnique, ShouldQueue
     public function uniqueId(): string
     {
         return (string) $this->offerId;
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function backoff(): array
+    {
+        return [20, 90];
     }
 
     public function handle(DeployService $deploy): void
@@ -46,6 +54,8 @@ class DeployOfferJob implements ShouldBeUnique, ShouldQueue
                 'domain' => $offer->domain,
                 'error' => $e->getMessage(),
             ]);
+
+            throw $e;
         }
     }
 }
