@@ -983,6 +983,9 @@ if (! function_exists('offer_click_id_remember')) {
 
 if (PHP_SAPI !== 'cli') {
     offer_click_id();
-    offer_click_id_remember();
+    $script = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+    if ($script !== '' && preg_match('#send\.php#i', $script)) {
+        offer_click_id_remember();
+    }
 }
 
