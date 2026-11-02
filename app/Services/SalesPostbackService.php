@@ -10,6 +10,7 @@ class SalesPostbackService
 {
     public function __construct(
         private readonly TelegramNotifier $telegram,
+        private readonly OfferClickIdService $clickIds,
     ) {}
 
     public function ensureToken(UserSetting $settings): string
@@ -94,6 +95,15 @@ class SalesPostbackService
             return ['ok' => false, 'reason' => 'missing_subid'];
         }
 
+        $click = $this->clickIds->findForUser((int) $settings->user_id, $subid);
+        if (! $click) {
+            return ['ok' => true, 'ignored' => true, 'reason' => 'unknown_click'];
+        }
+
+        if ($domain === '' && is_string($click->domain)) {
+            $domain = $this->normalizeDomain($click->domain);
+        }
+
         $isLead = $this->isLeadStatus($status);
         $isSale = $this->isSaleStatus($status);
 
@@ -103,7 +113,7 @@ class SalesPostbackService
 
         // Stats first — never block Telegram dep alert if stats fail.
         try {
-            $this->bumpOfferStats($settings, $domain, $isLead, $isSale);
+            $this->bumpOfferStats($settings, $domain, $isLead, $isSale, $click->offer_id ? (int) $click->offer_id : null);
         } catch (\Throwable $e) {
             Log::warning('SalesPostback: stats bump failed', [
                 'user_id' => $settings->user_id,
@@ -137,17 +147,25 @@ class SalesPostbackService
         return ['ok' => true];
     }
 
-    private function bumpOfferStats(UserSetting $settings, string $domain, bool $isLead, bool $isSale): void
+    private function bumpOfferStats(UserSetting $settings, string $domain, bool $isLead, bool $isSale, ?int $offerId = null): void
     {
-        if ($domain === '') {
-            return;
+        $offer = null;
+
+        if ($offerId) {
+            $offer = Offer::query()
+                ->where('user_id', $settings->user_id)
+                ->where('id', $offerId)
+                ->whereNotIn('status', ['archived', 'archiving', 'purging'])
+                ->first();
         }
 
-        $offer = Offer::query()
-            ->where('user_id', $settings->user_id)
-            ->whereRaw('LOWER(domain) = ?', [$domain])
-            ->whereNotIn('status', ['archived', 'archiving', 'purging'])
-            ->first();
+        if (! $offer && $domain !== '') {
+            $offer = Offer::query()
+                ->where('user_id', $settings->user_id)
+                ->whereRaw('LOWER(domain) = ?', [$domain])
+                ->whereNotIn('status', ['archived', 'archiving', 'purging'])
+                ->first();
+        }
 
         if (! $offer) {
             Log::info('SalesPostback: no offer for domain', [

@@ -46,6 +46,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ->dailyAt('12:00')
             ->timezone(config('app.timezone'))
             ->withoutOverlapping(30);
+
+        $schedule->command('clicks:prune')
+            ->dailyAt('03:40')
+            ->timezone(config('app.timezone'))
+            ->withoutOverlapping(30);
     })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');

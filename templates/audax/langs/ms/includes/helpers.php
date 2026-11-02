@@ -1673,6 +1673,73 @@ if (! function_exists('offer_click_id')) {
     }
 }
 
+if (! function_exists('offer_click_id_remember')) {
+    function offer_click_id_remember(): void
+    {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+        if (! defined('OFFERRA_CLICK_ID_URL') || OFFERRA_CLICK_ID_URL === '') {
+            return;
+        }
+
+        $script = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+        if ($script !== '' && preg_match('#/(robots|sitemap|visitor-geo\.php|form-token\.php)#i', $script)) {
+            return;
+        }
+
+        $id = offer_click_id();
+        if ($id === '') {
+            return;
+        }
+
+        $isSend = $script !== '' && (bool) preg_match('#send\.php#i', $script);
+        $cookie = (function_exists('site_slug') ? site_slug() : 'offerra') . '_cidr';
+        if (! $isSend && isset($_COOKIE[$cookie]) && (string) $_COOKIE[$cookie] === $id) {
+            return;
+        }
+
+        $domain = '';
+        if (defined('OFFERRA_GEO_CLICK_DOMAIN')) {
+            $domain = strtolower(trim((string) OFFERRA_GEO_CLICK_DOMAIN));
+        }
+        if ($domain === '' && function_exists('site_domain')) {
+            $domain = strtolower(trim((string) site_domain()));
+        }
+
+        $url = OFFERRA_CLICK_ID_URL
+            . '?cid=' . rawurlencode($id)
+            . ($domain !== '' && $domain !== 'localhost' ? '&d=' . rawurlencode($domain) : '');
+
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'timeout' => 1.2,
+                'ignore_errors' => true,
+                'header' => "User-Agent: OfferraClickId/1.0\r\n",
+            ],
+            'ssl' => [
+                'verify_peer' => true,
+                'verify_peer_name' => true,
+            ],
+        ]);
+        @file_get_contents($url, false, $ctx);
+
+        if (! headers_sent()) {
+            @setcookie($cookie, $id, [
+                'expires' => time() + 90 * 86400,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            $_COOKIE[$cookie] = $id;
+        }
+    }
+}
+
 if (PHP_SAPI !== 'cli') {
     offer_click_id();
+    offer_click_id_remember();
 }
+

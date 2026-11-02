@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\LanderClick;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\SalesPostbackService;
@@ -13,11 +14,25 @@ class SalesPostbackTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_lead_postback_bumps_offer_stats_by_domain(): void
+    public function test_unknown_click_is_ignored_like_foreign_keitaro_subid(): void
     {
+        Http::fake();
+
         [$token] = $this->seedOffer();
 
-        $this->get('/api/v1/postback/'.$token.'?subid=cafebabedeadbeef12345678&status=lead&domain=click-id.test')
+        $this->get('/api/v1/postback/'.$token.'?subid=someone-elses-click&status=sale&payout=250')
+            ->assertOk()
+            ->assertSee('OK');
+
+        $this->assertSame(0, Offer::query()->where('domain', 'click-id.test')->first()->ensureStats()->deposits_count);
+        Http::assertNothingSent();
+    }
+
+    public function test_lead_postback_bumps_offer_stats_from_stored_click(): void
+    {
+        [$token] = $this->seedOffer(true);
+
+        $this->get('/api/v1/postback/'.$token.'?subid=cafebabedeadbeef12345678&status=lead')
             ->assertOk()
             ->assertSee('OK');
 
@@ -32,9 +47,9 @@ class SalesPostbackTest extends TestCase
             'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
         ]);
 
-        [$token] = $this->seedOffer();
+        [$token] = $this->seedOffer(true);
 
-        $this->get('/api/v1/postback/'.$token.'?subid=cafebabedeadbeef12345678&status=sale&payout=250&domain=click-id.test')
+        $this->get('/api/v1/postback/'.$token.'?subid=cafebabedeadbeef12345678&status=sale&payout=250')
             ->assertOk()
             ->assertSee('OK');
 
@@ -73,17 +88,18 @@ class SalesPostbackTest extends TestCase
     /**
      * @return array{0: string}
      */
-    private function seedOffer(): array
+    private function seedOffer(bool $withClick = false): array
     {
         $user = User::factory()->create();
         $token = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
         $user->settings()->create([
             'sales_postback_token' => $token,
+            'geo_click_token' => 'cccccccccccccccccccccccccccccccc',
             'tg_bot_token' => '123:abc',
             'tg_chat_id' => '999',
         ]);
 
-        Offer::query()->create([
+        $offer = Offer::query()->create([
             'user_id' => $user->id,
             'folder' => 'click-id.test',
             'brand' => 'ClickIdBrand',
@@ -94,6 +110,15 @@ class SalesPostbackTest extends TestCase
             'status' => 'deployed',
             'from_search_team' => false,
         ]);
+
+        if ($withClick) {
+            LanderClick::query()->create([
+                'user_id' => $user->id,
+                'click_id' => 'cafebabedeadbeef12345678',
+                'offer_id' => $offer->id,
+                'domain' => 'click-id.test',
+            ]);
+        }
 
         return [$token];
     }

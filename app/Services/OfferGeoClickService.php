@@ -140,6 +140,11 @@ class OfferGeoClickService
         Cache::forever(self::LEGACY_CACHE_KEY, $map);
     }
 
+    public function settingsByToken(string $token): ?UserSetting
+    {
+        return $this->resolveSettingsByToken($token);
+    }
+
     private function resolveSettingsByToken(string $token): ?UserSetting
     {
         $settings = UserSetting::query()

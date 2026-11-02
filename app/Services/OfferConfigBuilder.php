@@ -11,6 +11,7 @@ class OfferConfigBuilder
     public function __construct(
         private readonly MirrorProbeService $mirrorProbe,
         private readonly OfferGeoClickService $geoClicks,
+        private readonly OfferClickIdService $clickIds,
     ) {}
 
     /**
@@ -55,6 +56,7 @@ class OfferConfigBuilder
         $crmSub7 = $this->quote($fromSearchTeam ? 'SEO' : '');
         $crmSub8 = $this->quote($fromSearchTeam ? 'SearchAM' : '');
         $geoClickUrl = $this->quote($this->geoClicks->clickUrl($settings));
+        $clickIdUrl = $this->quote($this->clickIds->registerUrl($settings));
         $offerDomainRaw = $this->quote(strtolower(trim((string) $offer['domain'])));
         $vesperaExtras = $this->vesperaDefines($offer, $siteUrl);
 
@@ -119,6 +121,7 @@ define('VITALS_ENDPOINT', {$vitalsEndpoint});
 // ─── Offerra GEO click tracking ─────────────────────────────────────────────
 define('OFFERRA_GEO_CLICK_URL', {$geoClickUrl});
 define('OFFERRA_GEO_CLICK_DOMAIN', {$offerDomainRaw});
+define('OFFERRA_CLICK_ID_URL', {$clickIdUrl});
 
 require_once __DIR__ . '/helpers.php';
 if (is_file(__DIR__ . '/i18n-helpers.php')) {

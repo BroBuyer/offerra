@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ClickIdController;
 use App\Http\Controllers\Api\FunnelPostbackController;
 use App\Http\Controllers\Api\GeoClickController;
 use App\Http\Controllers\Api\SalesPostbackController;
@@ -17,6 +18,10 @@ Route::match(['get', 'post'], '/v1/postback/{token}', SalesPostbackController::c
 Route::match(['get', 'post', 'options'], '/v1/geo-click/{token}', GeoClickController::class)
     ->where('token', '[a-f0-9]{16,64}')
     ->name('api.geo-click');
+
+Route::match(['get', 'post', 'options'], '/v1/click/{token}', ClickIdController::class)
+    ->where('token', '[a-f0-9]{16,64}')
+    ->name('api.click-id');
 
 Route::post('/funnels/postback', FunnelPostbackController::class)
     ->name('api.funnels.postback');
