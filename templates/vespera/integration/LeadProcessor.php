@@ -108,12 +108,7 @@ final class LeadProcessor
                 $lead['aff_sub3'] = $subid;
             }
         }
-        if (empty($lead['aff_sub4']) && function_exists('site_domain')) {
-            $domain = strtolower(trim((string) site_domain()));
-            if ($domain !== '' && $domain !== 'localhost') {
-                $lead['aff_sub4'] = $domain;
-            }
-        }
+
 
         return $lead;
     }

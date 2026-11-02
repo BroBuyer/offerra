@@ -294,8 +294,8 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 </div>
                             )}
                             <p className="field-hint">
-                                Встав у YourLeads як GET S2S. <code>aff_sub3</code> — click id ленда,
-                                <code> aff_sub4</code> — домен оффера. Деп також прийде в Telegram (subid + сума).
+                                Встав у YourLeads як GET S2S. <code>aff_sub3</code> — click id ленда.
+                                Деп також прийде в Telegram (subid + сума).
                             </p>
                         </>
                     )}

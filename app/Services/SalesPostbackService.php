@@ -33,12 +33,12 @@ class SalesPostbackService
 
     public function leadPostbackUrl(UserSetting $settings): string
     {
-        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=lead&domain={aff_sub4}';
+        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=lead';
     }
 
     public function salePostbackUrl(UserSetting $settings): string
     {
-        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=sale&payout={payout}&domain={aff_sub4}';
+        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=sale&payout={payout}';
     }
 
     private function basePostbackUrl(UserSetting $settings): string

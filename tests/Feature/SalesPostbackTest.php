@@ -63,10 +63,11 @@ class SalesPostbackTest extends TestCase
         $this->assertStringContainsString('/api/v1/postback/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', $lead);
         $this->assertStringContainsString('subid={aff_sub3}', $lead);
         $this->assertStringContainsString('status=lead', $lead);
-        $this->assertStringContainsString('domain={aff_sub4}', $lead);
+        $this->assertStringNotContainsString('aff_sub4', $lead);
+        $this->assertStringNotContainsString('domain=', $lead);
         $this->assertStringContainsString('status=sale', $sale);
         $this->assertStringContainsString('payout={payout}', $sale);
-        $this->assertStringContainsString('domain={aff_sub4}', $sale);
+        $this->assertStringNotContainsString('domain=', $sale);
     }
 
     /**

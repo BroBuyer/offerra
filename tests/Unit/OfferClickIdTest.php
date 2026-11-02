@@ -27,7 +27,7 @@ class OfferClickIdTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{24}$/', $id);
     }
 
-    public function test_normalize_lead_writes_aff_sub3_and_domain(): void
+    public function test_normalize_lead_writes_aff_sub3_only(): void
     {
         $processor = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'default'.DIRECTORY_SEPARATOR.'integration'.DIRECTORY_SEPARATOR.'LeadProcessor.php';
         $json = $this->landerEval(
@@ -40,7 +40,7 @@ class OfferClickIdTest extends TestCase
 
         $this->assertIsArray($lead);
         $this->assertSame('abc12345def67890', $lead['aff_sub3']);
-        $this->assertSame('click-id.test', $lead['aff_sub4']);
+        $this->assertArrayNotHasKey('aff_sub4', $lead);
     }
 
     private function landerEval(string $code): string

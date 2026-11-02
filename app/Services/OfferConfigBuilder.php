@@ -77,7 +77,7 @@ define('CRM_COUNTRY', {$country});
 define('CRM_AFF_SUB', '');
 define('CRM_AFF_SUB2', '');
 define('CRM_AFF_SUB3', ''); // click id, filled on submit
-define('CRM_AFF_SUB4', ''); // offer domain, filled on submit
+define('CRM_AFF_SUB4', '');
 define('CRM_AFF_SUB5', '');
 define('CRM_AFF_SUB6', '');
 define('CRM_AFF_SUB7', {$crmSub7});
