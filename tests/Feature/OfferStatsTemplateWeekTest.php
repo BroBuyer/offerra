@@ -36,15 +36,12 @@ class OfferStatsTemplateWeekTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_template_week_query_does_not_call_keitaro_or_replace_own_stats(): void
+    public function test_template_week_query_does_not_replace_own_stats(): void
     {
         Http::fake();
 
         $user = User::factory()->create();
-        $user->settings()->create([
-            'keitaro_url' => 'https://clickmetrics.test',
-            'keitaro_api_key' => 'test-kt-key',
-        ]);
+        $user->settings()->create([]);
         $this->seedTemplates($user);
 
         $this->actingAs($user)
@@ -70,7 +67,6 @@ class OfferStatsTemplateWeekTest extends TestCase
             'lang' => 'it',
             'template' => 'lumen',
             'status' => 'deployed',
-            'keitaro_campaign_id' => 101,
             'from_search_team' => false,
         ]);
         $lumen->ensureStats()->update([
@@ -88,7 +84,6 @@ class OfferStatsTemplateWeekTest extends TestCase
             'lang' => 'de',
             'template' => 'audax',
             'status' => 'deployed',
-            'keitaro_campaign_id' => 202,
             'from_search_team' => false,
         ]);
         $audax->ensureStats()->update([

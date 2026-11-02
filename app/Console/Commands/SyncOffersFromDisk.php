@@ -55,10 +55,6 @@ class SyncOffersFromDisk extends Command
                 'deploy_panel_name' => $manifest['deploy_panel'] ?? null,
                 'remote_path' => $manifest['remote_path'] ?? null,
                 'deployed_at' => $manifest['deployed_at'] ?? null,
-                'keitaro_campaign_id' => isset($manifest['keitaro_campaign_id'])
-                    ? (int) $manifest['keitaro_campaign_id']
-                    : ($row['keitaro_id'] ? (int) $row['keitaro_id'] : null),
-                'keitaro_alias' => $manifest['keitaro_alias'] ?? null,
             ]);
 
             $imported++;

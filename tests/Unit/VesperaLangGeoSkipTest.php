@@ -11,9 +11,6 @@ class VesperaLangGeoSkipTest extends TestCase
         if (! defined('SITE_LANG')) {
             define('SITE_LANG', 'en');
         }
-        if (! defined('KEITARO_CLICK_VERIFY')) {
-            define('KEITARO_CLICK_VERIFY', false);
-        }
         if (! defined('GEO_LANG_MAP')) {
             define('GEO_LANG_MAP', [
                 'FR' => 'fr',
@@ -116,7 +113,7 @@ class VesperaLangGeoSkipTest extends TestCase
         $this->assertNull($this->reason('GB', ''));
     }
 
-    public function test_resolve_spam_reason_uses_lang_geo_before_keitaro(): void
+    public function test_resolve_spam_reason_uses_lang_geo(): void
     {
         $_SERVER['HTTP_CF_IPCOUNTRY'] = 'US';
         $this->assertSame('GEO_SKIP', \LeadProcessor::resolveSpamReason(['language' => 'en']));

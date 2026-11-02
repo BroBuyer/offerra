@@ -14,7 +14,6 @@ const FORM_PHONE_COUNTRY = 'ip';
 const FORM_ALLOWED_COUNTRIES = '';
 const FORM_LEAD_COOKIE_DAYS = 30;
 const FORM_THANK_YOU = 'Thanks.php';
-const KEITARO_CLICK_VERIFY = false;
 
 /** Country ISO → site language (preview / stock). Generated offers rebuild from geo_presets. */
 const GEO_LANG_MAP = [

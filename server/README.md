@@ -51,7 +51,7 @@ bash /root/verify-origin.sh patrimoine-quantique.online
 |-----------|--------|
 | nginx catch-all + `Host` → `/var/www/offers/{domain}/public_html` | всі домени на одному сервері без окремих vhost |
 | `sitemap.xml` → `sitemap.php`, `robots.txt` → `robots.php` | щоб GSC не бачив HTML замість sitemap |
-| php-fpm + curl/mbstring/xml/gd/intl/zip | PHP оферів + Keitaro HTTP |
+| php-fpm + curl/mbstring/xml/gd/intl/zip | PHP оферів + CRM HTTP |
 | DNS `1.1.1.1` / `8.8.8.8` (mask `systemd-resolved`, cron + `chattr`) | інакше `Could not resolve host: yourleads.org` і ліди з HTTP 0 |
 | UFW 22/80/443 | базовий firewall |
 | Cloudflare real IP | коректний клієнтський IP у логах |

@@ -90,8 +90,8 @@ export default function Dashboard({
 
             <div className="dashboard-kpi-grid" style={{ marginBottom: '1.5rem' }}>
                 <div className="kpi-card">
-                    <div className="kpi-card-label">Keitaro підключено</div>
-                    <div className="kpi-card-value">{stats.keitaro_linked}</div>
+                    <div className="kpi-card-label">Ліди всього</div>
+                    <div className="kpi-card-value">{stats.leads_total ?? 0}</div>
                     <div className="kpi-card-sub">{showAllScope ? kpiSub : 'з ваших офферів'}</div>
                 </div>
                 <div className="kpi-card">
@@ -108,7 +108,7 @@ export default function Dashboard({
                     <div className="kpi-card-sub">
                         {(stats.deps_today ?? 0) > 0
                             ? `депи сьогодні: ${stats.deps_today}`
-                            : (showAllScope ? kpiSub : 'з Keitaro · сьогодні')}
+                            : (showAllScope ? kpiSub : 'з postback · сьогодні')}
                     </div>
                 </div>
             </div>
@@ -170,7 +170,6 @@ export default function Dashboard({
                                     {showAllScope && offer.user_name ? ` · ${offer.user_name}` : ''}
                                     {' · '}
                                     {offer.geo} · {offer.lang}
-                                    {offer.keitaro_id ? ` · Keitaro #${offer.keitaro_id}` : ''}
                                 </span>
                             </li>
                         ))}

@@ -69,7 +69,6 @@ class OfferController extends Controller
             'createdCounts' => $this->createdCounts($baseQuery, $today),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'canDeploy' => $deployReady,
-            'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'hasCloudflarePrimary' => (bool) $settings?->hasCloudflareSlot('primary'),
             'hasCloudflareBackup' => (bool) $settings?->hasCloudflareSlot('backup'),
             'cloudflarePrimaryName' => trim((string) ($settings?->cloudflare_account_name ?? '')) ?: 'Основний CF',
@@ -357,7 +356,6 @@ class OfferController extends Controller
 
         return Inertia::render('Panel/Offers/Create', [
             'settingsReady' => $ready,
-            'hasKeitaroApiKey' => filled($settings?->keitaro_api_key),
             'hasDynadotApiKey' => filled($settings?->dynadot_api_key),
             'hasDynadotContactId' => filled($settings?->dynadot_contact_id),
             'domainSearchTlds' => config('offerra.domain_search_tlds', []),
@@ -432,7 +430,6 @@ class OfferController extends Controller
                 'phone' => strtolower($request->string('phone')->toString()),
                 'phone_countries' => $request->input('phone_countries', []),
                 'template' => $request->string('template')->toString(),
-                'create_keitaro' => $request->boolean('create_keitaro'),
                 'vitals_enabled' => $request->boolean('vitals_enabled'),
                 'from_search_team' => $request->boolean('from_search_team'),
                                 'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
@@ -451,10 +448,6 @@ class OfferController extends Controller
         $message = ! empty($result['already_existed'])
             ? "Оффер вже існує: {$result['folder']}"
             : "Оффер згенеровано: {$result['folder']}";
-
-        if ($result['offer']->keitaro_campaign_id) {
-            $message .= " · Keitaro #{$result['offer']->keitaro_campaign_id}";
-        }
 
         if ($result['offer']->provision_infrastructure) {
             $provisioner->enqueue($result['offer']->fresh());
@@ -479,7 +472,6 @@ class OfferController extends Controller
             'lang' => strtolower($request->string('lang')->toString()),
             'phone' => strtolower($request->string('phone')->toString()),
             'phone_countries' => $request->input('phone_countries', []),
-            'create_keitaro' => $request->boolean('create_keitaro'),
             'vitals_enabled' => $request->boolean('vitals_enabled'),
             'from_search_team' => $request->boolean('from_search_team'),
                         'infra_cloudflare_zone' => $request->boolean('infra_cloudflare_zone'),
@@ -780,9 +772,7 @@ class OfferController extends Controller
         OfferGenerator $generator,
         DeployService $deploy,
     ): RedirectResponse {
-        $createKeitaro = $request->boolean('create_keitaro');
         $autoRedeploy = $request->boolean('auto_redeploy', true);
-        $hadKeitaro = (bool) $offer->keitaro_campaign_id;
 
         try {
             $offer = $generator->updateSettings($offer, [
@@ -794,7 +784,6 @@ class OfferController extends Controller
                 'currency' => $request->string('currency')->toString(),
                 'phone' => $request->string('phone')->toString(),
                 'phone_countries' => $request->input('phone_countries', []),
-                'create_keitaro' => $createKeitaro,
                 'vitals_enabled' => $request->boolean('vitals_enabled'),
             ]);
         } catch (\Throwable $e) {
@@ -804,10 +793,6 @@ class OfferController extends Controller
         }
 
         $message = 'Оффер оновлено.';
-
-        if ($createKeitaro && ! $hadKeitaro && $offer->keitaro_campaign_id) {
-            $message .= " Keitaro #{$offer->keitaro_campaign_id}.";
-        }
 
         if ($autoRedeploy) {
             try {
@@ -1069,10 +1054,6 @@ class OfferController extends Controller
         }
 
         $message = "Оффер повернуто з архіву: {$restored->domain}. Інфраструктура й деплой запущені у фоні.";
-
-        if ($restored->keitaro_campaign_id) {
-            $message .= " · Keitaro #{$restored->keitaro_campaign_id}";
-        }
 
         return redirect()
             ->back()

@@ -1,10 +1,10 @@
 import PhoneGeoSelect, { normalizePhoneCountries, phoneOptionCode, uniquePhonePresets } from '@/Components/PhoneGeoSelect';
 import TemplatePicker, { usedTemplatesForBrand } from '@/Components/TemplatePicker';
 import { geoDepositMissingFromCatalog, lookupGeoDeposit } from '@/lib/geoDepositPrefs';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
 
-/** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
+/** Псевдо-GEO для multilang: ім'я папки. У CRM країна = IP ліда. */
 const MULTILANG_GEO = 'ML';
 
 function isMlOfferTemplate(templateId) {
@@ -34,7 +34,6 @@ export default function OfferEditModal({
     currencies = [],
     templates = [],
     brandTemplateUsage = {},
-    hasKeitaroApiKey,
     onClose,
 }) {
     const phoneCountries = normalizePhoneCountries(offer.phone_countries, offer.phone);
@@ -51,7 +50,6 @@ export default function OfferEditModal({
         currency: String(offer.currency || 'EUR').toUpperCase(),
         phone: offer.phone || phoneCountries[0] || '',
         phone_countries: phoneCountries,
-        create_keitaro: false,
         vitals_enabled: Boolean(offer.vitals_enabled),
         auto_redeploy: true,
     });
@@ -234,7 +232,6 @@ export default function OfferEditModal({
         || errors.currency
         || errors.phone
         || errors.phone_countries
-        || errors.create_keitaro
         || errors.vitals_enabled;
 
     return (
@@ -297,7 +294,7 @@ export default function OfferEditModal({
                                         </option>
                                     </select>
                                     <p className="field-hint">
-                                        <strong>ML</strong> — лише мітка для папки/Keitaro.
+                                        <strong>ML</strong> — лише мітка для папки.
                                         У CRM країна йде з IP відвідувача. Мова ленду фіксується в <code>en</code>,
                                         інші мови вже всередині шаблону.
                                     </p>
@@ -408,32 +405,6 @@ export default function OfferEditModal({
                             «По IP» — код країни з CF-IPCountry, навіть якщо його немає у списку вище.
                         </p>
                     </div>
-
-                    {offer.can_create_keitaro && (
-                        <div className="field">
-                            <label className="field-check" htmlFor="edit-create-keitaro">
-                                <input
-                                    id="edit-create-keitaro"
-                                    type="checkbox"
-                                    checked={data.create_keitaro}
-                                    onChange={(event) => setData('create_keitaro', event.target.checked)}
-                                />
-                                <span>Створити кампанію в Keitaro</span>
-                            </label>
-                            {!hasKeitaroApiKey && (
-                                <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                    Збережіть Keitaro Admin API key у{' '}
-                                    <Link href={route('settings.index')}>налаштуваннях</Link>.
-                                </p>
-                            )}
-                        </div>
-                    )}
-
-                    {offer.keitaro_id && (
-                        <p className="field-hint">
-                            Keitaro: #{offer.keitaro_id} (вже привʼязано)
-                        </p>
-                    )}
 
                     <div className="field">
                         <label className="field-check" htmlFor="edit-vitals-enabled">

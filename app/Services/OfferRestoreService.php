@@ -12,7 +12,6 @@ class OfferRestoreService
 {
     public function __construct(
         private readonly OfferGenerator $generator,
-        private readonly KeitaroClient $keitaro,
         private readonly InfrastructureProvisioner $provisioner,
     ) {}
 
@@ -49,33 +48,6 @@ class OfferRestoreService
             throw new RuntimeException(
                 'Заповніть SSH, Cloudflare і Dynadot у налаштуваннях власника, щоб поновити оффер.',
             );
-        }
-
-        if (! $offer->keitaro_campaign_id && filled($settings->keitaro_api_key)) {
-            try {
-                $keitaro = $this->keitaro->createCampaign($settings, [
-                    'brand' => $offer->brand,
-                    'domain' => $offer->domain,
-                    'geo' => $offer->geo,
-                    'lang' => $offer->lang,
-                    'affiliate_tag' => $settings->affiliate_tag,
-                    'created_at' => $offer->created_at,
-                ]);
-
-                $offer->update([
-                    'keitaro_campaign_id' => $keitaro['id'],
-                    'keitaro_alias' => $keitaro['alias'],
-                    'keitaro_campaign_token' => $keitaro['token'] ?? null,
-                ]);
-                $offer->refresh();
-            } catch (\Throwable $e) {
-                Log::warning('Offer restore: Keitaro recreate failed', [
-                    'offer_id' => $offer->id,
-                    'domain' => $domain,
-                    'error' => $e->getMessage(),
-                    'by' => $initiatedBy->id,
-                ]);
-            }
         }
 
         // Rebuild while still archived so a failure keeps the offer in the archive list.

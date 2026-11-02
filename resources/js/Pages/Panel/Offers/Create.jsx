@@ -7,7 +7,7 @@ import { Link, router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-const steps = ['Основне', 'Ринок і шаблони', 'Keitaro & інфра', 'Підсумок'];
+const steps = ['Основне', 'Ринок і шаблони', 'Інфра', 'Підсумок'];
 
 const INFRA_TASKS = [
     { key: 'infra_cloudflare_zone', label: 'Cloudflare — створити DNS-зону' },
@@ -33,7 +33,7 @@ function anyInfraEnabled(data) {
     return INFRA_TASKS.some((task) => data[task.key]);
 }
 
-/** Псевдо-GEO для multilang: ім'я папки / Keitaro. У CRM країна = IP ліда. */
+/** Псевдо-GEO для multilang: ім'я папки. У CRM країна = IP ліда. */
 const MULTILANG_GEO = 'ML';
 
 function isOverflowHubTemplate(templateId) {
@@ -289,7 +289,6 @@ function buildDefaults(templates, fromSearch = false) {
         lang: '',
         phone: '',
         phone_countries: [],
-        create_keitaro: true,
         vitals_enabled: true,
         from_search_team: Boolean(fromSearch),
         ...defaultInfraOptions(false),
@@ -298,7 +297,6 @@ function buildDefaults(templates, fromSearch = false) {
 
 export default function OffersCreate({
     settingsReady,
-    hasKeitaroApiKey,
     hasDynadotApiKey = false,
     hasDynadotContactId = false,
     canProvisionInfrastructure = false,
@@ -1331,12 +1329,6 @@ export default function OffersCreate({
         return `${data.geo}_${data.lang}_${affiliateTag}_${brandSlug}_${data.domain}_${date}`;
     }, [data, affiliateTag]);
 
-    const keitaroNamePreview = useMemo(() => {
-        const date = new Date().toLocaleDateString('uk-UA');
-        const geoLang = [data.geo || '…', data.lang || null].filter(Boolean).join(' ');
-        return `SEO ${geoLang} ${affiliateTag} ${data.brand || '…'} (${date}) ${data.domain || '…'}`;
-    }, [data.brand, data.domain, data.geo, data.lang, affiliateTag]);
-
     const canProceedStep0 = Boolean(data.brand.trim()) && (
         bulkItems.length > 0
             ? packAllReady
@@ -1396,9 +1388,6 @@ export default function OffersCreate({
         if (!canProceedMarket) {
             return 'Перевірте GEO, мову та phone GEO (крок 2).';
         }
-        if (data.create_keitaro && !hasKeitaroApiKey) {
-            return 'Збережіть Keitaro Admin API key у налаштуваннях або зніміть «Створити кампанію в Keitaro».';
-        }
 
         return null;
     }, [
@@ -1406,8 +1395,6 @@ export default function OffersCreate({
         canProceedStep0,
         canProceedTemplate,
         canProceedMarket,
-        data.create_keitaro,
-        hasKeitaroApiKey,
         isBulkMode,
         packNeedsPurchase,
         bulkItems.length,
@@ -1455,7 +1442,6 @@ export default function OffersCreate({
                 lang: data.lang,
                 phone: data.phone,
                 phone_countries: data.phone_countries,
-                create_keitaro: data.create_keitaro,
                 vitals_enabled: data.vitals_enabled,
                 from_search_team: data.from_search_team,
                 infra_cloudflare_zone: data.infra_cloudflare_zone,
@@ -1924,7 +1910,7 @@ export default function OffersCreate({
                                 />
                                 {isMarketMultilang ? (
                                     <p className="field-hint">
-                                        <strong>Multi</strong> ({MULTILANG_GEO}) — лише для імені папки та Keitaro.
+                                        <strong>Multi</strong> ({MULTILANG_GEO}) — лише для імені папки.
                                         У CRM <code>country_code</code> піде з IP відвідувача.
                                     </p>
                                 ) : (
@@ -2172,28 +2158,6 @@ export default function OffersCreate({
             {step === 2 && (
                 <section className="wizard-panel is-active">
                     <div className="card">
-                        <h3>Keitaro</h3>
-                        <label className="field-check" htmlFor="create-keitaro">
-                            <input
-                                id="create-keitaro"
-                                type="checkbox"
-                                checked={data.create_keitaro}
-                                onChange={(e) => update('create_keitaro', e.target.checked)}
-                            />
-                            <span>Створити кампанію в Keitaro при генерації</span>
-                        </label>
-                        {data.create_keitaro && !hasKeitaroApiKey && (
-                            <p className="field-hint" style={{ color: '#f59e0b' }}>
-                                Збережіть Keitaro Admin API key у{' '}
-                                <Link href={route('settings.index')}>налаштуваннях</Link>.
-                            </p>
-                        )}
-                        <p className="field-hint">
-                            Патерн: {keitaroNamePreview}
-                        </p>
-                    </div>
-
-                    <div className="card" style={{ marginTop: '1rem' }}>
                         <h3>Джерело воронки</h3>
                         <label className="field-check" htmlFor="from-search-team">
                             <input
@@ -2277,18 +2241,6 @@ export default function OffersCreate({
                             {firstSubmitError && !generateBlockReason && (
                                 <p className="card-desc" style={{ color: '#f87171' }}>{firstSubmitError}</p>
                             )}
-                            {data.create_keitaro && !hasKeitaroApiKey && (
-                                <div className="btn-row" style={{ marginTop: '0.75rem' }}>
-                                    <Link href={route('settings.index')} className="btn btn-ghost btn-sm">Налаштування Keitaro</Link>
-                                    <button
-                                        type="button"
-                                        className="btn btn-ghost btn-sm"
-                                        onClick={() => update('create_keitaro', false)}
-                                    >
-                                        Продовжити без Keitaro
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     )}
                     <div className="card">
@@ -2329,10 +2281,6 @@ export default function OffersCreate({
                             {!isBulkMode && (
                                 <div className="summary-row"><span>Папка</span><span><code>{folderPreview}</code></span></div>
                             )}
-                            <div className="summary-row">
-                                <span>Keitaro</span>
-                                <span>{data.create_keitaro ? 'Створити кампанію' : '—'}</span>
-                            </div>
                             <div className="summary-row">
                                 <span>CWV / дзеркала</span>
                                 <span>{data.vitals_enabled ? 'Так' : 'Ні'}</span>

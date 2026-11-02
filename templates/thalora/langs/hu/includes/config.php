@@ -43,14 +43,6 @@ define('FORM_TOKEN_SUBMIT_LIMIT', 3);
 define('FORM_TOKEN_RATE_WINDOW', 600);
 define('FORM_TOKEN_DEBUG', false);
 
-// ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────
-define('KEITARO_ENABLED', true);
-define('KEITARO_TRACKER_URL', 'https://clickmetrics38.com');
-define('KEITARO_CAMPAIGN_TOKEN', 'TfjmtrpQkfKgQykK');
-define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
-define('KEITARO_DEBUG', false);
 
 require_once __DIR__ . '/helpers.php';
 offer_send_personalization_headers();
-require_once __DIR__ . '/keitaro.php';
-keitaro_bootstrap();

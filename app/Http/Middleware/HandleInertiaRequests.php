@@ -52,7 +52,6 @@ class HandleInertiaRequests extends Middleware
             ],
             'panel' => fn () => [
                 'affiliate_tag' => $request->user()?->settings?->affiliate_tag ?? 'BRO',
-                'keitaro_url' => $request->user()?->settings?->keitaro_url ?? 'clickmetrics38.com',
                 'geo_min_deposits' => $request->user() ? GeoMinDeposit::catalog() : [],
             ],
         ];

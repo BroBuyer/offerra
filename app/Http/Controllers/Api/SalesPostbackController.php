@@ -26,7 +26,7 @@ class SalesPostbackController extends Controller
                 return response('Bad Request', 400)->header('Content-Type', 'text/plain; charset=UTF-8');
             }
 
-            // Telegram hiccup — still 200 so Keitaro does not hammer retries forever
+            // Telegram hiccup — still 200 so the sender does not hammer retries forever
             return response('OK', 200)->header('Content-Type', 'text/plain; charset=UTF-8');
         }
 

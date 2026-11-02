@@ -36,13 +36,5 @@ define('FORM_ALLOWED_COUNTRIES', 'pt');
 define('FORM_THANK_YOU', 'Thanks.php');
 define('FORM_LEAD_COOKIE_DAYS', 30);            // не давати повторно відправити з цього браузера
 
-// ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────
-define('KEITARO_ENABLED', true);
-define('KEITARO_TRACKER_URL', 'https://clickmetrics38.com');  // без слеша в кінці
-define('KEITARO_CAMPAIGN_TOKEN', 'TfjmtrpQkfKgQykK');        // API токен (Загальні), НЕ ідентифікатор kHZgNVYx
-define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');                  // поле CRM для subid (форма шле subid)
-define('KEITARO_DEBUG', false);
 
 require_once __DIR__ . '/helpers.php';
-require_once __DIR__ . '/keitaro.php';
-keitaro_bootstrap();

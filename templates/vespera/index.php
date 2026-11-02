@@ -4,12 +4,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/geo.php';
 require_once __DIR__ . '/includes/helpers.php';
-if (is_file(__DIR__ . '/includes/keitaro.php')) {
-    require_once __DIR__ . '/includes/keitaro.php';
-    if (function_exists('keitaro_bootstrap')) {
-        keitaro_bootstrap();
-    }
-}
 
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();

@@ -17,7 +17,6 @@ const OFFER_TABLE_COLUMNS = [
     { id: 'panel', label: 'Server' },
     { id: 'cloudflare', label: 'Cloudflare' },
     { id: 'dynadot', label: 'Dynadot' },
-    { id: 'keitaro', label: 'Keitaro' },
     { id: 'cwv', label: 'CWV' },
     { id: 'created', label: 'Created' },
     { id: 'deployed', label: 'Deployed' },
@@ -600,7 +599,6 @@ export default function OffersIndex({
     createdCounts = {},
     perPageOptions = [10, 30, 50, 100],
     canDeploy,
-    hasKeitaroApiKey = false,
     geoPresets = [],
     currencies = [],
     templates = [],
@@ -885,7 +883,7 @@ export default function OffersIndex({
     const deleteOffer = (offer) => {
         const ok = window.confirm(
             `Видалити ${offer.domain} назавжди?\n\n`
-            + 'Знімемо origin, Cloudflare і Keitaro. З архіву поновити не вийде — лише для мертвих/забанених доменів.',
+            + 'Знімемо origin і Cloudflare. З архіву поновити не вийде — лише для мертвих/забанених доменів.',
         );
         if (!ok) {
             return;
@@ -1848,7 +1846,6 @@ export default function OffersIndex({
                             {colVisible('panel') && <th>Server</th>}
                             {colVisible('cloudflare') && <th>Cloudflare</th>}
                             {colVisible('dynadot') && <th>Dynadot</th>}
-                            {colVisible('keitaro') && <th>Keitaro</th>}
                             {colVisible('cwv') && (
                                 <th
                                     className="col-cwv"
@@ -1951,11 +1948,6 @@ export default function OffersIndex({
                                         </td>
                                     )}
                                     {colVisible('dynadot') && <td>{offer.dynadot_account ?? '—'}</td>}
-                                    {colVisible('keitaro') && (
-                                        <td>
-                                            {offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}
-                                        </td>
-                                    )}
                                     {colVisible('cwv') && (
                                         <td
                                             className="col-cwv"
@@ -2145,10 +2137,6 @@ export default function OffersIndex({
                                 <dd>{offer.deploy_panel || '—'}</dd>
                             </div>
                             <div>
-                                <dt>Keitaro</dt>
-                                <dd>{offer.keitaro_id ? `#${offer.keitaro_id}` : '—'}</dd>
-                            </div>
-                            <div>
                                 <dt>Created</dt>
                                 <dd>{formatCreatedDate(offer.date)}</dd>
                             </div>
@@ -2248,7 +2236,6 @@ export default function OffersIndex({
                     currencies={currencies}
                     templates={templates}
                     brandTemplateUsage={brandTemplateUsage}
-                    hasKeitaroApiKey={hasKeitaroApiKey}
                     onClose={() => setEditingOffer(null)}
                 />
             )}

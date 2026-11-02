@@ -103,7 +103,7 @@ final class LeadProcessor
             return $lead;
         }
 
-        $crmField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
+        $crmField = 'aff_sub3';
         if (empty($lead[$crmField])) {
             $lead[$crmField] = $subid;
         }
@@ -159,15 +159,6 @@ final class LeadProcessor
             return $langGeo;
         }
 
-        $clickVerify = ! defined('KEITARO_CLICK_VERIFY') || KEITARO_CLICK_VERIFY;
-        if ($clickVerify) {
-            require_once __DIR__ . '/KeitaroClickVerifier.php';
-            $ktReason = KeitaroClickVerifier::verifyLead($lead);
-
-            if ($ktReason !== null) {
-                return $ktReason;
-            }
-        }
 
         return null;
     }
@@ -228,36 +219,7 @@ final class LeadProcessor
         ];
     }
 
-    private static function formatKeitaroDetail(string $spamReason): string
-    {
-        if ($spamReason === '' || ! str_starts_with($spamReason, 'KT_')) {
-            return '—';
-        }
 
-        if (! class_exists('KeitaroClickVerifier', false)) {
-            require_once __DIR__ . '/KeitaroClickVerifier.php';
-        }
-
-        $detail = KeitaroClickVerifier::lastDetail();
-        if (! is_array($detail) || $detail === []) {
-            return '—';
-        }
-
-        $parts = [];
-        if (isset($detail['http'])) {
-            $parts[] = 'http='.(string) $detail['http'];
-        }
-        if (! empty($detail['error'])) {
-            $parts[] = (string) $detail['error'];
-        }
-        if (! empty($detail['body'])) {
-            $parts[] = (string) $detail['body'];
-        }
-
-        $text = trim(implode(' | ', $parts));
-
-        return $text !== '' ? substr($text, 0, 280) : '—';
-    }
 
     public static function sendToCrm(array $crmData): array
     {
@@ -432,7 +394,7 @@ final class LeadProcessor
             ?? ($crmResponse['data']['errorMessage'] ?? '—');
 
         $ipCountry = self::detectIpCountry();
-        $subField = defined('KEITARO_CRM_SUB_FIELD') ? (string) KEITARO_CRM_SUB_FIELD : 'aff_sub3';
+        $subField = 'aff_sub3';
         $subid = trim((string) ($crmData[$subField] ?? ''));
         $spamReason = trim((string) ($crmData['aff_sub13'] ?? ''));
         $isSpam = (($crmData['aff_sub12'] ?? '') === 'SPAM');
@@ -458,7 +420,6 @@ final class LeadProcessor
             '<b>Country (offer):</b> ' . self::escapeTelegramHtml(self::telegramOfferLabel()),
             '<b>Country (IP):</b> ' . self::escapeTelegramHtml($ipCountry !== '' ? $ipCountry : '—'),
             '<b>Spam reason:</b> ' . ($spamReason !== '' ? self::escapeTelegramHtml($spamReason) : '—'),
-            '<b>KT detail:</b> ' . self::escapeTelegramHtml(self::formatKeitaroDetail($spamReason)),
             '<b>IP:</b> ' . self::escapeTelegramHtml(self::clientIp()),
             '<b>Language:</b> ' . self::escapeTelegramHtml((string) ($crmData['lead_language'] ?? '')),
             '<b>SubID:</b> ' . self::escapeTelegramHtml($subid !== '' ? $subid : '—'),

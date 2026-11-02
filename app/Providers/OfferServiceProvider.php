@@ -7,7 +7,6 @@ use App\Services\DeployService;
 use App\Services\CloudflareClient;
 use App\Services\DynadotClient;
 use App\Services\GoogleSearchConsoleClient;
-use App\Services\KeitaroClient;
 use App\Services\OfferConfigBuilder;
 use App\Services\OfferGenerator;
 use App\Services\OfferScanner;
@@ -33,7 +32,6 @@ class OfferServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(KeitaroClient::class);
         $this->app->singleton(OfferConfigBuilder::class);
         $this->app->singleton(DeployConnection::class);
 
@@ -54,7 +52,6 @@ class OfferServiceProvider extends ServiceProvider
         $this->app->singleton(OfferGenerator::class, function ($app) {
             return new OfferGenerator(
                 $app->make(OfferConfigBuilder::class),
-                $app->make(KeitaroClient::class),
                 $app->make(TemplateCatalog::class),
                 $app->make(OfferVerificationFileService::class),
                 config('offerra.offers_path'),
@@ -65,7 +62,6 @@ class OfferServiceProvider extends ServiceProvider
         $this->app->singleton(OfferStatusReconciler::class, function ($app) {
             return new OfferStatusReconciler(
                 $app->make(DeployConnection::class),
-                $app->make(KeitaroClient::class),
                 $app->make(OriginPool::class),
                 config('offerra.offers_path'),
             );
@@ -74,7 +70,6 @@ class OfferServiceProvider extends ServiceProvider
         $this->app->singleton(OfferTeardownService::class, function ($app) {
             return new OfferTeardownService(
                 $app->make(CloudflareClient::class),
-                $app->make(KeitaroClient::class),
                 $app->make(GoogleSearchConsoleClient::class),
                 $app->make(OfferVerificationFileService::class),
                 $app->make(OriginHostService::class),

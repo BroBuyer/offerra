@@ -31,19 +31,8 @@ class SalesPostbackService
         $token = $this->ensureToken($settings);
         $base = rtrim((string) config('app.url'), '/');
 
-        // campaign_id → match Offer.keitaro_campaign_id for offer_stats
         return "{$base}/api/v1/postback/{$token}"
-            .'?subid={subid}&status={status}&payout={revenue}&campaign_id={campaign_id}';
-    }
-
-    /**
-     * Desired Keitaro conversion statuses for the panel S2S URL.
-     *
-     * @return list<string>
-     */
-    public function panelPostbackStatuses(): array
-    {
-        return ['lead', 'sale'];
+            .'?subid={subid}&status={status}&payout={revenue}&domain={domain}';
     }
 
     /**
@@ -74,7 +63,7 @@ class SalesPostbackService
             ?? $input['conversion_revenue']
             ?? ''
         ));
-        $campaignId = (int) ($input['campaign_id'] ?? $input['campaign'] ?? 0);
+        $domain = $this->normalizeDomain((string) ($input['domain'] ?? $input['offer_domain'] ?? ''));
 
         if ($subid === '') {
             return ['ok' => false, 'reason' => 'missing_subid'];
@@ -89,11 +78,11 @@ class SalesPostbackService
 
         // Stats first — never block Telegram dep alert if stats fail.
         try {
-            $this->bumpOfferStats($settings, $campaignId, $isLead, $isSale);
+            $this->bumpOfferStats($settings, $domain, $isLead, $isSale);
         } catch (\Throwable $e) {
             Log::warning('SalesPostback: stats bump failed', [
                 'user_id' => $settings->user_id,
-                'campaign_id' => $campaignId,
+                'domain' => $domain,
                 'status' => $status,
                 'error' => $e->getMessage(),
             ]);
@@ -116,7 +105,6 @@ class SalesPostbackService
                     'subid' => $subid,
                 ]);
 
-                // Still OK for Keitaro — TG hiccup must not cause endless retries
                 return ['ok' => true, 'reason' => 'telegram_failed'];
             }
         }
@@ -124,28 +112,22 @@ class SalesPostbackService
         return ['ok' => true];
     }
 
-    private function bumpOfferStats(UserSetting $settings, int $campaignId, bool $isLead, bool $isSale): void
+    private function bumpOfferStats(UserSetting $settings, string $domain, bool $isLead, bool $isSale): void
     {
-        if ($campaignId <= 0) {
+        if ($domain === '') {
             return;
         }
 
         $offer = Offer::query()
             ->where('user_id', $settings->user_id)
-            ->where('keitaro_campaign_id', $campaignId)
+            ->whereRaw('LOWER(domain) = ?', [$domain])
+            ->whereNotIn('status', ['archived', 'archiving', 'purging'])
             ->first();
 
         if (! $offer) {
-            // Fallback: unique campaign id globally (shared KT / admin view)
-            $offer = Offer::query()
-                ->where('keitaro_campaign_id', $campaignId)
-                ->first();
-        }
-
-        if (! $offer) {
-            Log::info('SalesPostback: no offer for campaign', [
+            Log::info('SalesPostback: no offer for domain', [
                 'user_id' => $settings->user_id,
-                'campaign_id' => $campaignId,
+                'domain' => $domain,
             ]);
 
             return;
@@ -165,6 +147,15 @@ class SalesPostbackService
         }
 
         $stats->save();
+    }
+
+    private function normalizeDomain(string $domain): string
+    {
+        $domain = strtolower(trim($domain));
+        $domain = preg_replace('#^https?://#', '', $domain) ?? $domain;
+        $domain = preg_replace('#^www\.#', '', $domain) ?? $domain;
+
+        return rtrim(explode('/', $domain)[0], '.');
     }
 
     private function isSaleStatus(string $status): bool

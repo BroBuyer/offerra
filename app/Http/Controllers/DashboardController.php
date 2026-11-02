@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Offer;
+use App\Models\OfferStat;
 use App\Models\User;
-use App\Services\KeitaroTodayStats;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request, KeitaroTodayStats $todayStats): Response
+    public function __invoke(Request $request): Response
     {
         $user = $request->user();
         $canSeeAll = $user->canSeeAllOffers();
@@ -33,10 +33,10 @@ class DashboardController extends Controller
 
         $dbOffers = $query->get();
         $stats = $this->statsFromDb($dbOffers);
-        $ktToday = $todayStats->forOffers($dbOffers);
-        $stats['leads_today'] = $ktToday['leads'];
-        $stats['deps_today'] = $ktToday['sales'];
-        $stats['leads_today_campaigns'] = $ktToday['campaigns'];
+        $today = $this->todayFromStats($dbOffers);
+        $stats['leads_today'] = $today['leads'];
+        $stats['deps_today'] = $today['sales'];
+        $stats['leads_total'] = $today['leads_total'];
 
         $selectedUser = $selectedUserId
             ? User::query()->find($selectedUserId, ['id', 'name', 'email'])
@@ -50,7 +50,6 @@ class DashboardController extends Controller
             'geo' => $offer->geo,
             'lang' => $offer->lang,
             'user_name' => $offer->user?->name,
-            'keitaro_id' => $offer->keitaro_campaign_id ? (string) $offer->keitaro_campaign_id : null,
             'date' => $offer->created_at->format('Y-m-d'),
         ]);
 
@@ -113,7 +112,28 @@ class DashboardController extends Controller
             'lang_breakdown' => $langs,
             'pending_deploy' => $offers->where('status', 'generated')->count(),
             'deployed' => $offers->where('status', 'deployed')->count(),
-            'keitaro_linked' => $offers->whereNotNull('keitaro_campaign_id')->count(),
+        ];
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, Offer>  $offers
+     * @return array{leads: int, sales: int, leads_total: int}
+     */
+    private function todayFromStats($offers): array
+    {
+        $ids = $offers->pluck('id');
+
+        if ($ids->isEmpty()) {
+            return ['leads' => 0, 'sales' => 0, 'leads_total' => 0];
+        }
+
+        $start = now()->startOfDay();
+        $rows = OfferStat::query()->whereIn('offer_id', $ids)->get();
+
+        return [
+            'leads' => $rows->filter(fn (OfferStat $stat) => $stat->last_lead_at && $stat->last_lead_at->gte($start))->count(),
+            'sales' => $rows->filter(fn (OfferStat $stat) => $stat->last_deposit_at && $stat->last_deposit_at->gte($start))->count(),
+            'leads_total' => (int) $rows->sum(fn (OfferStat $stat) => (int) $stat->leads_count),
         ];
     }
 }

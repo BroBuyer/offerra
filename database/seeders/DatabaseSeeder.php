@@ -31,8 +31,6 @@ class DatabaseSeeder extends Seeder
         UserSetting::query()->firstOrCreate(
             ['user_id' => $user->id],
             [
-                'keitaro_url' => env('SEED_KEITARO_URL'),
-                'keitaro_group_id' => env('SEED_KEITARO_GROUP_ID', '51'),
                 'affiliate_tag' => env('SEED_AFFILIATE_TAG', 'BRO'),
             ],
         );

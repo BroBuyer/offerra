@@ -42,8 +42,11 @@ $field_class = static fn (int $i): string => trim((string) ($form_field_classes[
     <input type="hidden" name="language" value="<?= e(SITE_LANG) ?>" />
     <input type="hidden" name="phone_country" value="<?= e($phone_country) ?>" />
     <input type="hidden" name="only_countries" value='<?= e(json_encode($allowed_countries)) ?>' />
-<?php if (($keitaro_subid = keitaro_subid()) !== ''): ?>
-    <input type="hidden" name="subid" value="<?= e($keitaro_subid) ?>" />
+<?php
+    $offer_subid = trim((string) ($_GET['subid'] ?? $_GET['_subid'] ?? ''));
+    if ($offer_subid !== ''):
+?>
+    <input type="hidden" name="subid" value="<?= e($offer_subid) ?>">
 <?php endif; ?>
     <input type="hidden" name="form_token" value="" autocomplete="off" />
 

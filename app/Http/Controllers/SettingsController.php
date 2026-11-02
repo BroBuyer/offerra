@@ -55,8 +55,6 @@ class SettingsController extends Controller
         $data = $request->validated();
 
         $settings->fill([
-            'keitaro_url' => $data['keitaro_url'] ?? $settings->keitaro_url,
-            'keitaro_group_id' => $data['keitaro_group'] ?? $settings->keitaro_group_id ?? '19',
             'affiliate_tag' => $data['affiliate_tag'] ?? $settings->affiliate_tag ?? 'BRO',
             'tg_chat_id' => $data['tg_chat_id'] ?? $settings->tg_chat_id,
             'tg_group_chat_id' => $data['tg_group_chat_id'] ?? $settings->tg_group_chat_id,
@@ -73,7 +71,6 @@ class SettingsController extends Controller
             'cloudflare_backup_account_name' => trim((string) ($data['cloudflare_backup_account_name'] ?? '')) ?: null,
         ]);
 
-        $this->assignSecret($settings, 'keitaro_api_key', $data['keitaro_api_key'] ?? null);
         $this->assignSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
         $this->assignSecret($settings, 'tg_bot_token', $data['tg_bot_token'] ?? null);
         $this->assignSecret($settings, 'dynadot_api_key', $data['dynadot_api_key'] ?? null);

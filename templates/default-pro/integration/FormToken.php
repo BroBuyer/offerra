@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * One-time form tokens (file-backed) — easy to debug under integration/tokens/.
- * Independent of Keitaro.
+ * CSRF token for the lead form.
  *
  * Extra layers: UA bot block, per-IP rate limits, min age before consume.
  * Soft rejects are meant to look like success to the client (see send.php).

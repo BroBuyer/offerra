@@ -6,4 +6,3 @@ Light “wealth studio” template for Offerra — premium investing feel with A
 - **i18n:** copy packs in `scripts/lumen-i18n/*.json` (134 keys); build with `node scripts/build-lumen-langs.mjs`
 - **Look:** ink navy + paper + electric teal, Fraunces display + Outfit UI
 - **Theme:** simple AI investing platform (not a dark terminal)
-- **Logic:** same `integration/` stack as `noctra` / `default` (form token, LeadProcessor, Keitaro, mirrors/CWV)

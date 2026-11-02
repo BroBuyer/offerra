@@ -69,7 +69,6 @@ class UpdateOfferRequest extends FormRequest
         $this->merge([
             'phone' => $normalized['phone'],
             'phone_countries' => $normalized['phone_countries'],
-            'create_keitaro' => $this->boolean('create_keitaro'),
             'vitals_enabled' => $this->boolean('vitals_enabled'),
             'auto_redeploy' => $this->boolean('auto_redeploy', true),
         ]);
@@ -96,7 +95,6 @@ class UpdateOfferRequest extends FormRequest
             'phone' => ['required', 'string', 'regex:/^(ip|[a-zA-Z]{2})$/'],
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
-            'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
             'auto_redeploy' => ['boolean'],
         ];

@@ -14,7 +14,6 @@ class OfferTeardownService
 {
     public function __construct(
         private readonly CloudflareClient $cloudflare,
-        private readonly KeitaroClient $keitaro,
         private readonly GoogleSearchConsoleClient $gsc,
         private readonly OfferVerificationFileService $verificationFiles,
         private readonly OriginHostService $origin,
@@ -75,7 +74,7 @@ class OfferTeardownService
 
         $ownerSettings = $offer->user?->settings;
 
-        // Drop from Search Console while Google OAuth still works — soft-fail like Keitaro.
+        // Drop from Search Console while Google OAuth still works — soft-fail.
         $steps['gsc'] = $this->removeFromSearchConsole($offer, $ownerSettings);
 
         // Delete from the offer's actual Server column host (infra_meta), not only
@@ -133,8 +132,6 @@ class OfferTeardownService
             $steps['verification'] = 'error: '.$e->getMessage();
             $errors[] = 'Verification: '.$e->getMessage();
         }
-
-        $steps['keitaro'] = $this->deleteKeitaroCampaign($offer);
 
         try {
             $localPath = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$offer->folder;
@@ -499,52 +496,4 @@ class OfferTeardownService
         $offer->save();
     }
 
-    private function deleteKeitaroCampaign(Offer $offer): string
-    {
-        $campaignId = (int) ($offer->keitaro_campaign_id ?? 0);
-
-        if ($campaignId <= 0) {
-            return 'skipped';
-        }
-
-        $inUse = Offer::query()
-            ->where('keitaro_campaign_id', $campaignId)
-            ->where('id', '!=', $offer->id)
-            ->whereNotIn('status', ['archived', 'teardown_failed', 'archiving', 'purging'])
-            ->exists();
-
-        if ($inUse) {
-            Log::warning('Offer teardown skipped Keitaro: campaign still used by a live offer', [
-                'offer_id' => $offer->id,
-                'campaign_id' => $campaignId,
-            ]);
-
-            return 'skipped_in_use';
-        }
-
-        $settings = $offer->user?->settings;
-
-        if (! $settings || ! filled($settings->keitaro_api_key)) {
-            return 'skipped_no_key';
-        }
-
-        try {
-            $outcome = $this->keitaro->deleteCampaign($settings, $campaignId);
-            $offer->update([
-                'keitaro_campaign_id' => null,
-                'keitaro_alias' => null,
-                'keitaro_campaign_token' => null,
-            ]);
-
-            return $outcome;
-        } catch (\Throwable $e) {
-            Log::warning('Offer teardown Keitaro failed', [
-                'offer_id' => $offer->id,
-                'campaign_id' => $campaignId,
-                'error' => $e->getMessage(),
-            ]);
-
-            return 'error: '.$e->getMessage();
-        }
-    }
 }

@@ -18,7 +18,6 @@ class OfferGenerator
 {
     public function __construct(
         private readonly OfferConfigBuilder $configBuilder,
-        private readonly KeitaroClient $keitaroClient,
         private readonly TemplateCatalog $templateCatalog,
         private readonly OfferVerificationFileService $verificationFiles,
         private readonly string $offersPath,
@@ -65,14 +64,7 @@ class OfferGenerator
             return $this->resolveExisting($user, $folder, $targetPath);
         }
 
-        $keitaro = null;
         $offer = null;
-
-        if (! empty($input['create_keitaro'])) {
-            $keitaro = $this->keitaroClient->createCampaign($settings, $input);
-            $input['keitaro_token'] = $keitaro['token'];
-            $input['keitaro_campaign_id'] = $keitaro['id'];
-        }
 
         try {
             File::copyDirectory($templatePath, $targetPath);
@@ -107,8 +99,6 @@ class OfferGenerator
                 'currency' => strtoupper((string) $input['currency']),
                 'template' => $template,
                 'status' => 'generated',
-                'keitaro_campaign_id' => $keitaro['id'] ?? null,
-                'keitaro_alias' => $keitaro['alias'] ?? null,
                 'vitals_enabled' => ! empty($input['vitals_enabled']),
                 'from_search_team' => ! empty($input['from_search_team']),
                 'owner_id' => $user->id,
@@ -144,9 +134,6 @@ class OfferGenerator
                 'status' => 'generated',
                 // Bound later by OriginPool on first provision/deploy.
                 'deploy_panel_name' => null,
-                'keitaro_campaign_id' => $keitaro['id'] ?? null,
-                'keitaro_alias' => $keitaro['alias'] ?? null,
-                'keitaro_campaign_token' => $keitaro['token'] ?? null,
                 'vitals_enabled' => ! empty($input['vitals_enabled']),
                 'from_search_team' => ! empty($input['from_search_team']),
                 'provision_infrastructure' => $provisionInfrastructure,
@@ -242,8 +229,6 @@ class OfferGenerator
                     'currency' => strtoupper((string) ($manifest['currency'] ?? 'EUR')),
                     'template' => $manifest['template'] ?? 'default',
                     'status' => $manifest['status'] ?? 'generated',
-                    'keitaro_campaign_id' => $manifest['keitaro_campaign_id'] ?? null,
-                    'keitaro_alias' => $manifest['keitaro_alias'] ?? null,
                 ]);
 
                 return [
@@ -444,7 +429,6 @@ class OfferGenerator
                 'includes/footer.php',
                 'includes/lead-form.php',
                 'includes/routes.php',
-                'includes/keitaro.php',
                 'assets/css/global.css',
                 'assets/img/ai-head.jpg',
                 'integration/validation.js',
@@ -522,7 +506,6 @@ class OfferGenerator
             $this->syncVesperaBrandAssets($targetPath, (string) $offer->brand);
         }
 
-        $keitaroToken = $this->resolveKeitaroToken($offer, $settings);
         $phones = $this->syncOfferPhoneFields($offer);
 
         $input = [
@@ -535,8 +518,6 @@ class OfferGenerator
             'phone' => $phones['phone'],
             'phone_countries' => $phones['phone_countries'],
             'template' => $offer->template,
-            'keitaro_token' => $keitaroToken,
-            'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $preservedFormTokenSecret,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
             'from_search_team' => (bool) $offer->from_search_team,
@@ -555,8 +536,6 @@ class OfferGenerator
             'currency' => strtoupper($offer->currency ?: 'EUR'),
             'template' => $offer->template,
             'status' => $offer->status,
-            'keitaro_campaign_id' => $offer->keitaro_campaign_id,
-            'keitaro_alias' => $offer->keitaro_alias,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
             'from_search_team' => (bool) $offer->from_search_team,
             'owner_id' => $offer->user_id,
@@ -595,8 +574,6 @@ class OfferGenerator
         $targetPath = $this->ensureLocalFolder($offer);
         $configPath = $targetPath.'/includes/config.php';
 
-        $keitaroToken = $this->resolveKeitaroToken($offer, $settings, $configPath);
-
         $formTokenSecret = $this->extractFormTokenSecret($configPath);
         $phones = $this->syncOfferPhoneFields($offer);
 
@@ -610,8 +587,6 @@ class OfferGenerator
             'phone' => $phones['phone'],
             'phone_countries' => $phones['phone_countries'],
             'template' => $offer->template,
-            'keitaro_token' => $keitaroToken,
-            'keitaro_campaign_id' => $offer->keitaro_campaign_id,
             'form_token_secret' => $formTokenSecret,
             'vitals_enabled' => (bool) $offer->vitals_enabled,
             'from_search_team' => (bool) $offer->from_search_team,
@@ -701,21 +676,6 @@ class OfferGenerator
             $updates['vitals_enabled'] = (bool) $input['vitals_enabled'];
         }
 
-        if (! empty($input['create_keitaro']) && ! $offer->keitaro_campaign_id) {
-            $keitaro = $this->keitaroClient->createCampaign($settings, [
-                'brand' => $brand,
-                'domain' => $offer->domain,
-                'geo' => $geo,
-                'lang' => $lang,
-                'affiliate_tag' => $settings->affiliate_tag,
-                'created_at' => $offer->created_at,
-            ]);
-
-            $updates['keitaro_campaign_id'] = $keitaro['id'];
-            $updates['keitaro_alias'] = $keitaro['alias'];
-            $updates['keitaro_campaign_token'] = $keitaro['token'] ?? null;
-        }
-
         $offer->update($updates);
         $offer->refresh();
 
@@ -752,8 +712,6 @@ class OfferGenerator
         $manifest['min_deposit'] = $offer->min_deposit ?: '250';
         $manifest['currency'] = strtoupper($offer->currency ?: 'EUR');
         $manifest['template'] = $offer->template;
-        $manifest['keitaro_campaign_id'] = $offer->keitaro_campaign_id;
-        $manifest['keitaro_alias'] = $offer->keitaro_alias;
         $manifest['vitals_enabled'] = (bool) $offer->vitals_enabled;
         $manifest['from_search_team'] = (bool) $offer->from_search_team;
         $manifest['folder'] = $offer->folder;
@@ -848,7 +806,7 @@ PHP;
     }
 
     /**
-     * helpers.php / keitaro.php — єдине джерело в templates/{id}/includes/.
+     * helpers.php — єдине джерело в templates/{id}/includes/.
      * Мовні копії в langs/{code}/includes/ часто застарілі.
      */
     public function syncSharedIncludeFiles(string $targetPath, string $templateId = 'default'): void
@@ -864,7 +822,7 @@ PHP;
         $destination = $targetPath.DIRECTORY_SEPARATOR.'includes';
         File::ensureDirectoryExists($destination);
 
-        foreach (['helpers.php', 'keitaro.php'] as $filename) {
+        foreach (['helpers.php'] as $filename) {
             $src = $source.DIRECTORY_SEPARATOR.$filename;
 
             if (File::isFile($src)) {
@@ -1074,47 +1032,6 @@ PHP;
             File::copyDirectory($assets, $static);
             File::deleteDirectory($assets);
         }
-    }
-
-    private function resolveKeitaroToken(Offer $offer, UserSetting $settings, ?string $configPath = null): string
-    {
-        $stored = trim((string) ($offer->keitaro_campaign_token ?? ''));
-
-        if ($stored !== '') {
-            return $stored;
-        }
-
-        if ($offer->keitaro_campaign_id) {
-            $campaign = $this->keitaroClient->getCampaign($settings, (int) $offer->keitaro_campaign_id);
-            $token = trim((string) ($campaign['token'] ?? ''));
-
-            if ($token !== '') {
-                $offer->update(['keitaro_campaign_token' => $token]);
-
-                return $token;
-            }
-        }
-
-        if ($configPath !== null && File::exists($configPath)) {
-            $token = trim((string) ($this->readConfigConstant(File::get($configPath), 'KEITARO_CAMPAIGN_TOKEN') ?? ''));
-
-            if ($token !== '') {
-                $offer->update(['keitaro_campaign_token' => $token]);
-
-                return $token;
-            }
-        }
-
-        return '';
-    }
-
-    private function readConfigConstant(string $config, string $name): ?string
-    {
-        if (preg_match("/define\('{$name}',\s*'([^']*)'\)/", $config, $matches)) {
-            return $matches[1];
-        }
-
-        return null;
     }
 
     /**

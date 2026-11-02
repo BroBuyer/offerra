@@ -2,7 +2,7 @@
 
 Панель для масового випуску SEO affiliate лендів: від рядка в формі до живого
 HTTPS-сайту без ручних кроків. Ти задаєш бренд, GEO, мову й шаблон — панель
-копіює шаблон, вшиває в нього твої CRM/Telegram/Keitaro ключі, створює зону в
+копіює шаблон, вшиває в нього твої CRM/Telegram ключі, створює зону в
 Cloudflare, прописує нейм-сервери в Dynadot, заливає файли на origin-сервер,
 дочікується поширення DNS і подає сайт у Google Search Console.
 
@@ -112,7 +112,7 @@ php scripts/audit-origin-pool.php report   # на панелі
 ### Що робить згенерований ленд
 
 `includes/config.php` — це набір `define()` з ключами плюс бутстрап. При заході
-Keitaro трекає клік серверсайдом, і раз на добу відстрілюється geo-click пінг у
+раз на добу відстрілюється geo-click пінг у
 панель, якщо країна IP збігається з дозволеними. Форма тягне одноразовий токен з
 `integration/form-token.php`, потім POST на `integration/send.php`:
 `LeadProcessor` відсіює ботів, шле лід у CRM YourLeads і повідомлення в
@@ -125,7 +125,7 @@ Telegram. Спам отримує «тихий успіх» — редірект
 | Канал | Endpoint | Токен |
 |---|---|---|
 | GEO-кліки | `/api/v1/geo-click/{token}` | `geo_click_token` |
-| Ліди й депозити (Keitaro S2S) | `/api/v1/postback/{token}` | `sales_postback_token` |
+| Ліди й депозити (S2S postback) | `/api/v1/postback/{token}` | `sales_postback_token` |
 | Воронки без ленда | `/api/funnels/postback` | Bearer `webhook_token` |
 | Пробінг дзеркал | `routes/cdn.php` на `CDN_PROBE_HOST` | `mirror_probe_token` |
 
@@ -155,17 +155,9 @@ Telegram. Спам отримує «тихий успіх» — редірект
 php artisan offers:sync                  # імпорт папок з offers/ у БД
 php artisan offers:deploy {id}           # залити один оффер
 php artisan offers:refresh-config --all  # перегенерувати includes/config.php
-php artisan offers:reconcile-status      # звірити БД із сервером і Keitaro
+php artisan offers:reconcile-status      # звірити БД із сервером
 php artisan offers:heal-landers          # редеплой лендів, що віддають 500
 php artisan offers:fix-permissions {id}  # права 755 на файли оффера
-
-php artisan offers:sync-keitaro          # знайти кампанії за доменом
-php artisan offers:repair-keitaro        # полагодити інтеграції
-php artisan offers:recreate-missing-keitaro
-php artisan offers:rename-keitaro-campaigns
-php artisan offers:assign-keitaro-groups
-php artisan keitaro:sync-s2s-postbacks
-php artisan offer-stats:backfill-from-keitaro
 
 php artisan origin:check-health --sync   # перевірити пул
 php artisan origin:billing-remind        # нагадування оплатити VPS
@@ -213,7 +205,7 @@ node scripts/deploy.cjs                  # потрібні PANEL_HOST і PANEL_
 `CDN_PROBE_HOST`, `OFFERRA_ALLOW_REGISTRATION`,
 `OFFERRA_PURGE_LOCAL_AFTER_DEPLOY`, `OFFERRA_DEPLOY_CONCURRENCY`,
 `GOOGLE_OAUTH_CLIENT_ID` / `_SECRET` / `_REDIRECT_URI`. Повний перелік —
-у `.env.example`, решта налаштувань (Keitaro, CRM, Telegram, Cloudflare,
+у `.env.example`, решта налаштувань (CRM, Telegram, Cloudflare,
 Dynadot) зберігається в БД зашифрованою, через `/settings`.
 
 У `php.ini` потрібні `zip`, `fileinfo`, `pdo_pgsql` (або `pdo_sqlite` локально),

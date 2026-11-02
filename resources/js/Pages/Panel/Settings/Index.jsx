@@ -7,9 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 function formFromSettings(settings, userId = null) {
     return {
         user_id: userId ?? '',
-        keitaro_url: settings.keitaro_url ?? '',
-        keitaro_api_key: settings.keitaro_api_key ?? '',
-        keitaro_group: settings.keitaro_group ?? '19',
         affiliate_tag: settings.affiliate_tag ?? 'BRO',
         crm_api_key: settings.crm_api_key ?? '',
         tg_bot_token: settings.tg_bot_token ?? '',
@@ -213,62 +210,6 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
 
             <form onSubmit={submit}>
                 <section className="card">
-                    <h3>Keitaro</h3>
-                    <p className="card-desc">Трекер і Admin API для створення кампаній</p>
-                    <div className="field">
-                        <label htmlFor="kt-url">URL трекера</label>
-                        <input
-                            type="url"
-                            id="kt-url"
-                            value={data.keitaro_url}
-                            onChange={(e) => setData('keitaro_url', e.target.value)}
-                            placeholder="https://clickmetrics38.com"
-                        />
-                        {errors.keitaro_url && (
-                            <p className="field-hint" style={{ color: '#f87171' }}>{errors.keitaro_url}</p>
-                        )}
-                    </div>
-                    <div className="field">
-                        <label htmlFor="kt-api">Admin API key</label>
-                        <SecretInput
-                            id="kt-api"
-                            value={data.keitaro_api_key}
-                            onChange={(e) => setData('keitaro_api_key', e.target.value)}
-                            placeholder="API key з Keitaro"
-                        />
-                    </div>
-                    <div className="field">
-                        <label htmlFor="kt-group">ID групи кампаній</label>
-                        <input
-                            type="text"
-                            id="kt-group"
-                            value={data.keitaro_group}
-                            onChange={(e) => setData('keitaro_group', e.target.value)}
-                        />
-                        <p className="field-hint">
-                            ID групи кампаній у Keitaro (BRO / EGO / JEL). Якщо ID невірний, панель візьме групу з назвою як affiliate tag.
-                        </p>
-                    </div>
-                    {settings.sales_postback_url && (
-                        <div className="field">
-                            <label htmlFor="kt-s2s">S2S postback (деп → Telegram)</label>
-                            <input
-                                type="text"
-                                id="kt-s2s"
-                                readOnly
-                                value={settings.sales_postback_url}
-                                onFocus={(e) => e.target.select()}
-                            />
-                            <p className="field-hint">
-                                Встав у Keitaro → кампанія → S2S Postbacks (GET, статус sale).
-                                Нові кампанії з панелі підхоплюють це автоматично.
-                                CRM шле payout → у TG прийде subid + сума.
-                            </p>
-                        </div>
-                    )}
-                </section>
-
-                <section className="card">
                     <h3>Affiliate / CRM</h3>
                     <div className="field-row">
                         <div className="field">
@@ -326,6 +267,22 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             Додайте бота в групу — ліди дублюватимуться туди. Якщо порожньо, лише в особистий чат.
                         </p>
                     </div>
+                    {settings.sales_postback_url && (
+                        <div className="field">
+                            <label htmlFor="sales-s2s">S2S postback (деп → Telegram)</label>
+                            <input
+                                type="text"
+                                id="sales-s2s"
+                                readOnly
+                                value={settings.sales_postback_url}
+                                onFocus={(e) => e.target.select()}
+                            />
+                            <p className="field-hint">
+                                CRM шле payout сюди — у TG прийде subid + сума.
+                                Параметр domain= привʼязує подію до оффера в статистиці.
+                            </p>
+                        </div>
+                    )}
                 </section>
 
                 <section className="card">

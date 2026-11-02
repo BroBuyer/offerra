@@ -40,13 +40,6 @@ class OfferConfigBuilder
         $tgToken = $this->quote(SecretValue::normalize($settings->tg_bot_token ?? ''));
         $tgChat = $this->quote($settings->tg_chat_id ?? '');
         $tgGroupChat = $this->quote($settings->tg_group_chat_id ?? '');
-        $keitaroUrl = $this->quote(rtrim($settings->keitaro_url ?? 'https://clickmetrics38.com', '/'));
-        $keitaroToken = $this->quote($offer['keitaro_token'] ?? '');
-        $keitaroApiKey = $this->quote(SecretValue::normalize($settings->keitaro_api_key ?? ''));
-        $keitaroCampaignId = ! empty($offer['keitaro_campaign_id']) ? (int) $offer['keitaro_campaign_id'] : 0;
-        $keitaroComment = ! empty($offer['keitaro_campaign_id'])
-            ? " // кампанія #{$offer['keitaro_campaign_id']}"
-            : '';
         $formTokenSecret = $this->quote($this->resolveFormTokenSecret($offer));
         $vitalsEnabled = ! empty($offer['vitals_enabled']) ? 'true' : 'false';
         $vitalsCdn = ! empty($offer['vitals_enabled'])
@@ -112,15 +105,6 @@ define('FORM_TOKEN_ISSUE_LIMIT', 8);
 define('FORM_TOKEN_SUBMIT_LIMIT', 3);
 define('FORM_TOKEN_RATE_WINDOW', 600);
 define('FORM_TOKEN_DEBUG', false);
-
-// ─── Keitaro (server-side KClient PHP) ──────────────────────────────────────
-define('KEITARO_ENABLED', true);
-define('KEITARO_TRACKER_URL', {$keitaroUrl});
-define('KEITARO_CAMPAIGN_TOKEN', {$keitaroToken});{$keitaroComment}
-define('KEITARO_CAMPAIGN_ID', {$keitaroCampaignId});
-define('KEITARO_API_KEY', {$keitaroApiKey});
-define('KEITARO_CRM_SUB_FIELD', 'aff_sub3');
-define('KEITARO_DEBUG', false);
 {$vesperaExtras}
 if (is_file(__DIR__ . '/routes.php')) {
     require_once __DIR__ . '/routes.php';
@@ -141,8 +125,6 @@ if (is_file(__DIR__ . '/i18n-helpers.php')) {
     require_once __DIR__ . '/i18n-helpers.php';
 }
 offer_send_personalization_headers();
-require_once __DIR__ . '/keitaro.php';
-keitaro_bootstrap();
 
 (static function (): void {
     if (! defined('OFFERRA_GEO_CLICK_URL') || OFFERRA_GEO_CLICK_URL === '') {
@@ -276,7 +258,6 @@ define('DEFAULT_LANG', 'en');
 define('SUPPORTED_LANGS', {$this->phpArray($supported)});
 define('GEO_LANG_MAP', {$this->phpArray($map)});
 define('OFFER_TEMPLATE', 'vespera');
-define('KEITARO_CLICK_VERIFY', false);
 
 PHP;
     }

@@ -12,7 +12,6 @@ class OfferStatusReconciler
 {
     public function __construct(
         private readonly DeployConnection $deploy,
-        private readonly KeitaroClient $keitaro,
         private readonly OriginPool $pool,
         private readonly string $offersPath,
     ) {}
@@ -97,37 +96,13 @@ class OfferStatusReconciler
             $onServer = true;
         }
 
-        $keitaroId = $offer->keitaro_campaign_id ?: ($manifest['keitaro_campaign_id'] ?? null);
-        $keitaroAlias = $offer->keitaro_alias ?: ($manifest['keitaro_alias'] ?? null);
-        $inKeitaro = $keitaroId ? $this->keitaro->campaignExists($settings, (int) $keitaroId) : false;
-
-        if (! $keitaroId) {
-            $keitaroId = $this->parseKeitaroIdFromConfig($offer->folder);
-            if ($keitaroId) {
-                $inKeitaro = $this->keitaro->campaignExists($settings, (int) $keitaroId);
-            }
-        }
-
         $newStatus = $onServer ? 'deployed' : $offer->status;
         $wasStatus = $offer->status;
         $changed = false;
         $wouldChange = $onServer && $offer->status !== 'deployed';
-        $wouldChange = $wouldChange
-            || ($keitaroId && ! $offer->keitaro_campaign_id)
-            || ($keitaroAlias && ! $offer->keitaro_alias);
 
         if ($apply) {
             $updates = [];
-
-            if ($keitaroId && ! $offer->keitaro_campaign_id) {
-                $updates['keitaro_campaign_id'] = (int) $keitaroId;
-                $changed = true;
-            }
-
-            if ($keitaroAlias && ! $offer->keitaro_alias) {
-                $updates['keitaro_alias'] = $keitaroAlias;
-                $changed = true;
-            }
 
             if ($onServer && $offer->status !== 'deployed') {
                 $updates['status'] = 'deployed';
@@ -156,8 +131,6 @@ class OfferStatusReconciler
             'on_server' => $onServer,
             'server_marker' => $marker,
             'live_http' => $liveHttp,
-            'keitaro_id' => $keitaroId,
-            'in_keitaro' => $inKeitaro,
             'changed' => $apply ? $changed : $wouldChange,
         ];
     }
@@ -190,21 +163,6 @@ class OfferStatusReconciler
         $decoded = json_decode(File::get($path), true);
 
         return is_array($decoded) ? $decoded : [];
-    }
-
-    private function parseKeitaroIdFromConfig(string $folder): ?int
-    {
-        $path = rtrim($this->offersPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$folder.'/includes/config.php';
-
-        if (! File::exists($path)) {
-            return null;
-        }
-
-        if (preg_match('/кампанія\s*#(\d+)/u', File::get($path), $matches)) {
-            return (int) $matches[1];
-        }
-
-        return null;
     }
 
     private function probeHttp(string $domain, string $brand): bool
@@ -244,14 +202,6 @@ class OfferStatusReconciler
                 'remote_path' => $remotePath,
                 'deployed_at' => ($offer->deployed_at ?? now())->toIso8601String(),
             ]);
-        }
-
-        if ($offer->keitaro_campaign_id) {
-            $manifest['keitaro_campaign_id'] = $offer->keitaro_campaign_id;
-        }
-
-        if ($offer->keitaro_alias) {
-            $manifest['keitaro_alias'] = $offer->keitaro_alias;
         }
 
         File::put(

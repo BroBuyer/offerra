@@ -25,7 +25,6 @@ node scripts/build-audax-langs.mjs fr    # одна мова
 ## Структура
 
 - `langs/en/` — повний ленд
-- `includes/helpers.php`, `includes/keitaro.php` — спільні хелпери (синхронізуються при генерації)
 - `integration/` — lead pipeline (send.php, LeadProcessor.php, validation.js)
 
 ## Особливості

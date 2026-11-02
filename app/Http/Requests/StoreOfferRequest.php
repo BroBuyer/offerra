@@ -63,7 +63,6 @@ class StoreOfferRequest extends FormRequest
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
             'template' => ['required', 'string', Rule::in($catalog->ids())],
-            'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
             'from_search_team' => ['boolean'],
             'provision_infrastructure' => ['boolean'],

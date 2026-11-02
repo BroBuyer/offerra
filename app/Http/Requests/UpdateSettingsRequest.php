@@ -35,9 +35,6 @@ class UpdateSettingsRequest extends FormRequest
     {
         return [
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'keitaro_url' => ['nullable', 'url', 'max:255'],
-            'keitaro_api_key' => ['nullable', 'string', 'max:255'],
-            'keitaro_group' => ['nullable', 'string', 'max:20'],
             'affiliate_tag' => ['nullable', 'string', 'max:50'],
             'crm_api_key' => ['nullable', 'string', 'max:255'],
             'tg_bot_token' => ['nullable', 'string', 'max:255'],

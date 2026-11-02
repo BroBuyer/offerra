@@ -4,9 +4,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/geo.php';
 require_once __DIR__ . '/includes/helpers.php';
-if (is_file(__DIR__ . '/includes/keitaro.php')) {
-    require_once __DIR__ . '/includes/keitaro.php';
-}
 
 $lang = geo_cookie_lang() ?? DEFAULT_LANG;
 if (!in_array($lang, SUPPORTED_LANGS, true)) {

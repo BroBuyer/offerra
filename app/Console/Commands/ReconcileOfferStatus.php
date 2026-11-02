@@ -9,7 +9,7 @@ class ReconcileOfferStatus extends Command
 {
     protected $signature = 'offers:reconcile-status {--user= : ID користувача} {--dry-run : Лише показати звіт без оновлення БД}';
 
-    protected $description = 'Звірити оффери з сервером (SFTP/HTTP) і Keitaro, оновити статус deployed';
+    protected $description = 'Звірити оффери з сервером (SFTP/HTTP) і оновити статус deployed';
 
     public function handle(OfferStatusReconciler $reconciler): int
     {
@@ -25,14 +25,12 @@ class ReconcileOfferStatus extends Command
         }
 
         $this->table(
-            ['ID', 'Домен', 'Сервер', 'HTTP', 'KT', 'KT#', 'Було', 'Стане', 'Оновлено'],
+            ['ID', 'Домен', 'Сервер', 'HTTP', 'Було', 'Стане', 'Оновлено'],
             array_map(fn (array $row) => [
                 $row['id'],
                 $row['domain'],
                 $row['on_server'] ? '✓' : '—',
                 $row['live_http'] ? '✓' : '—',
-                $row['in_keitaro'] ? '✓' : ($row['keitaro_id'] ? '?' : '—'),
-                $row['keitaro_id'] ?? '—',
                 $row['was_status'],
                 $row['new_status'],
                 $row['changed'] ? 'так' : '—',

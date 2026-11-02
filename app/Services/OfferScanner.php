@@ -41,7 +41,6 @@ class OfferScanner
                 'folder' => $folder,
                 'path' => $directory,
                 'template' => $manifest['template'] ?? $config['template'] ?? 'Netto Capitriva',
-                'keitaro_id' => $manifest['keitaro_campaign_id'] ?? $config['keitaro_id'],
                 'status' => $manifest['status'] ?? $config['status'] ?? 'generated',
             ]);
         }
@@ -98,25 +97,17 @@ class OfferScanner
     }
 
     /**
-     * @return array{keitaro_id: ?string, template: ?string, status: ?string}
+     * @return array{template: ?string, status: ?string}
      */
     private function readConfig(string $directory): array
     {
         $configPath = $directory.'/includes/config.php';
 
         if (! File::exists($configPath)) {
-            return ['keitaro_id' => null, 'template' => null, 'status' => null];
-        }
-
-        $contents = File::get($configPath);
-        $keitaroId = null;
-
-        if (preg_match('/#(\d+)/', $contents, $matches)) {
-            $keitaroId = $matches[1];
+            return ['template' => null, 'status' => null];
         }
 
         return [
-            'keitaro_id' => $keitaroId ?: null,
             'template' => 'Netto Capitriva',
             'status' => 'generated',
         ];
@@ -146,7 +137,6 @@ class OfferScanner
             'lang_breakdown' => $langs,
             'pending_deploy' => count($offers),
             'deployed' => 0,
-            'keitaro_linked' => count(array_filter($offers, fn (array $o) => ! empty($o['keitaro_id']))),
         ];
     }
 }

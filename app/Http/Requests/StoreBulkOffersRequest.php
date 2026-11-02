@@ -68,7 +68,6 @@ class StoreBulkOffersRequest extends FormRequest
             'phone' => ['required', 'string', 'regex:/^(ip|[a-zA-Z]{2})$/'],
             'phone_countries' => ['required', 'array', 'min:1'],
             'phone_countries.*' => ['string', 'size:2', 'alpha:ascii'],
-            'create_keitaro' => ['boolean'],
             'vitals_enabled' => ['boolean'],
             'from_search_team' => ['boolean'],
             'infra_cloudflare_zone' => ['boolean'],

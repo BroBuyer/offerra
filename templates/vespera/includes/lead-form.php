@@ -19,7 +19,6 @@ $phoneCountry = function_exists('form_visitor_phone_country')
 $allowedCountries = function_exists('form_allowed_countries') ? form_allowed_countries() : [];
 $leadCookie = function_exists('site_slug') ? site_slug() . '_lead' : 'vespera_lead';
 $cookieDays = defined('FORM_LEAD_COOKIE_DAYS') ? (int) FORM_LEAD_COOKIE_DAYS : 30;
-$keitaroSubid = function_exists('keitaro_subid') ? keitaro_subid() : '';
 ?>
 <div class="lead-form card" id="<?= e($wrapId) ?>">
   <form id="<?= e($formId) ?>" class="js-lead-form leadform" action="<?= e(public_url('integration/send.php')) ?>" method="post" novalidate
@@ -35,8 +34,11 @@ $keitaroSubid = function_exists('keitaro_subid') ? keitaro_subid() : '';
       <input type="hidden" name="language" value="<?= e($lang) ?>">
       <input type="hidden" name="phone_country" value="<?= e($phoneCountry) ?>">
       <input type="hidden" name="only_countries" value='<?= e(json_encode($allowedCountries)) ?>'>
-      <?php if ($keitaroSubid !== ''): ?>
-      <input type="hidden" name="subid" value="<?= e($keitaroSubid) ?>">
+<?php
+      $offer_subid = trim((string) ($_GET['subid'] ?? $_GET['_subid'] ?? ''));
+      if ($offer_subid !== ''):
+      ?>
+      <input type="hidden" name="subid" value="<?= e($offer_subid) ?>">
       <?php endif; ?>
       <input type="hidden" name="form_token" value="" autocomplete="off">
       <div class="form-preloader hidden" aria-hidden="true"><div class="spinner"></div></div>

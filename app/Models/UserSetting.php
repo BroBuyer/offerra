@@ -13,9 +13,6 @@ class UserSetting extends Model
 {
     protected $fillable = [
         'user_id',
-        'keitaro_url',
-        'keitaro_api_key',
-        'keitaro_group_id',
         'affiliate_tag',
         'crm_api_key',
         'tg_bot_token',
@@ -55,7 +52,6 @@ class UserSetting extends Model
     protected function casts(): array
     {
         return [
-            'keitaro_api_key' => 'encrypted',
             'crm_api_key' => 'encrypted',
             'tg_bot_token' => 'encrypted',
             'deploy_password' => 'encrypted',
@@ -174,13 +170,10 @@ class UserSetting extends Model
     public function toPanelArray(): array
     {
         return [
-            'keitaro_url' => $this->keitaro_url ?? 'https://clickmetrics38.com',
-            'keitaro_group' => $this->keitaro_group_id ?? '19',
             'affiliate_tag' => $this->affiliate_tag ?? 'BRO',
             'tg_chat_id' => $this->tg_chat_id ?? '',
             'tg_group_chat_id' => $this->tg_group_chat_id ?? '',
             'sales_postback_token' => $this->sales_postback_token ?? '',
-            'has_keitaro_api_key' => filled($this->keitaro_api_key),
             'has_crm_api_key' => filled($this->crm_api_key),
             'has_tg_bot_token' => filled($this->tg_bot_token),
             'has_dynadot_api_key' => filled($this->dynadot_api_key),
@@ -245,7 +238,6 @@ class UserSetting extends Model
     public function toEditArray(): array
     {
         return array_merge($this->toPanelArray(), [
-            'keitaro_api_key' => $this->keitaro_api_key ?? '',
             'crm_api_key' => $this->crm_api_key ?? '',
             'tg_bot_token' => $this->tg_bot_token ?? '',
             'dynadot_api_key' => $this->dynadot_api_key ?? '',
