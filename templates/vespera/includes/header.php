@@ -8,7 +8,7 @@ $nav = $langData['nav'];
 $homeUrl = lang_path($lang, 'home');
 ?>
 <!DOCTYPE html>
-<html lang="<?= e($lang) ?>" dir="<?= $lang === 'ar' ? 'rtl' : 'ltr' ?>" data-theme-mode="dark">
+<html lang="<?= e($lang) ?>" data-theme-mode="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

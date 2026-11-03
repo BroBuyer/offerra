@@ -15,11 +15,6 @@ function site_domain(): string
     return parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost';
 }
 
-function html_dir(): string
-{
-    return strtolower((string) (defined('SITE_LANG') ? SITE_LANG : 'en')) === 'ar' ? 'rtl' : 'ltr';
-}
-
 function site_locale(): string
 {
     $map = [
@@ -27,7 +22,7 @@ function site_locale(): string
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'sr' => 'sr-RS', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
-        'ms' => 'ms-MY', 'ar' => 'ar-SA',
+        'ms' => 'ms-MY',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
         'sl' => 'sl-SI',
@@ -208,7 +203,7 @@ function market_country_code(): string
 function market_country_name(): string
 {
     $names = [
-        'AE' => 'the UAE', 'SA' => 'Saudi Arabia', 'AR' => 'Argentina', 'AT' => 'Austria', 'AU' => 'Australia',
+        'AE' => 'the UAE', 'AR' => 'Argentina', 'AT' => 'Austria', 'AU' => 'Australia',
         'BE' => 'Belgium', 'BG' => 'Bulgaria', 'BR' => 'Brazil', 'CA' => 'Canada',
         'CH' => 'Switzerland', 'CL' => 'Chile', 'CO' => 'Colombia', 'CR' => 'Costa Rica',
         'CZ' => 'Czechia', 'DE' => 'Germany', 'DK' => 'Denmark', 'DO' => 'the Dominican Republic',
@@ -244,7 +239,6 @@ function market_audience(): string
         'hr' => 'traderima u zemlji '.$country,
         'hu' => 'trader számára itt: '.$country,
         'it' => 'trader in '.$country,
-        'ar' => 'المتداولون في '.$country,
         'ja' => $country.' のトレーダー',
         'lv' => 'tirgotājiem valstī '.$country,
         'sl' => 'traderjem v državi '.$country,
