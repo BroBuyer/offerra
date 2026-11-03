@@ -297,6 +297,23 @@ class OriginPool
     }
 
     /**
+     * Drop the offer → server pin after archive/purge so the IP is not still
+     * listed as hosting this domain.
+     */
+    public function unbind(Offer $offer): void
+    {
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        unset($meta['deploy_host'], $meta['migrated_from'], $meta['origin']);
+
+        $offer->forceFill([
+            'infra_meta' => $meta,
+            'deploy_panel_name' => null,
+        ])->save();
+
+        $this->forgetCounts();
+    }
+
+    /**
      * Copy the server's SSH/deploy settings onto an unsaved clone of the user's
      * settings, so every existing consumer that reads $settings->deploy_* keeps
      * working without knowing about the pool.

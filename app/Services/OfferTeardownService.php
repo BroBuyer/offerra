@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Jobs\ArchiveOfferJob;
 use App\Models\Offer;
+use App\Models\OriginServer;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\File;
@@ -77,9 +78,10 @@ class OfferTeardownService
         // Drop from Search Console while Google OAuth still works — soft-fail.
         $steps['gsc'] = $this->removeFromSearchConsole($offer, $ownerSettings);
 
-        // Delete from the offer's actual Server column host (infra_meta), not only
-        // Settings.deploy_host — otherwise archive removes files from the wrong VPS
-        // and the live lander keeps answering HTTP 200.
+        // Wipe the lander from every origin we can SSH to — current host, the
+        // previous host after a move, and leftovers on other pool boxes. Archive
+        // used to delete only the bound IP, so the old VPS kept serving 200s and
+        // the hoster still got the complaint.
         $steps['origin'] = $this->removeOriginFiles($offer, $ownerSettings, $domain, $errors);
 
         $cloudflareOk = false;
@@ -184,13 +186,34 @@ class OfferTeardownService
         }
 
         $infraMeta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        unset($infraMeta['gsc'], $infraMeta['gsc_error']);
+        unset(
+            $infraMeta['gsc'],
+            $infraMeta['gsc_error'],
+            $infraMeta['deploy_host'],
+            $infraMeta['migrated_from'],
+            $infraMeta['origin'],
+            $infraMeta['cloudflare'],
+            $infraMeta['cloudflare_zone_id'],
+            $infraMeta['cloudflare_dns'],
+            $infraMeta['cloudflare_www_dns'],
+            $infraMeta['cloudflare_edge'],
+            $infraMeta['cloudflare_slot'],
+            $infraMeta['cloudflare_old_zone_delete'],
+            $infraMeta['nameservers'],
+            $infraMeta['dns'],
+            $infraMeta['dns_via'],
+            $infraMeta['ssl'],
+            $infraMeta['ssl_force'],
+            $infraMeta['ssl_hsts'],
+            $infraMeta['www_redirect'],
+        );
 
         $offer->update([
             'status' => 'archived',
             'archived_at' => now(),
             'remote_path' => null,
             'deploy_error' => null,
+            'deploy_panel_name' => null,
             'infra_status' => null,
             'infra_error' => null,
             'infra_meta' => $infraMeta,
@@ -206,45 +229,15 @@ class OfferTeardownService
     }
 
     /**
-     * Remove /var/www/offers/{domain} from every reachable host that may hold it:
-     * primary = offer deploy host via OriginServer SSH; also Settings host as fallback.
+     * Remove /var/www/offers/{domain} from every origin that may still have it.
      *
      * @param  list<string>  $errors
      */
     private function removeOriginFiles(Offer $offer, ?UserSetting $ownerSettings, string $domain, array &$errors): string
     {
-        if (! $ownerSettings && ! $offer->user) {
-            return 'skipped_no_settings';
-        }
-
-        /** @var array<string, UserSetting> $byHost */
-        $byHost = [];
-
-        if ($offer->user && $ownerSettings) {
-            try {
-                $resolved = $this->deploy->resolveDeploySettings($offer->user, $offer, allocate: false);
-                $host = strtolower(trim((string) $resolved->deploy_host));
-                if ($host !== '') {
-                    $byHost[$host] = $resolved;
-                }
-            } catch (\Throwable $e) {
-                Log::warning('Offer teardown could not resolve offer origin SSH', [
-                    'offer_id' => $offer->id,
-                    'domain' => $domain,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        if ($ownerSettings) {
-            $settingsHost = strtolower(trim((string) $ownerSettings->deploy_host));
-            if ($settingsHost !== '' && ! isset($byHost[$settingsHost])) {
-                $byHost[$settingsHost] = $ownerSettings;
-            }
-        }
+        $byHost = $this->originHostsForTeardown($offer, $ownerSettings);
 
         if ($byHost === []) {
-            // No bound origin host means nothing was ever uploaded for this offer.
             if ($this->pool->boundHost($offer) === '') {
                 return 'skipped_no_host';
             }
@@ -256,6 +249,7 @@ class OfferTeardownService
 
         $results = [];
         $anyDeleted = false;
+        $bound = strtolower(trim($this->pool->boundHost($offer)));
 
         foreach ($byHost as $host => $settings) {
             try {
@@ -280,7 +274,67 @@ class OfferTeardownService
             return 'error: '.$msg;
         }
 
+        if ($bound !== '' && ! in_array($bound.':deleted', $results, true)) {
+            $msg = implode('; ', $results);
+            $errors[] = 'Origin: не знято з поточного хоста '.$bound.' ('.$msg.')';
+
+            return 'error: '.$msg;
+        }
+
         return implode('; ', $results);
+    }
+
+    /**
+     * @return array<string, UserSetting>
+     */
+    private function originHostsForTeardown(Offer $offer, ?UserSetting $ownerSettings): array
+    {
+        /** @var array<string, UserSetting> $byHost */
+        $byHost = [];
+        $base = $ownerSettings ?? new UserSetting;
+
+        $push = function (string $host, UserSetting $settings) use (&$byHost): void {
+            $host = strtolower(trim($host));
+            if ($host === '' || isset($byHost[$host])) {
+                return;
+            }
+            $byHost[$host] = $settings;
+        };
+
+        if ($offer->user && $ownerSettings) {
+            try {
+                $resolved = $this->deploy->resolveDeploySettings($offer->user, $offer, allocate: false);
+                $push((string) $resolved->deploy_host, $resolved);
+            } catch (\Throwable $e) {
+                Log::warning('Offer teardown could not resolve offer origin SSH', [
+                    'offer_id' => $offer->id,
+                    'domain' => $offer->domain,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($ownerSettings) {
+            $push((string) $ownerSettings->deploy_host, $ownerSettings);
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        $previous = strtolower(trim((string) ($meta['migrated_from'] ?? '')));
+        if ($previous !== '') {
+            $previousServer = $this->pool->serverForHost($previous);
+            if ($previousServer?->hasSshCredentials()) {
+                $push($previous, $this->pool->applyTo($base, $previousServer));
+            }
+        }
+
+        foreach (OriginServer::query()->orderBy('id')->get() as $server) {
+            if (! $server->hasSshCredentials()) {
+                continue;
+            }
+            $push((string) $server->host, $this->pool->applyTo($base, $server));
+        }
+
+        return $byHost;
     }
 
     private function removeFromSearchConsole(Offer $offer, ?UserSetting $settings): string
