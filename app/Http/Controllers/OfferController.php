@@ -964,7 +964,7 @@ class OfferController extends Controller
                 'weekStart' => $today->copy()->startOfWeek()->toDateString(),
                 'monthStart' => $today->copy()->startOfMonth()->toDateString(),
             ],
-            'staleDeadHint' => $staleDead->hintFor($user),
+            'staleDeadHint' => $user->canArchiveOffers() ? $staleDead->hintFor($user) : null,
             'canManageAllOffers' => $user->canManageAllOffers(),
         ]);
     }

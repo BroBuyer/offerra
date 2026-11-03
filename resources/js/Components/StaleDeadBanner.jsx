@@ -16,7 +16,7 @@ function formatScanAt(value) {
 export default function StaleDeadBanner({ hint, canArchive = false }) {
     const [busy, setBusy] = useState(false);
     const count = Number(hint?.count ?? 0);
-    if (!count || count < 1) {
+    if (!canArchive || !count || count < 1) {
         return null;
     }
 
