@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Offer;
+use App\Models\PanelSetting;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Log;
 
@@ -27,24 +28,47 @@ class SalesPostbackService
         return $existing;
     }
 
-    public function postbackUrl(UserSetting $settings): string
+    public function ensureGlobalToken(): string
+    {
+        $panel = PanelSetting::current();
+        $existing = trim((string) ($panel->sales_postback_token ?? ''));
+
+        if ($existing !== '' && strlen($existing) >= 16) {
+            return $existing;
+        }
+
+        $inherited = UserSetting::query()
+            ->whereNotNull('sales_postback_token')
+            ->where('sales_postback_token', '!=', '')
+            ->orderBy('user_id')
+            ->value('sales_postback_token');
+        $token = is_string($inherited) && strlen($inherited) >= 16
+            ? $inherited
+            : bin2hex(random_bytes(16));
+
+        $panel->forceFill(['sales_postback_token' => $token])->save();
+
+        return $token;
+    }
+
+    public function postbackUrl(?UserSetting $settings = null): string
     {
         return $this->salePostbackUrl($settings);
     }
 
-    public function leadPostbackUrl(UserSetting $settings): string
+    public function leadPostbackUrl(?UserSetting $settings = null): string
     {
-        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=lead';
+        return $this->globalBaseUrl().'?subid={aff_sub3}&status=lead';
     }
 
-    public function salePostbackUrl(UserSetting $settings): string
+    public function salePostbackUrl(?UserSetting $settings = null): string
     {
-        return $this->basePostbackUrl($settings).'?subid={aff_sub3}&status=sale&payout={payout}';
+        return $this->globalBaseUrl().'?subid={aff_sub3}&status=sale&payout={payout}';
     }
 
-    private function basePostbackUrl(UserSetting $settings): string
+    private function globalBaseUrl(): string
     {
-        $token = $this->ensureToken($settings);
+        $token = $this->ensureGlobalToken();
         $base = rtrim((string) config('app.url'), '/');
 
         return "{$base}/api/v1/postback/{$token}";
@@ -62,11 +86,7 @@ class SalesPostbackService
             return ['ok' => false, 'reason' => 'invalid_token'];
         }
 
-        $settings = UserSetting::query()
-            ->where('sales_postback_token', $token)
-            ->first();
-
-        if (! $settings) {
+        if (! $this->tokenIsAccepted($token)) {
             return ['ok' => false, 'reason' => 'unknown_token'];
         }
 
@@ -95,7 +115,7 @@ class SalesPostbackService
             return ['ok' => false, 'reason' => 'missing_subid'];
         }
 
-        $click = $this->clickIds->findForUser((int) $settings->user_id, $subid);
+        $click = $this->clickIds->findByClickId($subid);
         if (! $click) {
             return ['ok' => true, 'ignored' => true, 'reason' => 'unknown_click'];
         }
@@ -111,12 +131,20 @@ class SalesPostbackService
             return ['ok' => true, 'ignored' => true, 'reason' => 'status_'.$status];
         }
 
+        $ownerSettings = UserSetting::query()->where('user_id', $click->user_id)->first();
+
         // Stats first — never block Telegram dep alert if stats fail.
         try {
-            $this->bumpOfferStats($settings, $domain, $isLead, $isSale, $click->offer_id ? (int) $click->offer_id : null);
+            $this->bumpOfferStats(
+                (int) $click->user_id,
+                $domain,
+                $isLead,
+                $isSale,
+                $click->offer_id ? (int) $click->offer_id : null,
+            );
         } catch (\Throwable $e) {
             Log::warning('SalesPostback: stats bump failed', [
-                'user_id' => $settings->user_id,
+                'user_id' => $click->user_id,
                 'domain' => $domain,
                 'status' => $status,
                 'error' => $e->getMessage(),
@@ -132,11 +160,15 @@ class SalesPostbackService
                 $lines[] = 'payout: $'.htmlspecialchars($amount, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             }
 
-            $sent = $this->telegram->send($settings, implode("\n", $lines), 'HTML');
+            if (! $ownerSettings) {
+                return ['ok' => true, 'reason' => 'telegram_failed'];
+            }
+
+            $sent = $this->telegram->send($ownerSettings, implode("\n", $lines), 'HTML');
 
             if (! $sent) {
                 Log::warning('SalesPostback: telegram send failed', [
-                    'user_id' => $settings->user_id,
+                    'user_id' => $click->user_id,
                     'subid' => $subid,
                 ]);
 
@@ -147,13 +179,22 @@ class SalesPostbackService
         return ['ok' => true];
     }
 
-    private function bumpOfferStats(UserSetting $settings, string $domain, bool $isLead, bool $isSale, ?int $offerId = null): void
+    private function tokenIsAccepted(string $token): bool
+    {
+        $global = $this->ensureGlobalToken();
+        if (hash_equals($global, $token)) {
+            return true;
+        }
+
+        return UserSetting::query()->where('sales_postback_token', $token)->exists();
+    }
+
+    private function bumpOfferStats(int $userId, string $domain, bool $isLead, bool $isSale, ?int $offerId = null): void
     {
         $offer = null;
 
         if ($offerId) {
             $offer = Offer::query()
-                ->where('user_id', $settings->user_id)
                 ->where('id', $offerId)
                 ->whereNotIn('status', ['archived', 'archiving', 'purging'])
                 ->first();
@@ -161,7 +202,7 @@ class SalesPostbackService
 
         if (! $offer && $domain !== '') {
             $offer = Offer::query()
-                ->where('user_id', $settings->user_id)
+                ->where('user_id', $userId)
                 ->whereRaw('LOWER(domain) = ?', [$domain])
                 ->whereNotIn('status', ['archived', 'archiving', 'purging'])
                 ->first();
@@ -169,7 +210,7 @@ class SalesPostbackService
 
         if (! $offer) {
             Log::info('SalesPostback: no offer for domain', [
-                'user_id' => $settings->user_id,
+                'user_id' => $userId,
                 'domain' => $domain,
             ]);
 

@@ -71,11 +71,12 @@ class SalesPostbackTest extends TestCase
         ]);
 
         $postbacks = app(SalesPostbackService::class);
+        $global = $postbacks->ensureGlobalToken();
 
         $lead = $postbacks->leadPostbackUrl($settings);
         $sale = $postbacks->salePostbackUrl($settings);
 
-        $this->assertStringContainsString('/api/v1/postback/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', $lead);
+        $this->assertStringContainsString('/api/v1/postback/'.$global, $lead);
         $this->assertStringContainsString('subid={aff_sub3}', $lead);
         $this->assertStringContainsString('status=lead', $lead);
         $this->assertStringNotContainsString('aff_sub4', $lead);
@@ -83,6 +84,43 @@ class SalesPostbackTest extends TestCase
         $this->assertStringContainsString('status=sale', $sale);
         $this->assertStringContainsString('payout={payout}', $sale);
         $this->assertStringNotContainsString('domain=', $sale);
+    }
+
+    public function test_shared_token_credits_click_owner_not_token_owner(): void
+    {
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
+
+        $admin = User::factory()->admin()->create();
+        $admin->settings()->create([
+            'sales_postback_token' => 'dddddddddddddddddddddddddddddddd',
+            'tg_bot_token' => '1:admin',
+            'tg_chat_id' => '111',
+        ]);
+
+        [$buyerToken] = $this->seedOffer(true);
+        $buyer = User::query()->whereHas('settings', fn ($q) => $q->where('sales_postback_token', $buyerToken))->first();
+        $this->assertNotNull($buyer);
+
+        $global = app(SalesPostbackService::class)->ensureGlobalToken();
+
+        $this->get('/api/v1/postback/'.$global.'?subid=cafebabedeadbeef12345678&status=lead')
+            ->assertOk();
+        $this->get('/api/v1/postback/'.$global.'?subid=cafebabedeadbeef12345678&status=sale&payout=80')
+            ->assertOk();
+
+        $stats = Offer::query()->where('domain', 'click-id.test')->first()->stats;
+        $this->assertSame(1, $stats->leads_count);
+        $this->assertSame(1, $stats->deposits_count);
+        $this->assertSame(0, (int) ($admin->offers()->first()?->stats?->leads_count ?? 0));
+
+        Http::assertSent(function ($request) {
+            return str_contains($request->url(), 'api.telegram.org/bot123:abc/')
+                && str_contains((string) $request['text'], 'cafebabedeadbeef12345678')
+                && str_contains((string) $request['text'], '$80');
+        });
+        Http::assertNotSent(fn ($request) => str_contains($request->url(), 'bot1:admin/'));
     }
 
     /**

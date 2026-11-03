@@ -8,6 +8,7 @@ class PanelSetting extends Model
 {
     protected $fillable = [
         'users_see_all_offers',
+        'sales_postback_token',
     ];
 
     protected function casts(): array

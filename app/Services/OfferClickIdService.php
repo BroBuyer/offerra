@@ -94,6 +94,19 @@ class OfferClickIdService
             ->first();
     }
 
+    public function findByClickId(string $clickId): ?LanderClick
+    {
+        $clickId = $this->normalizeClickId($clickId);
+        if ($clickId === '') {
+            return null;
+        }
+
+        return LanderClick::query()
+            ->where('click_id', $clickId)
+            ->orderByDesc('id')
+            ->first();
+    }
+
     public function pruneOlderThanDays(int $days = 90): int
     {
         $days = max(1, $days);

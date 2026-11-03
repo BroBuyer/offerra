@@ -294,8 +294,9 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                                 </div>
                             )}
                             <p className="field-hint">
-                                Встав у YourLeads як GET S2S. <code>aff_sub3</code> — click id ленда.
-                                Чужі кліки CRM (інші афіліати) ігноруються. Деп також прийде в Telegram (subid + сума).
+                                Один URL на всю панель — встав у YourLeads як GET S2S.
+                                <code>aff_sub3</code> — click id ленда: з нього панель знаходить офер і баєра.
+                                Невідомі кліки ігноруються. Деп також прийде в Telegram власника офера (subid + сума).
                             </p>
                         </>
                     )}
