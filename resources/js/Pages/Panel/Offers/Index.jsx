@@ -1036,6 +1036,15 @@ export default function OffersIndex({
             return;
         }
 
+        if (action === 'submit_gsc') {
+            if (!window.confirm(
+                `Відправити sitemap у Search Console ще раз для ${selectedCount} оффер(ів)?\n` +
+                'Вже подані теж підуть повторно. Google сам вирішить, коли переіндексувати.',
+            )) {
+                return;
+            }
+        }
+
         if (action === 'redeploy') {
             if (!window.confirm(`Запустити редеплой для ${selectedCount} оффер(ів)?`)) {
                 return;
@@ -1673,6 +1682,14 @@ export default function OffersIndex({
             {selectedCount > 0 && (
                 <div className="offer-bulk-bar" role="region" aria-label="Масові дії">
                     <span className="offer-bulk-bar__count">Обрано {selectedCount}</span>
+                    <button
+                        type="button"
+                        className="btn btn-primary btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => runBulkAction('submit_gsc')}
+                    >
+                        {bulkBusy ? 'Запуск…' : 'Переіндексація'}
+                    </button>
                     <button
                         type="button"
                         className="btn btn-primary btn-sm"

@@ -31,14 +31,14 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
 
     private const GLOBAL_DECAY_SECONDS = 60;
 
-    public function __construct(public int $offerId)
+    public function __construct(public int $offerId, public bool $force = false)
     {
         $this->onQueue('default');
     }
 
     public function uniqueId(): string
     {
-        return 'gsc-submit:'.$this->offerId;
+        return ($this->force ? 'gsc-resubmit:' : 'gsc-submit:').$this->offerId;
     }
 
     public function handle(OfferGscSubmitter $submitter): void
@@ -49,7 +49,7 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
         }
 
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        if (($meta['gsc']['status'] ?? null) === 'submitted') {
+        if (! $this->force && ($meta['gsc']['status'] ?? null) === 'submitted') {
             return;
         }
 

@@ -84,13 +84,17 @@ class OfferGscSubmitter
         }
     }
 
-    public function queue(Offer $offer, int $delaySeconds = 0): void
+    public function queue(Offer $offer, int $delaySeconds = 0, bool $force = false): void
     {
-        if (! $this->shouldQueue($offer)) {
+        if ($force) {
+            if (! $this->canSubmit($offer)) {
+                return;
+            }
+        } elseif (! $this->shouldQueue($offer)) {
             return;
         }
 
-        $pending = SubmitOfferToGscJob::dispatch($offer->id);
+        $pending = SubmitOfferToGscJob::dispatch($offer->id, $force);
         // Spread a batch of greens so they do not all hit GSC sites.add in the same minute.
         $spread = max(0, $delaySeconds) + (($offer->id % 10) * 8);
         if ($spread > 0) {

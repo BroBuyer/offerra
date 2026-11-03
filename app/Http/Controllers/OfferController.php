@@ -580,6 +580,7 @@ class OfferController extends Controller
         BulkOfferActionRequest $request,
         DeployService $deploy,
         OriginEvacuationService $evacuation,
+        OfferGscSubmitter $gsc,
     ): RedirectResponse {
         $authUser = $request->user();
         $action = $request->string('action')->toString();
@@ -640,6 +641,17 @@ class OfferController extends Controller
         }
 
         foreach ($offers as $offer) {
+            if ($action === 'submit_gsc') {
+                if (! $gsc->canSubmit($offer)) {
+                    $skipped++;
+                    $failed[] = $offer->domain.': ще не готовий до GSC';
+                    continue;
+                }
+                $gsc->queue($offer, force: true);
+                $queued++;
+                continue;
+            }
+
             if ($action === 'redeploy') {
                 try {
                     if (! $offer->user) {
@@ -709,7 +721,9 @@ class OfferController extends Controller
 
         $parts = [];
 
-        if ($action === 'redeploy') {
+        if ($action === 'submit_gsc') {
+            $parts[] = "Переіндексація в GSC у черзі: {$queued}";
+        } elseif ($action === 'redeploy') {
             $parts[] = "Редеплой у черзі: {$queued}";
         } elseif ($action === 'switch_cloudflare') {
             $label = $cloudflareTarget === 'backup' ? 'запасний CF' : 'основний CF';

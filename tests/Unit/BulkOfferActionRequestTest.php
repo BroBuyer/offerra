@@ -65,6 +65,16 @@ class BulkOfferActionRequestTest extends TestCase
         $this->assertFalse($validator->fails(), $validator->errors()->toJson());
     }
 
+    public function test_submit_gsc_accepts_ids(): void
+    {
+        $validator = Validator::make(
+            ['ids' => [1, 2], 'action' => 'submit_gsc'],
+            (new BulkOfferActionRequest)->rules(),
+        );
+
+        $this->assertFalse($validator->fails(), $validator->errors()->toJson());
+    }
+
     public function test_dns_job_is_unique_per_offer_and_ip(): void
     {
         $job = new RebindOfferDnsJob(12, '91.224.92.135');

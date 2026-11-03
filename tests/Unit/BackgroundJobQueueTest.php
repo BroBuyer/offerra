@@ -22,6 +22,8 @@ class BackgroundJobQueueTest extends TestCase
         $this->assertSame('default', (new PushOfferConfigJob(1))->queue);
         $this->assertSame('default', (new InspectOfferGoogleIndexJob(1))->queue);
         $this->assertSame('default', (new SubmitOfferToGscJob(1))->queue);
+        $this->assertSame('gsc-submit:1', (new SubmitOfferToGscJob(1))->uniqueId());
+        $this->assertSame('gsc-resubmit:1', (new SubmitOfferToGscJob(1, true))->uniqueId());
         $this->assertSame('default', (new ProbeOfferAvailabilityJob(1))->queue);
         $this->assertSame('deploy', (new DeployOfferJob(1))->queue);
     }

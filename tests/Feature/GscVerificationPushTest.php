@@ -124,6 +124,74 @@ class GscVerificationPushTest extends TestCase
         Queue::assertPushed(SubmitOfferToGscJob::class, fn (SubmitOfferToGscJob $job) => $job->offerId === $offer->id);
     }
 
+    public function test_force_queue_resubmits_already_submitted_offer(): void
+    {
+        Queue::fake();
+        config([
+            'services.google.client_id' => 'test-client',
+            'services.google.client_secret' => 'test-secret',
+        ]);
+
+        $user = User::factory()->create();
+        $user->settings()->create([
+            'gsc_verification_filename' => 'googleabc123def.html',
+            'google_oauth_refresh_token' => 'refresh-token',
+        ]);
+        $offer = $this->makeOffer($user, 'again.online', submitted: true);
+        $offer->update([
+            'infra_meta' => [
+                'dns' => 'done',
+                'gsc' => ['status' => 'submitted'],
+            ],
+        ]);
+
+        $submitter = $this->app->make(OfferGscSubmitter::class);
+        $submitter->queue($offer->fresh());
+        Queue::assertNothingPushed();
+
+        $submitter->queue($offer->fresh(), force: true);
+        Queue::assertPushed(
+            SubmitOfferToGscJob::class,
+            fn (SubmitOfferToGscJob $job) => $job->offerId === $offer->id && $job->force === true,
+        );
+    }
+
+    public function test_bulk_submit_gsc_queues_force_jobs(): void
+    {
+        Queue::fake();
+        config([
+            'services.google.client_id' => 'test-client',
+            'services.google.client_secret' => 'test-secret',
+        ]);
+
+        $user = User::factory()->create();
+        $user->settings()->create([
+            'gsc_verification_filename' => 'googleabc123def.html',
+            'google_oauth_refresh_token' => 'refresh-token',
+        ]);
+        $ready = $this->makeOffer($user, 'bulk-ready.online', submitted: true);
+        $notReady = $this->makeOffer($user, 'bulk-down.online', submitted: false);
+        $notReady->update(['availability_status' => 'down']);
+
+        $this->actingAs($user)
+            ->from(route('offers.index'))
+            ->post(route('offers.bulk-action'), [
+                'ids' => [$ready->id, $notReady->id],
+                'action' => 'submit_gsc',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('warning');
+
+        Queue::assertPushed(
+            SubmitOfferToGscJob::class,
+            fn (SubmitOfferToGscJob $job) => $job->offerId === $ready->id && $job->force === true,
+        );
+        Queue::assertNotPushed(
+            SubmitOfferToGscJob::class,
+            fn (SubmitOfferToGscJob $job) => $job->offerId === $notReady->id,
+        );
+    }
+
     private function makeOffer(User $user, string $domain, bool $submitted = false): Offer
     {
         return Offer::query()->create([
