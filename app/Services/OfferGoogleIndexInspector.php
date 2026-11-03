@@ -44,8 +44,7 @@ class OfferGoogleIndexInspector
         }
 
         InspectOfferGoogleIndexJob::dispatch($offer->id)
-            ->delay(now()->addHours(self::FIRST_CHECK_HOURS))
-            ->onQueue('deploy');
+            ->delay(now()->addHours(self::FIRST_CHECK_HOURS));
     }
 
     /**

@@ -15,7 +15,7 @@ class RefreshOfferConfig extends Command
         {offer? : ID оффера (або --all)}
         {--all : Усі live офери}
         {--push : Синхронно залити config + helpers + integration PHP на origin}
-        {--queue-push : Поставити PushOfferConfigJob у чергу deploy}
+        {--queue-push : Поставити PushOfferConfigJob у чергу default (не блокує деплой)}
         {--limit=0 : Ліміт при --all (0 = усі)}';
 
     protected $description = 'Перегенерувати config/helpers/integration і за бажанням залити на origin';
@@ -71,7 +71,7 @@ class RefreshOfferConfig extends Command
                 }
 
                 if ($queuePush) {
-                    PushOfferConfigJob::dispatch($offer->id)->onQueue('deploy');
+                    PushOfferConfigJob::dispatch($offer->id);
                     $queued++;
                     $ok++;
                     if ($queued % 100 === 0) {

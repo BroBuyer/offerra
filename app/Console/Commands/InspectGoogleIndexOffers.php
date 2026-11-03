@@ -54,7 +54,7 @@ class InspectGoogleIndexOffers extends Command
 
         $queued = 0;
         foreach ($ids as $id) {
-            InspectOfferGoogleIndexJob::dispatch((int) $id, $force)->onQueue('deploy');
+            InspectOfferGoogleIndexJob::dispatch((int) $id, $force);
             $queued++;
         }
 

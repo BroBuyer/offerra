@@ -20,7 +20,7 @@ class InspectOfferGoogleIndexJob implements ShouldBeUnique, ShouldQueue
 
     public function __construct(public int $offerId, public bool $force = false)
     {
-        $this->onQueue('deploy');
+        $this->onQueue('default');
     }
 
     public function uniqueId(): string

@@ -16,7 +16,10 @@ class PushOfferConfigJob implements ShouldQueue
 
     public int $tries = 2;
 
-    public function __construct(public int $offerId) {}
+    public function __construct(public int $offerId)
+    {
+        $this->onQueue('default');
+    }
 
     public function handle(DeployService $deploy): void
     {

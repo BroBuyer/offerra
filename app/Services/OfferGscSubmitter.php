@@ -78,7 +78,7 @@ class OfferGscSubmitter
             return;
         }
 
-        $pending = ProbeOfferAvailabilityJob::dispatch($offer->id)->onQueue('deploy');
+        $pending = ProbeOfferAvailabilityJob::dispatch($offer->id);
         if ($delaySeconds > 0) {
             $pending->delay(now()->addSeconds($delaySeconds));
         }
@@ -90,7 +90,7 @@ class OfferGscSubmitter
             return;
         }
 
-        $pending = SubmitOfferToGscJob::dispatch($offer->id)->onQueue('deploy');
+        $pending = SubmitOfferToGscJob::dispatch($offer->id);
         // Spread a batch of greens so they do not all hit GSC sites.add in the same minute.
         $spread = max(0, $delaySeconds) + (($offer->id % 10) * 8);
         if ($spread > 0) {

@@ -33,7 +33,7 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
 
     public function __construct(public int $offerId)
     {
-        $this->onQueue('deploy');
+        $this->onQueue('default');
     }
 
     public function uniqueId(): string
