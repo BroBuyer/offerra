@@ -453,6 +453,10 @@ final class LeadProcessor
             ];
         }
 
+        if (function_exists('offer_click_id_remember')) {
+            offer_click_id_remember();
+        }
+
         $crmData = self::buildCrmPayload($lead);
         if ($spamReason !== null) {
             $crmData = self::applySpamMarkers($crmData, $spamReason);

@@ -74,6 +74,69 @@ class OfferClickIdTest extends TestCase
         $this->assertContains('integration/send.php', $files);
     }
 
+    public function test_helpers_do_not_remember_click_on_send_include(): void
+    {
+        foreach ($this->rootTemplateHelpers() as $helpers) {
+            $src = file_get_contents($helpers);
+            $this->assertIsString($src);
+            $this->assertStringContainsString('function offer_click_id_remember', $src);
+            $this->assertStringNotContainsString('offer_click_id_remember();', $src, $helpers);
+        }
+    }
+
+    public function test_processor_remembers_click_only_after_protections(): void
+    {
+        foreach ($this->rootTemplateProcessors() as $processor) {
+            $src = file_get_contents($processor);
+            $this->assertIsString($src);
+            $this->assertMatchesRegularExpression(
+                '/shouldSilentDrop\\(\\$spamReason\\).*?offer_click_id_remember\\(\\);.*?buildCrmPayload/s',
+                $src,
+                $processor,
+            );
+        }
+    }
+
+    /** @return list<string> */
+    private function rootTemplateHelpers(): array
+    {
+        $dir = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'templates';
+        $out = [];
+        foreach (scandir($dir) ?: [] as $name) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+            $helpers = $dir.DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'helpers.php';
+            if (is_file($helpers)) {
+                $out[] = $helpers;
+            }
+        }
+
+        $this->assertNotEmpty($out);
+
+        return $out;
+    }
+
+    /** @return list<string> */
+    private function rootTemplateProcessors(): array
+    {
+        $dir = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'templates';
+        $out = [];
+        foreach (scandir($dir) ?: [] as $name) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+            $processor = $dir.DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR.'integration'.DIRECTORY_SEPARATOR.'LeadProcessor.php';
+            if (is_file($processor)) {
+                $out[] = $processor;
+            }
+        }
+
+        $this->assertNotEmpty($out);
+
+        return $out;
+    }
+
     private function landerEval(string $code): string
     {
         $helpers = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'default'.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'helpers.php';
