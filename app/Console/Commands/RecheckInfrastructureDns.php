@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\RecheckInfrastructureDnsJob;
 use App\Models\Offer;
+use App\Services\InfrastructureProvisioner;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -19,9 +20,10 @@ class RecheckInfrastructureDns extends Command
             ->where('provision_infrastructure', true)
             ->where('infra_status', 'ready')
             ->orderBy('id')
-            ->get(['id', 'domain', 'provision_infrastructure', 'infra_status', 'infra_meta']);
+            ->get(['id', 'domain', 'status', 'availability_status', 'provision_infrastructure', 'infra_status', 'infra_meta']);
 
         $this->settlePubliclyReadyRegistrarNs($offers);
+        $this->settleLiveDeployedOffers($offers);
 
         $pendingOffers = $offers->filter(fn ($offer) => $offer->dnsStatus() === 'pending');
 
@@ -79,6 +81,26 @@ class RecheckInfrastructureDns extends Command
 
         if ($settled > 0) {
             $this->info("settled registrar NS (public records already match): {$settled}");
+        }
+    }
+
+    /**
+     * Deployed offers that already answer HTTPS but still show pending DNS.
+     *
+     * @param  \Illuminate\Support\Collection<int, Offer>  $offers
+     */
+    private function settleLiveDeployedOffers($offers): void
+    {
+        $provisioner = app(InfrastructureProvisioner::class);
+        $settled = 0;
+        foreach ($offers as $offer) {
+            if ($provisioner->settleIfAlreadyLive($offer)) {
+                $settled++;
+            }
+        }
+
+        if ($settled > 0) {
+            $this->info("settled live deployed offers: {$settled}");
         }
     }
 

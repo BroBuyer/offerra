@@ -142,6 +142,39 @@ class InfrastructureProvisioner
         }
     }
 
+    /**
+     * Site already answers HTTPS and registrar NS is not mid-cutover.
+     * Stop the orange «Очікується DNS» and the every-minute recheck.
+     */
+    public function settleIfAlreadyLive(Offer $offer): bool
+    {
+        if ($offer->status !== 'deployed' || $offer->availability_status !== 'ok') {
+            return false;
+        }
+
+        $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
+        if (($meta['dynadot_ns'] ?? '') === 'pending' && ($meta['dns_via'] ?? '') !== 'records') {
+            return false;
+        }
+
+        if (($meta['dns'] ?? null) === 'done' && $offer->dnsStatus() === 'ready') {
+            return false;
+        }
+
+        $meta['dns'] = 'done';
+        if (($meta['dns_via'] ?? '') === '') {
+            $meta['dns_via'] = 'https';
+        }
+        unset($meta['dns_error']);
+        $offer->update([
+            'infra_status' => 'ready',
+            'infra_error' => null,
+            'infra_meta' => $meta,
+        ]);
+
+        return true;
+    }
+
     public function recheckDns(Offer $offer): void
     {
         $offer->loadMissing('user.settings');

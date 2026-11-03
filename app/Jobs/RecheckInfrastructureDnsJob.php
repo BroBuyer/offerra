@@ -41,6 +41,14 @@ class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
+        if (in_array($offer->dnsStatus(), ['ready', 'skipped', 'na'], true)) {
+            return;
+        }
+
+        if ($provisioner->settleIfAlreadyLive($offer)) {
+            return;
+        }
+
         try {
             $provisioner->recheckDns($offer);
             if ($deploy->enqueueDeployAfterInfra($offer->fresh())) {
