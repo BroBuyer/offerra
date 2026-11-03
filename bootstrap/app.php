@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('origin:sync-servers')->hourly()->withoutOverlapping(10);
         $schedule->command('origin:check-health')->everyMinute()->withoutOverlapping(5);
         $schedule->command('origin:billing-remind')->hourly()->withoutOverlapping(5);
+        $schedule->command('backup:check')->hourly()->withoutOverlapping(5);
         // Self-heal any lander that lost required template functions (returns HTTP 500)
         // by redeploying it. Non-destructive: stale webroots are only reported here,
         // prune them manually with `offers:heal-landers --prune-orphans`.

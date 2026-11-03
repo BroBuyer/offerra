@@ -10,6 +10,7 @@ use App\Http\Controllers\GeoMinDepositController;
 use App\Http\Controllers\MirrorDomainController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\OfferStatsController;
+use App\Http\Controllers\BackupServerController;
 use App\Http\Controllers\OriginServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -80,6 +81,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('users.reset-password');
         Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
             ->name('users.access.update');
+
+        Route::get('/backup', [BackupServerController::class, 'index'])->name('backup.index');
+        Route::post('/backup', [BackupServerController::class, 'store'])->name('backup.store');
+        Route::post('/backup/{backupServer}/update', [BackupServerController::class, 'update'])->name('backup.update');
+        Route::post('/backup/{backupServer}/check', [BackupServerController::class, 'check'])->name('backup.check');
 
         Route::get('/origin-servers', [OriginServerController::class, 'index'])->name('origin-servers.index');
         Route::post('/origin-servers', [OriginServerController::class, 'store'])->name('origin-servers.store');

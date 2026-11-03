@@ -38,6 +38,37 @@ fi
 
 log() { echo "[$(date -Is)] $*"; }
 
+write_status() {
+  local ok="$1"
+  local msg="$2"
+  local status_file="${PANEL}/storage/app/backup-status.json"
+  mkdir -p "${PANEL}/storage/app"
+  python3 - "$status_file" "$ok" "$msg" "${KEEP_DAILY}" <<'PY' || true
+import json, os, sys, datetime
+path, ok, msg, keep = sys.argv[1], sys.argv[2] == "1", sys.argv[3], int(sys.argv[4])
+payload = {
+    "ok": ok,
+    "finished_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    "message": msg,
+    "keep_daily": keep,
+}
+try:
+    with open(path, encoding="utf-8") as fh:
+        prev = json.load(fh)
+    if isinstance(prev, dict):
+        for key in ("snapshots", "latest_snapshot_at", "size"):
+            if key in prev and key not in payload:
+                payload[key] = prev[key]
+except Exception:
+    pass
+with open(path, "w", encoding="utf-8") as fh:
+    json.dump(payload, fh)
+os.chmod(path, 0o644)
+PY
+}
+
+trap 'write_status 0 failed' ERR
+
 need() { command -v "$1" >/dev/null || { echo "missing $1"; exit 1; }; }
 need restic
 need pg_dump
@@ -130,6 +161,9 @@ restic forget \
 
 log "snapshots"
 restic snapshots -o "sftp.args=${SFTP_ARGS}" --tag offerra-panel --compact | tail -20
+
+trap - ERR
+write_status 1 ok
 
 rm -f "${DUMP}"
 log "ok"

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BackupServer;
 use App\Models\OriginServer;
 use App\Models\User;
 use App\Models\UserSetting;
@@ -31,9 +32,24 @@ class OriginBillingReminder
                 continue;
             }
 
-            if ($this->notify($server, $now)) {
+            if ($this->notifyAdmins($this->alertText($server, $now), ['host' => $server->host])) {
                 $server->forceFill([
                     'paid_until_alerted_for' => $server->paid_until?->toDateString(),
+                ])->save();
+                $reminded++;
+            }
+        }
+
+        foreach (BackupServer::query()->orderBy('host')->get() as $backup) {
+            if (! $backup->dueForBillingReminder($now)) {
+                $skipped++;
+
+                continue;
+            }
+
+            if ($this->notifyAdmins($this->backupAlertText($backup, $now), ['host' => $backup->host, 'kind' => 'backup'])) {
+                $backup->forceFill([
+                    'paid_until_alerted_for' => $backup->paid_until?->toDateString(),
                 ])->save();
                 $reminded++;
             }
@@ -67,9 +83,34 @@ class OriginBillingReminder
         ]));
     }
 
-    private function notify(OriginServer $server, Carbon $now): bool
+    public function backupAlertText(BackupServer $server, ?Carbon $now = null): string
     {
-        $text = $this->alertText($server, $now);
+        $days = $server->daysUntilPaid($now);
+        $host = trim((string) $server->host);
+        $label = $server->displayLabel();
+        $until = $server->paid_until?->format('d.m.Y') ?: '—';
+        $hoster = trim((string) ($server->hoster ?? ''));
+
+        $when = match (true) {
+            $days === 1 => 'завтра',
+            $days === 0 => 'сьогодні',
+            is_int($days) && $days < 0 => 'прострочено '.abs($days).' дн.',
+            default => 'через '.$days.' дн.',
+        };
+
+        return implode("\n", array_filter([
+            '💳 Треба оплатити backup VPS',
+            "Сервер: {$host}".($label !== $host ? " ({$label})" : ''),
+            $hoster !== '' ? "Хостер: {$hoster}" : null,
+            "Оплачено до: {$until} ({$when})",
+        ]));
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function notifyAdmins(string $text, array $context = []): bool
+    {
         $sent = false;
 
         $admins = User::query()->where('role', User::ROLE_ADMIN)->with('settings')->get();
@@ -91,9 +132,7 @@ class OriginBillingReminder
         }
 
         if (! $sent) {
-            Log::warning('Origin billing reminder had no admin Telegram to send to', [
-                'host' => $server->host,
-            ]);
+            Log::warning('Origin billing reminder had no admin Telegram to send to', $context);
         }
 
         return $sent;
