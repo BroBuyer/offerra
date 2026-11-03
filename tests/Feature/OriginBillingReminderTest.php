@@ -33,7 +33,6 @@ class OriginBillingReminderTest extends TestCase
             'username' => 'root',
             'password' => 'secret',
             'hoster' => 'AlexHost',
-            'hoster_url' => 'https://my.alexhost.com',
             'paid_until' => '2026-11-04',
             'alerts_enabled' => true,
             'is_active' => true,
@@ -55,7 +54,8 @@ class OriginBillingReminderTest extends TestCase
                     return str_contains($text, 'Треба оплатити origin')
                         && str_contains($text, $due->host)
                         && str_contains($text, 'завтра')
-                        && str_contains($text, 'https://my.alexhost.com');
+                        && str_contains($text, 'AlexHost')
+                        && ! str_contains($text, 'Кабінет:');
                 })
                 ->andReturn(true);
         });
@@ -68,7 +68,7 @@ class OriginBillingReminderTest extends TestCase
         $this->assertSame(0, $second['reminded']);
     }
 
-    public function test_admin_can_save_paid_until_and_hoster_login(): void
+    public function test_admin_can_save_paid_until_without_hoster_login(): void
     {
         $admin = User::factory()->admin()->create();
         $server = OriginServer::query()->create([
@@ -89,9 +89,6 @@ class OriginBillingReminderTest extends TestCase
                 'password' => '',
                 'label' => 'ulta-1',
                 'hoster' => 'ultahost',
-                'hoster_url' => 'my.ultahost.com',
-                'hoster_email' => 'ops@example.com',
-                'hoster_password' => 'cabinet-pass',
                 'paid_until' => '2026-11-20',
                 'role' => 'pool',
                 'max_offers' => 0,
@@ -102,9 +99,10 @@ class OriginBillingReminderTest extends TestCase
 
         $server->refresh();
         $this->assertSame('2026-11-20', $server->paid_until?->toDateString());
-        $this->assertSame('https://my.ultahost.com', $server->hoster_url);
-        $this->assertSame('ops@example.com', $server->hoster_email);
-        $this->assertSame('cabinet-pass', $server->hoster_password);
+        $this->assertSame('ultahost', $server->hoster);
+        $this->assertArrayNotHasKey('hoster_url', $server->toPanelArray());
+        $this->assertArrayNotHasKey('hoster_email', $server->toPanelArray());
+        $this->assertArrayNotHasKey('hoster_password', $server->toPanelArray());
     }
 
     protected function tearDown(): void

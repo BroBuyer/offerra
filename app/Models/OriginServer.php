@@ -26,9 +26,6 @@ class OriginServer extends Model
         'password',
         'label',
         'hoster',
-        'hoster_url',
-        'hoster_email',
-        'hoster_password',
         'cpu',
         'ram',
         'disk',
@@ -48,7 +45,6 @@ class OriginServer extends Model
     {
         return [
             'password' => 'encrypted',
-            'hoster_password' => 'encrypted',
             'port' => 'integer',
             'max_offers' => 'integer',
             'is_active' => 'boolean',
@@ -57,20 +53,6 @@ class OriginServer extends Model
             'paid_until' => 'date',
             'paid_until_alerted_for' => 'date',
         ];
-    }
-
-    public static function normalizeHosterUrl(?string $url): ?string
-    {
-        $url = trim((string) $url);
-        if ($url === '') {
-            return null;
-        }
-
-        if (! preg_match('#^https?://#i', $url)) {
-            $url = 'https://'.$url;
-        }
-
-        return mb_substr($url, 0, 255);
     }
 
     public static function normalizeRole(?string $role): string
@@ -172,13 +154,6 @@ class OriginServer extends Model
             && filled($this->password);
     }
 
-    public function hasHosterLogin(): bool
-    {
-        return filled($this->hoster_url)
-            || filled($this->hoster_email)
-            || filled($this->hoster_password);
-    }
-
     /**
      * Whole days until paid_until (negative = overdue). Null when the date is empty.
      */
@@ -250,11 +225,6 @@ class OriginServer extends Model
             'label' => $this->label ?? '',
             'display_label' => $this->displayLabel(),
             'hoster' => $this->hoster ?? '',
-            'hoster_url' => $this->hoster_url ?? '',
-            'hoster_email' => $this->hoster_email ?? '',
-            'hoster_password' => filled($this->hoster_password) ? (string) $this->hoster_password : '',
-            'has_hoster_password' => filled($this->hoster_password),
-            'has_hoster_login' => $this->hasHosterLogin(),
             'cpu' => $this->cpu ?? '',
             'ram' => $this->ram ?? '',
             'disk' => $this->disk ?? '',

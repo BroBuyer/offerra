@@ -49,7 +49,6 @@ class OriginBillingReminder
         $label = $server->displayLabel();
         $until = $server->paid_until?->format('d.m.Y') ?: '—';
         $hoster = trim((string) ($server->hoster ?? ''));
-        $url = trim((string) ($server->hoster_url ?? ''));
         $offers = $this->offerCountOnHost($host);
 
         $when = match (true) {
@@ -65,7 +64,6 @@ class OriginBillingReminder
             $hoster !== '' ? "Хостер: {$hoster}" : null,
             "Оплачено до: {$until} ({$when})",
             "Оферів на цьому хості: {$offers}",
-            $url !== '' ? "Кабінет: {$url}" : null,
         ]));
     }
 

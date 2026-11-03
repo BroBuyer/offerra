@@ -45,10 +45,4 @@ class OriginServerBillingTest extends TestCase
         $this->assertFalse($server->dueForBillingReminder(Carbon::parse('2026-11-03')));
     }
 
-    public function test_hoster_url_gets_https(): void
-    {
-        $this->assertSame('https://my.alexhost.com', OriginServer::normalizeHosterUrl('my.alexhost.com'));
-        $this->assertSame('https://panel.ultahost.com/login', OriginServer::normalizeHosterUrl('https://panel.ultahost.com/login'));
-        $this->assertNull(OriginServer::normalizeHosterUrl('  '));
-    }
 }

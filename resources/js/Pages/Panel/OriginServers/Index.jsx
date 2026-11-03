@@ -60,15 +60,6 @@ function paidUntilView(server) {
     return { label: dateLabel, tone: '' };
 }
 
-function copyText(value) {
-    const text = String(value || '');
-    if (!text || !navigator.clipboard?.writeText) {
-        return Promise.resolve(false);
-    }
-
-    return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
-}
-
 function formErrorList(formErrors) {
     return Object.values(formErrors || {}).flat().filter(Boolean);
 }
@@ -117,9 +108,6 @@ const emptyCreate = (defaultPath) => ({
     disk: '',
     price: '',
     hoster: '',
-    hoster_url: '',
-    hoster_email: '',
-    hoster_password: '',
     paid_until: '',
     deploy_path_template: defaultPath,
     role: 'pool',
@@ -145,9 +133,6 @@ export default function OriginServersIndex({
     const [savingEdit, setSavingEdit] = useState(false);
     const [savingCreate, setSavingCreate] = useState(false);
     const [submitError, setSubmitError] = useState('');
-    const [openCredsId, setOpenCredsId] = useState(null);
-    const [copiedKey, setCopiedKey] = useState('');
-
     const createForm = useForm(emptyCreate(defaultPath));
 
     const [editData, setEditData] = useState({
@@ -161,9 +146,6 @@ export default function OriginServersIndex({
         disk: '',
         price: '',
         hoster: '',
-        hoster_url: '',
-        hoster_email: '',
-        hoster_password: '',
         paid_until: '',
         deploy_path_template: defaultPath,
         role: 'pool',
@@ -171,23 +153,10 @@ export default function OriginServersIndex({
         is_active: true,
         alerts_enabled: true,
         has_password: false,
-        has_hoster_password: false,
     });
 
     const setEditField = (key, value) => {
         setEditData((prev) => ({ ...prev, [key]: value }));
-    };
-
-    const copyField = (id, value) => {
-        copyText(value).then((ok) => {
-            if (!ok) {
-                return;
-            }
-            setCopiedKey(id);
-            window.setTimeout(() => {
-                setCopiedKey((current) => (current === id ? '' : current));
-            }, 1200);
-        });
     };
 
     const openCreate = () => {
@@ -246,9 +215,6 @@ export default function OriginServersIndex({
             disk: String(data.disk || '').trim() || null,
             price: String(data.price || '').trim() || null,
             hoster: String(data.hoster || '').trim() || null,
-            hoster_url: String(data.hoster_url || '').trim() || null,
-            hoster_email: String(data.hoster_email || '').trim() || null,
-            hoster_password: String(data.hoster_password || ''),
             paid_until: String(data.paid_until || '').trim() || null,
             deploy_path_template: String(data.deploy_path_template || defaultPath),
             role: String(data.role || 'pool'),
@@ -290,9 +256,6 @@ export default function OriginServersIndex({
             disk: server.disk ?? '',
             price: server.price ?? '',
             hoster: server.hoster ?? '',
-            hoster_url: server.hoster_url ?? '',
-            hoster_email: server.hoster_email ?? '',
-            hoster_password: server.hoster_password ?? '',
             paid_until: server.paid_until ?? '',
             deploy_path_template: server.deploy_path_template || defaultPath,
             role: server.role || 'pool',
@@ -300,7 +263,6 @@ export default function OriginServersIndex({
             is_active: server.is_active !== false,
             alerts_enabled: server.alerts_enabled !== false,
             has_password: Boolean(server.has_password || server.has_ssh || server.password),
-            has_hoster_password: Boolean(server.has_hoster_password || server.hoster_password),
         });
     };
 
@@ -323,9 +285,6 @@ export default function OriginServersIndex({
             disk: String(editData.disk || '').trim(),
             price: String(editData.price || '').trim(),
             hoster: String(editData.hoster || '').trim(),
-            hoster_url: String(editData.hoster_url || '').trim(),
-            hoster_email: String(editData.hoster_email || '').trim(),
-            hoster_password: String(editData.hoster_password || '').trim(),
             paid_until: String(editData.paid_until || '').trim(),
             deploy_path_template: String(editData.deploy_path_template || defaultPath),
             role: String(editData.role || 'pool'),
@@ -577,60 +536,7 @@ export default function OriginServersIndex({
                                     )}
                                     <div className="field-hint">{formatCheckedAt(server.health?.checked_at)}</div>
                                 </td>
-                                <td className="origin-hoster-cell">
-                                    {server.hoster || server.has_hoster_login ? (
-                                        <>
-                                            <button
-                                                type="button"
-                                                className="origin-hoster-toggle"
-                                                onClick={() => setOpenCredsId(
-                                                    openCredsId === server.id ? null : server.id,
-                                                )}
-                                            >
-                                                {server.hoster || 'кабінет'}
-                                            </button>
-                                            {openCredsId === server.id && (
-                                                <div className="origin-hoster-flyout">
-                                                    {server.hoster_url ? (
-                                                        <a
-                                                            href={server.hoster_url}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                        >
-                                                            {server.hoster_url}
-                                                        </a>
-                                                    ) : (
-                                                        <span className="field-hint">немає посилання</span>
-                                                    )}
-                                                    <div className="origin-hoster-flyout__row">
-                                                        <span>{server.hoster_email || '—'}</span>
-                                                        {server.hoster_email && (
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-ghost btn-sm"
-                                                                onClick={() => copyField(`${server.id}-email`, server.hoster_email)}
-                                                            >
-                                                                {copiedKey === `${server.id}-email` ? 'ок' : 'copy'}
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                    <div className="origin-hoster-flyout__row">
-                                                        <span>{server.has_hoster_password ? 'пароль є' : 'без пароля'}</span>
-                                                        {server.hoster_password && (
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-ghost btn-sm"
-                                                                onClick={() => copyField(`${server.id}-pass`, server.hoster_password)}
-                                                            >
-                                                                {copiedKey === `${server.id}-pass` ? 'ок' : 'copy'}
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </>
-                                    ) : '—'}
-                                </td>
+                                <td>{server.hoster || '—'}</td>
                                 <td>
                                     {(() => {
                                         const paid = paidUntilView(server);
@@ -784,38 +690,6 @@ export default function OriginServersIndex({
                                     type="date"
                                     value={editData.paid_until}
                                     onChange={(e) => setEditField('paid_until', e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="field-row">
-                            <div className="field">
-                                <label>Кабінет хостера</label>
-                                <input
-                                    value={editData.hoster_url}
-                                    onChange={(e) => setEditField('hoster_url', e.target.value)}
-                                    placeholder="https://my.alexhost.com"
-                                    autoComplete="off"
-                                />
-                            </div>
-                            <div className="field">
-                                <label>Email / логін</label>
-                                <input
-                                    value={editData.hoster_email}
-                                    onChange={(e) => setEditField('hoster_email', e.target.value)}
-                                    placeholder="you@hoster.com"
-                                    autoComplete="off"
-                                />
-                            </div>
-                            <div className="field">
-                                <label htmlFor="os-edit-hoster-pass">Пароль кабінету</label>
-                                <SecretInput
-                                    id="os-edit-hoster-pass"
-                                    value={editData.hoster_password}
-                                    onChange={(e) => setEditField('hoster_password', e.target.value)}
-                                    autoComplete="new-password"
-                                    data-1p-ignore="true"
-                                    data-lpignore="true"
-                                    placeholder={editData.has_hoster_password ? 'збережений' : 'пароль'}
                                 />
                             </div>
                         </div>
@@ -1017,35 +891,6 @@ export default function OriginServersIndex({
                                         type="date"
                                         value={createForm.data.paid_until}
                                         onChange={(e) => createForm.setData('paid_until', e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="field-row">
-                                <div className="field">
-                                    <label htmlFor="os-hoster-url">Кабінет хостера</label>
-                                    <input
-                                        id="os-hoster-url"
-                                        value={createForm.data.hoster_url}
-                                        onChange={(e) => createForm.setData('hoster_url', e.target.value)}
-                                        placeholder="https://my.alexhost.com"
-                                    />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="os-hoster-email">Email / логін</label>
-                                    <input
-                                        id="os-hoster-email"
-                                        value={createForm.data.hoster_email}
-                                        onChange={(e) => createForm.setData('hoster_email', e.target.value)}
-                                        placeholder="you@hoster.com"
-                                    />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="os-hoster-pass">Пароль кабінету</label>
-                                    <SecretInput
-                                        id="os-hoster-pass"
-                                        value={createForm.data.hoster_password}
-                                        onChange={(e) => createForm.setData('hoster_password', e.target.value)}
-                                        autoComplete="new-password"
                                     />
                                 </div>
                             </div>
