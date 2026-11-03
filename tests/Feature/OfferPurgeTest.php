@@ -52,10 +52,10 @@ class OfferPurgeTest extends TestCase
     {
         Queue::fake();
 
-        $user = User::factory()->create();
-        $offer = $this->makeOffer($user, 'keep-in-archive.com');
+        $admin = User::factory()->admin()->create();
+        $offer = $this->makeOffer($admin, 'keep-in-archive.com');
 
-        $this->actingAs($user)
+        $this->actingAs($admin)
             ->post(route('offers.archive', $offer))
             ->assertRedirect();
 

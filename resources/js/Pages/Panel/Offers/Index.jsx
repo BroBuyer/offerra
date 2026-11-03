@@ -1304,6 +1304,7 @@ export default function OffersIndex({
                 )}
                 {canManageOffer(offer) && !['archiving', 'purging', 'archived'].includes(offer.status) && (
                     <>
+                        {auth?.user?.can_archive_offers && (
                         <button
                             type="button"
                             className="btn btn-ghost btn-sm btn-shelve"
@@ -1318,6 +1319,7 @@ export default function OffersIndex({
                                 <ArchiveIcon />
                             )}
                         </button>
+                        )}
                         <button
                             type="button"
                             className="btn btn-ghost btn-sm btn-purge"

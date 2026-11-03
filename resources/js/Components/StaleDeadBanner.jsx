@@ -13,7 +13,7 @@ function formatScanAt(value) {
     return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-export default function StaleDeadBanner({ hint }) {
+export default function StaleDeadBanner({ hint, canArchive = false }) {
     const [busy, setBusy] = useState(false);
     const count = Number(hint?.count ?? 0);
     if (!count || count < 1) {
@@ -47,6 +47,7 @@ export default function StaleDeadBanner({ hint }) {
                     </span>
                 ) : null}
             </div>
+            {canArchive ? (
             <button
                 type="button"
                 className="btn btn-ghost btn-sm"
@@ -55,6 +56,7 @@ export default function StaleDeadBanner({ hint }) {
             >
                 {busy ? 'Архівація…' : 'Заархівувати всі'}
             </button>
+            ) : null}
         </div>
     );
 }

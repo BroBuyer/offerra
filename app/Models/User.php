@@ -76,11 +76,16 @@ class User extends Authenticatable
     }
 
     /**
-     * Edit / deploy / archive / restore any user's offers.
+     * Edit / deploy / restore any user's offers.
      */
     public function canManageAllOffers(): bool
     {
         return $this->isAdmin() || (bool) $this->can_manage_all_offers;
+    }
+
+    public function canArchiveOffers(): bool
+    {
+        return $this->isAdmin();
     }
 
     public function canManageOffer(Offer $offer): bool

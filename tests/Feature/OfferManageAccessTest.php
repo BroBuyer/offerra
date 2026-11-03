@@ -13,15 +13,14 @@ class OfferManageAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_regular_user_cannot_archive_someone_elses_offer(): void
+    public function test_regular_user_cannot_archive_own_offer(): void
     {
         Queue::fake();
 
         $owner = User::factory()->create();
-        $other = User::factory()->create();
-        $offer = $this->makeOffer($owner, 'owned-by-other.com');
+        $offer = $this->makeOffer($owner, 'owned-by-user.com');
 
-        $this->actingAs($other)
+        $this->actingAs($owner)
             ->post(route('offers.archive', $offer))
             ->assertForbidden();
 
@@ -29,7 +28,7 @@ class OfferManageAccessTest extends TestCase
         Queue::assertNothingPushed();
     }
 
-    public function test_manage_all_user_can_archive_someone_elses_offer(): void
+    public function test_manage_all_user_cannot_archive_offers(): void
     {
         Queue::fake();
 
@@ -38,12 +37,37 @@ class OfferManageAccessTest extends TestCase
         $offer = $this->makeOffer($owner, 'managed-by-teammate.com');
 
         $this->actingAs($manager)
+            ->post(route('offers.archive', $offer))
+            ->assertForbidden();
+
+        $this->assertSame('generated', $offer->fresh()->status);
+        Queue::assertNothingPushed();
+    }
+
+    public function test_admin_can_archive_any_offer(): void
+    {
+        Queue::fake();
+
+        $owner = User::factory()->create();
+        $admin = User::factory()->admin()->create();
+        $offer = $this->makeOffer($owner, 'archived-by-admin.com');
+
+        $this->actingAs($admin)
             ->from(route('offers.index'))
             ->post(route('offers.archive', $offer))
             ->assertRedirect();
 
         $this->assertSame('archiving', $offer->fresh()->status);
         Queue::assertPushed(ArchiveOfferJob::class, fn (ArchiveOfferJob $job) => $job->offerId === $offer->id);
+    }
+
+    public function test_regular_user_cannot_bulk_archive_stale_dead(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('offers.stale-dead.archive'))
+            ->assertForbidden();
     }
 
     public function test_regular_user_cannot_restore_someone_elses_offer(): void

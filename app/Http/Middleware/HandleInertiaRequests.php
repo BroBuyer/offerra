@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'role' => $user->isAdmin() ? User::ROLE_ADMIN : ($user->role ?: User::ROLE_USER),
                     'role_label' => $user->isAdmin() ? 'Адмін' : $user->roleLabel(),
+                    'can_archive_offers' => $user->canArchiveOffers(),
                 ] : null,
             ],
             'flash' => [

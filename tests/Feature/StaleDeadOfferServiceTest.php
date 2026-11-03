@@ -207,7 +207,7 @@ class StaleDeadOfferServiceTest extends TestCase
     {
         Queue::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
         $this->service->scan();
         $this->assertSame(1, $this->service->hintFor($user)['count']);
@@ -220,6 +220,19 @@ class StaleDeadOfferServiceTest extends TestCase
 
         $this->makeOffer($user, 'Beta', 'beta.online', now()->subDays(40));
         $this->assertSame(0, $this->service->hintFor($user)['count']);
+    }
+
+    public function test_non_admin_cannot_archive_the_snapshot(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create();
+        $this->makeOffer($user, 'Acme', 'acme.online', now()->subDays(40));
+        $this->service->scan();
+
+        $this->assertSame(0, $this->service->archiveAllFor($user));
+        Queue::assertNothingPushed();
+        $this->assertSame(1, $this->service->hintFor($user)['count']);
     }
 
     /**

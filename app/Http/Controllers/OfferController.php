@@ -971,6 +971,8 @@ class OfferController extends Controller
 
     public function archiveStaleDead(StaleDeadOfferService $staleDead): RedirectResponse
     {
+        $this->authorizeArchive();
+
         $enqueued = $staleDead->archiveAllFor(auth()->user());
 
         if ($enqueued === 0) {
@@ -986,7 +988,7 @@ class OfferController extends Controller
 
     public function archive(Offer $offer, OfferTeardownService $teardown): RedirectResponse
     {
-        $this->authorizeOfferManagement($offer);
+        $this->authorizeArchive();
 
         try {
             $teardown->enqueueArchive($offer, auth()->user());
@@ -1022,7 +1024,7 @@ class OfferController extends Controller
 
     public function retryArchive(Offer $offer, OfferTeardownService $teardown): RedirectResponse
     {
-        $this->authorizeOfferManagement($offer);
+        $this->authorizeArchive();
 
         if ($offer->status !== 'teardown_failed') {
             return redirect()->back()->withErrors(['archive' => 'Повтор доступний лише для офферів з помилкою архівації.']);
@@ -1079,6 +1081,13 @@ class OfferController extends Controller
         $user = auth()->user();
 
         if (! $user->canManageOffer($offer)) {
+            abort(403);
+        }
+    }
+
+    private function authorizeArchive(): void
+    {
+        if (! auth()->user()?->canArchiveOffers()) {
             abort(403);
         }
     }
