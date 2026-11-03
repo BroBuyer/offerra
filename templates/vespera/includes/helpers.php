@@ -56,6 +56,7 @@ function currency_symbol(?string $code = null): string
         'KRW' => '₩',
         'CHF' => 'CHF',
         'EUR' => '€',
+        'SAR' => '﷼',
         default => $code,
     };
 }

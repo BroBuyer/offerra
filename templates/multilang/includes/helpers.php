@@ -55,6 +55,7 @@ function lang_flag_code(string $lang): string
         'lv' => 'lv',
         'lt' => 'lt',
         'sl' => 'si',
+        'ar' => 'sa',
     ];
 
     return $map[strtolower($lang)] ?? strtolower($lang);
@@ -164,6 +165,11 @@ function multilang_supported_codes(): array
     return $supported;
 }
 
+function html_dir(): string
+{
+    return strtolower((string) (defined('SITE_LANG') ? SITE_LANG : 'en')) === 'ar' ? 'rtl' : 'ltr';
+}
+
 function site_locale(): string
 {
     $map = [
@@ -171,7 +177,7 @@ function site_locale(): string
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'sr' => 'sr-RS', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU', 'ro' => 'ro-RO',
         'sv' => 'sv-SE', 'fi' => 'fi-FI', 'el' => 'el-GR', 'tr' => 'tr-TR',
-        'ms' => 'ms-MY',
+        'ms' => 'ms-MY', 'ar' => 'ar-SA',
         'id' => 'id-ID',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',

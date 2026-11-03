@@ -15,6 +15,11 @@ function site_domain(): string
     return parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost';
 }
 
+function html_dir(): string
+{
+    return strtolower((string) (defined('SITE_LANG') ? SITE_LANG : 'en')) === 'ar' ? 'rtl' : 'ltr';
+}
+
 function site_locale(): string
 {
     $map = [
@@ -22,7 +27,7 @@ function site_locale(): string
         'it' => 'it-IT', 'es' => 'es-ES', 'pt' => 'pt-PT', 'hr' => 'hr-HR', 'sr' => 'sr-RS', 'nl' => 'nl-NL', 'no' => 'nb-NO', 'da' => 'da-DK',
         'uk' => 'uk-UA', 'ru' => 'ru-RU', 'cs' => 'cs-CZ', 'sk' => 'sk-SK', 'hu' => 'hu-HU',
         'el' => 'el-GR', 'sv' => 'sv-SE', 'fi' => 'fi-FI', 'ro' => 'ro-RO', 'tr' => 'tr-TR',
-        'ms' => 'ms-MY',
+        'ms' => 'ms-MY', 'ar' => 'ar-SA',
         'ja' => 'ja-JP',
         'lv' => 'lv-LV',
         'sl' => 'sl-SI',

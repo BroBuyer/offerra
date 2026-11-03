@@ -1,0 +1,63 @@
+.hero{margin-top:50px}.hero,.register.no-bg .content-wrap{padding:32px 0}.hero .content-wrap{padding:24px;border-radius:16px}.hero .content-wrap.bg-or,.hero .content-wrap.bg-or p{display:flex;align-items:center;justify-content:center}.hero .content-wrap.bg-or{background-color:#EAD8D4;flex-direction:column;gap:24px}.hero .content-wrap h1,.hero .content-wrap.bg-or p a{font-weight:700}.hero .content-wrap h1{font-size:21px;line-height:120%;text-align:center}.hero .content-wrap.bg-or p{gap:16px}.hero .content-wrap.bg-or p img{width:65px;height:65px}.hero .content-wrap.bg-or p a{text-decoration:unset;font-size:24px;line-height:160%;color:#2C2C2C;transition:all 0.5s ease}.hero .content-wrap.bg-or p a:hover{color:#EE6129}.register h2{text-align:left}.register .leadform{display:flex;align-items:center;justify-content:center;flex-direction:column;padding-top:32px;max-width:610px;margin:auto}.register .leadform input{padding:15px 17px 14px 17px;border:1px solid gray;width:100%;margin-bottom:5px;border-radius:8px;color:#010E12}.register .leadform input::placeholder{color:#757575}.register .leadform .orange-btn{line-height:16px;margin:5px 0 20px 0}.register .leadform .consent-text{margin-bottom:0;font-size:12px;line-height:18px}.register .leadform .consent-text a{font-size:inherit;font-weight:inherit;color:inherit}
+.register.no-bg .content-wrap {
+    gap: 24px;
+}
+.hero .heading {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+.hero.register.no-bg {
+    padding-bottom: 0;
+}
+
+.hero.register.no-bg .heading p {
+    width: 100%;
+    text-align: left;
+}
+
+.hero.register.no-bg .leadform {
+    padding: 32px 20px;
+}
+
+.cards-row .card-img .text {
+    background-color: #fff;
+}
+
+section.opportunities.v_2 .bottom {
+    gap: 24px;
+}
+
+section.opportunities.v_2 .bottom .orange-btn {
+    width: fit-content;
+    max-width: 100%;
+    margin-left: auto;
+    font-size: 18px;
+    padding: 16px 20px;
+}
+
+.register.v_2 .content-wrap {
+    gap: 24px;
+    color: #fff;
+}
+
+.register.v_2 .content-wrap img {
+    margin: 0 auto;
+    display: block;
+}
+
+.register.v_2 .content-wrap li {
+    line-height: 1.6;
+    margin: 4px 0;
+}
+
+.register.v_2 .content-wrap li::marker {
+  color: #EE6129;
+}
+
+.register.v_2.last .content-wrap h3 {
+    margin-left: 0;
+    text-align: left;
+}
