@@ -19,8 +19,8 @@ const PASS = process.env.PANEL_PASS;
 const USER = process.env.PANEL_USER || "root";
 const PORT = Number(process.env.PANEL_PORT || 22);
 const REMOTE = process.env.PANEL_PATH || "/var/www/offerra";
-const REPO_HTTPS = process.env.REPO_URL || "https://github.com/BroBuyer/offerra.git";
-const REPO_SSH = process.env.REPO_SSH || "git@github.com:BroBuyer/offerra.git";
+const REPO_HTTPS = process.env.REPO_URL || "https://github.com/alextech2324/offerra.git";
+const REPO_SSH = process.env.REPO_SSH || "git@github.com:alextech2324/offerra.git";
 
 const args = process.argv.slice(2);
 const ALIGN = args.includes("--align");
