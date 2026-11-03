@@ -43,14 +43,49 @@ class OfferClickIdTest extends TestCase
         $this->assertArrayNotHasKey('aff_sub4', $lead);
     }
 
+    public function test_keitaro_stub_disables_tracker_and_reuses_click_id(): void
+    {
+        $json = $this->landerEval(
+            '$_GET["subid"] = "abc12345def67890";'
+            .'echo json_encode(['
+            .'  "enabled" => keitaro_is_enabled(),'
+            .'  "track" => keitaro_should_track(),'
+            .'  "subid" => keitaro_subid(),'
+            .'  "click" => offer_click_id(),'
+            .']);'
+        );
+        $data = json_decode($json, true);
+
+        $this->assertIsArray($data);
+        $this->assertFalse($data['enabled']);
+        $this->assertFalse($data['track']);
+        $this->assertSame('abc12345def67890', $data['subid']);
+        $this->assertSame('abc12345def67890', $data['click']);
+    }
+
+    public function test_lead_runtime_push_covers_keitaro_stub_and_processor(): void
+    {
+        $files = app(\App\Services\DeployService::class)->leadRuntimeRelativeFiles();
+
+        $this->assertContains('includes/config.php', $files);
+        $this->assertContains('includes/helpers.php', $files);
+        $this->assertContains('includes/keitaro.php', $files);
+        $this->assertContains('integration/LeadProcessor.php', $files);
+        $this->assertContains('integration/send.php', $files);
+    }
+
     private function landerEval(string $code): string
     {
         $helpers = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'default'.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'helpers.php';
+        $stub = app(\App\Services\OfferGenerator::class)->keitaroCompatStubSource();
+        $stubFile = tempnam(sys_get_temp_dir(), 'kts');
+        file_put_contents($stubFile, $stub);
         $script = "<?php\n"
             ."define('SITE_NAME', 'ClickIdBrand');\n"
             ."define('SITE_URL', 'https://click-id.test');\n"
             ."define('SITE_LANG', 'en');\n"
             .'require '.var_export($helpers, true).";\n"
+            .'require '.var_export($stubFile, true).";\n"
             .$code
             ."\n";
 
@@ -60,6 +95,7 @@ class OfferClickIdTest extends TestCase
         $cmd = escapeshellarg(PHP_BINARY).' '.escapeshellarg($tmp);
         $output = (string) shell_exec($cmd.' 2>&1');
         @unlink($tmp);
+        @unlink($stubFile);
 
         return trim($output);
     }

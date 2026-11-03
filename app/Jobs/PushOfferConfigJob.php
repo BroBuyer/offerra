@@ -12,7 +12,7 @@ class PushOfferConfigJob implements ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 120;
+    public int $timeout = 180;
 
     public int $tries = 2;
 

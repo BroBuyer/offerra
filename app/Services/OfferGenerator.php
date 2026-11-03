@@ -829,6 +829,93 @@ PHP;
                 File::copy($src, $destination.DIRECTORY_SEPARATOR.$filename);
             }
         }
+
+        $this->writeKeitaroCompatStub($destination);
+    }
+
+    public function writeKeitaroCompatStub(string $includesDir): void
+    {
+        File::ensureDirectoryExists($includesDir);
+        File::put($includesDir.DIRECTORY_SEPARATOR.'keitaro.php', $this->keitaroCompatStubSource());
+    }
+
+    public function keitaroCompatStubSource(): string
+    {
+        return <<<'PHP'
+<?php
+/**
+ * Offerra no longer talks to Keitaro. Old landers still call these helpers
+ * from localized forms / index.php — keep them as no-ops so pages do not 500.
+ */
+if (! function_exists('keitaro_is_enabled')) {
+    function keitaro_is_enabled(): bool
+    {
+        return false;
+    }
+}
+
+if (! function_exists('keitaro_should_track')) {
+    function keitaro_should_track(): bool
+    {
+        return false;
+    }
+}
+
+if (! function_exists('keitaro_session_key')) {
+    function keitaro_session_key(): string
+    {
+        return function_exists('site_slug') ? site_slug().'_cid' : 'offerra_cid';
+    }
+}
+
+if (! function_exists('keitaro_subid')) {
+    function keitaro_subid(): string
+    {
+        return function_exists('offer_click_id') ? offer_click_id() : '';
+    }
+}
+
+if (! function_exists('keitaro_create_client')) {
+    function keitaro_create_client()
+    {
+        return null;
+    }
+}
+
+if (! function_exists('keitaro_client_subid')) {
+    function keitaro_client_subid($client): string
+    {
+        return keitaro_subid();
+    }
+}
+
+if (! function_exists('keitaro_client_subid_from_result')) {
+    function keitaro_client_subid_from_result($client): string
+    {
+        return keitaro_subid();
+    }
+}
+
+if (! function_exists('keitaro_store_subid')) {
+    function keitaro_store_subid(string $subid): void
+    {
+        if (! function_exists('offer_click_id_normalize')) {
+            return;
+        }
+
+        $id = offer_click_id_normalize($subid);
+        if ($id !== '') {
+            $GLOBALS['_offer_cid'] = $id;
+        }
+    }
+}
+
+if (! function_exists('keitaro_bootstrap')) {
+    function keitaro_bootstrap(): void
+    {
+    }
+}
+PHP;
     }
 
     /**

@@ -330,7 +330,9 @@ class DeployService
     }
 
     /**
-     * Refresh local includes/config.php and upload only that file to origin.
+     * Refresh local lander PHP and upload config + helpers + integration
+     * (not HTML/static). Used after Keitaro removal so live send.php
+     * stops verifying clicks against the tracker.
      */
     public function pushConfig(User $user, Offer $offer): void
     {
@@ -339,24 +341,51 @@ class DeployService
 
         $this->generator->refreshConfig($offer);
         $localPath = $this->generator->ensureLocalFolder($offer);
-        $localConfig = $localPath.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'config.php';
+        $uploaded = [];
 
-        if (! File::isFile($localConfig)) {
-            throw new RuntimeException("Local config.php missing for offer #{$offer->id}");
+        foreach ($this->leadRuntimeRelativeFiles() as $relative) {
+            $local = $localPath.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative);
+            if (! File::isFile($local)) {
+                continue;
+            }
+
+            $this->origin->uploadOfferRelativeFile(
+                $settings,
+                $offer->domain,
+                $local,
+                $relative,
+            );
+            $uploaded[] = $relative;
         }
 
-        $this->origin->uploadOfferRelativeFile(
-            $settings,
-            $offer->domain,
-            $localConfig,
-            'includes/config.php',
-        );
+        if ($uploaded === []) {
+            throw new RuntimeException("Lead runtime files missing for offer #{$offer->id}");
+        }
 
-        Log::info('Pushed config.php to origin', [
+        Log::info('Pushed lead runtime PHP to origin', [
             'offer' => $offer->id,
             'domain' => $offer->domain,
             'host' => $settings->deploy_host,
+            'files' => $uploaded,
         ]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function leadRuntimeRelativeFiles(): array
+    {
+        return [
+            'includes/config.php',
+            'includes/helpers.php',
+            'includes/keitaro.php',
+            'integration/LeadProcessor.php',
+            'integration/send.php',
+            'integration/FormToken.php',
+            'integration/LeadFieldGuard.php',
+            'integration/form-token.php',
+            'integration/visitor-geo.php',
+        ];
     }
 
     /**

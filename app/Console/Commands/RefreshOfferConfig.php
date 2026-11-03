@@ -14,11 +14,11 @@ class RefreshOfferConfig extends Command
     protected $signature = 'offers:refresh-config
         {offer? : ID оффера (або --all)}
         {--all : Усі live офери}
-        {--push : Синхронно залити includes/config.php на origin}
+        {--push : Синхронно залити config + helpers + integration PHP на origin}
         {--queue-push : Поставити PushOfferConfigJob у чергу deploy}
         {--limit=0 : Ліміт при --all (0 = усі)}';
 
-    protected $description = 'Перегенерувати includes/config.php з актуальних налаштувань';
+    protected $description = 'Перегенерувати config/helpers/integration і за бажанням залити на origin';
 
     public function handle(OfferGenerator $generator, DeployService $deploy): int
     {
