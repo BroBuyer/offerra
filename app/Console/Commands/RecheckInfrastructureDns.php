@@ -24,6 +24,7 @@ class RecheckInfrastructureDns extends Command
 
         $this->settlePubliclyReadyRegistrarNs($offers);
         $this->settleLiveDeployedOffers($offers);
+        $this->promoteQueuedRechecksToDeploy();
 
         $pendingOffers = $offers->filter(fn ($offer) => $offer->dnsStatus() === 'pending');
 
@@ -105,6 +106,23 @@ class RecheckInfrastructureDns extends Command
     }
 
     /**
+     * Recheck used to sit on `default` and freeze behind mass CRM/GSC jobs.
+     * Move any leftover unreserved rows onto `deploy` so they run now.
+     */
+    private function promoteQueuedRechecksToDeploy(): void
+    {
+        $moved = DB::table('jobs')
+            ->where('queue', 'default')
+            ->whereNull('reserved_at')
+            ->where('payload', 'like', '%RecheckInfrastructureDnsJob%')
+            ->update(['queue' => 'deploy']);
+
+        if ($moved > 0) {
+            $this->info("moved DNS rechecks to deploy queue: {$moved}");
+        }
+    }
+
+    /**
      * @return array<int, true>
      */
     private function queuedRecheckOfferIds(): array
@@ -112,7 +130,6 @@ class RecheckInfrastructureDns extends Command
         $alreadyQueuedIds = [];
 
         DB::table('jobs')
-            ->where('queue', 'default')
             ->where('payload', 'like', '%RecheckInfrastructureDnsJob%')
             ->orderBy('id')
             ->select(['id', 'payload'])

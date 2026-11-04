@@ -6,10 +6,12 @@ use App\Jobs\DeployOfferJob;
 use App\Jobs\InspectOfferGoogleIndexJob;
 use App\Jobs\ProbeOfferAvailabilityJob;
 use App\Jobs\PushOfferConfigJob;
+use App\Jobs\RecheckInfrastructureDnsJob;
 use App\Jobs\SubmitOfferToGscJob;
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -26,6 +28,7 @@ class BackgroundJobQueueTest extends TestCase
         $this->assertSame('gsc-resubmit:1', (new SubmitOfferToGscJob(1, true))->uniqueId());
         $this->assertSame('default', (new ProbeOfferAvailabilityJob(1))->queue);
         $this->assertSame('deploy', (new DeployOfferJob(1))->queue);
+        $this->assertSame('deploy', (new RecheckInfrastructureDnsJob(1))->queue);
     }
 
     public function test_refresh_config_queue_push_stays_off_deploy(): void
@@ -55,5 +58,64 @@ class BackgroundJobQueueTest extends TestCase
         Queue::assertNotPushed(PushOfferConfigJob::class, function (PushOfferConfigJob $job) {
             return $job->queue === 'deploy';
         });
+    }
+
+    public function test_dns_recheck_command_moves_unreserved_jobs_to_deploy(): void
+    {
+        $now = time();
+        DB::table('jobs')->insert([
+            [
+                'queue' => 'default',
+                'payload' => 'App\\Jobs\\RecheckInfrastructureDnsJob leftover',
+                'attempts' => 0,
+                'reserved_at' => null,
+                'available_at' => $now,
+                'created_at' => $now,
+            ],
+            [
+                'queue' => 'default',
+                'payload' => 'App\\Jobs\\RecheckInfrastructureDnsJob running',
+                'attempts' => 1,
+                'reserved_at' => $now,
+                'available_at' => $now,
+                'created_at' => $now,
+            ],
+        ]);
+
+        $this->artisan('offers:recheck-infra-dns')
+            ->expectsOutputToContain('moved DNS rechecks to deploy queue: 1')
+            ->assertSuccessful();
+
+        $this->assertSame(1, DB::table('jobs')->where('queue', 'deploy')->whereNull('reserved_at')->count());
+        $this->assertSame(1, DB::table('jobs')->where('queue', 'default')->whereNotNull('reserved_at')->count());
+    }
+
+    public function test_dns_recheck_command_queues_pending_offers_on_deploy(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create();
+        Offer::query()->create([
+            'user_id' => $user->id,
+            'folder' => 'pending-dns.test',
+            'brand' => 'PendingDns',
+            'domain' => 'pending-dns.test',
+            'geo' => 'ZA',
+            'lang' => 'en',
+            'template' => 'default',
+            'status' => 'deployed',
+            'from_search_team' => false,
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'availability_status' => 'unchecked',
+            'infra_meta' => [
+                'dns' => 'pending',
+                'dynadot_ns' => 'done',
+            ],
+        ]);
+
+        $this->artisan('offers:recheck-infra-dns')->assertSuccessful();
+
+        Queue::assertPushedOn('deploy', RecheckInfrastructureDnsJob::class);
     }
 }

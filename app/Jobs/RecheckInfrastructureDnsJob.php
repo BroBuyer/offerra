@@ -26,7 +26,13 @@ class RecheckInfrastructureDnsJob implements ShouldBeUnique, ShouldQueue
      */
     public int $uniqueFor = 200;
 
-    public function __construct(public int $offerId) {}
+    public function __construct(public int $offerId)
+    {
+        // Time-critical: default is shared with mass CRM/GSC jobs, so a
+        // 500-job PushOfferConfig batch leaves «Очікується DNS» orange
+        // for hours even when the site is already live.
+        $this->onQueue('deploy');
+    }
 
     public function uniqueId(): string
     {
