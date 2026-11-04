@@ -172,6 +172,8 @@ class InfrastructureProvisioner
             'infra_meta' => $meta,
         ]);
 
+        app(OfferGscSubmitter::class)->queueAfterDns($offer->fresh() ?? $offer);
+
         return true;
     }
 

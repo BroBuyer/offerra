@@ -33,7 +33,8 @@ class SubmitOfferToGscJob implements ShouldBeUnique, ShouldQueue
 
     public function __construct(public int $offerId, public bool $force = false)
     {
-        $this->onQueue('default');
+        // Ahead of mass CRM/GSC-inspect jobs on `default`.
+        $this->onQueue('gsc');
     }
 
     public function uniqueId(): string

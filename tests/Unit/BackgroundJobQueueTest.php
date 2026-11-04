@@ -23,10 +23,10 @@ class BackgroundJobQueueTest extends TestCase
     {
         $this->assertSame('default', (new PushOfferConfigJob(1))->queue);
         $this->assertSame('default', (new InspectOfferGoogleIndexJob(1))->queue);
-        $this->assertSame('default', (new SubmitOfferToGscJob(1))->queue);
+        $this->assertSame('gsc', (new SubmitOfferToGscJob(1))->queue);
         $this->assertSame('gsc-submit:1', (new SubmitOfferToGscJob(1))->uniqueId());
         $this->assertSame('gsc-resubmit:1', (new SubmitOfferToGscJob(1, true))->uniqueId());
-        $this->assertSame('default', (new ProbeOfferAvailabilityJob(1))->queue);
+        $this->assertSame('gsc', (new ProbeOfferAvailabilityJob(1))->queue);
         $this->assertSame('deploy', (new DeployOfferJob(1))->queue);
         $this->assertSame('deploy', (new RecheckInfrastructureDnsJob(1))->queue);
     }
@@ -117,5 +117,51 @@ class BackgroundJobQueueTest extends TestCase
         $this->artisan('offers:recheck-infra-dns')->assertSuccessful();
 
         Queue::assertPushedOn('deploy', RecheckInfrastructureDnsJob::class);
+    }
+
+    public function test_pending_gsc_command_moves_jobs_and_queues_live_offers(): void
+    {
+        Queue::fake();
+        config(['services.google.client_id' => 'test-client']);
+
+        $now = time();
+        DB::table('jobs')->insert([
+            'queue' => 'default',
+            'payload' => 'App\\Jobs\\SubmitOfferToGscJob leftover',
+            'attempts' => 0,
+            'reserved_at' => null,
+            'available_at' => $now,
+            'created_at' => $now,
+        ]);
+
+        $user = User::factory()->create();
+        $user->settings()->create([
+            'google_oauth_refresh_token' => 'refresh-token',
+            'gsc_verification_filename' => 'googleabc123.html',
+        ]);
+        Offer::query()->create([
+            'user_id' => $user->id,
+            'folder' => 'pending-gsc.test',
+            'brand' => 'PendingGsc',
+            'domain' => 'pending-gsc.test',
+            'geo' => 'ZA',
+            'lang' => 'en',
+            'template' => 'default',
+            'status' => 'deployed',
+            'from_search_team' => false,
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'availability_status' => 'ok',
+            'infra_meta' => [
+                'dns' => 'done',
+            ],
+        ]);
+
+        $this->artisan('offers:queue-gsc-pending')
+            ->expectsOutputToContain('moved GSC jobs to gsc queue: 1')
+            ->assertSuccessful();
+
+        $this->assertSame(1, DB::table('jobs')->where('queue', 'gsc')->count());
+        Queue::assertPushedOn('gsc', SubmitOfferToGscJob::class);
     }
 }

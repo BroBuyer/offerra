@@ -176,11 +176,28 @@ async function main() {
     timeoutMs: 180000,
     allowFail: true,
   });
-  // DNS recheck / Dynadot set_ns run on the default queue.
-  await exec(conn, `supervisorctl restart offerra-worker:*`, {
-    timeoutMs: 180000,
-    allowFail: true,
-  });
+  // Default workers must drain `gsc` before mass CRM/inspect jobs on `default`.
+  await exec(
+    conn,
+    `python3 - <<'PY'
+from pathlib import Path
+p = Path("/etc/supervisor/conf.d/offerra.conf")
+t = p.read_text()
+old = "--queue=default "
+new = "--queue=gsc,default "
+if new in t:
+    print("supervisor: gsc,default already set")
+elif old in t:
+    p.write_text(t.replace(old, new))
+    print("supervisor: default workers now listen gsc,default")
+else:
+    print("supervisor: default queue line not found")
+PY
+supervisorctl reread
+supervisorctl update
+supervisorctl restart offerra-worker:*`,
+    { timeoutMs: 180000, allowFail: true },
+  );
   await exec(conn, `supervisorctl status`, { timeoutMs: 60000, allowFail: true });
 
   step("smoke check");

@@ -41,7 +41,7 @@ composer dev           # те саме + queue:listen + pail
 Без воркера оффер застрягне в `pending`.
 
 ```bash
-php artisan queue:work --queue=deploy,default
+php artisan queue:work --queue=deploy,gsc,default
 ```
 
 ## Як це влаштовано

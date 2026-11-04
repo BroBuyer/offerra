@@ -28,7 +28,8 @@ class ProbeOfferAvailabilityJob implements ShouldBeUnique, ShouldQueue
 
     public function __construct(public int $offerId)
     {
-        $this->onQueue('default');
+        // Ahead of mass CRM/GSC-inspect jobs on `default`.
+        $this->onQueue('gsc');
     }
 
     public function uniqueId(): string

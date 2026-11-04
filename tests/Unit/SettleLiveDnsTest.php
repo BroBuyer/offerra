@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Jobs\ProbeOfferAvailabilityJob;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\InfrastructureProvisioner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class SettleLiveDnsTest extends TestCase
@@ -41,6 +43,40 @@ class SettleLiveDnsTest extends TestCase
         $this->assertSame('ready', $offer->dnsStatus());
         $this->assertSame('done', $offer->infra_meta['dns'] ?? null);
         $this->assertSame('https', $offer->infra_meta['dns_via'] ?? null);
+    }
+
+    public function test_settling_live_dns_queues_auto_gsc_probe(): void
+    {
+        Queue::fake();
+        config(['services.google.client_id' => 'test-client']);
+
+        $user = User::factory()->create();
+        $user->settings()->create([
+            'google_oauth_refresh_token' => 'refresh-token',
+            'gsc_verification_filename' => 'googleabc123.html',
+        ]);
+        $offer = Offer::query()->create([
+            'user_id' => $user->id,
+            'folder' => 'live-gsc.test',
+            'brand' => 'LiveGsc',
+            'domain' => 'live-gsc.test',
+            'geo' => 'ZA',
+            'lang' => 'en',
+            'template' => 'default',
+            'status' => 'deployed',
+            'from_search_team' => false,
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'availability_status' => 'ok',
+            'infra_meta' => [
+                'dns' => 'pending',
+                'dynadot_ns' => 'done',
+            ],
+        ]);
+
+        $this->assertTrue(app(InfrastructureProvisioner::class)->settleIfAlreadyLive($offer));
+
+        Queue::assertPushedOn('gsc', ProbeOfferAvailabilityJob::class);
     }
 
     public function test_ns_cutover_is_not_settled_just_because_https_is_ok(): void
