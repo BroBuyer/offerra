@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\ProvisionInfrastructureJob;
+use App\Models\CloudflareAccount;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
@@ -698,18 +699,79 @@ class InfrastructureProvisioner
             );
         }
 
+        $base = $owner ?? $admin;
+        if ($base) {
+            foreach (CloudflareAccount::query()->orderBy('id')->get() as $account) {
+                $push(
+                    'pool_'.$account->id,
+                    $base,
+                    $account->api_token,
+                    $account->account_id,
+                    $account->name,
+                );
+            }
+        }
+
         return $candidates;
     }
 
     /**
-     * Move an offer's Cloudflare zone to the user's primary or backup CF account.
+     * @return array{creds: array{token: string, account_id: string, name: string}, slot: string, pool_id: ?int}
+     */
+    public function resolveCloudflareSwitchTarget(UserSetting $userSettings, string $target): array
+    {
+        $target = trim($target);
+
+        if ($target === 'primary') {
+            $creds = $userSettings->cloudflareSlotCredentials('primary');
+            if ($creds['token'] === '' || $creds['account_id'] === '') {
+                throw new \RuntimeException('Заповніть основний Cloudflare (token + Account ID) у налаштуваннях власника.');
+            }
+
+            return ['creds' => $creds, 'slot' => 'primary', 'pool_id' => null];
+        }
+
+        if ($target === 'backup') {
+            $creds = $userSettings->cloudflareSlotCredentials('backup');
+            if ($creds['token'] !== '' && $creds['account_id'] !== '') {
+                return ['creds' => $creds, 'slot' => 'backup', 'pool_id' => null];
+            }
+
+            $spare = CloudflareAccount::query()->where('is_active', true)->orderBy('id')->get()
+                ->first(fn (CloudflareAccount $account) => $account->isUsable());
+            if ($spare === null) {
+                throw new \RuntimeException('Немає запасного Cloudflare в пулі адміна.');
+            }
+
+            return [
+                'creds' => $spare->credentials(),
+                'slot' => 'spare',
+                'pool_id' => $spare->id,
+            ];
+        }
+
+        if (preg_match('/^spare:(\d+)$/', $target, $match) === 1) {
+            $account = CloudflareAccount::query()->find((int) $match[1]);
+            if ($account === null || ! $account->isUsable()) {
+                throw new \RuntimeException('Цей запасний Cloudflare вимкнений або без token/Account ID.');
+            }
+
+            return [
+                'creds' => $account->credentials(),
+                'slot' => 'spare',
+                'pool_id' => $account->id,
+            ];
+        }
+
+        throw new \RuntimeException('Невідома Cloudflare-ціль.');
+    }
+
+    /**
+     * Move an offer's Cloudflare zone onto the owner's primary CF or an admin spare account.
      * Recreates zone/A/SSL/redirects, updates Dynadot NS, tries to delete the old zone, then DNS recheck.
-     *
-     * @param  'primary'|'backup'  $target
      */
     public function switchCloudflareAccount(Offer $offer, string $target): void
     {
-        $target = $target === 'backup' ? 'backup' : 'primary';
         $offer->loadMissing('user.settings');
         $userSettings = $offer->user?->settings;
 
@@ -717,13 +779,10 @@ class InfrastructureProvisioner
             throw new \RuntimeException('Немає налаштувань користувача.');
         }
 
-        if (! $userSettings->hasCloudflareSlot($target)) {
-            throw new \RuntimeException(
-                $target === 'backup'
-                    ? 'Заповніть запасний Cloudflare (token + Account ID) у налаштуваннях.'
-                    : 'Заповніть основний Cloudflare (token + Account ID) у налаштуваннях.',
-            );
-        }
+        $resolved = $this->resolveCloudflareSwitchTarget($userSettings, $target);
+        $targetCreds = $resolved['creds'];
+        $targetSlot = $resolved['slot'];
+        $poolId = $resolved['pool_id'];
 
         if (! filled($userSettings->dynadot_api_key)) {
             throw new \RuntimeException('Потрібен Dynadot API key, щоб змінити NS.');
@@ -737,7 +796,6 @@ class InfrastructureProvisioner
         $oldZoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
 
         $oldCreds = $this->resolveActiveCloudflareCredentials($offer, $userSettings, $currentSlot);
-        $targetCreds = $userSettings->cloudflareSlotCredentials($target);
         $targetSettings = $this->settingsWithCloudflareSlot($userSettings, $targetCreds);
 
         $extraIps = [];
@@ -785,8 +843,13 @@ class InfrastructureProvisioner
         unset($meta['cloudflare_zone_id'], $meta['nameservers'], $meta['dns_error'], $meta['dns_via'], $meta['dns']);
         $meta['dynadot_ns'] = 'pending';
         $meta['options'] = $options;
-        $meta['cloudflare_slot'] = $target;
-        $meta['cloudflare_migrating_to'] = $target;
+        $meta['cloudflare_slot'] = $targetSlot;
+        $meta['cloudflare_migrating_to'] = $targetSlot;
+        if ($poolId !== null) {
+            $meta['cloudflare_pool_id'] = $poolId;
+        } else {
+            unset($meta['cloudflare_pool_id']);
+        }
 
         try {
             $zone = $this->cloudflare->ensureZone($targetSettings, $domain);

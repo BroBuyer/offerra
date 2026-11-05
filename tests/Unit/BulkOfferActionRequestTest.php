@@ -75,6 +75,16 @@ class BulkOfferActionRequestTest extends TestCase
         $this->assertFalse($validator->fails(), $validator->errors()->toJson());
     }
 
+    public function test_switch_cloudflare_accepts_spare_pool_id(): void
+    {
+        $validator = Validator::make(
+            ['ids' => [8], 'action' => 'switch_cloudflare', 'cloudflare_target' => 'spare:12'],
+            (new BulkOfferActionRequest)->rules(),
+        );
+
+        $this->assertFalse($validator->fails(), $validator->errors()->toJson());
+    }
+
     public function test_check_availability_accepts_ids(): void
     {
         $validator = Validator::make(

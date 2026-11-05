@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\ArchiveOfferJob;
+use App\Models\CloudflareAccount;
 use App\Models\Offer;
 use App\Models\OriginServer;
 use App\Models\User;
@@ -433,6 +434,19 @@ class OfferTeardownService
                 $admin->cloudflare_backup_account_id,
                 $admin->cloudflare_backup_account_name,
             );
+        }
+
+        $base = $owner ?? $admin;
+        if ($base) {
+            foreach (CloudflareAccount::query()->orderBy('id')->get() as $account) {
+                $push(
+                    'pool_'.$account->id,
+                    $base,
+                    $account->api_token,
+                    $account->account_id,
+                    $account->name,
+                );
+            }
         }
 
         return $candidates;

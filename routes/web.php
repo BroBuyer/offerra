@@ -11,6 +11,7 @@ use App\Http\Controllers\MirrorDomainController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\OfferStatsController;
 use App\Http\Controllers\BackupServerController;
+use App\Http\Controllers\CloudflareAccountController;
 use App\Http\Controllers\OriginServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -82,6 +83,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('users.reset-password');
         Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
             ->name('users.access.update');
+
+        Route::get('/cloudflare-accounts', [CloudflareAccountController::class, 'index'])->name('cloudflare-accounts.index');
+        Route::post('/cloudflare-accounts', [CloudflareAccountController::class, 'store'])->name('cloudflare-accounts.store');
+        Route::post('/cloudflare-accounts/{cloudflareAccount}/update', [CloudflareAccountController::class, 'update'])
+            ->name('cloudflare-accounts.update');
+        Route::delete('/cloudflare-accounts/{cloudflareAccount}', [CloudflareAccountController::class, 'destroy'])
+            ->name('cloudflare-accounts.destroy');
+        Route::post('/cloudflare-accounts/{cloudflareAccount}/check', [CloudflareAccountController::class, 'check'])
+            ->name('cloudflare-accounts.check');
 
         Route::get('/backup', [BackupServerController::class, 'index'])->name('backup.index');
         Route::post('/backup', [BackupServerController::class, 'store'])->name('backup.store');

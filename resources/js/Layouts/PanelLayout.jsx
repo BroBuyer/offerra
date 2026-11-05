@@ -18,6 +18,7 @@ const navItems = [
 const adminNavItems = [
     { href: '/users', icon: '👥', label: 'Користувачі' },
     { href: '/origin-servers', icon: '🖥️', label: 'Origin-сервери' },
+    { href: '/cloudflare-accounts', icon: '☁️', label: 'Запасні CF' },
     { href: '/backup', icon: '💾', label: 'Бекап' },
     { href: '/min-deposits', icon: '💵', label: 'Мін. депи' },
     { href: '/funnel-alerts', icon: '🔔', label: 'Алерти воронок' },

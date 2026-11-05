@@ -43,7 +43,7 @@ class SwitchOfferCloudflareJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        $target = $this->target === 'backup' ? 'backup' : 'primary';
+        $target = trim($this->target);
 
         try {
             $provisioner->switchCloudflareAccount($offer, $target);

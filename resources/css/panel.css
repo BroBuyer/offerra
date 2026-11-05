@@ -2559,6 +2559,19 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: min(100%, 40rem);
 }
 
+.cf-pool-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem 1rem;
+  align-items: end;
+}
+
+.cf-pool-form__actions {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0.15rem;
+}
+
 .origin-servers-header {
   display: flex;
   align-items: flex-start;

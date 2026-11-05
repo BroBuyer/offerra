@@ -608,9 +608,8 @@ export default function OffersIndex({
     users = [],
     dateFilters = {},
     hasCloudflarePrimary = false,
-    hasCloudflareBackup = false,
     cloudflarePrimaryName = 'Основний CF',
-    cloudflareBackupName = 'Запасний CF',
+    spareCloudflareAccounts = [],
     originServers = [],
     downCount = 0,
 }) {
@@ -932,6 +931,8 @@ export default function OffersIndex({
     const selectedOnPageCount = selectableIds.filter((id) => selectedIds.includes(id)).length;
     const allPageSelected = selectableIds.length > 0 && selectedOnPageCount === selectableIds.length;
     const originTargets = Array.isArray(originServers) ? originServers : [];
+    const spareAccounts = Array.isArray(spareCloudflareAccounts) ? spareCloudflareAccounts : [];
+    const canSwitchCloudflarePool = auth?.user?.role === 'admin';
 
     const selectedRowsOnPage = useMemo(
         () => rows.filter((offer) => selectedIds.includes(offer.id)),
@@ -960,9 +961,7 @@ export default function OffersIndex({
             if (selectedIds.length > 0) {
                 return {
                     primaryName: 'Основний CF власника',
-                    backupName: 'Запасний CF власника',
                     hasPrimary: true,
-                    hasBackup: true,
                     mixedOwners: true,
                     ownerLabel: null,
                 };
@@ -970,9 +969,7 @@ export default function OffersIndex({
 
             return {
                 primaryName: cloudflarePrimaryName,
-                backupName: cloudflareBackupName,
                 hasPrimary: hasCloudflarePrimary,
-                hasBackup: hasCloudflareBackup,
                 mixedOwners: false,
                 ownerLabel: null,
             };
@@ -984,9 +981,7 @@ export default function OffersIndex({
         if (mixedOwners) {
             return {
                 primaryName: 'Основний CF власника',
-                backupName: 'Запасний CF власника',
                 hasPrimary: selected.some((offer) => offer.owner_has_cf_primary),
-                hasBackup: selected.some((offer) => offer.owner_has_cf_backup),
                 mixedOwners: true,
                 ownerLabel: null,
             };
@@ -996,9 +991,7 @@ export default function OffersIndex({
 
         return {
             primaryName: sample.owner_cf_primary_name || cloudflarePrimaryName,
-            backupName: sample.owner_cf_backup_name || cloudflareBackupName,
             hasPrimary: Boolean(sample.owner_has_cf_primary),
-            hasBackup: Boolean(sample.owner_has_cf_backup),
             mixedOwners: false,
             ownerLabel: sample.user_name || sample.user_email || null,
         };
@@ -1006,9 +999,7 @@ export default function OffersIndex({
         rows,
         selectedIds,
         cloudflarePrimaryName,
-        cloudflareBackupName,
         hasCloudflarePrimary,
-        hasCloudflareBackup,
     ]);
 
     useEffect(() => {
@@ -1075,24 +1066,31 @@ export default function OffersIndex({
         }
 
         if (action === 'switch_cloudflare') {
-            const target = extra.cloudflare_target === 'backup' ? 'backup' : 'primary';
-            const label = target === 'backup' ? selectedCfContext.backupName : selectedCfContext.primaryName;
-            const hasSlot = target === 'backup' ? selectedCfContext.hasBackup : selectedCfContext.hasPrimary;
+            const rawTarget = String(extra.cloudflare_target || 'primary');
+            const spareMatch = rawTarget.match(/^spare:(\d+)$/);
+            const spare = spareMatch
+                ? spareAccounts.find((item) => String(item.id) === spareMatch[1])
+                : null;
+            const target = spare ? rawTarget : 'primary';
+            const label = spare ? spare.name : selectedCfContext.primaryName;
+            const hasSlot = spare ? true : selectedCfContext.hasPrimary;
 
             if (!hasSlot) {
                 window.alert(
-                    target === 'backup'
-                        ? 'У власника вибраних оферів немає запасного Cloudflare (token + Account ID) у Settings.'
+                    spare
+                        ? 'Цей запасний Cloudflare вимкнений або без token/Account ID.'
                         : 'У власника вибраних оферів немає основного Cloudflare (token + Account ID) у Settings.',
                 );
                 return;
             }
 
-            const ownerHint = selectedCfContext.mixedOwners
-                ? 'у кожного офера — свій CF власника'
-                : (selectedCfContext.ownerLabel
-                    ? `власник: ${selectedCfContext.ownerLabel}`
-                    : 'CF власника офера');
+            const ownerHint = spare
+                ? 'акаунт з пулу адміна'
+                : (selectedCfContext.mixedOwners
+                    ? 'у кожного офера — свій CF власника'
+                    : (selectedCfContext.ownerLabel
+                        ? `власник: ${selectedCfContext.ownerLabel}`
+                        : 'CF власника офера'));
 
             if (!window.confirm(
                 `Перекинути ${selectedCount} оффер(ів) на «${label}» (${ownerHint})?\n` +
@@ -1792,6 +1790,8 @@ export default function OffersIndex({
                             </button>
                         </div>
                     )}
+                    {canSwitchCloudflarePool && (
+                        <>
                     <button
                         type="button"
                         className="btn btn-ghost btn-sm"
@@ -1821,22 +1821,23 @@ export default function OffersIndex({
                             >
                                 → {selectedCfContext.primaryName}
                             </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm"
-                                disabled={bulkBusy || !selectedCfContext.hasBackup}
-                                title={
-                                    !selectedCfContext.hasBackup
-                                        ? 'Немає запасного CF у Settings власника'
-                                        : (selectedCfContext.ownerLabel
-                                            ? `CF власника: ${selectedCfContext.ownerLabel}`
-                                            : undefined)
-                                }
-                                onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: 'backup' })}
-                            >
-                                → {selectedCfContext.backupName}
-                            </button>
+                            {spareAccounts.length === 0 ? (
+                                <span className="field-hint">Додай запасні в «Запасні CF»</span>
+                            ) : spareAccounts.map((account) => (
+                                <button
+                                    key={account.id}
+                                    type="button"
+                                    className="btn btn-primary btn-sm"
+                                    disabled={bulkBusy}
+                                    title={`${account.account_id} · ${account.offers_count} оферів`}
+                                    onClick={() => runBulkAction('switch_cloudflare', { cloudflare_target: `spare:${account.id}` })}
+                                >
+                                    → {account.name}
+                                </button>
+                            ))}
                         </div>
+                    )}
+                        </>
                     )}
                     {originTargets.length > 0 && (
                         <>
@@ -2014,8 +2015,8 @@ export default function OffersIndex({
                                     {colVisible('cloudflare') && (
                                         <td>
                                             {offer.cloudflare_account ?? '—'}
-                                            {offer.cloudflare_slot === 'backup' ? (
-                                                <span className="muted" style={{ marginLeft: '0.35rem' }}>· backup</span>
+                                            {offer.cloudflare_slot === 'backup' || offer.cloudflare_slot === 'spare' ? (
+                                                <span className="muted" style={{ marginLeft: '0.35rem' }}>· запасний</span>
                                             ) : null}
                                         </td>
                                     )}

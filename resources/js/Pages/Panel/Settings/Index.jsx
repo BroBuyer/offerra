@@ -20,19 +20,14 @@ function formFromSettings(settings, userId = null) {
         cloudflare_account_id: settings.cloudflare_account_id ?? '',
         cloudflare_default_proxied: settings.cloudflare_default_proxied ?? true,
         cloudflare_account_name: settings.cloudflare_account_name ?? '',
-        cloudflare_backup_api_token: settings.cloudflare_backup_api_token ?? '',
-        cloudflare_backup_account_id: settings.cloudflare_backup_account_id ?? '',
-        cloudflare_backup_account_name: settings.cloudflare_backup_account_name ?? '',
         test_domain: 'reserve-safegrove-ie.com',
     };
 }
 
 export default function SettingsIndex({ settings, settingsUser, users = [] }) {
-    const { errors: pageErrors } = usePage().props;
+    const { errors: pageErrors, auth } = usePage().props;
     const [cloudflareTest, setCloudflareTest] = useState(null);
     const [testingCloudflare, setTestingCloudflare] = useState(false);
-    const [cloudflareBackupTest, setCloudflareBackupTest] = useState(null);
-    const [testingCloudflareBackup, setTestingCloudflareBackup] = useState(false);
     const [dynadotBalance, setDynadotBalance] = useState(null);
     const [dynadotBalanceLoading, setDynadotBalanceLoading] = useState(false);
     const [dynadotBalanceError, setDynadotBalanceError] = useState('');
@@ -83,26 +78,6 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
             });
         } finally {
             setTestingCloudflare(false);
-        }
-    };
-
-    const testCloudflareBackup = async () => {
-        setTestingCloudflareBackup(true);
-        setCloudflareBackupTest(null);
-
-        try {
-            const { data: result } = await axios.post(route('settings.test-cloudflare'), {
-                ...data,
-                cloudflare_slot: 'backup',
-            });
-            setCloudflareBackupTest(result);
-        } catch (error) {
-            setCloudflareBackupTest({
-                ok: false,
-                message: error.response?.data?.message ?? 'Не вдалося перевірити запасний Cloudflare API',
-            });
-        } finally {
-            setTestingCloudflareBackup(false);
         }
     };
 
@@ -371,7 +346,16 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
 
                 <section className="card">
                     <h3>Cloudflare (DNS)</h3>
-                    <p className="card-desc">API для DNS: зона, A-запис, NS у Dynadot при створенні оффера</p>
+                    <p className="card-desc">
+                        API для DNS: зона, A-запис, NS у Dynadot при створенні оффера.
+                        {auth?.user?.role === 'admin' ? (
+                            <>
+                                {' '}
+                                Запасні акаунти — у вкладці{' '}
+                                <Link href={route('cloudflare-accounts.index')}>Запасні CF</Link>.
+                            </>
+                        ) : null}
+                    </p>
                     <div className="field">
                         <label htmlFor="cf-account-name">Назва акаунта</label>
                         <input
@@ -431,63 +415,6 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             }}
                         >
                             {cloudflareTest.message}
-                        </p>
-                    )}
-                </section>
-
-                <section className="card">
-                    <h3>Запасний Cloudflare</h3>
-                    <p className="card-desc">
-                        Другий акаунт для масової дії «CF акаунт» на списку оферів — перекидання зони після abuse
-                        (нова зона, A-записи, SSL, редіректи, NS у Dynadot).
-                    </p>
-                    <div className="field">
-                        <label htmlFor="cf-backup-account-name">Назва акаунта</label>
-                        <input
-                            type="text"
-                            id="cf-backup-account-name"
-                            value={data.cloudflare_backup_account_name}
-                            onChange={(e) => setData('cloudflare_backup_account_name', e.target.value)}
-                            placeholder="CloudflareBackup"
-                        />
-                    </div>
-                    <div className="field">
-                        <label htmlFor="cf-backup-token">API token</label>
-                        <SecretInput
-                            id="cf-backup-token"
-                            value={data.cloudflare_backup_api_token}
-                            onChange={(e) => setData('cloudflare_backup_api_token', e.target.value)}
-                            placeholder="Cloudflare API token (backup)"
-                        />
-                    </div>
-                    <div className="field">
-                        <label htmlFor="cf-backup-account">Account ID</label>
-                        <input
-                            type="text"
-                            id="cf-backup-account"
-                            value={data.cloudflare_backup_account_id}
-                            onChange={(e) => setData('cloudflare_backup_account_id', e.target.value)}
-                        />
-                    </div>
-                    <div style={{ marginTop: '1rem' }}>
-                        <button
-                            type="button"
-                            className="btn btn-ghost"
-                            disabled={testingCloudflareBackup}
-                            onClick={testCloudflareBackup}
-                        >
-                            {testingCloudflareBackup ? 'Перевірка…' : 'Перевірити запасний Cloudflare'}
-                        </button>
-                    </div>
-                    {cloudflareBackupTest && (
-                        <p
-                            className="field-hint"
-                            style={{
-                                marginTop: '0.75rem',
-                                color: cloudflareBackupTest.ok ? 'var(--accent)' : '#f87171',
-                            }}
-                        >
-                            {cloudflareBackupTest.message}
                         </p>
                     )}
                 </section>

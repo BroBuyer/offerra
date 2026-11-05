@@ -10,6 +10,7 @@ use App\Jobs\RebindOfferDnsJob;
 use App\Jobs\RecheckInfrastructureDnsJob;
 use App\Jobs\ScanDownOffersJob;
 use App\Jobs\SwitchOfferCloudflareJob;
+use App\Models\CloudflareAccount;
 use App\Models\Offer;
 use App\Models\User;
 use App\Services\DeployService;
@@ -72,9 +73,10 @@ class OfferController extends Controller
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'canDeploy' => $deployReady,
             'hasCloudflarePrimary' => (bool) $settings?->hasCloudflareSlot('primary'),
-            'hasCloudflareBackup' => (bool) $settings?->hasCloudflareSlot('backup'),
             'cloudflarePrimaryName' => trim((string) ($settings?->cloudflare_account_name ?? '')) ?: 'Основний CF',
-            'cloudflareBackupName' => trim((string) ($settings?->cloudflare_backup_account_name ?? '')) ?: 'Запасний CF',
+            'spareCloudflareAccounts' => $user->isAdmin()
+                ? CloudflareAccount::activeForSwitch()->all()
+                : [],
             'originServers' => $evacuation->moveTargets(),
             'geoPresets' => config('offerra.geo_presets'),
             'currencies' => config('offerra.currencies'),
@@ -599,6 +601,7 @@ class OfferController extends Controller
         DeployService $deploy,
         OriginEvacuationService $evacuation,
         OfferGscSubmitter $gsc,
+        InfrastructureProvisioner $provisioner,
     ): RedirectResponse {
         $authUser = $request->user();
         $action = $request->string('action')->toString();
@@ -709,24 +712,26 @@ class OfferController extends Controller
 
             if ($action === 'switch_cloudflare') {
                 try {
-                    $settings = $offer->user?->settings;
-                    $target = $cloudflareTarget === 'backup' ? 'backup' : 'primary';
-                    if ($settings === null || ! $settings->hasCloudflareSlot($target)) {
+                    if (str_starts_with($cloudflareTarget, 'spare:') && ! $authUser->isAdmin()) {
                         $skipped++;
-                        $failed[] = $offer->domain.': немає credentials для '.($target === 'backup' ? 'запасного' : 'основного').' CF';
+                        $failed[] = $offer->domain.': запасний CF з пулу може перемикати лише адмін';
                         continue;
                     }
-                    $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-                    $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
-                    $targetCreds = $settings->cloudflareSlotCredentials($target);
+                    $settings = $offer->user?->settings;
+                    if ($settings === null) {
+                        $skipped++;
+                        $failed[] = $offer->domain.': немає власника';
+                        continue;
+                    }
+                    $resolved = $provisioner->resolveCloudflareSwitchTarget($settings, $cloudflareTarget);
+                    $targetCreds = $resolved['creds'];
                     $currentAccountId = trim((string) ($offer->cloudflare_account_id ?? ''));
                     $targetAccountId = trim((string) ($targetCreds['account_id'] ?? ''));
                     $sameAccount = $currentAccountId !== ''
                         && $targetAccountId !== ''
                         && hash_equals($currentAccountId, $targetAccountId);
 
-                    // Same slot + same Cloudflare account: only refresh the display name if Settings changed.
-                    if ($currentSlot === $target && $sameAccount) {
+                    if ($sameAccount) {
                         $targetName = trim((string) ($targetCreds['name'] ?? ''));
                         $currentName = trim((string) ($offer->cloudflare_account_name ?? ''));
                         if ($targetName !== '' && $targetName !== $currentName) {
@@ -734,13 +739,12 @@ class OfferController extends Controller
                             $queued++;
                         } else {
                             $skipped++;
-                            $failed[] = $offer->domain.': вже на '.($target === 'backup' ? 'запасному' : 'основному').' CF';
+                            $failed[] = $offer->domain.': вже на цьому Cloudflare';
                         }
                         continue;
                     }
 
-                    // Same slot but Settings now point at a different CF account — still migrate.
-                    SwitchOfferCloudflareJob::dispatch($offer->id, $target);
+                    SwitchOfferCloudflareJob::dispatch($offer->id, $cloudflareTarget);
                     $queued++;
                 } catch (\Throwable $e) {
                     $skipped++;
@@ -765,7 +769,9 @@ class OfferController extends Controller
         } elseif ($action === 'redeploy') {
             $parts[] = "Редеплой у черзі: {$queued}";
         } elseif ($action === 'switch_cloudflare') {
-            $label = $cloudflareTarget === 'backup' ? 'запасний CF' : 'основний CF';
+            $label = $cloudflareTarget === 'primary'
+                ? 'основний CF власника'
+                : 'запасний CF';
             $parts[] = "Перехід на {$label} у черзі: {$queued}";
         } else {
             $parts[] = "A-запис → {$ip} у черзі: {$queued}";

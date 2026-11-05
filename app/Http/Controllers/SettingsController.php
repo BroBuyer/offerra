@@ -69,8 +69,6 @@ class SettingsController extends Controller
             'cloudflare_account_id' => $data['cloudflare_account_id'] ?? $settings->cloudflare_account_id,
             'cloudflare_default_proxied' => $request->boolean('cloudflare_default_proxied'),
             'cloudflare_account_name' => trim((string) ($data['cloudflare_account_name'] ?? '')) ?: null,
-            'cloudflare_backup_account_id' => $data['cloudflare_backup_account_id'] ?? $settings->cloudflare_backup_account_id,
-            'cloudflare_backup_account_name' => trim((string) ($data['cloudflare_backup_account_name'] ?? '')) ?: null,
         ]);
 
         $this->assignSecret($settings, 'crm_api_key', $data['crm_api_key'] ?? null);
@@ -81,11 +79,6 @@ class SettingsController extends Controller
             $settings,
             'cloudflare_api_token',
             CloudflareClient::normalizeApiToken($data['cloudflare_api_token'] ?? null),
-        );
-        $this->assignSecret(
-            $settings,
-            'cloudflare_backup_api_token',
-            CloudflareClient::normalizeApiToken($data['cloudflare_backup_api_token'] ?? null),
         );
 
         $settings->save();

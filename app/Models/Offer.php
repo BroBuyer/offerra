@@ -209,9 +209,7 @@ class Offer extends Model
             'status' => $this->status,
             'deploy_panel' => $this->deploy_panel_name,
             'cloudflare_account' => $this->cloudflare_account_name,
-            'cloudflare_slot' => ((is_array($this->infra_meta) ? ($this->infra_meta['cloudflare_slot'] ?? '') : '') === 'backup')
-                ? 'backup'
-                : 'primary',
+            'cloudflare_slot' => $this->cloudflareSlotForPanel(),
             ...$this->ownerCloudflarePanelFields(),
             'dynadot_account' => $this->dynadot_account_name,
             'deployed_at' => $this->deployed_at?->timezone('Europe/Kyiv')->format('Y-m-d H:i'),
@@ -276,9 +274,7 @@ class Offer extends Model
      *
      * @return array{
      *     owner_cf_primary_name: string,
-     *     owner_cf_backup_name: string,
-     *     owner_has_cf_primary: bool,
-     *     owner_has_cf_backup: bool
+     *     owner_has_cf_primary: bool
      * }
      */
     private function ownerCloudflarePanelFields(): array
@@ -287,13 +283,17 @@ class Offer extends Model
         $settings = $this->user?->settings;
 
         $primary = trim((string) ($settings?->cloudflare_account_name ?? ''));
-        $backup = trim((string) ($settings?->cloudflare_backup_account_name ?? ''));
 
         return [
             'owner_cf_primary_name' => $primary !== '' ? $primary : 'Основний CF',
-            'owner_cf_backup_name' => $backup !== '' ? $backup : 'Запасний CF',
             'owner_has_cf_primary' => (bool) $settings?->hasCloudflareSlot('primary'),
-            'owner_has_cf_backup' => (bool) $settings?->hasCloudflareSlot('backup'),
         ];
+    }
+
+    private function cloudflareSlotForPanel(): string
+    {
+        $slot = (string) (is_array($this->infra_meta) ? ($this->infra_meta['cloudflare_slot'] ?? '') : '');
+
+        return in_array($slot, ['backup', 'spare'], true) ? $slot : 'primary';
     }
 }
