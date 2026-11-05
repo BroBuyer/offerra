@@ -30,6 +30,24 @@ class AuthenticationTest extends TestCase
         Http::assertNothingSent();
     }
 
+    public function test_users_with_2fa_disabled_login_with_password_only(): void
+    {
+        Http::fake();
+        $user = User::factory()->create([
+            'two_factor_enabled' => false,
+        ]);
+
+        $this->from('/login')
+            ->post('/login', [
+                'email' => $user->email,
+                'password' => 'password',
+            ])
+            ->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertAuthenticatedAs($user);
+        Http::assertNothingSent();
+    }
+
     public function test_valid_password_without_telegram_stays_guest(): void
     {
         Http::fake();

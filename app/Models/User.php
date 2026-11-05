@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers', 'can_manage_all_offers'])]
+#[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers', 'can_manage_all_offers', 'two_factor_enabled'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -36,6 +36,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'can_see_all_offers' => 'boolean',
             'can_manage_all_offers' => 'boolean',
+            'two_factor_enabled' => 'boolean',
         ];
     }
 
@@ -88,6 +89,23 @@ class User extends Authenticatable
     public function canArchiveOffers(): bool
     {
         return $this->isAdmin();
+    }
+
+    public function twoFactorEnabled(): bool
+    {
+        return (bool) $this->two_factor_enabled;
+    }
+
+    public function hasTelegramTwoFactor(): bool
+    {
+        $settings = $this->settings;
+        $token = trim((string) ($settings?->tg_bot_token ?? ''));
+        $chatId = trim((string) ($settings?->tg_chat_id ?? ''));
+        if ($chatId === '') {
+            $chatId = trim((string) ($settings?->tg_group_chat_id ?? ''));
+        }
+
+        return $token !== '' && $chatId !== '';
     }
 
     public function canManageOffer(Offer $offer): bool

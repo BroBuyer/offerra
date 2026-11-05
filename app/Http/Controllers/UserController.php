@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserAccessRequest;
+use App\Http\Requests\UpdateUserTwoFactorRequest;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,7 @@ class UserController extends Controller
     public function index(): Response
     {
         $users = User::query()
+            ->with('settings')
             ->withCount('offers')
             ->orderBy('name')
             ->get()
@@ -27,6 +29,8 @@ class UserController extends Controller
                 'role_label' => $user->isAdmin() ? 'Адмін' : $user->roleLabel(),
                 'can_see_all_offers' => $user->canSeeAllOffers(),
                 'can_manage_all_offers' => $user->canManageAllOffers(),
+                'two_factor_enabled' => $user->twoFactorEnabled(),
+                'has_telegram_2fa' => $user->hasTelegramTwoFactor(),
                 'offers_count' => $user->offers_count,
                 'created_at' => $user->created_at?->format('Y-m-d'),
             ]);
@@ -65,6 +69,28 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', "{$user->email}: ".implode(', ', $parts).'.');
+    }
+
+    public function updateTwoFactor(UpdateUserTwoFactorRequest $request, User $user): RedirectResponse
+    {
+        $enabled = $request->boolean('two_factor_enabled');
+        $user->loadMissing('settings');
+
+        if ($enabled && ! $user->hasTelegramTwoFactor()) {
+            return redirect()
+                ->route('users.index')
+                ->withErrors(['two_factor' => "{$user->email}: спочатку додай Telegram-бота і chat id у Settings."]);
+        }
+
+        $user->update([
+            'two_factor_enabled' => $enabled,
+        ]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', $enabled
+                ? "{$user->email}: 2FA увімкнено."
+                : "{$user->email}: 2FA вимкнено, вхід лише паролем.");
     }
 
     public function store(StoreUserRequest $request): RedirectResponse

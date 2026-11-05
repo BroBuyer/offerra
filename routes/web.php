@@ -85,6 +85,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('users.logout');
         Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
             ->name('users.access.update');
+        Route::patch('/users/{user}/two-factor', [UserController::class, 'updateTwoFactor'])
+            ->name('users.two-factor.update');
 
         Route::get('/cloudflare-accounts', [CloudflareAccountController::class, 'index'])->name('cloudflare-accounts.index');
         Route::post('/cloudflare-accounts', [CloudflareAccountController::class, 'store'])->name('cloudflare-accounts.store');

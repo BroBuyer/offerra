@@ -35,7 +35,16 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $user = $request->authenticateCredentials();
-        $started = $this->twoFactor->start($request, $user, $request->boolean('remember'));
+        $remember = $request->boolean('remember');
+
+        if (! $user->twoFactorEnabled()) {
+            Auth::login($user, $remember);
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+
+        $started = $this->twoFactor->start($request, $user, $remember);
 
         if (! ($started['ok'] ?? false)) {
             throw ValidationException::withMessages([

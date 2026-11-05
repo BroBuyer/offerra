@@ -17,6 +17,7 @@ export default function UsersIndex({ users }) {
     const [resettingId, setResettingId] = useState(null);
     const [loggingOutId, setLoggingOutId] = useState(null);
     const [accessBusyId, setAccessBusyId] = useState(null);
+    const [twoFactorBusyId, setTwoFactorBusyId] = useState(null);
     const selfId = auth?.user?.id;
 
     const { data, setData, post, processing, errors: formErrors, reset } = useForm({
@@ -94,6 +95,20 @@ export default function UsersIndex({ users }) {
         });
     };
 
+    const toggleTwoFactor = (user, enabled) => {
+        if (! enabled && ! window.confirm(`Вимкнути 2FA для ${user.email}? Вхід буде лише паролем.`)) {
+            return;
+        }
+
+        setTwoFactorBusyId(user.id);
+        router.patch(route('users.two-factor.update', user.id), {
+            two_factor_enabled: enabled,
+        }, {
+            preserveScroll: true,
+            onFinish: () => setTwoFactorBusyId(null),
+        });
+    };
+
     return (
         <PanelLayout title="Користувачі" wide>
             <header className="page-header">
@@ -119,6 +134,12 @@ export default function UsersIndex({ users }) {
             {errors?.access && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.access}</p>
+                </div>
+            )}
+
+            {errors?.two_factor && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.two_factor}</p>
                 </div>
             )}
 
@@ -212,6 +233,7 @@ export default function UsersIndex({ users }) {
                             <th>Офферів</th>
                             <th title="Бачити оффери всіх користувачів">Усі оффери</th>
                             <th title="Редагувати, деплоїти, архівувати і діставати з архіву чужі оффери">Керувати всіма</th>
+                            <th title="Код у Telegram після пароля">2FA</th>
                             <th>Створено</th>
                             <th />
                         </tr>
@@ -273,6 +295,24 @@ export default function UsersIndex({ users }) {
                                         </label>
                                     )}
                                 </td>
+                                <td>
+                                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(user.two_factor_enabled)}
+                                            disabled={twoFactorBusyId === user.id}
+                                            onChange={(e) => toggleTwoFactor(user, e.target.checked)}
+                                        />
+                                        <span className="field-hint">
+                                            {twoFactorBusyId === user.id
+                                                ? '…'
+                                                : (user.two_factor_enabled ? 'так' : 'ні')}
+                                        </span>
+                                    </label>
+                                    {user.two_factor_enabled && ! user.has_telegram_2fa && (
+                                        <div className="field-hint" style={{ color: '#f59e0b' }}>немає Telegram</div>
+                                    )}
+                                </td>
                                 <td>{user.created_at ?? '—'}</td>
                                 <td>
                                     <Link
@@ -306,7 +346,7 @@ export default function UsersIndex({ users }) {
                         ))}
                         {users.length === 0 && (
                             <tr>
-                                <td colSpan={8} className="field-hint">
+                                <td colSpan={9} className="field-hint">
                                     Користувачів ще немає
                                 </td>
                             </tr>
