@@ -242,7 +242,7 @@ export default function SettingsIndex({ settings, settingsUser, users = [] }) {
                             Додайте бота в групу — ліди дублюватимуться туди. Якщо порожньо, лише в особистий чат.
                         </p>
                     </div>
-                    {(settings.lead_postback_url || settings.sales_postback_url) && (
+                    {auth?.user?.role === 'admin' && (settings.lead_postback_url || settings.sales_postback_url) && (
                         <>
                             {settings.lead_postback_url && (
                                 <div className="field">

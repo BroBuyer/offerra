@@ -63,6 +63,32 @@ class SalesPostbackTest extends TestCase
         });
     }
 
+    public function test_settings_shows_postback_urls_only_to_admin(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $admin->settings()->create([]);
+        $user = User::factory()->create();
+        $user->settings()->create([]);
+
+        $this->actingAs($user)
+            ->get(route('settings.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Panel/Settings/Index')
+                ->missing('settings.lead_postback_url')
+                ->missing('settings.sales_postback_url')
+                ->missing('settings.sales_postback_token'));
+
+        $this->actingAs($admin)
+            ->get(route('settings.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Panel/Settings/Index')
+                ->where('settings.lead_postback_url', fn ($url) => is_string($url) && str_contains($url, '/api/v1/postback/') && str_contains($url, 'status=lead'))
+                ->where('settings.sales_postback_url', fn ($url) => is_string($url) && str_contains($url, '/api/v1/postback/') && str_contains($url, 'status=sale'))
+                ->missing('settings.sales_postback_token'));
+    }
+
     public function test_generated_urls_use_aff_sub_macros(): void
     {
         $user = User::factory()->create();

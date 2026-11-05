@@ -27,15 +27,16 @@ class SettingsController extends Controller
         $targetUser = $this->resolveSettingsUser($authUser);
         $settings = $targetUser->settings()->firstOrCreate([]);
 
-        $salesPostbackUrl = $postbacks->postbackUrl($settings);
-        $leadPostbackUrl = $postbacks->leadPostbackUrl($settings);
-        $settings->refresh();
+        $settingsPayload = $settings->toEditArray();
+        unset($settingsPayload['sales_postback_token']);
+
+        if ($authUser->isAdmin()) {
+            $settingsPayload['sales_postback_url'] = $postbacks->postbackUrl($settings);
+            $settingsPayload['lead_postback_url'] = $postbacks->leadPostbackUrl($settings);
+        }
 
         return Inertia::render('Panel/Settings/Index', [
-            'settings' => array_merge($settings->toEditArray(), [
-                'sales_postback_url' => $salesPostbackUrl,
-                'lead_postback_url' => $leadPostbackUrl,
-            ]),
+            'settings' => $settingsPayload,
             'settingsUser' => [
                 'id' => $targetUser->id,
                 'name' => $targetUser->name,
