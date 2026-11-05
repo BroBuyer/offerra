@@ -2559,17 +2559,103 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: min(100%, 40rem);
 }
 
+.cf-pool-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cf-pool-summary {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.cf-pool-summary strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.cf-pool-summary span {
+  margin: 0 0.4rem;
+  color: var(--border);
+}
+
 .cf-pool-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-template-columns: minmax(9rem, 0.8fr) minmax(14rem, 1.2fr) minmax(16rem, 1.3fr);
   gap: 0.75rem 1rem;
-  align-items: end;
+  align-items: start;
+}
+
+.cf-pool-form .field {
+  margin-bottom: 0;
+}
+
+.cf-pool-form input::placeholder,
+.cf-pool-form .secret-input input::placeholder,
+.cf-pool-edit input::placeholder,
+.cf-pool-edit .secret-input input::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
 }
 
 .cf-pool-form__actions {
+  grid-column: 1 / -1;
   display: flex;
-  align-items: flex-end;
-  padding-bottom: 0.15rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.15rem;
+}
+
+.cf-pool-form__actions .field-hint {
+  margin: 0;
+}
+
+.cf-pool-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.cf-pool-table tr.is-muted {
+  opacity: 0.62;
+}
+
+.cf-pool-table tr.is-editing td {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.cf-pool-id {
+  display: inline-block;
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: transparent;
+  padding: 0;
+}
+
+.cf-pool-check {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.cf-pool-check__time,
+.cf-pool-check__empty {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.cf-pool-edit {
+  grid-template-columns: minmax(9rem, 0.8fr) minmax(14rem, 1.2fr) minmax(16rem, 1.3fr);
 }
 
 .origin-servers-header {
@@ -3203,7 +3289,9 @@ td.col-num {
     display: none;
   }
 
-  .field-row { grid-template-columns: 1fr; }
+  .field-row,
+  .cf-pool-form,
+  .cf-pool-edit { grid-template-columns: 1fr; }
   .origin-health-head { flex-direction: column; align-items: flex-start; }
   .origin-health-grid { grid-template-columns: 1fr; }
   .template-library-grid { grid-template-columns: 1fr; }
