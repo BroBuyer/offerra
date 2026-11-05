@@ -161,34 +161,43 @@ export default function CloudflareAccountsIndex({ accounts = [] }) {
                         <label htmlFor="cf-pool-name">Назва</label>
                         <input
                             id="cf-pool-name"
+                            name="cf_spare_name"
                             type="text"
                             value={createForm.data.name}
                             onChange={(e) => createForm.setData('name', e.target.value)}
-                            placeholder="ego-2"
+                            placeholder="назва слота"
                             required
                             autoComplete="off"
+                            data-1p-ignore="true"
+                            data-lpignore="true"
                         />
                     </div>
                     <div className="field">
                         <label htmlFor="cf-pool-token">API token</label>
                         <SecretInput
                             id="cf-pool-token"
+                            name="cf_spare_token"
                             value={createForm.data.api_token}
                             onChange={(e) => createForm.setData('api_token', e.target.value)}
-                            placeholder="встав API token"
+                            placeholder="API token"
+                            autoComplete="new-password"
+                            data-1p-ignore="true"
+                            data-lpignore="true"
                         />
                     </div>
                     <div className="field">
                         <label htmlFor="cf-pool-account">Account ID</label>
                         <input
                             id="cf-pool-account"
+                            name="cf_spare_account_id"
                             type="text"
                             value={createForm.data.account_id}
                             onChange={(e) => createForm.setData('account_id', e.target.value)}
-                            placeholder="a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
                             required
                             spellCheck={false}
                             autoComplete="off"
+                            data-1p-ignore="true"
+                            data-lpignore="true"
                         />
                     </div>
                     <div className="cf-pool-form__actions">
@@ -310,10 +319,11 @@ export default function CloudflareAccountsIndex({ accounts = [] }) {
                                     type="text"
                                     value={editForm.data.account_id}
                                     onChange={(e) => editForm.setData('account_id', e.target.value)}
-                                    placeholder="a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
                                     required
                                     spellCheck={false}
                                     autoComplete="off"
+                                    data-1p-ignore="true"
+                                    data-lpignore="true"
                                 />
                             </div>
                         </div>
