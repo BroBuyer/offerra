@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 #[Fillable(['name', 'email', 'password', 'role', 'can_see_all_offers', 'can_manage_all_offers'])]
 #[Hidden(['password', 'remember_token'])]
@@ -91,5 +93,18 @@ class User extends Authenticatable
     public function canManageOffer(Offer $offer): bool
     {
         return (int) $offer->user_id === (int) $this->id || $this->canManageAllOffers();
+    }
+
+    /**
+     * Drop every stored panel session and remember-cookie for this user.
+     */
+    public function invalidatePanelSessions(): int
+    {
+        $this->setRememberToken(Str::random(60));
+        $this->save();
+
+        return (int) DB::table((string) config('session.table', 'sessions'))
+            ->where('user_id', $this->id)
+            ->delete();
     }
 }

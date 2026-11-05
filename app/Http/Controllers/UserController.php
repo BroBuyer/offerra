@@ -107,6 +107,7 @@ class UserController extends Controller
         $user->update([
             'password' => $password,
         ]);
+        $user->invalidatePanelSessions();
 
         return redirect()
             ->route('users.index')
@@ -117,5 +118,24 @@ class UserController extends Controller
                 'email' => $user->email,
                 'password' => $password,
             ]);
+    }
+
+    public function logout(User $user): RedirectResponse
+    {
+        $authUser = request()->user();
+        if ($authUser && (int) $user->id === (int) $authUser->id) {
+            return redirect()
+                ->route('users.index')
+                ->withErrors(['logout' => 'Себе розлогінь через меню зліва.']);
+        }
+
+        $dropped = $user->invalidatePanelSessions();
+        $suffix = $dropped > 0
+            ? " Знято сесій: {$dropped}."
+            : ' Активних сесій не було.';
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', "{$user->email} розлогінено.{$suffix}");
     }
 }

@@ -12,10 +12,12 @@ function generatePassword() {
 }
 
 export default function UsersIndex({ users }) {
-    const { flash, errors } = usePage().props;
+    const { flash, errors, auth } = usePage().props;
     const [dismissedCredentialsId, setDismissedCredentialsId] = useState(null);
     const [resettingId, setResettingId] = useState(null);
+    const [loggingOutId, setLoggingOutId] = useState(null);
     const [accessBusyId, setAccessBusyId] = useState(null);
+    const selfId = auth?.user?.id;
 
     const { data, setData, post, processing, errors: formErrors, reset } = useForm({
         name: '',
@@ -60,6 +62,18 @@ export default function UsersIndex({ users }) {
         });
     };
 
+    const logoutUser = (user) => {
+        if (! window.confirm(`Розлогінити ${user.email} з усіх пристроїв? Наступна дія кине його на логін.`)) {
+            return;
+        }
+
+        setLoggingOutId(user.id);
+        router.post(route('users.logout', user.id), {}, {
+            preserveScroll: true,
+            onFinish: () => setLoggingOutId(null),
+        });
+    };
+
     const updateAccess = (user, patch) => {
         let see = patch.can_see_all_offers ?? Boolean(user.can_see_all_offers);
         let manage = patch.can_manage_all_offers ?? Boolean(user.can_manage_all_offers);
@@ -93,6 +107,12 @@ export default function UsersIndex({ users }) {
             {errors?.reset && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.reset}</p>
+                </div>
+            )}
+
+            {errors?.logout && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.logout}</p>
                 </div>
             )}
 
@@ -261,6 +281,16 @@ export default function UsersIndex({ users }) {
                                     >
                                         Налаштування
                                     </Link>
+                                    {user.id !== selfId && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-ghost btn-sm"
+                                            disabled={loggingOutId === user.id}
+                                            onClick={() => logoutUser(user)}
+                                        >
+                                            {loggingOutId === user.id ? '…' : 'Розлогінити'}
+                                        </button>
+                                    )}
                                     {user.role !== 'admin' && (
                                         <button
                                             type="button"

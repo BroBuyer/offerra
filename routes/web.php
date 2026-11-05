@@ -81,6 +81,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
             ->name('users.reset-password');
+        Route::post('/users/{user}/logout', [UserController::class, 'logout'])
+            ->name('users.logout');
         Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
             ->name('users.access.update');
 
