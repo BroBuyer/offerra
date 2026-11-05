@@ -612,6 +612,7 @@ export default function OffersIndex({
     cloudflarePrimaryName = 'Основний CF',
     cloudflareBackupName = 'Запасний CF',
     originServers = [],
+    downCount = 0,
 }) {
     const { flash, errors, auth } = usePage().props;
     const [deployingId, setDeployingId] = useState(null);
@@ -630,6 +631,7 @@ export default function OffersIndex({
     const [rebindOpen, setRebindOpen] = useState(false);
     const [cfSwitchOpen, setCfSwitchOpen] = useState(false);
     const [serverSwitchOpen, setServerSwitchOpen] = useState(false);
+    const [scanningDown, setScanningDown] = useState(false);
     const selectAllRef = useRef(null);
     const [brandQuery, setBrandQuery] = useState(filters.brand ?? '');
     const [domainQuery, setDomainQuery] = useState(filters.domain ?? '');
@@ -1036,6 +1038,14 @@ export default function OffersIndex({
             return;
         }
 
+        if (action === 'check_availability') {
+            if (!window.confirm(
+                `Перевірити доступність ${selectedCount} обраних оферів зараз?\nКружечки оновляться, коли скан добіжить черги.`,
+            )) {
+                return;
+            }
+        }
+
         if (action === 'submit_gsc') {
             if (!window.confirm(
                 `Відправити sitemap у Search Console ще раз для ${selectedCount} оффер(ів)?\n` +
@@ -1139,6 +1149,22 @@ export default function OffersIndex({
                 onFinish: () => setIndexingId(null),
             },
         );
+    };
+
+    const scanAllDown = () => {
+        if (scanningDown || downCount < 1) {
+            return;
+        }
+        if (!window.confirm(
+            `Перевірити всі ${downCount} червоні офери зараз?\nСкан іде в черзі, кружечки оновляться самі.`,
+        )) {
+            return;
+        }
+        setScanningDown(true);
+        router.post(route('offers.scan-availability'), {}, {
+            preserveScroll: true,
+            onFinish: () => setScanningDown(false),
+        });
     };
 
     const checkAvailability = (offer) => {
@@ -1378,6 +1404,25 @@ export default function OffersIndex({
             {flash?.success && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
                     <p className="card-desc">{flash.success}</p>
+                </div>
+            )}
+
+            {downCount > 0 && (
+                <div className="down-scan-banner" role="status">
+                    <div className="down-scan-banner__text">
+                        <span className="availability-dot availability-dot--down" aria-hidden="true" />
+                        <strong>{downCount}</strong>
+                        {' '}
+                        червоних оферів — сайт не відкривається з панелі.
+                    </div>
+                    <button
+                        type="button"
+                        className="btn btn-primary btn-sm"
+                        disabled={scanningDown}
+                        onClick={scanAllDown}
+                    >
+                        {scanningDown ? 'Запуск…' : 'Перевірити всі червоні'}
+                    </button>
                 </div>
             )}
 
@@ -1682,6 +1727,14 @@ export default function OffersIndex({
             {selectedCount > 0 && (
                 <div className="offer-bulk-bar" role="region" aria-label="Масові дії">
                     <span className="offer-bulk-bar__count">Обрано {selectedCount}</span>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        disabled={bulkBusy}
+                        onClick={() => runBulkAction('check_availability')}
+                    >
+                        {bulkBusy ? 'Запуск…' : 'Перевірити доступність'}
+                    </button>
                     <button
                         type="button"
                         className="btn btn-primary btn-sm"

@@ -7,6 +7,7 @@ use App\Jobs\InspectOfferGoogleIndexJob;
 use App\Jobs\ProbeOfferAvailabilityJob;
 use App\Jobs\PushOfferConfigJob;
 use App\Jobs\RecheckInfrastructureDnsJob;
+use App\Jobs\ScanDownOffersJob;
 use App\Jobs\SubmitOfferToGscJob;
 use App\Models\Offer;
 use App\Models\User;
@@ -27,6 +28,7 @@ class BackgroundJobQueueTest extends TestCase
         $this->assertSame('gsc-submit:1', (new SubmitOfferToGscJob(1))->uniqueId());
         $this->assertSame('gsc-resubmit:1', (new SubmitOfferToGscJob(1, true))->uniqueId());
         $this->assertSame('gsc', (new ProbeOfferAvailabilityJob(1))->queue);
+        $this->assertSame('gsc', (new ScanDownOffersJob)->queue);
         $this->assertSame('deploy', (new DeployOfferJob(1))->queue);
         $this->assertSame('deploy', (new RecheckInfrastructureDnsJob(1))->queue);
     }

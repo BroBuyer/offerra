@@ -12,7 +12,8 @@ class CheckOfferAvailability extends Command
                             {--limit=4000 : Max deployed offers to check this run}
                             {--stale-minutes=55 : Re-check ok/unchecked older than this}
                             {--down-stale-minutes=10 : Re-check red dots older than this}
-                            {--only-down : Only re-check offers currently marked down}';
+                            {--only-down : Only re-check offers currently marked down}
+                            {--force : Ignore last-check age and re-probe every match}';
 
     protected $description = 'HTTPS availability probe for deployed offers (green/red dots)';
 
@@ -24,34 +25,37 @@ class CheckOfferAvailability extends Command
         $staleMinutes = max(1, (int) $this->option('stale-minutes'));
         $downStaleMinutes = max(1, (int) $this->option('down-stale-minutes'));
         $onlyDown = (bool) $this->option('only-down');
+        $force = (bool) $this->option('force');
         $okCutoff = now()->subMinutes($staleMinutes);
         $downCutoff = now()->subMinutes($downStaleMinutes);
 
         $offers = Offer::query()
             ->where('status', 'deployed')
             ->when($onlyDown, fn ($q) => $q->where('availability_status', 'down'))
-            ->where(function ($query) use ($onlyDown, $okCutoff, $downCutoff): void {
-                if ($onlyDown) {
-                    $query->whereNull('availability_checked_at')
-                        ->orWhere('availability_checked_at', '<', $downCutoff);
-
-                    return;
-                }
-
-                // Red dots: recheck sooner so recovered sites turn green without manual click.
-                $query->where(function ($down) use ($downCutoff): void {
-                    $down->where('availability_status', 'down')
-                        ->where(function ($inner) use ($downCutoff): void {
-                            $inner->whereNull('availability_checked_at')
-                                ->orWhere('availability_checked_at', '<', $downCutoff);
-                        });
-                })->orWhere(function ($other) use ($okCutoff): void {
-                    $other->where(function ($status): void {
-                        $status->whereNull('availability_status')
-                            ->orWhere('availability_status', '!=', 'down');
-                    })->where(function ($inner) use ($okCutoff): void {
+            ->when(! $force, function ($query) use ($onlyDown, $okCutoff, $downCutoff): void {
+                $query->where(function ($inner) use ($onlyDown, $okCutoff, $downCutoff): void {
+                    if ($onlyDown) {
                         $inner->whereNull('availability_checked_at')
-                            ->orWhere('availability_checked_at', '<', $okCutoff);
+                            ->orWhere('availability_checked_at', '<', $downCutoff);
+
+                        return;
+                    }
+
+                    // Red dots: recheck sooner so recovered sites turn green without manual click.
+                    $inner->where(function ($down) use ($downCutoff): void {
+                        $down->where('availability_status', 'down')
+                            ->where(function ($age) use ($downCutoff): void {
+                                $age->whereNull('availability_checked_at')
+                                    ->orWhere('availability_checked_at', '<', $downCutoff);
+                            });
+                    })->orWhere(function ($other) use ($okCutoff): void {
+                        $other->where(function ($status): void {
+                            $status->whereNull('availability_status')
+                                ->orWhere('availability_status', '!=', 'down');
+                        })->where(function ($age) use ($okCutoff): void {
+                            $age->whereNull('availability_checked_at')
+                                ->orWhere('availability_checked_at', '<', $okCutoff);
+                        });
                     });
                 });
             })
@@ -67,7 +71,7 @@ class CheckOfferAvailability extends Command
             return self::SUCCESS;
         }
 
-        $this->info('checking '.$offers->count().' offers…'.($onlyDown ? ' (only-down)' : ''));
+        $this->info('checking '.$offers->count().' offers…'.($onlyDown ? ' (only-down)' : '').($force ? ' (force)' : ''));
 
         $totals = ['ok' => 0, 'down' => 0, 'soft_fail' => 0];
 

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreOfferRequest;
 use App\Http\Requests\UpdateOfferRequest;
 use App\Jobs\RebindOfferDnsJob;
 use App\Jobs\RecheckInfrastructureDnsJob;
+use App\Jobs\ScanDownOffersJob;
 use App\Jobs\SwitchOfferCloudflareJob;
 use App\Models\Offer;
 use App\Models\User;
@@ -67,6 +68,7 @@ class OfferController extends Controller
                 'panels' => (clone $baseQuery)->reorder()->whereNotNull('deploy_panel_name')->where('deploy_panel_name', '!=', '')->distinct()->orderBy('deploy_panel_name')->pluck('deploy_panel_name')->values()->all(),
             ],
             'createdCounts' => $this->createdCounts($baseQuery, $today),
+            'downCount' => $this->downOffersQuery($user)->count(),
             'perPageOptions' => self::PER_PAGE_OPTIONS,
             'canDeploy' => $deployReady,
             'hasCloudflarePrimary' => (bool) $settings?->hasCloudflareSlot('primary'),
@@ -237,6 +239,22 @@ class OfferController extends Controller
         }
 
         $this->applyOfferVisibility($query, $user);
+
+        return $query;
+    }
+
+    /**
+     * Deployed offers currently marked red. Manage-all sees every owner; others only own.
+     */
+    private function downOffersQuery(User $user): Builder
+    {
+        $query = Offer::query()
+            ->where('status', 'deployed')
+            ->where('availability_status', 'down');
+
+        if (! $user->canManageAllOffers()) {
+            $query->where('user_id', $user->id);
+        }
 
         return $query;
     }
@@ -609,6 +627,27 @@ class OfferController extends Controller
         $skipped = 0;
         $failed = [];
 
+        if ($action === 'check_availability') {
+            $ids = $offers
+                ->where('status', 'deployed')
+                ->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->values()
+                ->all();
+
+            if ($ids === []) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['bulk' => 'Немає задеплоєних оферів серед обраних.']);
+            }
+
+            ScanDownOffersJob::dispatch(null, $ids);
+
+            return redirect()
+                ->back()
+                ->with('success', 'Перевірка '.count($ids).' оферів у черзі. Кружечки оновляться самі.');
+        }
+
         if ($action === 'move_server') {
             try {
                 $target = $evacuation->movableTarget($targetHost);
@@ -847,6 +886,24 @@ class OfferController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function scanAvailability(): RedirectResponse
+    {
+        $user = auth()->user();
+        $count = $this->downOffersQuery($user)->count();
+
+        if ($count === 0) {
+            return redirect()
+                ->back()
+                ->with('warning', 'Немає червоних оферів для перевірки.');
+        }
+
+        ScanDownOffersJob::dispatch($user->canManageAllOffers() ? null : $user->id);
+
+        return redirect()
+            ->back()
+            ->with('success', "Перевірка {$count} червоних у черзі. Кружечки оновляться самі.");
     }
 
     public function checkAvailability(Offer $offer, OfferAvailabilityProbe $probe): RedirectResponse

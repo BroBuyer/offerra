@@ -20,7 +20,7 @@ class BulkOfferActionRequest extends FormRequest
         return [
             'ids' => ['required', 'array', 'min:1', 'max:200'],
             'ids.*' => ['integer', 'distinct'],
-            'action' => ['required', 'string', Rule::in(['redeploy', 'rebind_dns', 'switch_cloudflare', 'move_server', 'submit_gsc'])],
+            'action' => ['required', 'string', Rule::in(['redeploy', 'rebind_dns', 'switch_cloudflare', 'move_server', 'submit_gsc', 'check_availability'])],
             'ip' => ['required_if:action,rebind_dns', 'nullable', 'ip:4'],
             'cloudflare_target' => ['required_if:action,switch_cloudflare', 'nullable', 'string', Rule::in(['primary', 'backup'])],
             'target_host' => ['required_if:action,move_server', 'nullable', 'string', 'max:255'],
