@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserAccessRequest;
+use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Requests\UpdateUserTwoFactorRequest;
 use App\Models\User;
 use App\Models\UserSetting;
@@ -166,6 +167,33 @@ class UserController extends Controller
                 'email' => $user->email,
                 'password' => $password,
             ]);
+    }
+
+    public function updateEmail(UpdateUserEmailRequest $request, User $user): RedirectResponse
+    {
+        if ($user->isAdmin()) {
+            return redirect()
+                ->route('users.index')
+                ->withErrors(['email' => 'Пошту адміністратора змінюй у профілі.']);
+        }
+
+        $old = $user->email;
+        $email = $request->string('email')->toString();
+
+        if (strcasecmp($old, $email) === 0) {
+            return redirect()
+                ->route('users.index')
+                ->with('success', "{$old}: пошта вже така.");
+        }
+
+        $user->update([
+            'email' => $email,
+            'email_verified_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', "{$old} → {$user->email}");
     }
 
     public function logout(User $user): RedirectResponse

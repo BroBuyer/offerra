@@ -20,7 +20,12 @@ export default function UsersIndex({ users }) {
     const [twoFactorBusyId, setTwoFactorBusyId] = useState(null);
     const [sessionsUser, setSessionsUser] = useState(null);
     const [killingSessionId, setKillingSessionId] = useState(null);
+    const [emailUser, setEmailUser] = useState(null);
     const selfId = auth?.user?.id;
+
+    const emailForm = useForm({
+        email: '',
+    });
 
     const { data, setData, post, processing, errors: formErrors, reset } = useForm({
         name: '',
@@ -49,6 +54,24 @@ export default function UsersIndex({ users }) {
         const password = generatePassword();
         setData('password', password);
         setData('password_confirmation', password);
+    };
+
+    const openEmail = (user) => {
+        setEmailUser(user);
+        emailForm.setData('email', user.email);
+        emailForm.clearErrors();
+    };
+
+    const submitEmail = (e) => {
+        e.preventDefault();
+        if (! emailUser) {
+            return;
+        }
+
+        emailForm.patch(route('users.email.update', emailUser.id), {
+            preserveScroll: true,
+            onSuccess: () => setEmailUser(null),
+        });
     };
 
     const resetPassword = (user) => {
@@ -180,6 +203,12 @@ export default function UsersIndex({ users }) {
             {errors?.sessions && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.sessions}</p>
+                </div>
+            )}
+
+            {errors?.email && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.email}</p>
                 </div>
             )}
 
@@ -386,14 +415,23 @@ export default function UsersIndex({ users }) {
                                         </button>
                                     )}
                                     {user.role !== 'admin' && (
-                                        <button
-                                            type="button"
-                                            className="btn btn-ghost btn-sm"
-                                            disabled={resettingId === user.id}
-                                            onClick={() => resetPassword(user)}
-                                        >
-                                            {resettingId === user.id ? '…' : 'Новий пароль'}
-                                        </button>
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                onClick={() => openEmail(user)}
+                                            >
+                                                Email
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-sm"
+                                                disabled={resettingId === user.id}
+                                                onClick={() => resetPassword(user)}
+                                            >
+                                                {resettingId === user.id ? '…' : 'Новий пароль'}
+                                            </button>
+                                        </>
                                     )}
                                 </td>
                             </tr>
@@ -408,6 +446,61 @@ export default function UsersIndex({ users }) {
                     </tbody>
                 </table>
             </div>
+
+            {emailUser && (
+                <div
+                    className="modal-backdrop"
+                    onClick={() => setEmailUser(null)}
+                    role="presentation"
+                >
+                    <div
+                        className="modal-card"
+                        onClick={(event) => event.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="users-email-title"
+                    >
+                        <div className="modal-card__header">
+                            <div>
+                                <h3 id="users-email-title">Змінити email</h3>
+                                <p className="card-desc">{emailUser.name} · зараз {emailUser.email}</p>
+                            </div>
+                            <button
+                                type="button"
+                                className="modal-card__close"
+                                onClick={() => setEmailUser(null)}
+                                aria-label="Закрити"
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <form onSubmit={submitEmail}>
+                            <div className="field">
+                                <label htmlFor="users-email-input">Нова пошта</label>
+                                <input
+                                    id="users-email-input"
+                                    type="email"
+                                    value={emailForm.data.email}
+                                    onChange={(e) => emailForm.setData('email', e.target.value)}
+                                    autoComplete="off"
+                                    autoFocus
+                                />
+                                {emailForm.errors.email && (
+                                    <p className="field-hint" style={{ color: '#f87171' }}>{emailForm.errors.email}</p>
+                                )}
+                            </div>
+                            <div className="btn-row" style={{ marginTop: '1rem' }}>
+                                <button type="button" className="btn btn-ghost" onClick={() => setEmailUser(null)}>
+                                    Скасувати
+                                </button>
+                                <button type="submit" className="btn btn-primary" disabled={emailForm.processing}>
+                                    {emailForm.processing ? 'Збереження…' : 'Зберегти'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {sessionsUser && (
                 <div
