@@ -2559,6 +2559,14 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: min(100%, 40rem);
 }
 
+.users-sessions-modal {
+  width: min(100%, 44rem);
+}
+
+.users-sessions-warn {
+  color: #f59e0b;
+}
+
 .cf-pool-header {
   display: flex;
   align-items: flex-end;

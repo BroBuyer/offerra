@@ -83,6 +83,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('users.reset-password');
         Route::post('/users/{user}/logout', [UserController::class, 'logout'])
             ->name('users.logout');
+        Route::delete('/users/{user}/sessions/{session}', [UserController::class, 'destroySession'])
+            ->where('session', '[A-Za-z0-9._-]+')
+            ->name('users.sessions.destroy');
         Route::patch('/users/{user}/access', [UserController::class, 'updateAccess'])
             ->name('users.access.update');
         Route::patch('/users/{user}/two-factor', [UserController::class, 'updateTwoFactor'])

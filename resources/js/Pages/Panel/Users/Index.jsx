@@ -18,6 +18,8 @@ export default function UsersIndex({ users }) {
     const [loggingOutId, setLoggingOutId] = useState(null);
     const [accessBusyId, setAccessBusyId] = useState(null);
     const [twoFactorBusyId, setTwoFactorBusyId] = useState(null);
+    const [sessionsUser, setSessionsUser] = useState(null);
+    const [killingSessionId, setKillingSessionId] = useState(null);
     const selfId = auth?.user?.id;
 
     const { data, setData, post, processing, errors: formErrors, reset } = useForm({
@@ -95,6 +97,38 @@ export default function UsersIndex({ users }) {
         });
     };
 
+    const killSession = (user, session) => {
+        if (session.is_current) {
+            return;
+        }
+        if (! window.confirm(`Закрити цю сесію ${user.email} (${session.ip || 'без IP'})?`)) {
+            return;
+        }
+
+        setKillingSessionId(session.id);
+        router.delete(route('users.sessions.destroy', { user: user.id, session: session.id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSessionsUser((current) => {
+                    if (! current || current.id !== user.id) {
+                        return current;
+                    }
+
+                    const nextSessions = (current.sessions || []).filter((item) => item.id !== session.id);
+                    const ips = [...new Set(nextSessions.map((item) => item.ip).filter(Boolean))];
+
+                    return {
+                        ...current,
+                        sessions: nextSessions,
+                        sessions_count: nextSessions.length,
+                        sessions_ip_count: ips.length,
+                    };
+                });
+            },
+            onFinish: () => setKillingSessionId(null),
+        });
+    };
+
     const toggleTwoFactor = (user, enabled) => {
         if (! enabled && ! window.confirm(`Вимкнути 2FA для ${user.email}? Вхід буде лише паролем.`)) {
             return;
@@ -140,6 +174,12 @@ export default function UsersIndex({ users }) {
             {errors?.two_factor && (
                 <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
                     <p className="card-desc" style={{ color: '#f87171' }}>{errors.two_factor}</p>
+                </div>
+            )}
+
+            {errors?.sessions && (
+                <div className="card" style={{ marginBottom: '1rem', borderColor: '#f87171' }}>
+                    <p className="card-desc" style={{ color: '#f87171' }}>{errors.sessions}</p>
                 </div>
             )}
 
@@ -234,6 +274,7 @@ export default function UsersIndex({ users }) {
                             <th title="Бачити оффери всіх користувачів">Усі оффери</th>
                             <th title="Редагувати, деплоїти, архівувати і діставати з архіву чужі оффери">Керувати всіма</th>
                             <th title="Код у Telegram після пароля">2FA</th>
+                            <th title="Активні логіни: IP, браузер. Кілька IP — хтось міг віддати пароль">Сесії</th>
                             <th>Створено</th>
                             <th />
                         </tr>
@@ -313,6 +354,19 @@ export default function UsersIndex({ users }) {
                                         <div className="field-hint" style={{ color: '#f59e0b' }}>немає Telegram</div>
                                     )}
                                 </td>
+                                <td>
+                                    <button
+                                        type="button"
+                                        className={`btn btn-ghost btn-sm${
+                                            (user.sessions_ip_count || 0) > 1 ? ' users-sessions-warn' : ''
+                                        }`}
+                                        onClick={() => setSessionsUser(user)}
+                                    >
+                                        {user.sessions_count > 0
+                                            ? `${user.sessions_count} · ${user.sessions_ip_count} IP`
+                                            : 'немає'}
+                                    </button>
+                                </td>
                                 <td>{user.created_at ?? '—'}</td>
                                 <td>
                                     <Link
@@ -346,7 +400,7 @@ export default function UsersIndex({ users }) {
                         ))}
                         {users.length === 0 && (
                             <tr>
-                                <td colSpan={9} className="field-hint">
+                                <td colSpan={10} className="field-hint">
                                     Користувачів ще немає
                                 </td>
                             </tr>
@@ -354,6 +408,92 @@ export default function UsersIndex({ users }) {
                     </tbody>
                 </table>
             </div>
+
+            {sessionsUser && (
+                <div
+                    className="modal-backdrop"
+                    onClick={() => setSessionsUser(null)}
+                    role="presentation"
+                >
+                    <div
+                        className="modal-card modal-card--wide users-sessions-modal"
+                        onClick={(event) => event.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="users-sessions-title"
+                    >
+                        <div className="modal-card__header">
+                            <div>
+                                <h3 id="users-sessions-title">Сесії · {sessionsUser.email}</h3>
+                                <p className="card-desc">
+                                    Живі логіни за час життя сесії. Кілька різних IP на одному акаунті —
+                                    хтось міг віддати пароль.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                className="modal-card__close"
+                                onClick={() => setSessionsUser(null)}
+                                aria-label="Закрити"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {(sessionsUser.sessions || []).length === 0 ? (
+                            <p className="field-hint">Немає активних сесій.</p>
+                        ) : (
+                            <div className="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>IP</th>
+                                            <th>Пристрій</th>
+                                            <th>Активність</th>
+                                            <th />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {sessionsUser.sessions.map((session) => (
+                                            <tr key={session.id}>
+                                                <td>
+                                                    <code>{session.ip || '—'}</code>
+                                                    {session.is_current && (
+                                                        <div className="field-hint">ця вкладка</div>
+                                                    )}
+                                                </td>
+                                                <td title={session.user_agent || ''}>
+                                                    {session.browser} · {session.os}
+                                                </td>
+                                                <td>
+                                                    {session.last_activity_ago}
+                                                    {session.last_activity_at && (
+                                                        <div className="field-hint">{session.last_activity_at}</div>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {session.is_current ? (
+                                                        <span className="field-hint">поточна</span>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-ghost btn-sm"
+                                                            disabled={killingSessionId === session.id}
+                                                            onClick={() => killSession(sessionsUser, session)}
+                                                        >
+                                                            {killingSessionId === session.id ? '…' : 'Закрити'}
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </PanelLayout>
     );
 }

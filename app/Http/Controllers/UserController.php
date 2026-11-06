@@ -7,7 +7,10 @@ use App\Http\Requests\UpdateUserAccessRequest;
 use App\Http\Requests\UpdateUserTwoFactorRequest;
 use App\Models\User;
 use App\Models\UserSetting;
+use App\Support\UserAgentSummary;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,8 +23,23 @@ class UserController extends Controller
             ->with('settings')
             ->withCount('offers')
             ->orderBy('name')
-            ->get()
-            ->map(fn (User $user) => [
+            ->get();
+
+        $sessionsByUser = $this->activeSessionsByUser($users->pluck('id'));
+        $currentSessionId = request()->hasSession() ? (string) request()->session()->getId() : '';
+
+        $payload = $users->map(function (User $user) use ($sessionsByUser, $currentSessionId) {
+            $sessions = $this->presentSessions(
+                $sessionsByUser->get((int) $user->id, collect()),
+                $currentSessionId,
+            );
+            $ips = collect($sessions)
+                ->pluck('ip')
+                ->filter()
+                ->unique()
+                ->values();
+
+            return [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -33,10 +51,14 @@ class UserController extends Controller
                 'has_telegram_2fa' => $user->hasTelegramTwoFactor(),
                 'offers_count' => $user->offers_count,
                 'created_at' => $user->created_at?->format('Y-m-d'),
-            ]);
+                'sessions' => $sessions,
+                'sessions_count' => count($sessions),
+                'sessions_ip_count' => $ips->count(),
+            ];
+        });
 
         return Inertia::render('Panel/Users/Index', [
-            'users' => $users,
+            'users' => $payload,
         ]);
     }
 
@@ -163,5 +185,88 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', "{$user->email} розлогінено.{$suffix}");
+    }
+
+    public function destroySession(User $user, string $session): RedirectResponse
+    {
+        $authUser = request()->user();
+        $currentId = request()->hasSession() ? (string) request()->session()->getId() : '';
+
+        if ($authUser && (int) $user->id === (int) $authUser->id && hash_equals($currentId, $session)) {
+            return redirect()
+                ->route('users.index')
+                ->withErrors(['sessions' => 'Поточну сесію так не закриєш — вийди з меню зліва.']);
+        }
+
+        $dropped = $user->destroyPanelSession($session);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', $dropped
+                ? "Сесію {$user->email} закрито."
+                : "Сесії вже не було.");
+    }
+
+    /**
+     * @param  Collection<int, int|string>  $userIds
+     * @return Collection<int, Collection<int, object>>
+     */
+    private function activeSessionsByUser(Collection $userIds): Collection
+    {
+        if ($userIds->isEmpty()) {
+            return collect();
+        }
+
+        return DB::table((string) config('session.table', 'sessions'))
+            ->whereIn('user_id', $userIds->all())
+            ->where('last_activity', '>=', User::panelSessionCutoff())
+            ->orderByDesc('last_activity')
+            ->get()
+            ->groupBy(fn (object $row) => (int) $row->user_id);
+    }
+
+    /**
+     * @param  Collection<int, object>  $rows
+     * @return list<array{id: string, ip: string, browser: string, os: string, user_agent: string, last_activity_at: string, last_activity_ago: string, is_current: bool}>
+     */
+    private function presentSessions(Collection $rows, string $currentSessionId): array
+    {
+        return $rows->map(function (object $row) use ($currentSessionId) {
+            $agent = UserAgentSummary::describe(is_string($row->user_agent ?? null) ? $row->user_agent : null);
+            $ts = (int) ($row->last_activity ?? 0);
+
+            return [
+                'id' => (string) $row->id,
+                'ip' => trim((string) ($row->ip_address ?? '')),
+                'browser' => $agent['browser'],
+                'os' => $agent['os'],
+                'user_agent' => trim((string) ($row->user_agent ?? '')),
+                'last_activity_at' => $ts > 0 ? date('Y-m-d H:i', $ts) : '',
+                'last_activity_ago' => $this->activityAgo($ts),
+                'is_current' => $currentSessionId !== '' && hash_equals($currentSessionId, (string) $row->id),
+            ];
+        })->values()->all();
+    }
+
+    private function activityAgo(int $timestamp): string
+    {
+        if ($timestamp <= 0) {
+            return '—';
+        }
+
+        $minutes = max(0, (int) floor((time() - $timestamp) / 60));
+        if ($minutes < 1) {
+            return 'щойно';
+        }
+        if ($minutes < 60) {
+            return $minutes.' хв тому';
+        }
+
+        $hours = intdiv($minutes, 60);
+        if ($hours < 24) {
+            return $hours.' год тому';
+        }
+
+        return intdiv($hours, 24).' д тому';
     }
 }

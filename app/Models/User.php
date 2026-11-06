@@ -125,4 +125,24 @@ class User extends Authenticatable
             ->where('user_id', $this->id)
             ->delete();
     }
+
+    public function destroyPanelSession(string $sessionId): bool
+    {
+        $sessionId = trim($sessionId);
+        if ($sessionId === '') {
+            return false;
+        }
+
+        return DB::table((string) config('session.table', 'sessions'))
+            ->where('user_id', $this->id)
+            ->where('id', $sessionId)
+            ->delete() > 0;
+    }
+
+    public static function panelSessionCutoff(): int
+    {
+        $minutes = max(1, (int) config('session.lifetime', 120));
+
+        return now()->subMinutes($minutes)->getTimestamp();
+    }
 }
