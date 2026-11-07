@@ -78,6 +78,23 @@ class OfferDnsStatusTest extends TestCase
         $this->assertSame('ready', $offer->dnsStatus());
     }
 
+    public function test_dns_status_reopens_when_done_but_public_a_record_is_gone(): void
+    {
+        $offer = new Offer([
+            'provision_infrastructure' => true,
+            'infra_status' => 'ready',
+            'availability_status' => 'down',
+            'availability_error' => 'No A record (NS: julissa.ns.cloudflare.com, rajeev.ns.cloudflare.com)',
+            'infra_meta' => [
+                'dns' => 'done',
+                'dns_via' => 'records',
+                'dynadot_ns' => 'done',
+            ],
+        ]);
+
+        $this->assertSame('pending', $offer->dnsStatus());
+    }
+
     public function test_dns_status_is_skipped_without_dns_wait_options(): void
     {
         $offer = new Offer([

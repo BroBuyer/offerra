@@ -7,6 +7,7 @@ use App\Models\CloudflareAccount;
 use App\Models\Offer;
 use App\Models\User;
 use App\Models\UserSetting;
+use App\Support\CloudflareZoneCutover;
 use App\Support\InfrastructureDnsReadiness;
 use App\Support\InfrastructureOptions;
 use App\Support\PublicDnsLookup;
@@ -267,7 +268,9 @@ class InfrastructureProvisioner
         if ($via === 'records') {
             $meta['dynadot_ns'] = 'done';
             unset($meta['dynadot_ns_error']);
+            $this->retirePreviousCloudflareZoneIfSafe($offer, $meta);
         }
+
         $offer->update([
             'infra_status' => 'ready',
             'infra_error' => null,
@@ -340,6 +343,8 @@ class InfrastructureProvisioner
                     $meta['cloudflare'] = 'done';
                     $meta['cloudflare_zone_id'] = $zoneId;
                     $meta['nameservers'] = $nameservers;
+                } else {
+                    $this->syncOwnedCloudflareZone($settings, $domain, $zoneId, $nameservers, $meta);
                 }
             } elseif ($zoneId === '') {
                 $zone = $this->cloudflare->findZone($settings, $domain);
@@ -371,7 +376,11 @@ class InfrastructureProvisioner
         }
 
         if (($options['dynadot_ns'] ?? false) && $nameservers !== []) {
-            if (($meta['dynadot_ns'] ?? '') !== 'done') {
+            $liveNs = $this->publicDns->nameservers($domain);
+            $needsNs = ($meta['dynadot_ns'] ?? '') !== 'done'
+                || CloudflareZoneCutover::shouldRetrySetNs($liveNs, $nameservers);
+
+            if ($needsNs) {
                 try {
                     $this->dynadot->setNameservers($settings, $domain, $nameservers);
                     $meta['dynadot_ns'] = 'done';
@@ -768,7 +777,8 @@ class InfrastructureProvisioner
 
     /**
      * Move an offer's Cloudflare zone onto the owner's primary CF or an admin spare account.
-     * Recreates zone/A/SSL/redirects, updates Dynadot NS, tries to delete the old zone, then DNS recheck.
+     * Recreates zone/A/SSL/redirects, updates Dynadot NS, then DNS recheck.
+     * The previous zone is deleted only after public NS match the new pair.
      */
     public function switchCloudflareAccount(Offer $offer, string $target): void
     {
@@ -791,9 +801,10 @@ class InfrastructureProvisioner
         $userSettings = $this->withPoolOrigin($userSettings, $offer);
 
         $meta = is_array($offer->infra_meta) ? $offer->infra_meta : [];
-        $currentSlot = (($meta['cloudflare_slot'] ?? '') === 'backup') ? 'backup' : 'primary';
+        $currentSlot = CloudflareZoneCutover::slotFromMeta($meta);
         $domain = strtolower(trim((string) $offer->domain));
         $oldZoneId = trim((string) ($meta['cloudflare_zone_id'] ?? ''));
+        $oldPoolId = isset($meta['cloudflare_pool_id']) ? (int) $meta['cloudflare_pool_id'] : null;
 
         $oldCreds = $this->resolveActiveCloudflareCredentials($offer, $userSettings, $currentSlot);
         $targetSettings = $this->settingsWithCloudflareSlot($userSettings, $targetCreds);
@@ -880,22 +891,20 @@ class InfrastructureProvisioner
                 $meta['dynadot_ns_error'] = $e->getMessage();
             }
 
-            $oldDeleted = 'skipped';
-            if ($oldZoneId !== '' && $oldCreds['token'] !== '') {
-                // Only delete if the old zone is on a different account/token.
-                $sameToken = hash_equals($oldCreds['token'], $targetCreds['token']);
-                if (! $sameToken) {
-                    try {
-                        $oldSettings = $this->settingsWithCloudflareSlot($userSettings, $oldCreds);
-                        $oldDeleted = $this->cloudflare->deleteZone($oldSettings, $oldZoneId);
-                    } catch (\Throwable $e) {
-                        $oldDeleted = 'failed: '.$e->getMessage();
-                        $meta['cloudflare_old_zone_delete_error'] = $e->getMessage();
-                    }
+            // Keep the previous zone until public NS actually point at the new
+            // pair. Deleting it here left registrar NS answering an empty zone.
+            if ($oldZoneId !== '' && $oldZoneId !== $zoneId) {
+                $meta['cloudflare_old_zone_id'] = $oldZoneId;
+                $meta['cloudflare_old_slot'] = $currentSlot;
+                if ($oldPoolId) {
+                    $meta['cloudflare_old_pool_id'] = $oldPoolId;
                 }
+                $meta['cloudflare_old_zone_delete'] = 'pending';
+            } else {
+                $meta['cloudflare_old_zone_delete'] = 'skipped';
             }
-            $meta['cloudflare_old_zone_delete'] = $oldDeleted;
             unset($meta['cloudflare_migrating_to']);
+            $this->retirePreviousCloudflareZoneIfSafe($offer, $meta, $userSettings, $targetCreds['token']);
 
             $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
             $dnsVia = $this->publicReadiness($domain, $serverIp, $expectedNs);
@@ -931,6 +940,117 @@ class InfrastructureProvisioner
 
             throw $e;
         }
+    }
+
+    /**
+     * If the current token already owns a zone for this domain, trust that
+     * zone's NS pair over stale infra_meta (moved/pending leftover after a switch).
+     *
+     * @param  list<string>  $nameservers
+     * @param  array<string, mixed>  $meta
+     */
+    private function syncOwnedCloudflareZone(
+        UserSetting $settings,
+        string $domain,
+        string &$zoneId,
+        array &$nameservers,
+        array &$meta,
+    ): void {
+        try {
+            $owned = $this->cloudflare->findZone($settings, $domain);
+        } catch (\Throwable) {
+            return;
+        }
+
+        if ($owned === null) {
+            return;
+        }
+
+        $ownedNs = is_array($owned['nameservers'] ?? null) ? $owned['nameservers'] : [];
+        if ($ownedNs === []) {
+            return;
+        }
+
+        $zoneId = (string) $owned['zone_id'];
+        $nameservers = $ownedNs;
+        $meta['cloudflare_zone_id'] = $zoneId;
+        $meta['nameservers'] = $nameservers;
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function retirePreviousCloudflareZoneIfSafe(
+        Offer $offer,
+        array &$meta,
+        ?UserSetting $settings = null,
+        string $activeToken = '',
+    ): void {
+        if (($meta['cloudflare_old_zone_delete'] ?? '') !== 'pending') {
+            return;
+        }
+
+        $oldZoneId = trim((string) ($meta['cloudflare_old_zone_id'] ?? ''));
+        if ($oldZoneId === '') {
+            $meta['cloudflare_old_zone_delete'] = 'skipped';
+
+            return;
+        }
+
+        $expectedNs = is_array($meta['nameservers'] ?? null) ? $meta['nameservers'] : [];
+        $liveNs = $this->publicDns->nameservers(strtolower(trim((string) $offer->domain)));
+        if (! CloudflareZoneCutover::shouldDeleteOldZone($liveNs, $expectedNs)) {
+            return;
+        }
+
+        $settings ??= $this->providerSettings($offer) ?? $offer->user?->settings;
+        if ($settings === null) {
+            return;
+        }
+
+        $oldCreds = $this->resolvePreviousCloudflareCredentials($settings, $meta);
+        $newToken = CloudflareClient::normalizeApiToken(
+            $activeToken !== ''
+                ? $activeToken
+                : ($offer->cloudflare_api_token ?: $settings->cloudflare_api_token),
+        );
+        if ($oldCreds['token'] === '' || ($newToken !== '' && hash_equals($newToken, $oldCreds['token']))) {
+            $meta['cloudflare_old_zone_delete'] = 'skipped';
+            unset($meta['cloudflare_old_zone_id']);
+
+            return;
+        }
+
+        try {
+            $oldSettings = $this->settingsWithCloudflareSlot($settings, $oldCreds);
+            $meta['cloudflare_old_zone_delete'] = $this->cloudflare->deleteZone($oldSettings, $oldZoneId);
+            unset($meta['cloudflare_old_zone_id'], $meta['cloudflare_old_zone_delete_error']);
+        } catch (\Throwable $e) {
+            $meta['cloudflare_old_zone_delete'] = 'failed: '.DynadotClient::redactSecrets($e->getMessage());
+            $meta['cloudflare_old_zone_delete_error'] = DynadotClient::redactSecrets($e->getMessage());
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     * @return array{token: string, account_id: string, name: string}
+     */
+    private function resolvePreviousCloudflareCredentials(UserSetting $settings, array $meta): array
+    {
+        $poolId = (int) ($meta['cloudflare_old_pool_id'] ?? 0);
+        if ($poolId > 0) {
+            $account = CloudflareAccount::query()->find($poolId);
+            if ($account !== null) {
+                return $account->credentials();
+            }
+        }
+
+        $slot = (string) ($meta['cloudflare_old_slot'] ?? 'primary');
+        if ($slot === 'spare') {
+            return ['token' => '', 'account_id' => '', 'name' => ''];
+        }
+
+        return $settings->cloudflareSlotCredentials($slot === 'backup' ? 'backup' : 'primary');
     }
 
     /**

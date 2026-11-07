@@ -162,6 +162,16 @@ class Offer extends Model
         }
 
         if ($dns === 'done') {
+            // Stale "dns=done" after a CF switch that deleted the old zone
+            // before registrar NS moved — recheck must retry set_ns.
+            if ($this->provision_infrastructure
+                && $this->availability_status === 'down'
+                && is_string($this->availability_error)
+                && str_starts_with($this->availability_error, 'No A record')
+            ) {
+                return 'pending';
+            }
+
             return 'ready';
         }
 
